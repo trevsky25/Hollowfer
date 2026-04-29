@@ -1,0 +1,28 @@
+{
+  "active": "/models/wren/Meshy_AI_Dustbound_Survivor_0428154114_texture_fbx/wren-final.fbx",
+  "isFinal": false,
+  "useDefaultAnimations": false,
+  "animations": {
+    "idle": {
+      "path": "/models/wren/Animations/Wren-Idle2/Meshy_AI_Dustbound_Survivor_biped_Animation_Idle_11_frame_rate_60.fbx",
+      "clip": "Idle_11"
+    },
+    "walk": {
+      "path": "/models/wren/Animations/Wren-Walk/Meshy_AI_Dustbound_Survivor_biped_Animation_Walking_frame_rate_60.fbx",
+      "clip": "walking_man"
+    },
+    "run": {
+      "path": "/models/wren/Animations/Wren-Run/Meshy_AI_Dustbound_Survivor_biped_Animation_Running_frame_rate_60.fbx",
+      "clip": "running"
+    },
+    "jump": {
+      "path": "/models/wren/Animations/Wren-Jump/Meshy_AI_Dustbound_Survivor_biped_Animation_Jump_Run_frame_rate_60.fbx",
+      "clip": "Jump_Run",
+      "timeScale": 0.9,
+      "fade": 0.28,
+      "startTime": 0.08,
+      "autoClear": true
+    }
+  },
+  "note": "Fresh Hollowfen prototype uses Wren model with idle, walk, run, and jump animations."
+}

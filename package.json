@@ -1,0 +1,22 @@
+{
+  "name": "hollowfen---the-failing-village",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite --host 127.0.0.1 --port 5175",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 4175"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "three": "^0.160.0"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}
