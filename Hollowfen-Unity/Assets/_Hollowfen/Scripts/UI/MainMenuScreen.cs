@@ -36,7 +36,7 @@ namespace Hollowfen.UI
             if (_continueButton != null) _continueButton.interactable = true;
         }
 
-        private const string GameplaySceneName = "Medieval Environment - Demo 1";
+        private const string GameplaySceneName = "Scene_Hollowfen";
 
         private void OnNewGame()
         {

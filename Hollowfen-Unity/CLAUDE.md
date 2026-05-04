@@ -43,9 +43,9 @@ Scene_MainMenu  ──Continue──►  Medieval Environment - Demo 1  ──Pa
 ```
 
 - `Scene_MainMenu` (`Assets/_Hollowfen/Scenes/Scene_MainMenu.unity`) is the boot scene. It contains UIManager + ScreenRoot + all menu UIScreens as DDOL'd children.
-- `Medieval Environment - Demo 1` is the third-party Magic Pig Games sample scene. It contains `PlayerArmature` (Wren) with `ThirdPersonController` + `StarterAssetsInputs` + `PlayerInput` driven by `Assets/Starter Assets/.../StarterAssets.inputactions`. Used as the playable gameplay sandbox until a real Hollowfen village scene exists.
+- `Scene_Hollowfen` (`Assets/_Hollowfen/Scenes/Scene_Hollowfen.unity`) is **the actual Hollowfen village** — already 3D-modeled. Originally a copy of Magic Pig Games' "Medieval Environment - Demo 1" demo scene; we copied it into our owned folder so future package updates don't clobber our work. Contains `PlayerArmature` (Wren) with `ThirdPersonController` + `StarterAssetsInputs` + `PlayerInput` driven by `Assets/Starter Assets/.../StarterAssets.inputactions`. The original Magic Pig demo stays untouched at its package path for reference.
 - The legacy prototype `Assets/Scenes/MainMenu.unity` is kept as visual reference only; the production menu lives at `Scene_MainMenu`.
-- `Build Settings` order: Scene_MainMenu (0), MainMenu (legacy), Village, Medieval Environment - Demo 1.
+- `Build Settings` order: Scene_MainMenu (0), MainMenu (legacy), Village, Scene_Hollowfen.
 
 ### UI framework
 
