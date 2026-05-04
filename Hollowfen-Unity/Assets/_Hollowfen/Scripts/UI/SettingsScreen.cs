@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Hollowfen.Input;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -24,6 +25,11 @@ namespace Hollowfen.UI
         [SerializeField] private Slider _musicSlider;
         [SerializeField] private Slider _sfxSlider;
 
+        [Header("Graphics")]
+        [SerializeField] private Toggle _fullscreenToggle;
+        [SerializeField] private Dropdown _resolutionDropdown;
+        [SerializeField] private Dropdown _qualityDropdown;
+
         [Header("Per-tab default focus")]
         [SerializeField] private GameObject _audioDefaultSelected;
         [SerializeField] private GameObject _graphicsDefaultSelected;
@@ -33,6 +39,11 @@ namespace Hollowfen.UI
         private const string PrefMusic  = "audio.music";
         private const string PrefSFX    = "audio.sfx";
         private const float DefaultVolume = 0.8f;
+        private const string PrefFullscreen = "graphics.fullscreen";
+        private const string PrefResolution = "graphics.resolutionIndex";
+        private const string PrefQuality    = "graphics.qualityIndex";
+
+        private Resolution[] _resolutions;
 
         private InputActions _input;
         private Tab _currentTab = Tab.Audio;
@@ -78,7 +89,73 @@ namespace Hollowfen.UI
             ApplyVolume("MusicVolume",  music);
             ApplyVolume("SFXVolume",    sfx);
 
+            InitializeGraphics();
+
             ApplyTab();
+        }
+
+        private void InitializeGraphics()
+        {
+            if (_fullscreenToggle != null)
+            {
+                bool fs = PlayerPrefs.GetInt(PrefFullscreen, Screen.fullScreen ? 1 : 0) == 1;
+                _fullscreenToggle.SetIsOnWithoutNotify(fs);
+                _fullscreenToggle.onValueChanged.AddListener(OnFullscreenChanged);
+            }
+
+            if (_resolutionDropdown != null)
+            {
+                _resolutions = Screen.resolutions;
+                int currentIndex = 0;
+                var options = new List<Dropdown.OptionData>();
+                for (int i = 0; i < _resolutions.Length; i++)
+                {
+                    var r = _resolutions[i];
+                    options.Add(new Dropdown.OptionData($"{r.width} × {r.height}"));
+                    if (r.width == Screen.width && r.height == Screen.height) currentIndex = i;
+                }
+                _resolutionDropdown.ClearOptions();
+                _resolutionDropdown.AddOptions(options);
+                int saved = PlayerPrefs.GetInt(PrefResolution, currentIndex);
+                if (saved < 0 || saved >= _resolutions.Length) saved = currentIndex;
+                _resolutionDropdown.SetValueWithoutNotify(saved);
+                _resolutionDropdown.RefreshShownValue();
+                _resolutionDropdown.onValueChanged.AddListener(OnResolutionChanged);
+            }
+
+            if (_qualityDropdown != null)
+            {
+                var qNames = QualitySettings.names;
+                var options = new List<Dropdown.OptionData>();
+                for (int i = 0; i < qNames.Length; i++) options.Add(new Dropdown.OptionData(qNames[i]));
+                _qualityDropdown.ClearOptions();
+                _qualityDropdown.AddOptions(options);
+                int saved = PlayerPrefs.GetInt(PrefQuality, QualitySettings.GetQualityLevel());
+                if (saved < 0 || saved >= qNames.Length) saved = QualitySettings.GetQualityLevel();
+                _qualityDropdown.SetValueWithoutNotify(saved);
+                _qualityDropdown.RefreshShownValue();
+                _qualityDropdown.onValueChanged.AddListener(OnQualityChanged);
+            }
+        }
+
+        private void OnFullscreenChanged(bool value)
+        {
+            PlayerPrefs.SetInt(PrefFullscreen, value ? 1 : 0);
+            Screen.fullScreen = value;
+        }
+
+        private void OnResolutionChanged(int index)
+        {
+            PlayerPrefs.SetInt(PrefResolution, index);
+            if (_resolutions == null || index < 0 || index >= _resolutions.Length) return;
+            var r = _resolutions[index];
+            Screen.SetResolution(r.width, r.height, Screen.fullScreenMode);
+        }
+
+        private void OnQualityChanged(int index)
+        {
+            PlayerPrefs.SetInt(PrefQuality, index);
+            QualitySettings.SetQualityLevel(index, true);
         }
 
         public override void OnOpen()
