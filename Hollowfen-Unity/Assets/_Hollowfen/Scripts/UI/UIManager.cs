@@ -38,6 +38,8 @@ namespace Hollowfen.UI
 
             _input = new InputActions();
             _input.UI.Cancel.performed += OnCancelInput;
+            _input.Player.Pause.performed += OnPauseInput;
+            _input.Player.Enable();
 
             EnsureFadeOverlay();
             EnsureUIInputModule();
@@ -142,6 +144,7 @@ namespace Hollowfen.UI
                 {
                     _stack.Push(next);
                     next.gameObject.SetActive(true);
+                    SetCanvasSortOrder(next, _stack.Count);
                     next.OnOpen();
                 }
             }
@@ -154,6 +157,7 @@ namespace Hollowfen.UI
                 {
                     _stack.Push(next);
                     next.gameObject.SetActive(true);
+                    SetCanvasSortOrder(next, _stack.Count);
                     next.OnOpen();
                 }
             }
@@ -213,6 +217,16 @@ namespace Hollowfen.UI
             if (top != null) top.OnBack();
         }
 
+        private void OnPauseInput(InputAction.CallbackContext ctx)
+        {
+            if (_transitioning) return;
+            // Don't re-open if pause is already on top.
+            if (TopScreen != null && TopScreen.ScreenId == "pause") return;
+            // Don't open over a confirm modal — let the user resolve it first.
+            if (TopScreen != null && TopScreen.IsModal) return;
+            OpenScreen("pause");
+        }
+
         private void UpdateInputMapState()
         {
             if (_input == null) return;
@@ -240,6 +254,13 @@ namespace Hollowfen.UI
             var root = _screenRoot != null ? _screenRoot : transform;
             var screens = root.GetComponentsInChildren<UIScreen>(includeInactive: true);
             foreach (var s in screens) RegisterScreen(s);
+        }
+
+        private static void SetCanvasSortOrder(UIScreen screen, int stackPosition)
+        {
+            if (screen == null) return;
+            var canvas = screen.GetComponentInChildren<Canvas>(true);
+            if (canvas != null) canvas.sortingOrder = stackPosition * 10;
         }
 
         private void EnsureUIInputModule()
