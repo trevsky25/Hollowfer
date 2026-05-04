@@ -88,7 +88,10 @@ namespace Hollowfen.UI
             _onConfirm = null;
             _onCancel = null;
             cb?.Invoke();
-            UIManager.Instance?.Back();
+            // Only pop the modal if it's still on top — the callback may have already
+            // navigated away (e.g., via UIManager.LoadSceneAndOpen).
+            if (UIManager.Instance != null && UIManager.Instance.TopScreen == this)
+                UIManager.Instance.Back();
         }
 
         private void HandleCancel()
@@ -97,7 +100,8 @@ namespace Hollowfen.UI
             _onConfirm = null;
             _onCancel = null;
             cb?.Invoke();
-            UIManager.Instance?.Back();
+            if (UIManager.Instance != null && UIManager.Instance.TopScreen == this)
+                UIManager.Instance.Back();
         }
     }
 }

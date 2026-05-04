@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Hollowfen.UI
@@ -49,6 +50,8 @@ namespace Hollowfen.UI
             // TODO: real save flow when game state lands.
         }
 
+        private const string MainMenuSceneName = "Scene_MainMenu";
+
         private void OnQuit()
         {
             ConfirmModal.Show(
@@ -57,8 +60,9 @@ namespace Hollowfen.UI
                 onConfirm: () =>
                 {
                     Debug.Log("[Pause] Quit to Main Menu confirmed");
-                    if (UIManager.Instance != null) UIManager.Instance.Back();
-                    // In production: SceneManager.LoadScene("Scene_MainMenu");
+                    Time.timeScale = 1f; // restore before scene load so the next scene starts unpaused
+                    if (UIManager.Instance != null)
+                        UIManager.Instance.LoadSceneAndOpen(MainMenuSceneName, "main-menu");
                 });
         }
     }

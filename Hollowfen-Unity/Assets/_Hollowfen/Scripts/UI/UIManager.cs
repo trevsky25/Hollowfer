@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Hollowfen.UI
@@ -17,6 +18,7 @@ namespace Hollowfen.UI
         [SerializeField] private CanvasGroup _fadeOverlay;
         [SerializeField] private float _fadeDuration = 0.2f;
         [SerializeField] private string _initialScreenId;
+        [SerializeField] private GameObject _pauseMenuPrefab;
 
         private InputActions _input;
         private readonly Dictionary<string, UIScreen> _screens = new Dictionary<string, UIScreen>();
@@ -36,6 +38,10 @@ namespace Hollowfen.UI
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
+            EnsureEventSystem();
+
+            SceneManager.sceneLoaded += OnSceneLoaded;
+
             _input = new InputActions();
             _input.UI.Cancel.performed += OnCancelInput;
             _input.Player.Pause.performed += OnPauseInput;
@@ -53,6 +59,7 @@ namespace Hollowfen.UI
         private void OnDestroy()
         {
             if (Instance != this) return;
+            SceneManager.sceneLoaded -= OnSceneLoaded;
             if (_input != null)
             {
                 _input.UI.Cancel.performed -= OnCancelInput;
@@ -60,6 +67,60 @@ namespace Hollowfen.UI
                 _input = null;
             }
             Instance = null;
+        }
+
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            // Tear down any duplicate EventSystem the new scene brought along —
+            // the DDOL'd one from the original Scene_MainMenu load is the keeper.
+            var all = UnityEngine.Object.FindObjectsByType<EventSystem>(
+                FindObjectsInactive.Include, FindObjectsSortMode.None);
+            if (all.Length > 1)
+            {
+                EventSystem keep = null;
+                foreach (var e in all)
+                    if (e.gameObject.scene.name == "DontDestroyOnLoad") { keep = e; break; }
+                if (keep == null) keep = all[0];
+                foreach (var e in all)
+                    if (e != keep) Destroy(e.gameObject);
+            }
+        }
+
+        // Async scene transition with the loading screen layered on top.
+        // If nextScreenId is non-null and registered, the loading screen is replaced
+        // by that screen after the scene finishes loading; otherwise it just closes.
+        public void LoadSceneAndOpen(string sceneName, string nextScreenId = null)
+        {
+            StartCoroutine(LoadSceneRoutine(sceneName, nextScreenId));
+        }
+
+        private IEnumerator LoadSceneRoutine(string sceneName, string nextScreenId)
+        {
+            CloseAll();
+
+            bool hasLoading = _screens.ContainsKey("loading");
+            if (hasLoading)
+            {
+                OpenScreen("loading");
+                // Give the loading screen a frame to activate before kicking off the load.
+                yield return null;
+                yield return new WaitForSecondsRealtime(0.05f);
+            }
+
+            var op = SceneManager.LoadSceneAsync(sceneName);
+            while (op != null && !op.isDone) yield return null;
+
+            // Brief settle so the new scene has a frame to render before we hand off.
+            yield return new WaitForSecondsRealtime(0.25f);
+
+            if (!string.IsNullOrEmpty(nextScreenId) && _screens.ContainsKey(nextScreenId))
+            {
+                ReplaceScreen(nextScreenId);
+            }
+            else if (TopScreen != null && TopScreen.ScreenId == "loading")
+            {
+                Back();
+            }
         }
 
         public void RegisterScreen(UIScreen screen)
@@ -117,6 +178,19 @@ namespace Hollowfen.UI
         {
             if (_transitioning || _stack.Count == 0) return;
             StartCoroutine(TransitionRoutine(null, push: false, replace: false));
+        }
+
+        // Synchronously close every screen on the stack. Used when transitioning to
+        // a new scene where the menu chain shouldn't carry over.
+        public void CloseAll()
+        {
+            while (_stack.Count > 0)
+            {
+                var top = _stack.Pop();
+                top.OnClose();
+                top.gameObject.SetActive(false);
+            }
+            UpdateInputMapState();
         }
 
         private IEnumerator TransitionRoutine(UIScreen next, bool push, bool replace)
@@ -224,7 +298,22 @@ namespace Hollowfen.UI
             if (TopScreen != null && TopScreen.ScreenId == "pause") return;
             // Don't open over a confirm modal — let the user resolve it first.
             if (TopScreen != null && TopScreen.IsModal) return;
+            EnsurePauseInstance();
             OpenScreen("pause");
+        }
+
+        // Lazy-instantiate the pause menu from its prefab on first request.
+        // Lets gameplay scenes pick up pause without needing PauseScreen in their hierarchy.
+        private void EnsurePauseInstance()
+        {
+            if (_screens.ContainsKey("pause")) return;
+            if (_pauseMenuPrefab == null) return;
+
+            var parent = _screenRoot != null ? _screenRoot : transform;
+            var instance = Instantiate(_pauseMenuPrefab, parent);
+            instance.name = _pauseMenuPrefab.name;
+            var screen = instance.GetComponent<UIScreen>();
+            if (screen != null) RegisterScreen(screen);
         }
 
         private void UpdateInputMapState()
@@ -261,6 +350,23 @@ namespace Hollowfen.UI
             if (screen == null) return;
             var canvas = screen.GetComponentInChildren<Canvas>(true);
             if (canvas != null) canvas.sortingOrder = stackPosition * 10;
+        }
+
+        // Make sure exactly one DDOL'd EventSystem exists. If a scene-level one is
+        // present, persist it; otherwise spawn one. Keeping the EventSystem out of
+        // Scene_MainMenu's saved hierarchy avoids the "only one active Event System"
+        // warning when returning to that scene from gameplay.
+        private void EnsureEventSystem()
+        {
+            var es = EventSystem.current;
+            if (es != null)
+            {
+                if (es.transform.parent == null && es.gameObject.scene.name != "DontDestroyOnLoad")
+                    DontDestroyOnLoad(es.gameObject);
+                return;
+            }
+            var go = new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
+            DontDestroyOnLoad(go);
         }
 
         private void EnsureUIInputModule()

@@ -1,5 +1,6 @@
 using Hollowfen.Save;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Hollowfen.UI
@@ -29,9 +30,13 @@ namespace Hollowfen.UI
 
         public override void OnOpen()
         {
-            if (_continueButton != null)
-                _continueButton.interactable = HasAnySave();
+            // Continue stays interactable while we don't yet have real save state;
+            // it doubles as the "enter gameplay" path for testing the cross-scene
+            // pause flow. Re-enable HasAnySave gating once real save data lands.
+            if (_continueButton != null) _continueButton.interactable = true;
         }
+
+        private const string GameplaySceneName = "Medieval Environment - Demo 1";
 
         private void OnNewGame()
         {
@@ -42,8 +47,9 @@ namespace Hollowfen.UI
 
         private void OnContinue()
         {
-            Debug.Log("[MainMenu] Continue");
-            // TODO: load most recent save (Session 8+)
+            Debug.Log("[MainMenu] Continue → loading gameplay scene");
+            if (UIManager.Instance != null)
+                UIManager.Instance.LoadSceneAndOpen(GameplaySceneName);
         }
 
         private void OnSettings()
