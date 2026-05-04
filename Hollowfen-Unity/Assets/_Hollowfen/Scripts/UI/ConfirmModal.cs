@@ -22,8 +22,9 @@ namespace Hollowfen.UI
         private Action _onConfirm;
         private Action _onCancel;
 
-        private void Awake()
+        protected override void OnInitialize()
         {
+            base.OnInitialize();
             if (Instance != null && Instance != this)
             {
                 Destroy(gameObject);
@@ -34,8 +35,6 @@ namespace Hollowfen.UI
             if (_confirmButton != null) _confirmButton.onClick.AddListener(HandleConfirm);
             if (_cancelButton != null) _cancelButton.onClick.AddListener(HandleCancel);
 
-            // Lock D-pad navigation to the two modal buttons only — prevents focus
-            // jumping to whatever Selectables are visible in the underlying screen.
             if (_cancelButton != null && _confirmButton != null)
             {
                 _cancelButton.navigation = new UnityEngine.UI.Navigation

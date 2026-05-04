@@ -69,6 +69,7 @@ namespace Hollowfen.UI
                 return;
             }
             _screens[screen.ScreenId] = screen;
+            screen.EnsureInitialized();
             screen.gameObject.SetActive(false);
         }
 

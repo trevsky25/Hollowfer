@@ -25,6 +25,7 @@ namespace Hollowfen.UI
         [Header("Behavior")]
         [SerializeField] private bool _swapColor = true;
         [SerializeField] private bool _swapScale = true;
+        [SerializeField] private bool _underlineText;
         [SerializeField] private bool _selectOnHover = true;
         [SerializeField] private float _transitionDuration = 0.12f;
 
@@ -34,6 +35,8 @@ namespace Hollowfen.UI
         private bool _isFocused;
         private float _currentT;
         private Coroutine _anim;
+        private System.Reflection.PropertyInfo _textProp;
+        private string _baseText;
 
         private void Awake()
         {
@@ -45,6 +48,11 @@ namespace Hollowfen.UI
             {
                 _baseGlowAlpha = _glowGraphic.color.a;
                 SetGlowAlpha(0f);
+            }
+            if (_underlineText && _targetGraphic != null)
+            {
+                _textProp = _targetGraphic.GetType().GetProperty("text");
+                if (_textProp != null) _baseText = _textProp.GetValue(_targetGraphic, null) as string;
             }
         }
 
@@ -73,6 +81,7 @@ namespace Hollowfen.UI
         {
             if (_isFocused == focused) return;
             _isFocused = focused;
+            ApplyUnderline(focused);
             if (_anim != null) StopCoroutine(_anim);
             if (!isActiveAndEnabled)
             {
@@ -81,6 +90,13 @@ namespace Hollowfen.UI
                 return;
             }
             _anim = StartCoroutine(AnimateTo(focused ? 1f : 0f));
+        }
+
+        private void ApplyUnderline(bool focused)
+        {
+            if (!_underlineText || _textProp == null || _baseText == null) return;
+            var newText = focused ? "<u>" + _baseText + "</u>" : _baseText;
+            _textProp.SetValue(_targetGraphic, newText, null);
         }
 
         private IEnumerator AnimateTo(float target)
