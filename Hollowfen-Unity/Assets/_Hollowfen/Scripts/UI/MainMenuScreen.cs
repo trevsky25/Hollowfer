@@ -37,7 +37,7 @@ namespace Hollowfen.UI
         {
             Debug.Log("[MainMenu] New Game");
             GameEvents.TriggerAchievement("ACH_NEWGAME_FIRST");
-            // TODO: open SaveSlot screen for slot pick (Session 8+)
+            if (UIManager.Instance != null) UIManager.Instance.OpenScreen("save-slot");
         }
 
         private void OnContinue()

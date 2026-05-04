@@ -138,6 +138,15 @@ namespace Hollowfen.Input
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Delete"",
+                    ""type"": ""Button"",
+                    ""id"": ""c52b012e-8543-40f2-acef-8b0bcd5d6961"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -369,6 +378,28 @@ namespace Hollowfen.Input
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""TabRight"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""797d01a9-447c-449f-8ee4-cf8497d7def1"",
+                    ""path"": ""<Keyboard>/delete"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Delete"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f23ee520-0920-4510-b82b-95b5baeeb80b"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Delete"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -855,6 +886,7 @@ namespace Hollowfen.Input
             m_UI_Cancel = m_UI.FindAction("Cancel", throwIfNotFound: true);
             m_UI_TabLeft = m_UI.FindAction("TabLeft", throwIfNotFound: true);
             m_UI_TabRight = m_UI.FindAction("TabRight", throwIfNotFound: true);
+            m_UI_Delete = m_UI.FindAction("Delete", throwIfNotFound: true);
             // Player
             m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
             m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
@@ -958,6 +990,7 @@ namespace Hollowfen.Input
         private readonly InputAction m_UI_Cancel;
         private readonly InputAction m_UI_TabLeft;
         private readonly InputAction m_UI_TabRight;
+        private readonly InputAction m_UI_Delete;
         /// <summary>
         /// Provides access to input actions defined in input action map "UI".
         /// </summary>
@@ -989,6 +1022,10 @@ namespace Hollowfen.Input
             /// Provides access to the underlying input action "UI/TabRight".
             /// </summary>
             public InputAction @TabRight => m_Wrapper.m_UI_TabRight;
+            /// <summary>
+            /// Provides access to the underlying input action "UI/Delete".
+            /// </summary>
+            public InputAction @Delete => m_Wrapper.m_UI_Delete;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -1030,6 +1067,9 @@ namespace Hollowfen.Input
                 @TabRight.started += instance.OnTabRight;
                 @TabRight.performed += instance.OnTabRight;
                 @TabRight.canceled += instance.OnTabRight;
+                @Delete.started += instance.OnDelete;
+                @Delete.performed += instance.OnDelete;
+                @Delete.canceled += instance.OnDelete;
             }
 
             /// <summary>
@@ -1056,6 +1096,9 @@ namespace Hollowfen.Input
                 @TabRight.started -= instance.OnTabRight;
                 @TabRight.performed -= instance.OnTabRight;
                 @TabRight.canceled -= instance.OnTabRight;
+                @Delete.started -= instance.OnDelete;
+                @Delete.performed -= instance.OnDelete;
+                @Delete.canceled -= instance.OnDelete;
             }
 
             /// <summary>
@@ -1459,6 +1502,13 @@ namespace Hollowfen.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnTabRight(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Delete" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnDelete(InputAction.CallbackContext context);
         }
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Player" which allows adding and removing callbacks.
