@@ -35,6 +35,10 @@ namespace Hollowfen.UI
         [SerializeField] private GameObject _graphicsDefaultSelected;
         [SerializeField] private GameObject _controlsDefaultSelected;
 
+        [Header("Tab visual state")]
+        [SerializeField] private Color _tabActiveColor   = new Color(0.55f, 0.40f, 0.10f, 0.95f);
+        [SerializeField] private Color _tabInactiveColor = new Color(0.20f, 0.24f, 0.20f, 0.85f);
+
         private const string PrefMaster = "audio.master";
         private const string PrefMusic  = "audio.music";
         private const string PrefSFX    = "audio.sfx";
@@ -207,6 +211,18 @@ namespace Hollowfen.UI
             if (_audioPanel    != null) _audioPanel.SetActive(_currentTab == Tab.Audio);
             if (_graphicsPanel != null) _graphicsPanel.SetActive(_currentTab == Tab.Graphics);
             if (_controlsPanel != null) _controlsPanel.SetActive(_currentTab == Tab.Controls);
+
+            SetTabActiveBackground(_audioTabButton,    _currentTab == Tab.Audio);
+            SetTabActiveBackground(_graphicsTabButton, _currentTab == Tab.Graphics);
+            SetTabActiveBackground(_controlsTabButton, _currentTab == Tab.Controls);
+        }
+
+        private void SetTabActiveBackground(Button btn, bool active)
+        {
+            if (btn == null) return;
+            var img = btn.GetComponent<Image>();
+            if (img == null) return;
+            img.color = active ? _tabActiveColor : _tabInactiveColor;
         }
 
         private void OnMasterChanged(float v) { PlayerPrefs.SetFloat(PrefMaster, v); ApplyVolume("MasterVolume", v); }

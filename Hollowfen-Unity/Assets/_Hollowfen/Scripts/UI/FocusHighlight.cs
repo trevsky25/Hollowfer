@@ -53,6 +53,12 @@ namespace Hollowfen.UI
             {
                 _textProp = _targetGraphic.GetType().GetProperty("text");
                 if (_textProp != null) _baseText = _textProp.GetValue(_targetGraphic, null) as string;
+
+                // Ensure rich-text rendering is enabled so <u>...</u> doesn't render literally.
+                // UI.Text uses supportRichText; TMP_Text uses richText.
+                var t = _targetGraphic.GetType();
+                var richProp = t.GetProperty("supportRichText") ?? t.GetProperty("richText");
+                if (richProp != null && richProp.CanWrite) richProp.SetValue(_targetGraphic, true, null);
             }
         }
 
