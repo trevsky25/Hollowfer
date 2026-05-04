@@ -49,7 +49,7 @@ namespace Hollowfen.UI
         private void OnSettings()
         {
             Debug.Log("[MainMenu] Settings");
-            // TODO: UIManager.Instance?.OpenScreen("settings"); when settings screen lands (Session 7)
+            if (UIManager.Instance != null) UIManager.Instance.OpenScreen("settings");
         }
 
         private void OnCredits()
