@@ -61,9 +61,32 @@ Scene_MainMenu  ──Continue──►  Medieval Environment - Demo 1  ──Pa
 | `LoadingScreen` | `_Hollowfen/Scripts/UI/LoadingScreen.cs` | Wren forest hero + animated "Traveling to Hollowfen…" with rolling dots on `WaitForSecondsRealtime`. Used by `LoadSceneAndOpen` during async scene transitions. |
 | `FocusHighlight` | `_Hollowfen/Scripts/UI/FocusHighlight.cs` | Per-Selectable focus visual. Color tint + scale + optional `<u>underline</u>` rich text + optional glow. `_underlineText` mode auto-enables `supportRichText` on the target. Routes `OnPointerEnter` through `EventSystem.SetSelectedGameObject` so mouse hover and gamepad focus share state. |
 
+### Map system
+
+A mini-map widget plus a toggleable full-screen map in `Scene_Hollowfen`, both rendering the actual 3D world via secondary orthographic cameras → RenderTextures → UI. A Skyrim-style compass strip sits at the top of the gameplay HUD.
+
+| Component | Path | Role |
+|---|---|---|
+| `MiniMapCamera` | `_Hollowfen/Scripts/Map/MiniMapCamera.cs` | Top-down ortho camera following the Player tag at ~60m. Always active. Renders to `MiniMapRT` (512×512). |
+| `MapCamera` | `_Hollowfen/Scripts/Map/MapCamera.cs` | Wider ortho camera (size 150 = 300m frame) following Player at 80m. Always active. Renders to `MapViewRT` (2048×2048). Subscribes to `RenderPipelineManager.beginCameraRendering` to disable scene fog only while it renders — otherwise URP fog washes the view to skybox-blue at altitude. |
+| `MapScreen` | `_Hollowfen/Scripts/Map/MapScreen.cs` | Toggles the full-screen canvas, hides the mini-map canvas, freezes `Time.timeScale`. Not a UIScreen subclass — runs independently of UIManager since UIManager is DDOL'd from Scene_MainMenu. |
+| `MapInputBridge` | `_Hollowfen/Scripts/Map/MapInputBridge.cs` | Subscribes to `Player/OpenMap` (toggle) and `UI/Cancel` (close) on the project InputActions asset. Bound to `M`, DualSense Touchpad, Xbox View, Steam Deck View. |
+| `MiniMapWidget` | `_Hollowfen/Scripts/Map/MiniMapWidget.cs` | Optional rotate-map-with-player mode for the mini-map. |
+| `PlayerHeadingArrow` | `_Hollowfen/Scripts/Map/PlayerHeadingArrow.cs` | Drop-on rotator — matches a RectTransform's Z rotation to the player's Y rotation. Used on both heading arrows. |
+| `CompassStrip` | `_Hollowfen/Scripts/UI/CompassStrip.cs` | Top-of-screen compass: N/NE/E/SE/S/SW/W/NW marks slide under a center notch as Wren turns. 120° visible at a time, `RectMask2D` clips. |
+| `UITriangle` | `_Hollowfen/Scripts/UI/UITriangle.cs` | Custom `MaskableGraphic` drawing a solid upward triangle via `OnPopulateMesh` — no sprite needed. Used for heading arrows and the compass notch. |
+
+**Scene scaffolding** (all in Scene_Hollowfen, all canvases scale with screen size against 1920×1080):
+- `_HUDCanvas` — always-on, holds the compass strip
+- `_MiniMapCanvas` — always-on corner widget (320×320, sortingOrder 10): frame + RawImage of MiniMapRT + gold `UITriangle` heading arrow + N/S/E/W edge labels
+- `_MapCanvas` — deactivated by default (sortingOrder 50): dimmed background + 1020×1020 `MapPanel` with leather frame + HOLLOWFEN title + cardinal labels + centered heading arrow
+- `_MiniMapCamera`, `_MapCamera`, `_MapInputBridge`
+
+**Location data infrastructure (parked)**: `LocationData` ScriptableObject + 8 Act I/II POI assets at `_Hollowfen/Data/Locations/` + `LocationMarker` / `RegionTrigger` / `LocationRegistry` / `LocationDebugHUD` scripts. Scene placeholders (`_Locations`, `_Regions`, `_LocationDebugHUD`) are disabled until a real POI placement workflow exists. Compiles cleanly; ready to reactivate when needed.
+
 ### Inputs / save / audio / localization
 
-- **Project InputActions** at `_Hollowfen/Input/InputActions.inputactions`. Three maps: UI (Navigate, Submit, Cancel, TabLeft, TabRight, Delete), Player (Move, Look, Interact, Jump, OpenJournal, Pause), Dialogue (Advance, Skip, Choice1-4). Gamepad bindings follow Steam Deck conventions (Submit=South, Cancel=East). C# wrapper auto-generated as `Hollowfen.Input.InputActions`.
+- **Project InputActions** at `_Hollowfen/Input/InputActions.inputactions`. Three maps: UI (Navigate, Submit, Cancel, TabLeft, TabRight, Delete), Player (Move, Look, Interact, Jump, OpenJournal, Pause, **OpenMap**), Dialogue (Advance, Skip, Choice1-4). Gamepad bindings follow Steam Deck conventions (Submit=South, Cancel=East, OpenMap=Select/Touchpad). C# wrapper auto-generated as `Hollowfen.Input.InputActions`.
 - **Wren's controller still uses `StarterAssets.inputactions`** in its PlayerInput component. The two assets coexist intentionally — we'll consolidate when there's a concrete reason (e.g., gameplay needs to trigger menu actions). UIManager's pause input fires from our project asset regardless, since UIManager runs DDOL.
 - **`SaveManager`** at `_Hollowfen/Scripts/Save/`. Static class. JSON to `Application.persistentDataPath/saves/slotN.json`. Methods: `SlotHasData`, `GetSlotMeta`, `DeleteSlot`, `WritePlaceholderToSlot`. Real game-state serialization is still TODO — only `SaveSlotMeta` round-trips today.
 - **`GameEvents.TriggerAchievement(id)`** in `_Hollowfen/Scripts/GameEvents.cs`. `AchievementManager` subscribes via `[RuntimeInitializeOnLoadMethod]` and `Debug.Log`s. Steamworks SDK wiring is still a future session.
@@ -73,6 +96,11 @@ Scene_MainMenu  ──Continue──►  Medieval Environment - Demo 1  ──Pa
 ### Known deferred work
 
 - **Wren animations** — Mixamo rig + Unity StarterAsset animations don't perfectly match (palms-up running, curled idle fingers). Diagnosed but not fixed. Real fix is either (a) Mixamo-sourced animations matching her rig, (b) Avatar reconfiguration for wrist orientation, or (c) avatar-mask + override layer for hands. Scoped as its own focused animation session.
+- **Map POIs and region detection** — script + data infrastructure exists (`LocationData`, `LocationMarker`, `RegionTrigger`, `LocationRegistry`, 8 Act I/II SOs). Scene placeholders are disabled until the POI placement workflow is solved (placing markers blindly was unproductive).
+- **Map pan/zoom** — full-screen map is fixed-frame (camera follows Wren, ortho 150). No drag/scroll yet.
+- **Map open input** — currently shipping `M` + Gamepad Select + DualSense Touchpad. Final controller mapping decision (reuse `Player/OpenJournal` on `Y/Triangle/J` vs the dedicated `Player/OpenMap` action) still open.
+- **Region-enter toast notifications** — events exist on `LocationRegistry`; UI not built.
+- **Wren as pink dot in `MapViewRT`** — minor URP missing-material artifact when she's rendered top-down. Covered by the centered heading triangle in normal play; cosmetic cleanup pass for later.
 - **Real game-state save** — `SaveSlotMeta` writes/reads work; actual game state (inventory, quests, world state) isn't persisted yet.
 - **Steamworks SDK** — achievement events fire correctly but aren't wired to Steam yet.
 - **Translation pass** — Localization LUT is English-only; EA target adds Simplified Chinese.
