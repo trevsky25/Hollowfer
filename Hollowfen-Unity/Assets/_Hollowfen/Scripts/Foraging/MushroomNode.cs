@@ -37,6 +37,7 @@ namespace Hollowfen.Foraging
 
             OnAnyHarvested?.Invoke(_data);
             MushroomDiscovery.MarkDiscovered(_data.Id);
+            InventoryRuntime.Add(_data, 1);
 
             if (!PlayerPrefs.HasKey(FirstHarvestPrefKey))
             {

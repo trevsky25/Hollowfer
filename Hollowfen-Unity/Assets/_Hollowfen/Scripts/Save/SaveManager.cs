@@ -55,6 +55,33 @@ namespace Hollowfen.Save
             File.WriteAllText(SlotPath(slot), JsonUtility.ToJson(meta, prettyPrint: true));
         }
 
+        // Full meta write (preserves inventory + future fields). Used by gameplay autosave.
+        public static void WriteSlot(int slot, SaveSlotMeta meta)
+        {
+            if (meta == null) return;
+            EnsureDirectory();
+            meta.SlotNumber = slot;
+            if (meta.TimestampUnix == 0) meta.TimestampUnix = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            File.WriteAllText(SlotPath(slot), JsonUtility.ToJson(meta, prettyPrint: true));
+        }
+
+        // Targeted autosave for inventory: read existing meta on the autosave slot (or create one),
+        // overwrite Inventory, refresh timestamp, write back. Throttled by callers if needed.
+        public static void AutoSaveInventory(InventorySnapshot snap)
+        {
+            EnsureDirectory();
+            var meta = GetSlotMeta(AutosaveSlot) ?? new SaveSlotMeta
+            {
+                SlotNumber = AutosaveSlot,
+                CurrentQuest = "Act I — Arrival",
+                CurrentAct = 1,
+                TotalPlayTimeSeconds = 0f
+            };
+            meta.Inventory = snap;
+            meta.TimestampUnix = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            File.WriteAllText(SlotPath(AutosaveSlot), JsonUtility.ToJson(meta, prettyPrint: true));
+        }
+
         private static void EnsureDirectory()
         {
             if (!Directory.Exists(SaveDirectory))

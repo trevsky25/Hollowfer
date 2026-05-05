@@ -446,7 +446,7 @@ namespace Hollowfen.Input
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""OpenJournal"",
+                    ""name"": ""OpenInventory"",
                     ""type"": ""Button"",
                     ""id"": ""d26b56f9-2376-4c24-b314-f953dbdc81c2"",
                     ""expectedControlType"": """",
@@ -613,7 +613,7 @@ namespace Hollowfen.Input
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""OpenJournal"",
+                    ""action"": ""OpenInventory"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -624,7 +624,7 @@ namespace Hollowfen.Input
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""OpenJournal"",
+                    ""action"": ""OpenInventory"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -935,7 +935,7 @@ namespace Hollowfen.Input
             m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
             m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
             m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
-            m_Player_OpenJournal = m_Player.FindAction("OpenJournal", throwIfNotFound: true);
+            m_Player_OpenInventory = m_Player.FindAction("OpenInventory", throwIfNotFound: true);
             m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
             m_Player_OpenMap = m_Player.FindAction("OpenMap", throwIfNotFound: true);
             // Dialogue
@@ -1183,7 +1183,7 @@ namespace Hollowfen.Input
         private readonly InputAction m_Player_Look;
         private readonly InputAction m_Player_Interact;
         private readonly InputAction m_Player_Jump;
-        private readonly InputAction m_Player_OpenJournal;
+        private readonly InputAction m_Player_OpenInventory;
         private readonly InputAction m_Player_Pause;
         private readonly InputAction m_Player_OpenMap;
         /// <summary>
@@ -1214,9 +1214,9 @@ namespace Hollowfen.Input
             /// </summary>
             public InputAction @Jump => m_Wrapper.m_Player_Jump;
             /// <summary>
-            /// Provides access to the underlying input action "Player/OpenJournal".
+            /// Provides access to the underlying input action "Player/OpenInventory".
             /// </summary>
-            public InputAction @OpenJournal => m_Wrapper.m_Player_OpenJournal;
+            public InputAction @OpenInventory => m_Wrapper.m_Player_OpenInventory;
             /// <summary>
             /// Provides access to the underlying input action "Player/Pause".
             /// </summary>
@@ -1263,9 +1263,9 @@ namespace Hollowfen.Input
                 @Jump.started += instance.OnJump;
                 @Jump.performed += instance.OnJump;
                 @Jump.canceled += instance.OnJump;
-                @OpenJournal.started += instance.OnOpenJournal;
-                @OpenJournal.performed += instance.OnOpenJournal;
-                @OpenJournal.canceled += instance.OnOpenJournal;
+                @OpenInventory.started += instance.OnOpenInventory;
+                @OpenInventory.performed += instance.OnOpenInventory;
+                @OpenInventory.canceled += instance.OnOpenInventory;
                 @Pause.started += instance.OnPause;
                 @Pause.performed += instance.OnPause;
                 @Pause.canceled += instance.OnPause;
@@ -1295,9 +1295,9 @@ namespace Hollowfen.Input
                 @Jump.started -= instance.OnJump;
                 @Jump.performed -= instance.OnJump;
                 @Jump.canceled -= instance.OnJump;
-                @OpenJournal.started -= instance.OnOpenJournal;
-                @OpenJournal.performed -= instance.OnOpenJournal;
-                @OpenJournal.canceled -= instance.OnOpenJournal;
+                @OpenInventory.started -= instance.OnOpenInventory;
+                @OpenInventory.performed -= instance.OnOpenInventory;
+                @OpenInventory.canceled -= instance.OnOpenInventory;
                 @Pause.started -= instance.OnPause;
                 @Pause.performed -= instance.OnPause;
                 @Pause.canceled -= instance.OnPause;
@@ -1600,12 +1600,12 @@ namespace Hollowfen.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnJump(InputAction.CallbackContext context);
             /// <summary>
-            /// Method invoked when associated input action "OpenJournal" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// Method invoked when associated input action "OpenInventory" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
             /// </summary>
             /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-            void OnOpenJournal(InputAction.CallbackContext context);
+            void OnOpenInventory(InputAction.CallbackContext context);
             /// <summary>
             /// Method invoked when associated input action "Pause" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
             /// </summary>

@@ -358,7 +358,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "OpenJournal",
+                    "name": "OpenInventory",
                     "type": "Button",
                     "id": "d26b56f9-2376-4c24-b314-f953dbdc81c2",
                     "expectedControlType": "",
@@ -525,7 +525,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
-                    "action": "OpenJournal",
+                    "action": "OpenInventory",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -536,7 +536,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "OpenJournal",
+                    "action": "OpenInventory",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

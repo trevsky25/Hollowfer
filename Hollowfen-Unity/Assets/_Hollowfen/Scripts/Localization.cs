@@ -26,6 +26,10 @@ namespace Hollowfen
             { "inspect.unknown.body",    "A mushroom you haven't catalogued. Forage one to learn more." },
             { "inspect.btn.forage",      "Forage" },
             { "inspect.btn.leave",       "Leave" },
+
+            // Inventory screen
+            { "inventory.empty",     "Your pouch is empty. Forage some mushrooms in the woods." },
+            { "inventory.btn.close", "Close" },
         };
 
         public static string Get(string stringId)
