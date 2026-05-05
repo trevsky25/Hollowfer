@@ -141,7 +141,7 @@ MonoBehaviour:
   _focusedScale: 1.08
   _swapColor: 1
   _swapScale: 0
-  _underlineText: 1
+  _underlineText: 0
   _selectOnHover: 1
   _transitionDuration: 0.12
 --- !u!1 &1085722615711010760
@@ -443,7 +443,7 @@ MonoBehaviour:
   _focusedScale: 1.08
   _swapColor: 1
   _swapScale: 0
-  _underlineText: 1
+  _underlineText: 0
   _selectOnHover: 1
   _transitionDuration: 0.12
 --- !u!1 &1431246583135675316
@@ -587,7 +587,7 @@ MonoBehaviour:
   _focusedScale: 1.08
   _swapColor: 1
   _swapScale: 0
-  _underlineText: 1
+  _underlineText: 0
   _selectOnHover: 1
   _transitionDuration: 0.12
 --- !u!1 &2037005289159796783
@@ -1280,6 +1280,6 @@ MonoBehaviour:
   _focusedScale: 1.08
   _swapColor: 1
   _swapScale: 0
-  _underlineText: 1
+  _underlineText: 0
   _selectOnHover: 1
   _transitionDuration: 0.12

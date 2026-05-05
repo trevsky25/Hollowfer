@@ -101,6 +101,18 @@ namespace Hollowfen.UI
         private void ApplyUnderline(bool focused)
         {
             if (!_underlineText || _textProp == null || _baseText == null) return;
+            // Strongly-typed path for UnityEngine.UI.Text — avoids any reflection edge cases.
+            var legacy = _targetGraphic as UnityEngine.UI.Text;
+            if (legacy != null)
+            {
+                if (!legacy.supportRichText) legacy.supportRichText = true;
+            }
+            else
+            {
+                var t = _targetGraphic.GetType();
+                var richProp = t.GetProperty("supportRichText") ?? t.GetProperty("richText");
+                if (richProp != null && richProp.CanWrite) richProp.SetValue(_targetGraphic, true, null);
+            }
             var newText = focused ? "<u>" + _baseText + "</u>" : _baseText;
             _textProp.SetValue(_targetGraphic, newText, null);
         }

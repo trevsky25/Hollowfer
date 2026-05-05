@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Hollowfen.Input;
+using Hollowfen.Settings;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.EventSystems;
@@ -29,6 +30,10 @@ namespace Hollowfen.UI
         [SerializeField] private Toggle _fullscreenToggle;
         [SerializeField] private Dropdown _resolutionDropdown;
         [SerializeField] private Dropdown _qualityDropdown;
+
+        [Header("Controls")]
+        [SerializeField] private Slider _sensitivitySlider;
+        [SerializeField] private Text _sensitivityValueLabel;
 
         [Header("Per-tab default focus")]
         [SerializeField] private GameObject _audioDefaultSelected;
@@ -94,8 +99,33 @@ namespace Hollowfen.UI
             ApplyVolume("SFXVolume",    sfx);
 
             InitializeGraphics();
+            InitializeControls();
 
             ApplyTab();
+        }
+
+        private void InitializeControls()
+        {
+            if (_sensitivitySlider == null) return;
+            _sensitivitySlider.minValue = GameSettings.MinSlider;
+            _sensitivitySlider.maxValue = GameSettings.MaxSlider;
+            _sensitivitySlider.wholeNumbers = false;
+            float sliderVal = GameSettings.MultiplierToSlider(GameSettings.LookSensitivity);
+            _sensitivitySlider.SetValueWithoutNotify(sliderVal);
+            UpdateSensitivityLabel(sliderVal);
+            _sensitivitySlider.onValueChanged.AddListener(OnSensitivityChanged);
+        }
+
+        private void OnSensitivityChanged(float sliderValue)
+        {
+            GameSettings.LookSensitivity = GameSettings.SliderToMultiplier(sliderValue);
+            UpdateSensitivityLabel(sliderValue);
+        }
+
+        private void UpdateSensitivityLabel(float sliderValue)
+        {
+            if (_sensitivityValueLabel != null)
+                _sensitivityValueLabel.text = Mathf.RoundToInt(sliderValue) + " / 10";
         }
 
         private void InitializeGraphics()

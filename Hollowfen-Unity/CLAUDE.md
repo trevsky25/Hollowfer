@@ -59,7 +59,7 @@ Scene_MainMenu  ──Continue──►  Medieval Environment - Demo 1  ──Pa
 | `PauseScreen` | `_Hollowfen/Prefabs/UI/PauseMenu.prefab` (lazy-instantiated by UIManager) | Resume / Settings / Save Game / Quit to Main Menu. `Time.timeScale = 0` on open, `1` on close. Quit-to-MainMenu routes through ConfirmModal → `LoadSceneAndOpen` back to Scene_MainMenu. `IsModal=true` so underlying gameplay stays visible. |
 | `ConfirmModal` | `_Hollowfen/Scripts/UI/ConfirmModal.cs` | Reusable. Static `Show(title, message, onConfirm, onCancel)`. Only pops itself in `HandleConfirm`/`HandleCancel` if it's still on top — so callbacks that navigate elsewhere (e.g., `LoadSceneAndOpen`) don't get clobbered. |
 | `LoadingScreen` | `_Hollowfen/Scripts/UI/LoadingScreen.cs` | Wren forest hero + animated "Traveling to Hollowfen…" with rolling dots on `WaitForSecondsRealtime`. Used by `LoadSceneAndOpen` during async scene transitions. |
-| `FocusHighlight` | `_Hollowfen/Scripts/UI/FocusHighlight.cs` | Per-Selectable focus visual. Color tint + scale + optional `<u>underline</u>` rich text + optional glow. `_underlineText` mode auto-enables `supportRichText` on the target. Routes `OnPointerEnter` through `EventSystem.SetSelectedGameObject` so mouse hover and gamepad focus share state. |
+| `FocusHighlight` | `_Hollowfen/Scripts/UI/FocusHighlight.cs` | Per-Selectable focus visual. Color tint + scale + optional glow. `_underlineText` rich-text mode exists but is disabled scene-wide — UI.Text would render the literal `<u>` tags in our setup; left in place for future re-implementation as a child Image bar if a true underline visual is wanted. Routes `OnPointerEnter` through `EventSystem.SetSelectedGameObject` so mouse hover and gamepad focus share state. |
 
 ### Map system
 
@@ -83,6 +83,16 @@ A mini-map widget plus a toggleable full-screen map in `Scene_Hollowfen`, both r
 - `_MiniMapCamera`, `_MapCamera`, `_MapInputBridge`
 
 **Location data infrastructure (parked)**: `LocationData` ScriptableObject + 8 Act I/II POI assets at `_Hollowfen/Data/Locations/` + `LocationMarker` / `RegionTrigger` / `LocationRegistry` / `LocationDebugHUD` scripts. Scene placeholders (`_Locations`, `_Regions`, `_LocationDebugHUD`) are disabled until a real POI placement workflow exists. Compiles cleanly; ready to reactivate when needed.
+
+### Game settings (live, persisted)
+
+`Hollowfen.Settings.GameSettings` (`_Hollowfen/Scripts/Settings/GameSettings.cs`) is the static home for tunable runtime preferences backed by `PlayerPrefs`. Today it owns one preference; future controls go here too.
+
+| Setting | UI | Multiplier range | Notes |
+|---|---|---|---|
+| Look sensitivity | Settings → Controls slider (1–10) | 0.75× … 1.25× | Two-segment lerp: slider 5 maps exactly to 1.0× (the tested baseline). Tight range chosen because StarterAssets ThirdPersonController feeds mouse-pixels-per-frame straight into yaw — wider multipliers either threshold-gate input at the low end or outrun Cinemachine damping at the high end. PlayerPref key `controls.lookSensitivity`. |
+
+`LookSensitivityHook` (`_Hollowfen/Scripts/Settings/LookSensitivityHook.cs`) lives on `PlayerArmature`. `[DefaultExecutionOrder(-100)]` so its `LateUpdate` runs before `ThirdPersonController.LateUpdate` (default 0); it scales `StarterAssetsInputs.look *= GameSettings.LookSensitivity` in place each frame. No third-party StarterAssets code is touched.
 
 ### Inputs / save / audio / localization
 
