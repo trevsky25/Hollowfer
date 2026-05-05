@@ -25,6 +25,8 @@ namespace Hollowfen.Foraging
         [SerializeField] private float _mouseZoomSpeed = 0.0008f;
         [SerializeField] private float _gamepadRotateSpeed = 140f;
         [SerializeField] private float _gamepadZoomSpeed = 0.18f;
+        [SerializeField] private float _mousePanSpeed = 0.0006f;
+        [SerializeField] private float _gamepadPanSpeed = 0.20f;
 
         private Canvas _canvas;
         private CanvasGroup _group;
@@ -50,6 +52,12 @@ namespace Hollowfen.Foraging
         private MushroomFieldGuideData _selectedData;
         private CursorLockMode _previousCursorLock;
         private bool _previousCursorVisible;
+
+        // Inspect Mode: when true, gamepad camera input is unlocked and EventSystem nav is suspended.
+        // Browse mode (default) lets the gamepad navigate the card grid via UI/Navigate.
+        private bool _inspectMode;
+        private TMP_Text _hintText;
+        private Image _previewFrameImage;
 
         private static readonly Color BodyInk = new Color(0.18f, 0.14f, 0.10f, 1f);
 
@@ -117,6 +125,8 @@ namespace Hollowfen.Foraging
         {
             BuildIfNeeded();
             EnsureEventSystem();
+            _inspectMode = false; // always start in browse
+            ApplyModeVisuals();
             Refresh();
 
             _canvas.enabled = true;
@@ -126,6 +136,7 @@ namespace Hollowfen.Foraging
 
             Time.timeScale = 0f;
             PlayerInteractor.Suspended = true;
+            PlayerInteractor.SetPlayerInputEnabled(false);
 
             _previousCursorLock = Cursor.lockState;
             _previousCursorVisible = Cursor.visible;
@@ -154,6 +165,7 @@ namespace Hollowfen.Foraging
 
             Time.timeScale = 1f;
             PlayerInteractor.Suspended = false;
+            PlayerInteractor.SetPlayerInputEnabled(true);
 
             Cursor.lockState = _previousCursorLock;
             Cursor.visible = _previousCursorVisible;
@@ -163,7 +175,46 @@ namespace Hollowfen.Foraging
 
         private void OnCancel(InputAction.CallbackContext _)
         {
-            if (IsOpen) Close();
+            if (!IsOpen) return;
+            // First Cancel exits Inspect Mode if active; second one closes the inventory.
+            if (_inspectMode) { SetInspectMode(false); return; }
+            Close();
+        }
+
+        private void SetInspectMode(bool enabled)
+        {
+            if (_inspectMode == enabled) return;
+            _inspectMode = enabled;
+            ApplyModeVisuals();
+
+            var es = EventSystem.current;
+            if (enabled)
+            {
+                // Suspend card nav by clearing the EventSystem selection. UI/Navigate fires but has
+                // nothing to navigate from, so left-stick is free for camera pan.
+                if (es != null) es.SetSelectedGameObject(null);
+            }
+            else
+            {
+                // Restore selection so UI/Navigate works on cards again.
+                if (es != null && _lastSelected != null) es.SetSelectedGameObject(_lastSelected);
+                // Reset preview view to the configured hero shot for the currently-selected mushroom.
+                if (MushroomPreviewer.Instance != null) MushroomPreviewer.Instance.ResetView();
+            }
+        }
+
+        private void ApplyModeVisuals()
+        {
+            if (_previewFrameImage != null)
+            {
+                _previewFrameImage.color = _inspectMode ? HollowfenPalette.Gold : HollowfenPalette.GoldFaint;
+            }
+            if (_hintText != null)
+            {
+                _hintText.text = _inspectMode
+                    ? "INSPECT MODE   ·   L/R-Stick · LT/RT · M-Drag   ·   R1 / Tab / B to exit"
+                    : "L-Stick / D-Pad: navigate   ·   R1 / Tab: inspect mushroom";
+            }
         }
 
         private void OnInventoryChanged(string id, int count)
@@ -179,22 +230,30 @@ namespace Hollowfen.Foraging
 
             RefreshCloseGlyph();
 
-            var es = EventSystem.current;
-            if (es != null)
-            {
-                var sel = es.currentSelectedGameObject;
-                if (sel != null) _lastSelected = sel;
-                else if (_lastSelected != null) es.SetSelectedGameObject(_lastSelected);
+            // Toggle Inspect Mode: gamepad R1 (right shoulder), keyboard Tab.
+            var pad = Gamepad.current;
+            if (pad != null && pad.rightShoulder.wasPressedThisFrame) SetInspectMode(!_inspectMode);
+            if (Keyboard.current != null && Keyboard.current.tabKey.wasPressedThisFrame) SetInspectMode(!_inspectMode);
 
-                // Push preview to whatever cell is currently selected
-                if (sel != null)
+            // Browse-mode-only: maintain card selection + sync preview to it.
+            if (!_inspectMode)
+            {
+                var es = EventSystem.current;
+                if (es != null)
                 {
-                    for (int i = 0; i < _cells.Count; i++)
+                    var sel = es.currentSelectedGameObject;
+                    if (sel != null) _lastSelected = sel;
+                    else if (_lastSelected != null) es.SetSelectedGameObject(_lastSelected);
+
+                    if (sel != null)
                     {
-                        if (_cells[i].Button != null && _cells[i].Button.gameObject == sel)
+                        for (int i = 0; i < _cells.Count; i++)
                         {
-                            SelectCell(i);
-                            break;
+                            if (_cells[i].Button != null && _cells[i].Button.gameObject == sel)
+                            {
+                                SelectCell(i);
+                                break;
+                            }
                         }
                     }
                 }
@@ -204,28 +263,38 @@ namespace Hollowfen.Foraging
             if (prev == null) return;
             float dt = Time.unscaledDeltaTime;
 
-            var pad = Gamepad.current;
-            if (pad != null)
+            // GAMEPAD camera input — only in Inspect Mode (left-stick conflicts with UI/Navigate otherwise).
+            // Right stick + triggers also gated to inspect mode for consistency, even though they don't conflict.
+            if (_inspectMode && pad != null)
             {
                 Vector2 rs = pad.rightStick.ReadValue();
                 if (rs.sqrMagnitude > 0.0025f)
                     prev.ApplyRotationDelta(rs.x * _gamepadRotateSpeed * dt, -rs.y * _gamepadRotateSpeed * dt);
+                Vector2 ls = pad.leftStick.ReadValue();
+                if (ls.sqrMagnitude > 0.0025f)
+                    prev.ApplyPanDelta(new Vector2(ls.x * _gamepadPanSpeed * dt, ls.y * _gamepadPanSpeed * dt));
                 float zoomGp = pad.rightTrigger.ReadValue() - pad.leftTrigger.ReadValue();
                 if (Mathf.Abs(zoomGp) > 0.05f) prev.ApplyZoomDelta(-zoomGp * _gamepadZoomSpeed * dt);
             }
 
+            // MOUSE camera input — always available. Drags are gated to the preview rect, so they can't
+            // conflict with card clicks (which happen elsewhere on the panel).
             var mouse = Mouse.current;
             if (mouse != null)
             {
-                if (mouse.leftButton.isPressed && _previewBgRT != null)
+                bool inRect = _previewBgRT != null
+                    && RectTransformUtility.RectangleContainsScreenPoint(_previewBgRT, mouse.position.ReadValue(), null);
+                if (mouse.leftButton.isPressed && inRect)
                 {
-                    Vector2 sp = mouse.position.ReadValue();
-                    if (RectTransformUtility.RectangleContainsScreenPoint(_previewBgRT, sp, null))
-                    {
-                        Vector2 d = mouse.delta.ReadValue();
-                        if (d.sqrMagnitude > 0.01f)
-                            prev.ApplyRotationDelta(d.x * _mouseRotateSpeed, -d.y * _mouseRotateSpeed);
-                    }
+                    Vector2 d = mouse.delta.ReadValue();
+                    if (d.sqrMagnitude > 0.01f)
+                        prev.ApplyRotationDelta(d.x * _mouseRotateSpeed, -d.y * _mouseRotateSpeed);
+                }
+                if (mouse.middleButton.isPressed && inRect)
+                {
+                    Vector2 d = mouse.delta.ReadValue();
+                    if (d.sqrMagnitude > 0.01f)
+                        prev.ApplyPanDelta(new Vector2(d.x * _mousePanSpeed, d.y * _mousePanSpeed));
                 }
                 Vector2 scroll = mouse.scroll.ReadValue();
                 if (Mathf.Abs(scroll.y) > 0.01f) prev.ApplyZoomDelta(-scroll.y * _mouseZoomSpeed);
@@ -283,13 +352,52 @@ namespace Hollowfen.Foraging
                 AddCell(data, kv.Value);
             }
 
-            // Build navigation between cells (auto via grid layout + Selectable.allSelectables resolution)
+            WireCellNavigation();
+
             // Force-select first cell so the preview pane has content immediately.
             if (_cells.Count > 0 && EventSystem.current != null)
             {
                 EventSystem.current.SetSelectedGameObject(_cells[0].Button.gameObject);
                 _lastSelected = _cells[0].Button.gameObject;
                 SelectCell(0);
+            }
+        }
+
+        // Auto navigation gets flaky for grid cells inside a clipped ScrollRect — wire explicit grid neighbors.
+        // Last row's down nav drops onto the Close button so D-pad/stick can reach it from anywhere in the grid.
+        private void WireCellNavigation()
+        {
+            if (_cells.Count == 0) return;
+            int cols = _grid != null ? _grid.constraintCount : 4;
+
+            for (int i = 0; i < _cells.Count; i++)
+            {
+                var btn = _cells[i].Button;
+                if (btn == null) continue;
+                var nav = btn.navigation;
+                nav.mode = Navigation.Mode.Explicit;
+
+                int col = i % cols;
+                nav.selectOnLeft  = (col > 0) ? _cells[i - 1].Button : null;
+                nav.selectOnRight = (col < cols - 1 && i + 1 < _cells.Count) ? _cells[i + 1].Button : null;
+                nav.selectOnUp    = (i - cols >= 0) ? _cells[i - cols].Button : null;
+
+                if (i + cols < _cells.Count) nav.selectOnDown = _cells[i + cols].Button;
+                else if (_closeBtn != null)  nav.selectOnDown = _closeBtn;
+                else                         nav.selectOnDown = null;
+
+                btn.navigation = nav;
+            }
+
+            if (_closeBtn != null)
+            {
+                var cn = _closeBtn.navigation;
+                cn.mode = Navigation.Mode.Explicit;
+                cn.selectOnUp = _cells[_cells.Count - 1].Button;
+                cn.selectOnLeft = null;
+                cn.selectOnRight = null;
+                cn.selectOnDown = null;
+                _closeBtn.navigation = cn;
             }
         }
 
@@ -554,10 +662,14 @@ namespace Hollowfen.Foraging
             var fitter = content.AddComponent<ContentSizeFitter>();
             fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
+            // Keeps the focused cell scrolled into the visible viewport as the user navigates rows.
+            scrollGO.AddComponent<Hollowfen.UI.ScrollFocusFollower>();
+
             // === RIGHT: 3D PREVIEW ===
             const float previewSize = 600f;
             const float previewLeft = gridLeft + gridW + 32f;
             var previewFrame = UICanvasUtil.NewImage("PreviewFrame", _populatedState.transform, HollowfenPalette.GoldFaint, false);
+            _previewFrameImage = previewFrame.GetComponent<Image>();
             var pfRT = (RectTransform)previewFrame.transform;
             pfRT.anchorMin = new Vector2(0f, 1f); pfRT.anchorMax = new Vector2(0f, 1f);
             pfRT.pivot = new Vector2(0f, 1f);
@@ -585,10 +697,10 @@ namespace Hollowfen.Foraging
             hsRT.pivot = new Vector2(0.5f, 1f);
             hsRT.sizeDelta = new Vector2(0f, 26f);
             hsRT.anchoredPosition = Vector2.zero;
-            var hint = UICanvasUtil.NewBody("Hint", hintScrim.transform,
-                "Drag · Scroll   ·   R-Stick · LT/RT",
+            _hintText = UICanvasUtil.NewBody("Hint", hintScrim.transform,
+                "",
                 12f, HollowfenPalette.Cream, TMPro.FontStyles.Italic, TMPro.TextAlignmentOptions.Center);
-            UICanvasUtil.Stretch(hint.rectTransform);
+            UICanvasUtil.Stretch(_hintText.rectTransform);
 
             // "MODEL COMING SOON" overlay (centered in preview, hidden when prefab present)
             _previewMissingNote = UICanvasUtil.NewEyebrow("MissingNote", previewBg.transform,

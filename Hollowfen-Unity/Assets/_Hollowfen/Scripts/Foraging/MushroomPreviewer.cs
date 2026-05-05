@@ -47,6 +47,12 @@ namespace Hollowfen.Foraging
         private float _defaultOrthoSize;
         private Material _silhouetteMaterial;
 
+        // Pan state (camera-axis units, world meters). Camera + look target shift together so the
+        // gaze stays parallel — true lateral pan, not orbit.
+        private Vector3 _camBaseWorldPos;
+        private Vector3 _mountWorldPos;
+        private Vector2 _panOffset;
+
         private void Awake()
         {
             if (Instance != null && Instance != this) { Destroy(gameObject); return; }
@@ -64,11 +70,10 @@ namespace Hollowfen.Foraging
 
         private void BuildRig()
         {
-            // Camera
+            // Camera — position offset; aim is set later via LookAt(mount) once the mount exists.
             var camGO = new GameObject("PreviewCamera");
             camGO.transform.SetParent(transform, false);
-            camGO.transform.localPosition = new Vector3(0f, 0.10f, 0.45f);
-            camGO.transform.localRotation = Quaternion.Euler(15f, 180f, 0f);
+            camGO.transform.localPosition = new Vector3(0f, 0.18f, 0.50f);
             _cam = camGO.AddComponent<Camera>();
             _cam.clearFlags = CameraClearFlags.SolidColor;
             _cam.backgroundColor = _backgroundColor;
@@ -114,6 +119,13 @@ namespace Hollowfen.Foraging
             var mountGO = new GameObject("Mount");
             mountGO.transform.SetParent(transform, false);
             _mount = mountGO.transform;
+
+            // Aim the camera at the mount's world position now that it exists.
+            camGO.transform.LookAt(_mount.position, Vector3.up);
+
+            // Cache base camera + mount world positions so pan can shift both by the same delta.
+            _camBaseWorldPos = camGO.transform.position;
+            _mountWorldPos = _mount.position;
         }
 
         public void Show(MushroomFieldGuideData data) => Show(data, false);
@@ -127,7 +139,23 @@ namespace Hollowfen.Foraging
             _current.transform.localRotation = Quaternion.identity;
             SetLayerRecursively(_current, _previewLayer);
             if (silhouette) ApplySilhouette(_current);
+            CenterCurrentOnMount();
             ResetView();
+        }
+
+        // Each species' Meshy export has its pivot at the BASE of the mesh, not the middle. Without
+        // re-centering, the camera (aimed at mount.position) frames the base — leaving the mushroom
+        // sitting in the upper portion of the preview. Compute renderer-bounds center and slide the
+        // spawned child so bounds.center == mount.position.
+        private void CenterCurrentOnMount()
+        {
+            if (_current == null || _mount == null) return;
+            var rends = _current.GetComponentsInChildren<Renderer>();
+            if (rends.Length == 0) return;
+            Bounds b = rends[0].bounds;
+            for (int i = 1; i < rends.Length; i++) b.Encapsulate(rends[i].bounds);
+            Vector3 delta = _mount.position - b.center;
+            _current.transform.position += delta;
         }
 
         private void ApplySilhouette(GameObject root)
@@ -159,7 +187,13 @@ namespace Hollowfen.Foraging
         {
             _yawDeg = 0f;
             _pitchDeg = 0f;
+            _panOffset = Vector2.zero;
             if (_mount != null) _mount.localRotation = Quaternion.identity;
+            if (_cam != null)
+            {
+                _cam.transform.position = _camBaseWorldPos;
+                _cam.transform.LookAt(_mountWorldPos, Vector3.up);
+            }
             OrthoSize = _defaultOrthoSize;
             AutoRotate = true;
         }
@@ -178,6 +212,20 @@ namespace Hollowfen.Foraging
         public void ApplyZoomDelta(float deltaSize)
         {
             OrthoSize = OrthoSize + deltaSize;
+        }
+
+        // World-units lateral pan. Both the camera and its look target shift by the same vector,
+        // keeping the gaze direction unchanged (true pan, no parallax bend).
+        // delta.x = camera-right, delta.y = camera-up, world meters per axis.
+        public void ApplyPanDelta(Vector2 deltaCameraXY)
+        {
+            if (_cam == null) return;
+            _panOffset += deltaCameraXY;
+            Vector3 panWorld = _cam.transform.right * _panOffset.x + _cam.transform.up * _panOffset.y;
+            _cam.transform.position = _camBaseWorldPos + panWorld;
+            _cam.transform.LookAt(_mountWorldPos + panWorld, Vector3.up);
+            // User input on pan disables auto-rotate, same convention as orbit/zoom.
+            AutoRotate = false;
         }
 
         private void Update()

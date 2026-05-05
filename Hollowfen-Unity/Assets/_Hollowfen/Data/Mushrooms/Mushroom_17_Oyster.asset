@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fbeeb9dfd308426da67b82545b339a0, type: 3}
+  m_Name: Mushroom_17_Oyster
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.MushroomFieldGuideData
+  _id: oyster
+  _commonName: Oyster Mushroom
+  _latinName: Pleurotus ostreatus
+  _edibility: 0
+  _edibilityLabel: "Edible \u2014 choice"
+  _description: "A reliable woodland edible \u2014 soft, fan-shaped caps that grow
+    in shelving clusters straight from dead and dying hardwood. Mild, sweet flavor;
+    almost no dangerous lookalikes once you learn the shape and smell."
+  _idFeatures:
+  - Fan- or oyster-shaped cap, off-white to grey to pale tan
+  - Decurrent gills running down a stubby off-center stem (or no stem at all)
+  - "Grows in tight, overlapping shelves on hardwood \u2014 beech, oak, willow"
+  - White spore print
+  - Faint anise-and-almond smell when fresh
+  _habitat: "Dead or dying hardwood \u2014 fallen logs, standing trunks, stumps.
+    Never on the ground."
+  _season: Late autumn through early spring after the first frost
+  _lookalikes: "Angel's Wings (Pleurocybella porrigens) \u2014 pure-white, much thinner
+    flesh, grows on conifers; was long thought safe but has caused fatalities and
+    should be avoided. The Bitter Oyster (Panellus stipticus) is bioluminescent and
+    bitter; small and tough."
+  _notes: "Look UP \u2014 oysters fruit at chest height and above on standing trunks.
+    Cut the cluster cleanly with a knife; tearing damages the mycelium and reduces
+    next year's flush."
+  _photo: {fileID: 0}
+  _photoCredit: 
+  _worldPrefab: {fileID: 3850825029347941045, guid: 99e2069f433504143a700c5031aaf812, type: 3}
+  _displayNameId: mushroom.oyster.name
+  _descriptionId: mushroom.oyster.description

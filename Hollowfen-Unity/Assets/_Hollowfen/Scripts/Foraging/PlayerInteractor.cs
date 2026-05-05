@@ -19,6 +19,29 @@ namespace Hollowfen.Foraging
         // Set by screens that fully own input (e.g., InspectScreen) to pause focus search + interact.
         public static bool Suspended { get; set; }
 
+        // External "back out of zoom" shortcut: dismiss the current target and refuse to re-focus on it
+        // until the player walks out of its trigger and back. Cleared when OverlapSphere stops returning it.
+        public static void DismissCurrent()
+        {
+            if (Current == null) return;
+            _suppressed = Current;
+            SetFocusStatic(null);
+        }
+
+        private static IInteractable _suppressed;
+
+        // Toggles Wren's StarterAssets PlayerInput. Used by modal screens (InspectScreen, InventoryScreen)
+        // and the harvest cinematic to block Player/Jump (Space/South) from firing while UI/Submit is bound
+        // to the same physical input. Without this, pressing Cross to confirm Forage also queues a jump
+        // that fires when timeScale resumes — Wren visibly hops after every harvest.
+        public static void SetPlayerInputEnabled(bool enabled)
+        {
+            var go = GameObject.FindGameObjectWithTag("Player");
+            if (go == null) return;
+            var pi = go.GetComponent<UnityEngine.InputSystem.PlayerInput>();
+            if (pi != null) pi.enabled = enabled;
+        }
+
         private InputActions _input;
         private readonly Collider[] _hits = new Collider[16];
 
@@ -59,6 +82,7 @@ namespace Hollowfen.Foraging
             IInteractable best = null;
             float bestSqr = float.MaxValue;
             Vector3 fwd = transform.forward;
+            bool suppressedStillVisible = false;
 
             for (int i = 0; i < count; i++)
             {
@@ -67,6 +91,9 @@ namespace Hollowfen.Foraging
 
                 var node = col.GetComponentInParent<IInteractable>();
                 if (node == null || !node.CanInteract(gameObject)) continue;
+
+                // Track whether the dismissed target is still in range — only clear suppression once she walks out.
+                if (_suppressed != null && ReferenceEquals(node, _suppressed)) { suppressedStillVisible = true; continue; }
 
                 Vector3 to = col.bounds.center - origin;
                 float sqr = to.sqrMagnitude;
@@ -84,10 +111,14 @@ namespace Hollowfen.Foraging
                 }
             }
 
+            if (!suppressedStillVisible) _suppressed = null;
+
             SetFocus(best);
         }
 
-        private void SetFocus(IInteractable next)
+        private void SetFocus(IInteractable next) => SetFocusStatic(next);
+
+        private static void SetFocusStatic(IInteractable next)
         {
             if (ReferenceEquals(next, Current)) return;
             Current = next;

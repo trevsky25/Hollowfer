@@ -39,5 +39,6 @@ MonoBehaviour:
     can include nausea, delirium, and ataxia. Not recommended for casual experimentation."
   _photo: {fileID: 21300000, guid: a9343f7cdfedc42f4899d2502f1e95aa, type: 3}
   _photoCredit: Wikimedia Commons
+  _worldPrefab: {fileID: 7117828910065969868, guid: ff51963d45a30415d96edcfc828bc0bf, type: 3}
   _displayNameId: mushroom.flyAgaric.name
   _descriptionId: mushroom.flyAgaric.description

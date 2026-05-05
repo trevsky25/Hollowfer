@@ -52,6 +52,10 @@ namespace Hollowfen.Foraging
         private float _gamepadRotateSpeed = 140f;
         [SerializeField, Tooltip("Gamepad trigger zoom: ortho-size delta per second at full trigger.")]
         private float _gamepadZoomSpeed = 0.18f;
+        [SerializeField, Tooltip("Mouse middle-drag pan: world meters per pixel.")]
+        private float _mousePanSpeed = 0.0006f;
+        [SerializeField, Tooltip("Gamepad left-stick pan: world meters per second at full deflection.")]
+        private float _gamepadPanSpeed = 0.20f;
 
         private MushroomNode _currentNode;
         private CursorLockMode _previousCursorLock;
@@ -139,6 +143,7 @@ namespace Hollowfen.Foraging
 
             Time.timeScale = 0f;
             PlayerInteractor.Suspended = true;
+            PlayerInteractor.SetPlayerInputEnabled(false); // block Player/Jump etc from firing on Submit
 
             _previousCursorLock = Cursor.lockState;
             _previousCursorVisible = Cursor.visible;
@@ -179,7 +184,27 @@ namespace Hollowfen.Foraging
 
             Time.timeScale = 1f;
             PlayerInteractor.Suspended = false;
+            PlayerInteractor.SetPlayerInputEnabled(true);
 
+            Cursor.lockState = _previousCursorLock;
+            Cursor.visible = _previousCursorVisible;
+
+            _currentNode = null;
+            if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(null);
+        }
+
+        // Like Hide() but does NOT restore time / suspended / player-input — the harvest cinematic
+        // takes ownership of those across the screen-close → animation transition.
+        private void HideForCinematic()
+        {
+            _canvas.enabled = false;
+            _group.alpha = 0f;
+            _group.blocksRaycasts = false;
+            _group.interactable = false;
+
+            if (MushroomPreviewer.Instance != null) MushroomPreviewer.Instance.Clear();
+
+            // Cursor is fine to restore now — gameplay world is visible during the cinematic.
             Cursor.lockState = _previousCursorLock;
             Cursor.visible = _previousCursorVisible;
 
@@ -190,8 +215,8 @@ namespace Hollowfen.Foraging
         private void OnForageClicked()
         {
             var node = _currentNode;
-            Hide();
-            if (node != null) node.Harvest();
+            HideForCinematic();
+            if (node != null) node.BeginHarvest();
         }
 
         private void OnLeaveClicked()
@@ -227,7 +252,7 @@ namespace Hollowfen.Foraging
             if (prev == null) return;
             float dt = Time.unscaledDeltaTime;
 
-            // Gamepad: right stick rotate, triggers zoom
+            // Gamepad: right stick rotate, left stick pan, triggers zoom
             var pad = UnityEngine.InputSystem.Gamepad.current;
             if (pad != null)
             {
@@ -238,6 +263,13 @@ namespace Hollowfen.Foraging
                         rs.x * _gamepadRotateSpeed * dt,
                        -rs.y * _gamepadRotateSpeed * dt);
                 }
+                Vector2 ls = pad.leftStick.ReadValue();
+                if (ls.sqrMagnitude > 0.0025f)
+                {
+                    prev.ApplyPanDelta(new Vector2(
+                        ls.x * _gamepadPanSpeed * dt,
+                        ls.y * _gamepadPanSpeed * dt));
+                }
                 float zoomGp = pad.rightTrigger.ReadValue() - pad.leftTrigger.ReadValue();
                 if (Mathf.Abs(zoomGp) > 0.05f)
                 {
@@ -245,23 +277,31 @@ namespace Hollowfen.Foraging
                 }
             }
 
-            // Mouse: drag to rotate (only if pointer is over the preview rect),
+            // Mouse: left-drag rotate (in preview rect), middle-drag pan (in preview rect),
             // scroll wheel to zoom (anywhere over the screen).
             var mouse = UnityEngine.InputSystem.Mouse.current;
             if (mouse != null)
             {
-                if (mouse.leftButton.isPressed && _previewBgRT != null)
+                bool inRect = _previewBgRT != null
+                    && RectTransformUtility.RectangleContainsScreenPoint(_previewBgRT, mouse.position.ReadValue(), null);
+                if (mouse.leftButton.isPressed && inRect)
                 {
-                    Vector2 sp = mouse.position.ReadValue();
-                    if (RectTransformUtility.RectangleContainsScreenPoint(_previewBgRT, sp, null))
+                    Vector2 d = mouse.delta.ReadValue();
+                    if (d.sqrMagnitude > 0.01f)
                     {
-                        Vector2 d = mouse.delta.ReadValue();
-                        if (d.sqrMagnitude > 0.01f)
-                        {
-                            prev.ApplyRotationDelta(
-                                d.x * _mouseRotateSpeed,
-                               -d.y * _mouseRotateSpeed);
-                        }
+                        prev.ApplyRotationDelta(
+                            d.x * _mouseRotateSpeed,
+                           -d.y * _mouseRotateSpeed);
+                    }
+                }
+                if (mouse.middleButton.isPressed && inRect)
+                {
+                    Vector2 d = mouse.delta.ReadValue();
+                    if (d.sqrMagnitude > 0.01f)
+                    {
+                        prev.ApplyPanDelta(new Vector2(
+                            d.x * _mousePanSpeed,
+                            d.y * _mousePanSpeed));
                     }
                 }
                 Vector2 scroll = mouse.scroll.ReadValue();
@@ -507,7 +547,7 @@ namespace Hollowfen.Foraging
             hsRT.sizeDelta = new Vector2(0f, 26f);
             hsRT.anchoredPosition = Vector2.zero;
             var hint = UICanvasUtil.NewBody("Hint", hintScrim.transform,
-                "Drag · Scroll   ·   R-Stick · LT/RT",
+                "L/M/R-Drag · Scroll   ·   L/R-Stick · LT/RT",
                 12f, HollowfenPalette.Cream,
                 TMPro.FontStyles.Italic, TMPro.TextAlignmentOptions.Center);
             UICanvasUtil.Stretch(hint.rectTransform);
