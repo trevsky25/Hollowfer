@@ -27,6 +27,7 @@ namespace Hollowfen.Data
         [SerializeField, TextArea(2, 8)] private string _notes;
         [SerializeField] private Sprite _photo;
         [SerializeField] private string _photoCredit;
+        [SerializeField] private GameObject _worldPrefab;
         [SerializeField] private string _displayNameId;
         [SerializeField] private string _descriptionId;
 
@@ -43,6 +44,7 @@ namespace Hollowfen.Data
         public string Notes => _notes;
         public Sprite Photo => _photo;
         public string PhotoCredit => _photoCredit;
+        public GameObject WorldPrefab => _worldPrefab;
         public string DisplayNameId => _displayNameId;
         public string DescriptionId => _descriptionId;
     }

@@ -36,5 +36,6 @@ MonoBehaviour:
     + no volva = Field Mushroom. White gills or any volva = stop.
   _photo: {fileID: 21300000, guid: 15ac10a612d0c4ca383f7c8038bacce6, type: 3}
   _photoCredit: Wikimedia Commons
+  _worldPrefab: {fileID: 159277080366722686, guid: 8d4cf1208e1c04392bcd90170c146761, type: 3}
   _displayNameId: mushroom.fieldMushroom.name
   _descriptionId: mushroom.fieldMushroom.description

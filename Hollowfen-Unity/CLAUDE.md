@@ -155,6 +155,45 @@ A mini-map widget plus a toggleable full-screen map in `Scene_Hollowfen`, both r
 - **`AudioMixer`** at `_Hollowfen/Audio/MainMixer.mixer` with three exposed parameters: `MasterVolume`, `MusicVolume`, `SFXVolume`. Master / Music / SFX child groups under Master. Settings sliders bound via `mixer.SetFloat`, persisted to `PlayerPrefs`.
 - **`Localization.Get(id)`** in `_Hollowfen/Scripts/Localization.cs`. Real dictionary now (no longer a passthrough); add new IDs to its `_table`. Used by Pause's quit-confirm copy and Main Menu's quit-confirm copy.
 
+### Foraging system
+
+First vertical slice of Wren's foraging loop. Walk up to a mushroom → HUD prompt → Inspect screen with rotating 3D model + species info → Forage / Leave. Discovery-gated detail copy: first encounter shows `?` + "unknown" hint; foraging unlocks the field guide entry; subsequent inspections show full info.
+
+| Component | Path | Role |
+|---|---|---|
+| `IInteractable` | `_Hollowfen/Scripts/Foraging/IInteractable.cs` | Tiny contract — `PromptVerb`, `PromptTarget`, `CanInteract`, `Interact`. Future-proofs NPCs / chests. |
+| `MushroomNode` | `_Hollowfen/Scripts/Foraging/MushroomNode.cs` | On the world prefab. References `MushroomFieldGuideData`. `Interact()` opens `InspectScreen`; `Harvest()` is called by the screen — logs, fires `OnAnyHarvested`, marks discovery, fires `ACH_FORAGE_FIRST` once, deactivates self. Optional `_respawnSeconds` field exists but disabled. |
+| `PlayerInteractor` | `_Hollowfen/Scripts/Foraging/PlayerInteractor.cs` | On `PlayerArmature`. Each frame `Physics.OverlapSphereNonAlloc` on the Foraging layer from a chest-height offset, picks the closest `IInteractable` inside a forward cone (dot ≥ -0.2), raises `OnFocusChanged`. Subscribes to `Player/Interact` and calls `current.Interact(gameObject)`. Static `Suspended` flag — any screen that takes input ownership flips it true and search/interact go quiet (HUD fades out automatically). |
+| `MushroomDiscovery` | `_Hollowfen/Scripts/Foraging/MushroomDiscovery.cs` | Static. PlayerPrefs-backed registry of discovered species IDs (`forage.discoveredIds` as `;`-joined list). Lazy-loaded on first access. Fires `OnDiscovered` event. |
+| `MushroomPreviewer` | `_Hollowfen/Scripts/Foraging/MushroomPreviewer.cs` | Singleton scene component at `(0, -1000, 0)`. Builds its rig in `Awake()` — perspective-corner ortho camera + key/fill directional lights + turntable mount. Renders to a 1024² ARGB32 RT (4× MSAA). `Show(data)` instantiates the SO's `WorldPrefab` onto the mount and recursively re-layers it to `MushroomPreview`. `ApplyRotationDelta` (yaw + clamped pitch) and `ApplyZoomDelta` (clamped ortho size) drive manual control; user input disables `AutoRotate` until the next `Show()`. `_minOrthoSize = 0.015` allows ~8.7× zoom-in for fine inspection. |
+| `InspectScreen` | `_Hollowfen/Scripts/Foraging/InspectScreen.cs` | Scene-local screen (Map-style, NOT a `UIScreen`). Singleton built programmatically from `UICanvasUtil` + `HollowfenPalette`. Left: `RawImage` showing the previewer RT. Right: text column branching on discovery state (`UNKNOWN / ?` for first encounter vs full eyebrow / heading / Latin / edibility chip / description). Buttons: Forage (default focus, gold) and Leave (muted). Pauses with `Time.timeScale = 0`, sets `PlayerInteractor.Suspended = true`, releases mouse cursor. `Update()` reads `Mouse.current` + `Gamepad.current` directly (right stick rotate, RT/LT zoom; mouse drag rotate inside preview rect, scroll-wheel zoom anywhere). |
+| `InteractionPromptHUD` | `_Hollowfen/Scripts/UI/InteractionPromptHUD.cs` | Bottom-center pill under `_HUDCanvas`. Builds itself programmatically. CanvasGroup-driven 120ms fade on unscaled time. Subscribes to static `PlayerInteractor.OnFocusChanged`. Renders `[E / △]  {verb} {target}` — verb routed through `Localization.Get` (key on `MushroomNode.PromptVerb`), target read raw from `data.CommonName`. |
+
+#### Conventions / gotchas
+
+- **Localization keys, not raw strings, on `IInteractable.PromptVerb`.** `MushroomNode.PromptVerb => "prompt.inspect.verb"`; the HUD calls `Localization.Get` on it. Keeps the HUD a single funnel for new verbs (NPC "Talk", chest "Open", etc.).
+- **Two layers added**: `Foraging` (slot 8) hosts only the trigger SphereCollider on the prefab root — the inner `Mesh` child with the convex MeshCollider stays on `Default` so movement physics doesn't collide with the focus-search lane. `MushroomPreview` (slot 9) isolates the previewer's camera + spawned model from the main camera.
+- **PlayerArmature was already on layer 8** from the StarterAssets template; coincidentally now named `Foraging`. OverlapSphere returns the player's own collider every frame but `GetComponentInParent<IInteractable>` filters it out — slightly wasteful, not a bug.
+- **InspectScreen auto-creates an EventSystem** if none exists (so playing directly into `Scene_Hollowfen` without the MainMenu boot flow still works) and turns off `InputSystemUIInputModule.deselectOnBackgroundClick` so mouse motion doesn't strand gamepad navigation. `Update()` also re-applies the last-focused button if `currentSelectedGameObject` ever goes null.
+- **Forage shortcut redundancy**: from inside the inspect screen, `Player/Interact` (Triangle / E) is bound as a Forage shortcut, `UI/Submit` (Cross / Enter / Space) activates the focused button, `UI/Cancel` (Circle / Esc) leaves. Same Triangle button opens the screen and forages — feels continuous.
+- **URP material recipe** for Meshy mushroom assets: pack `metallic.rgb + (1 - roughness).a` into a new `*_MaskMap.png` (sRGB off, `alphaSource = FromInput`), feed to URP Lit `_MetallicGlossMap` with `_SmoothnessTextureChannel = 0` (metallic alpha) and `_METALLICSPECGLOSSMAP` keyword. Same recipe applies to Fly Agaric and Oysters when they're modeled.
+- **Mushroom prefab pivot + scale**: Meshy FBX exports a ~1cm mesh inside a `localScale=100` transform. Wrap it in a clean parent at root `localScale=0.08` → final ~16cm tall (real-life Agaricus campestris size). Trigger `SphereCollider` lives on the parent: at scale 0.08, local radius 18 = 1.44m world. `MeshCollider(convex)` lives on the inner Mesh child so it inherits the FBX's 100× transform and matches the visual.
+- **`MushroomPreviewer.Update()` uses `Time.unscaledDeltaTime`** so the auto-rotate keeps spinning while the inspect screen is paused.
+- **Foraging gating**: every encounter routes through Inspect — there's no quick-pickup. `MushroomNode.Interact` → `InspectScreen.Open(this)`. Foraging happens from the screen (button click or shortcut). Per-species discovery state lives in `MushroomDiscovery`.
+- **First-harvest achievement** (`ACH_FORAGE_FIRST`) is `PlayerPrefs`-gated by `forage.firstHarvestSeen`. Persists across sessions — no `SaveManager` integration needed yet.
+- **Vertex count is 414k** on Field Mushroom Meshy export. Heavy; flagged for a decimation pass before EA. Acceptable for the slice — only one species modeled, only ~3 in the world right now.
+
+#### Inputs / Gamepad mapping (post-rebind)
+
+| Action | Keyboard | Gamepad |
+|---|---|---|
+| `Player/Interact` (open Inspect / Forage shortcut in screen) | `E` | **Triangle / Y** (`buttonNorth`) |
+| `Player/OpenJournal` (parked, journal not built yet) | `J` | **Square / X** (`buttonWest`) |
+| `UI/Submit` (activate focused button) | `Enter` / `Space` | **Cross / South** |
+| `UI/Cancel` (Leave from Inspect) | `Esc` | **Circle / East** |
+| Inspect rotate | mouse drag inside preview | right stick |
+| Inspect zoom | scroll wheel | RT (in) / LT (out) |
+
 ### Known deferred work
 
 - **Wren animations** — Mixamo rig + Unity StarterAsset animations don't perfectly match (palms-up running, curled idle fingers). Diagnosed but not fixed. Real fix is either (a) Mixamo-sourced animations matching her rig, (b) Avatar reconfiguration for wrist orientation, or (c) avatar-mask + override layer for hands. Scoped as its own focused animation session.

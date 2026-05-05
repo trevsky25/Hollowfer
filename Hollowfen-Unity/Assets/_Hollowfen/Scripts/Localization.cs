@@ -15,6 +15,17 @@ namespace Hollowfen
             // Pause menu
             { "ui.pause.quit_title",   "Quit to Main Menu?" },
             { "ui.pause.quit_message", "Any unsaved progress will be lost. Save before quitting if you want to keep where you are." },
+
+            // Foraging prompts
+            { "prompt.forage.verb",    "Forage" },
+            { "prompt.inspect.verb",   "Inspect" },
+
+            // Inspect screen
+            { "inspect.unknown.eyebrow", "UNKNOWN" },
+            { "inspect.unknown.title",   "?" },
+            { "inspect.unknown.body",    "A mushroom you haven't catalogued. Forage one to learn more." },
+            { "inspect.btn.forage",      "Forage" },
+            { "inspect.btn.leave",       "Leave" },
         };
 
         public static string Get(string stringId)

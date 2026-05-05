@@ -576,7 +576,7 @@ namespace Hollowfen.Input
                 {
                     ""name"": """",
                     ""id"": ""c5feabb4-2958-4e2f-8e92-833183d1d078"",
-                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
@@ -620,7 +620,7 @@ namespace Hollowfen.Input
                 {
                     ""name"": """",
                     ""id"": ""a4bde83d-5c36-461c-8683-2a0fdda363c1"",
-                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""path"": ""<Gamepad>/buttonWest"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
