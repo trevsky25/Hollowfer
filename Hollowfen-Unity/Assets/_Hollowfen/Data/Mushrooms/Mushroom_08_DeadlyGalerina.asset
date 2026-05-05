@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fbeeb9dfd308426da67b82545b339a0, type: 3}
+  m_Name: Mushroom_08_DeadlyGalerina
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.MushroomFieldGuideData
+  _id: deadlyGalerina
+  _commonName: Deadly Galerina
+  _latinName: Galerina marginata
+  _edibility: 1
+  _edibilityLabel: Deadly
+  _description: "Small, plain, brown \u2014 a \"little brown mushroom\" that contains
+    the same amatoxins as Death Cap. The most lethal of the LBMs. Often grows in
+    the same grassy areas as psilocybin mushrooms, leading to fatal mistaken foraging."
+  _idFeatures:
+  - Cap small (1.5-4cm), tan to brown, smooth, sticky when moist
+  - Cap convex when young, flatter at maturity, often with a faint umbo
+  - Tan-brown gills, becoming rusty brown with mature spores
+  - Pale brown stem with a small ring (annulus), sometimes worn off in older specimens
+  - Does NOT bruise blue (unlike Liberty Cap)
+  - Rusty-brown spore print (psilocybes have purple-black)
+  _habitat: "Grows in clumps on rotting wood \u2014 fallen logs, mulch, decaying
+    conifer roots. Sometimes in grassy meadows with buried wood."
+  _season: Autumn, peak in October-November
+  _lookalikes: "Liberty Cap (Psilocybe semilanceata) \u2014 magic, has a sharply
+    pointed umbo and bruises blue. Galerina has a rounded cap and never bruises blue.
+    Magic-mushroom hunters die from this every year. The blue-bruise test is critical."
+  _notes: If you cannot positively rule out Galerina by spore print AND blue-bruise
+    reaction, do not collect any small brown mushroom. Several deaths each year are
+    attributed to this species being mistaken for psilocybes.
+  _photo: {fileID: 21300000, guid: 9538ddabd4cb849f6805e524876cc2de, type: 3}
+  _photoCredit: Wikimedia Commons
+  _displayNameId: mushroom.deadlyGalerina.name
+  _descriptionId: mushroom.deadlyGalerina.description

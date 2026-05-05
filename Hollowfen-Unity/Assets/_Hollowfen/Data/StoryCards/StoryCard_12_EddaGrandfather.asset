@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e87372d7e93ba463eb87888088361dca, type: 3}
+  m_Name: StoryCard_12_EddaGrandfather
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.StoryCardData
+  _id: edda_grandfather
+  _act: Act II
+  _scene: Scene 5
+  _title: Brightspore at the Bedside
+  _subtitle: A real person, saved.
+  _body: "Edda's grandfather had not eaten a full bowl in three weeks. The Brightspore
+    tonic \u2014 bitter, faintly luminous, found at the foot of one specific birch
+    \u2014 sets him up against his pillows by the second evening. He says the soup
+    tastes like when he was small. Edda doesn't know what to do with that, and so
+    she stands at the door with a strangely heavy face."
+  _wrenNote: Edda told me her grandfather ate today, the whole bowl. She said it
+    like she was reporting weather. Then she walked away. I had to put my forehead
+    against the doorframe.
+  _beats:
+  - Edda's grandfather recovers thanks to a Brightspore tonic.
+  - The village sees a foraged mushroom save a life.
+  - Edda speaks her first full sentence to Wren.
+  _image: {fileID: 21300000, guid: eea468fe5a83d49e0b94c3999e71c7a3, type: 3}
+  _unlockAt: 11
+  _questId: edsGrandfather
+  _displayNameId: story.edda_grandfather.title
+  _descriptionId: story.edda_grandfather.body

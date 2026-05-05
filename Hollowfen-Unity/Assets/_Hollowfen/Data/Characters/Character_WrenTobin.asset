@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b4e19f76957446acb794b6622b288e2, type: 3}
+  m_Name: Character_WrenTobin
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.CharacterProfileData
+  _id: wren-tobin
+  _characterName: Wren Tobin
+  _role: Protagonist
+  _age: Late twenties
+  _home: Hollowfen
+  _work: Forager
+  _keepsake: Tobin's journal
+  _tagline: The miller's daughter who came home with a forager's eye.
+  _leadParagraph: Wren returns to Hollowfen after three winters away and finds the
+    mill silent, the village hungry, and her father's hidden journal waiting in a
+    drawer. She can read damp bark, shadow, season, and soil. The woods have not
+    forgotten her family, even if the village nearly has.
+  _backgroundParagraph: Born above Tobin's mill on the River Wend, Wren grew up among
+    grain dust, ledgers, and the quiet habits of a father who knew more about mushrooms
+    than he ever admitted aloud. She left for kitchen work in Veyrwick and came back
+    to a village smaller than memory, with boarded windows and a dead mill wheel.
+  _perspectiveParagraph: Wren reads habitat the way other people read faces. A damp
+    birch log tells her what season it is, what will fruit next, and whether the
+    woods are safe to trust. She is patient with mushrooms, less patient with people
+    who pretend Hollowfen is doing fine.
+  _kitItems:
+  - Name: Knife
+    OneLine: Horn-handled, sharp enough for clean cuts.
+  - Name: Basket
+    OneLine: Wicker, moss-lined, never quite empty.
+  - Name: Journal
+    OneLine: Her father's notes, half confession.
+  - Name: Brightspore
+    OneLine: The woods' smallest impossible light.
+  _heroPortrait: {fileID: 21300000, guid: da886ff2443654b86ba75e2edf79c4a4, type: 3}
+  _pullquote: I thought coming home would feel like stepping backward. It feels more
+    like opening a door no one has touched in years.
+  _displayNameId: character.wren_tobin.name
+  _descriptionId: character.wren_tobin.lead

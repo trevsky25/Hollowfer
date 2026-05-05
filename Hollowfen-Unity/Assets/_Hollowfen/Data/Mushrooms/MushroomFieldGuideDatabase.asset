@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306f31b519c974dc595e2b6c6579052c, type: 3}
+  m_Name: MushroomFieldGuideDatabase
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.MushroomFieldGuideDatabase
+  _entries:
+  - {fileID: 11400000, guid: f396fb39ca66b4ad1b71fae006ae136f, type: 2}
+  - {fileID: 11400000, guid: 7429b6c338c224e7b9e3069136e40cb8, type: 2}
+  - {fileID: 11400000, guid: 00dc3538364994ddf96be490bca038a3, type: 2}
+  - {fileID: 11400000, guid: c3fd03006d4c74f48b157aaf7faf81f3, type: 2}
+  - {fileID: 11400000, guid: 4981ed9a8cec44d828d3ee1b7bea904e, type: 2}
+  - {fileID: 11400000, guid: d15e4b1d79ede457d98740594a263600, type: 2}
+  - {fileID: 11400000, guid: 90f27460456424bcb8e40519159e3216, type: 2}
+  - {fileID: 11400000, guid: 19bf44b5decd14578a31fe93a18127d5, type: 2}
+  - {fileID: 11400000, guid: 30cd7d9e1afb84c79a102356a0263f3a, type: 2}
+  - {fileID: 11400000, guid: bb5c7d5872a0d4901b7219b2011d04e0, type: 2}
+  - {fileID: 11400000, guid: 1af653a6e5104453ea0722f2672205ab, type: 2}
+  - {fileID: 11400000, guid: 8ef0eedcc9a4f49e998202c235dd5881, type: 2}
+  - {fileID: 11400000, guid: 7996513ebf94b403482058f2240c51d2, type: 2}
+  - {fileID: 11400000, guid: 5f1aee3a686434eeb9c92e61f1a0894d, type: 2}
+  - {fileID: 11400000, guid: 4d60ca6ed01da4eb58638808807cd869, type: 2}
+  - {fileID: 11400000, guid: 60b9b87ae9cc149b2aaca2adedec80ba, type: 2}

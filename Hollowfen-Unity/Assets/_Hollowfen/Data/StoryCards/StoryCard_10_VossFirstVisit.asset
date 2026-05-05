@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e87372d7e93ba463eb87888088361dca, type: 3}
+  m_Name: StoryCard_10_VossFirstVisit
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.StoryCardData
+  _id: voss_first_visit
+  _act: Act II
+  _scene: Scene 3
+  _title: Twelve Silver by Yule
+  _subtitle: Master Voss, tax collector, comes through Hollowfen.
+  _body: "Voss is bureaucratic and bloodless \u2014 never raises his voice, never
+    has to. Twelve silver per quarter for Lord Aldric, regardless of yields, regardless
+    of mill or Wend or weather. The Wenmar family sit in the inn looking at their
+    boots, certain they will lose the cottage they were born in. Wren does the maths
+    and pays it in goldfoots and lacewigs."
+  _wrenNote: Voss doesn't enjoy the work. He told me as much, in a sentence. Then
+    he counted the coins.
+  _beats:
+  - Voss arrives demanding twelve silver from a village that has none.
+  - Wren's foraging earnings save the Wenmar family's cottage.
+  - The village notices for the first time that Wren's arrival changed an outcome.
+  _image: {fileID: 21300000, guid: 94ed7a25ed629423988f379c1f5a5c1f, type: 3}
+  _unlockAt: 9
+  _questId: firstTax
+  _displayNameId: story.voss_first_visit.title
+  _descriptionId: story.voss_first_visit.body

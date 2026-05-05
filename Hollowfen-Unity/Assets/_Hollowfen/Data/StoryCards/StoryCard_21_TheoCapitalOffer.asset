@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e87372d7e93ba463eb87888088361dca, type: 3}
+  m_Name: StoryCard_21_TheoCapitalOffer
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.StoryCardData
+  _id: theo_capital_offer
+  _act: Act III
+  _scene: Scene 6
+  _title: Theo's Capital
+  _subtitle: The trader names the temptation aloud.
+  _body: "Theo is more careful than usual. He waits until the inn is empty. He has
+    a buyer in the Capital who would set Wren up properly \u2014 kitchen, name, signage,
+    the works. He won't lie about what it would cost: it would cost Hollowfen Wren.
+    He says the offer with the steady voice of a friend who isn't sure he wants to
+    win."
+  _wrenNote: Theo offered me a life I had been told to want for sixteen years. I
+    sat with it. I did not give him an answer that night.
+  _beats:
+  - Theo formally offers Wren a partnership in the Capital.
+  - "The offer is not greedy or cruel \u2014 Theo means it kindly."
+  - Wren begins to weigh leaving against everything that would not leave with her.
+  _image: {fileID: 21300000, guid: c2b032243ce1c4b0db6d3c899625e070, type: 3}
+  _unlockAt: 20
+  _questId: theoCapitalOffer
+  _displayNameId: story.theo_capital_offer.title
+  _descriptionId: story.theo_capital_offer.body

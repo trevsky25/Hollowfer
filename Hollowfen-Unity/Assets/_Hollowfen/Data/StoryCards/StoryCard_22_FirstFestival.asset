@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e87372d7e93ba463eb87888088361dca, type: 3}
+  m_Name: StoryCard_22_FirstFestival
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.StoryCardData
+  _id: first_festival
+  _act: Act III
+  _scene: Scene 7
+  _title: The First Festival in Three Years
+  _subtitle: Lanterns, four signature dishes, the village square full.
+  _body: Marra cooks four signature dishes by sundown. The square fills before the
+    lanterns are even lit. Pell records the year as the year the Hollow turned, in
+    ink, with Wren's name written in his thinnest hand. Bram weeps at his own bar
+    without trying to hide it. Wren is the guest of honor and spends most of the
+    night washing bowls.
+  _wrenNote: I went outside halfway through the festival because there were too many
+    people thanking me at once. Edda found me. She didn't say anything. She just
+    stood with me for a while. That was the right thing.
+  _beats:
+  - Hollowfen holds its first proper festival in three years.
+  - Pell formally records the season as a turning point.
+  - The village publicly recognises Wren as the cause.
+  _image: {fileID: 21300000, guid: 79fc42d545d014eb181b5de0ad7a515b, type: 3}
+  _unlockAt: 21
+  _questId: festivalHosted
+  _displayNameId: story.first_festival.title
+  _descriptionId: story.first_festival.body

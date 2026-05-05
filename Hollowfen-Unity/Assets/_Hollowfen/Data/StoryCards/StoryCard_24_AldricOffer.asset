@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e87372d7e93ba463eb87888088361dca, type: 3}
+  m_Name: StoryCard_24_AldricOffer
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.StoryCardData
+  _id: aldric_offer
+  _act: Act IV
+  _scene: Scene 1
+  _title: The Lord's Offer
+  _subtitle: A velvet glove, a written hand, an iron underneath.
+  _body: "Lord Aldric writes well. He had presumed, speaking honestly, that Hollowfen
+    was finished. He has been informed otherwise. He would like to make Miss Tobin's
+    acquaintance, and he would like Hollowfen's mushroom trade under his banner \u2014
+    generous terms, written in graceful prose, with an exit clause that is graceful
+    only on the page."
+  _wrenNote: I read the letter twice. I read it a third time. The third time I tried
+    to read it as if it were addressed to my grandmother. I think she would have
+    laughed at the second paragraph and refused at the fourth.
+  _beats:
+  - Lord Aldric formally proposes a trade monopoly.
+  - "The terms are generous \u2014 and the village would no longer be its own."
+  - Wren must decide what kind of place Hollowfen becomes.
+  _image: {fileID: 21300000, guid: 87ab785264c744b10809457f480fbc8c, type: 3}
+  _unlockAt: 23
+  _questId: aldricOfferRead
+  _displayNameId: story.aldric_offer.title
+  _descriptionId: story.aldric_offer.body

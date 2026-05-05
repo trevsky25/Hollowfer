@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fbeeb9dfd308426da67b82545b339a0, type: 3}
+  m_Name: Mushroom_16_Brightspore
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.MushroomFieldGuideData
+  _id: brightspore
+  _commonName: Brightspore
+  _latinName: Ganoderma lucidum
+  _edibility: 3
+  _edibilityLabel: "Medicinal \u2014 rare"
+  _description: 'A lacquered medicinal bracket known in old books as reishi. Brightspore
+    looks less like food than a polished charm growing from hardwood: red-brown,
+    amber-edged, and glossy enough to catch firelight. Villagers talk about it like
+    a memory from better years.'
+  _idFeatures:
+  - Glossy red-brown to orange bracket or kidney-shaped cap
+  - Pale growing edge when young
+  - White to cream pore surface underneath, not gills
+  - Grows from hardwood stumps and buried roots
+  _habitat: Hardwood stumps, old roots, and damp sheltered woodland edges
+  _season: Summer through autumn
+  _lookalikes: Other varnished Ganoderma brackets. Use the glossy cap, pore surface,
+    and woody growth habit; this is medicine, not a snack.
+  _notes: 'This is the emotional mushroom of Hollowfen: scarce, gentle, and easy
+    to overharvest. Finding one should feel like a small mercy.'
+  _photo: {fileID: 21300000, guid: b238d754e5968416cbefe2908873a131, type: 3}
+  _photoCredit: 
+  _displayNameId: mushroom.brightspore.name
+  _descriptionId: mushroom.brightspore.description

@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e87372d7e93ba463eb87888088361dca, type: 3}
+  m_Name: StoryCard_19_ChapelGarden
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.StoryCardData
+  _id: chapel_garden
+  _act: Act III
+  _scene: Scene 4
+  _title: The Chapel Garden Opens
+  _subtitle: Father Calden's confession.
+  _body: "Calden has been reading old church records. He comes to the mill with a
+    brown envelope and a face he doesn't want to show anyone. The church helped suppress
+    the old foraging knowledge centuries ago \u2014 not as fairy-story heresy, but
+    as policy. He has unlocked the chapel garden. He will not bless what he does
+    not understand. He will no longer stand in its way."
+  _wrenNote: Calden gave me the chapel garden key and apologised for the wrong his
+    order had done. He didn't look me in the eye. I wish he had. I would have told
+    him the apology was enough.
+  _beats:
+  - Father Calden uncovers the church's historical role in suppressing forage lore.
+  - He unlocks the chapel garden as a cultivation site.
+  - He stops short of full reconciliation, and Wren accepts the half-distance.
+  _image: {fileID: 21300000, guid: 009224cb475124a06af251677b4a1d24, type: 3}
+  _unlockAt: 18
+  _questId: caldenReconcile
+  _displayNameId: story.chapel_garden.title
+  _descriptionId: story.chapel_garden.body

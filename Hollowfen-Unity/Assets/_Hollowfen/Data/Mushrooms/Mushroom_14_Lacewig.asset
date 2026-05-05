@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fbeeb9dfd308426da67b82545b339a0, type: 3}
+  m_Name: Mushroom_14_Lacewig
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.MushroomFieldGuideData
+  _id: lacewig
+  _commonName: Lacewig
+  _latinName: Pleurotus ostreatus
+  _edibility: 0
+  _edibilityLabel: "Edible \u2014 choice"
+  _description: An oyster mushroom wearing a Hollowfen nickname. Lacewig grows in
+    overlapping shelves on dead wood, pale fans layered like pages in a wet book.
+    The underside is lined with long decurrent gills that run down toward the short
+    off-center stem.
+  _idFeatures:
+  - Pale gray, tan, or cream fan-shaped caps
+  - Gills run down the short off-center stem
+  - Grows in overlapping shelves on dead or dying wood
+  - No ring, no bulb, no buried base
+  _habitat: Dead hardwood logs, stumps, and shaded fallen wood
+  _season: Cool wet weather, often autumn through winter
+  _lookalikes: Angel wings and other pale shelf fungi. Check substrate, thickness,
+    gill attachment, and avoid old yellowing specimens.
+  _notes: A practical mushroom, but not a plain one. In the right light, the gills
+    look like careful stitching.
+  _photo: {fileID: 21300000, guid: 4db6117cce14f4ffe94029cadb1b7b89, type: 3}
+  _photoCredit: 
+  _displayNameId: mushroom.lacewig.name
+  _descriptionId: mushroom.lacewig.description

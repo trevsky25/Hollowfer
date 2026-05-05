@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e87372d7e93ba463eb87888088361dca, type: 3}
+  m_Name: StoryCard_14_CottagesReopen
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.StoryCardData
+  _id: cottages_reopen
+  _act: Act II
+  _scene: Scene 7
+  _title: Two Boards Come Down
+  _subtitle: Cottages that were boarded for two winters reopen.
+  _body: "Two of the boarded cottages have new shutters by the autumn equinox. A
+    traveler asks at the inn if there is work in Hollowfen \u2014 there hasn't been
+    such a question in years. Elder Pell takes a long look at his ledger and writes
+    one line, in pencil, then traces over it again in ink."
+  _wrenNote: Pell stopped me on the lane and said, very slowly, that he was not yet
+    ready to be hopeful. He didn't mean it the way it sounded.
+  _beats:
+  - Two boarded cottages reopen as families return.
+  - A traveler asks about work in Hollowfen for the first time in years.
+  - Pell begins recording the season as a turning point.
+  _image: {fileID: 21300000, guid: b3e99accf5d414802a62314dd8d3c616, type: 3}
+  _unlockAt: 13
+  _questId: cottagesReopen
+  _displayNameId: story.cottages_reopen.title
+  _descriptionId: story.cottages_reopen.body

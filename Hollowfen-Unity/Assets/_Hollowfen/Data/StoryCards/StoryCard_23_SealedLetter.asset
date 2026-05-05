@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e87372d7e93ba463eb87888088361dca, type: 3}
+  m_Name: StoryCard_23_SealedLetter
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.StoryCardData
+  _id: sealed_letter
+  _act: Act III
+  _scene: "Scene 8 \u2014 Act break"
+  _title: A Sealed Letter
+  _subtitle: Master Voss arrives unannounced, between visits.
+  _body: "Voss is dressed plainly and looks tired. He didn't come for taxes. He has
+    a sealed letter from Lord Aldric himself, addressed to Miss Tobin. The wax is
+    the colour of old wine. He says \u2014 almost gently \u2014 that whatever the
+    letter contains, he would like Wren to read it before the rumour reaches the
+    inn. Then he leaves without his usual line."
+  _wrenNote: Voss has carried a hundred letters for Lord Aldric. He brought this
+    one to my door personally. I think he is afraid of what it says. I think he is
+    also afraid of becoming irrelevant if I answer it.
+  _beats:
+  - Lord Aldric writes to Wren personally.
+  - "Voss's posture shifts \u2014 he may not be on the Lord's side anymore."
+  - Act III closes on a letter Wren has not yet opened.
+  _image: {fileID: 21300000, guid: 8832f73c642494c4f81817224cc0c0e7, type: 3}
+  _unlockAt: 22
+  _questId: aldricLetter
+  _displayNameId: story.sealed_letter.title
+  _descriptionId: story.sealed_letter.body

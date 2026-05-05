@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e87372d7e93ba463eb87888088361dca, type: 3}
+  m_Name: StoryCard_04_HiddenJournal
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.StoryCardData
+  _id: hidden_journal
+  _act: Act I
+  _scene: Scene 4
+  _title: The Hidden Journal
+  _subtitle: A worn leather book, half its pages still blank.
+  _body: "It was in the bottom drawer, wrapped in oilcloth under a stack of his old
+    receipts. Tobin's hand changes as the pages go on \u2014 careful at the start,
+    hurried at the end. Three mushrooms drawn in soft pencil: Field Cap, Wood Ear,
+    Pinecrest. And a confession in the margins about a family secret no one was supposed
+    to write down."
+  _wrenNote: '"If you''re reading this, I never told you." Da, you were waiting for
+    me to be old enough. I was old enough. I was just gone.'
+  _beats:
+  - Wren finds Tobin's hidden foraging journal.
+  - The first three mushrooms are sketched and named.
+  - A note at the back reveals the gift runs in her family.
+  _image: {fileID: 21300000, guid: c520d76d5d98840d3badb5dd3de78b7c, type: 3}
+  _unlockAt: 3
+  _questId: findJournal
+  _displayNameId: story.hidden_journal.title
+  _descriptionId: story.hidden_journal.body

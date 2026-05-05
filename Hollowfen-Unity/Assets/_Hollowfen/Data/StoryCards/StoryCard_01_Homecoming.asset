@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e87372d7e93ba463eb87888088361dca, type: 3}
+  m_Name: StoryCard_01_Homecoming
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.StoryCardData
+  _id: homecoming
+  _act: Act I
+  _scene: Scene 1
+  _title: Homecoming
+  _subtitle: Wren walks the path back to Hollowfen at dusk.
+  _body: "It had been three years since she left for the kitchens at Veyrwick. Her
+    father's letters got shorter, then stopped. She comes home at dusk with a pack
+    on her back and a knife at her hip, to a village that almost doesn't recognize
+    her \u2014 fewer chimneys smoking than she remembers, more boards across windows
+    than she can count."
+  _wrenNote: I thought coming home would feel like stepping backward. It feels more
+    like opening a door no one has touched in years.
+  _beats:
+  - Wren returns to Hollowfen after three winters away.
+  - The village is smaller than she remembers, and quieter.
+  - Old Bram sweeping the inn doorstep is the first face she sees.
+  _image: {fileID: 21300000, guid: a4206099756db4411b8b2b87edf300f4, type: 3}
+  _unlockAt: 0
+  _questId: arrive
+  _displayNameId: story.homecoming.title
+  _descriptionId: story.homecoming.body

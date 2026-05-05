@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e87372d7e93ba463eb87888088361dca, type: 3}
+  m_Name: StoryCard_27_EndingFreeHollow
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.StoryCardData
+  _id: ending_free_hollow
+  _act: Endings
+  _scene: Ending A
+  _title: The Free Hollow
+  _subtitle: Wren refuses. Hollowfen stays its own.
+  _body: "Wren says no, and the saying takes a long time. Hollowfen stays its own
+    \u2014 independent, smaller than Aldric's offer would have made it, prouder than
+    any neighbouring village dares be. Foragers come to learn from Sister Almy. Travellers
+    stop for Marra's stew. The Wend does not return, but the village no longer needs
+    it to. Wren writes the next page of her father's journal in her own hand."
+  _wrenNote: I told Lord Aldric no. He smiled, and I think he meant it. I do not
+    know if I have ruined us. I know I have not ruined us today.
+  _beats:
+  - Wren refuses Aldric's offer.
+  - Hollowfen becomes a free-trade hub for foragers and herbalists.
+  - Hardest path; requires the highest community score.
+  _image: {fileID: 21300000, guid: 108018c33b7704809b8458fa9777ca1a, type: 3}
+  _unlockAt: 26
+  _questId: endingFreeHollow
+  _displayNameId: story.ending_free_hollow.title
+  _descriptionId: story.ending_free_hollow.body

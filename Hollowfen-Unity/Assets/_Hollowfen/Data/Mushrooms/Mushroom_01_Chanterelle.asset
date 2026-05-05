@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fbeeb9dfd308426da67b82545b339a0, type: 3}
+  m_Name: Mushroom_01_Chanterelle
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.MushroomFieldGuideData
+  _id: chanterelle
+  _commonName: Chanterelle
+  _latinName: Cantharellus cibarius
+  _edibility: 0
+  _edibilityLabel: "Edible \u2014 choice"
+  _description: Prized golden mushroom of deciduous forests. Distinguished by its
+    funnel-shaped cap, decurrent false gills (forking ridges, not true gills), and
+    pleasant apricot-like aroma when fresh.
+  _idFeatures:
+  - Funnel-shaped golden-orange cap with wavy edges
+  - 'False gills: forked ridges running down the stem, not blade-like gills'
+  - Solid stem, slightly paler than cap, tapering toward the base
+  - Pleasant fruity aroma, often compared to apricot
+  _habitat: "Mycorrhizal with broadleaf trees \u2014 especially oak and beech"
+  _season: Mid-summer through autumn
+  _lookalikes: "Jack-O'-Lantern (Omphalotus olearius) \u2014 TOXIC, has true blade-like
+    gills, often grows in dense clumps on wood. False Chanterelle (Hygrophoropsis
+    aurantiaca) \u2014 edible-poor, also has true forking gills and a softer texture."
+  _notes: 'The presence of false gills (ridges, not blades) is the single most reliable
+    identifier. When in doubt: cut the stem. Chanterelle flesh is pale yellow throughout;
+    lookalikes often differ in flesh color.'
+  _photo: {fileID: 21300000, guid: 99902c9f1f40942239e53483511a9605, type: 3}
+  _photoCredit: Wikimedia Commons
+  _displayNameId: mushroom.chanterelle.name
+  _descriptionId: mushroom.chanterelle.description

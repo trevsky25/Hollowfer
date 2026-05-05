@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e87372d7e93ba463eb87888088361dca, type: 3}
+  m_Name: StoryCard_17_WitchCottage
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.StoryCardData
+  _id: witch_cottage
+  _act: Act III
+  _scene: Scene 2
+  _title: The Witch's Cottage
+  _subtitle: Deep in the Old Wood, a roof still holds.
+  _body: Hollin walks ahead. Almy walks behind. Wren walks in the middle and the
+    path opens like a remembered sentence. The cottage is small, the moss is thick,
+    and the spring at the back of it is still cold and still clean. The seedbook
+    on the table is older than any of them, and someone left it open to a page about
+    Witchwell.
+  _wrenNote: It looked like the kind of place I always imagined when my mother said
+    "deep in the wood." It looked like I had been there before. I don't think I had.
+  _beats:
+  - Wren, Hollin, and Sister Almy find the Witch's Cottage together.
+  - The seedbook of the old hedge-witch is recovered.
+  - "Tier 4 mushrooms \u2014 Moonring, Hollowheart, Wendlight \u2014 become identifiable."
+  _image: {fileID: 21300000, guid: 3dc684e0d8e31412ca0ad30d60fc107f, type: 3}
+  _unlockAt: 16
+  _questId: findWitchCottage
+  _displayNameId: story.witch_cottage.title
+  _descriptionId: story.witch_cottage.body

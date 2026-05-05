@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e87372d7e93ba463eb87888088361dca, type: 3}
+  m_Name: StoryCard_09_JorensForge
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.StoryCardData
+  _id: jorens_forge
+  _act: Act II
+  _scene: Scene 2
+  _title: Joren's Forge
+  _subtitle: Smithy of three villages, empty commission books.
+  _body: "Joren resents Wren before he respects her. A peddler's knife would do,
+    he tells her \u2014 half the price, twice the speed. Then he asks what she's
+    foraging that needs a proper edge, and the next morning the foraging knife is
+    on his anvil with a horn handle, and he refuses to let her call it charity."
+  _wrenNote: Joren wrapped my knife in a kerchief and told me not to tell anyone
+    he made it like a gift. Then he let me see him smile, just for a second, before
+    the door shut.
+  _beats:
+  - Wren commissions a proper foraging knife from Joren.
+  - He starts asking what comes back in her basket.
+  - The smithy fire is lit two days a week instead of one.
+  _image: {fileID: 21300000, guid: 3edee07b24e9e4bc2b3e0fb1cf4f3aac, type: 3}
+  _unlockAt: 8
+  _questId: forgeKnife
+  _displayNameId: story.jorens_forge.title
+  _descriptionId: story.jorens_forge.body

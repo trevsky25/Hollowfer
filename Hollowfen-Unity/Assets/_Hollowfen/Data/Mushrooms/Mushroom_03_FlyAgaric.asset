@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fbeeb9dfd308426da67b82545b339a0, type: 3}
+  m_Name: Mushroom_03_FlyAgaric
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.MushroomFieldGuideData
+  _id: flyAgaric
+  _commonName: Fly Agaric
+  _latinName: Amanita muscaria
+  _edibility: 2
+  _edibilityLabel: Psychoactive / Toxic
+  _description: "The iconic toadstool of fairy tales. Brilliant red cap dotted with
+    white wart-like flecks (remnants of the universal veil). Contains muscimol and
+    ibotenic acid \u2014 psychoactive in low doses, toxic in higher amounts; deaths
+    are rare but recorded."
+  _idFeatures:
+  - Bright scarlet to red-orange cap, often fading toward the rim
+  - White or pale-yellow wart-like patches scattered across the cap
+  - White free gills, not attached to the stem
+  - White ring on the upper stem
+  - Small bulb at the base, sometimes with concentric scaly bands
+  - Often grows in fairy rings under birch and pine
+  _habitat: "Mycorrhizal with birch, pine, and spruce \u2014 common in coniferous
+    and mixed forest"
+  _season: Late summer through autumn
+  _lookalikes: "Caesar's Mushroom (Amanita caesarea) \u2014 edible, has yellow gills/stem
+    and an orange cap with no warts. Patches can wash off A. muscaria after rain,
+    leaving an unmarked red cap that is harder to identify."
+  _notes: "Ethnobotanical use is ancient \u2014 Siberian shamans, Norse berserkers,
+    and Mario games all owe something to this mushroom. Effects are unpredictable,
+    can include nausea, delirium, and ataxia. Not recommended for casual experimentation."
+  _photo: {fileID: 21300000, guid: a9343f7cdfedc42f4899d2502f1e95aa, type: 3}
+  _photoCredit: Wikimedia Commons
+  _displayNameId: mushroom.flyAgaric.name
+  _descriptionId: mushroom.flyAgaric.description

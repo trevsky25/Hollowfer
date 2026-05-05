@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fbeeb9dfd308426da67b82545b339a0, type: 3}
+  m_Name: Mushroom_02_DeathCap
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.MushroomFieldGuideData
+  _id: deathCap
+  _commonName: Death Cap
+  _latinName: Amanita phalloides
+  _edibility: 1
+  _edibilityLabel: Deadly
+  _description: The most lethal mushroom on Earth. Responsible for roughly half of
+    all mushroom-poisoning deaths worldwide. Pleasant taste, delayed symptoms, and
+    irreversible liver damage combine to make it uniquely dangerous.
+  _idFeatures:
+  - Cap olive-green to pale yellow, smooth and slightly sticky when moist
+  - "Free white gills \u2014 not attached to the stem"
+  - White ring (annulus) on the upper stem
+  - "BULBOUS VOLVA at the base \u2014 often hidden in litter; always brush down to
+    check"
+  - White spore print
+  _habitat: "Mycorrhizal with broadleaf trees \u2014 oak, beech, hornbeam"
+  _season: Late summer through autumn
+  _lookalikes: "Field Mushroom (Agaricus campestris) and Horse Mushroom (A. arvensis)
+    \u2014 both edible, but have PINK or BROWN gills, never white, and no volva.
+    Caesar's Mushroom (A. caesarea) \u2014 edible delicacy with orange cap and yellow
+    gills/stem."
+  _notes: "There is no antidote. Symptoms appear 6\u201312 hours after ingestion:
+    severe gastrointestinal distress, then a deceptive \"well\" period of 1\u20132
+    days, then liver and kidney failure. By the time you feel sick, the damage is
+    already done. The volva at the base is the single most important identifier \u2014
+    always dig down through the leaf litter to check."
+  _photo: {fileID: 21300000, guid: ee5656c6536494ed185db05eb17c5016, type: 3}
+  _photoCredit: Wikimedia Commons
+  _displayNameId: mushroom.deathCap.name
+  _descriptionId: mushroom.deathCap.description

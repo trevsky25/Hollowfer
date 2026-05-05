@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fbeeb9dfd308426da67b82545b339a0, type: 3}
+  m_Name: Mushroom_05_LibertyCap
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.MushroomFieldGuideData
+  _id: libertyCap
+  _commonName: Liberty Cap
+  _latinName: Psilocybe semilanceata
+  _edibility: 2
+  _edibilityLabel: Psychoactive
+  _description: "A small, slender mushroom famous for its potent psilocybin content.
+    Easy to overlook \u2014 barely larger than a fingernail and the same color as
+    the dying grass it grows in."
+  _idFeatures:
+  - Distinctive bell or conical cap with a sharp pointed nipple (umbo) at the apex
+  - Cap small (5-25mm), tan to chestnut when moist, paler when dry
+  - Dark brown to purple-black gills
+  - Long slender pale stem, often slightly wavy
+  - "Bruises blue or blue-green where handled or damaged \u2014 diagnostic for psilocybin"
+  _habitat: Grassy meadows and pastures, especially those grazed by sheep and cattle.
+    Never grows directly on dung.
+  _season: "Autumn \u2014 typically September through November in temperate regions"
+  _lookalikes: "Galerina species \u2014 DEADLY, contain the same liver toxins as
+    Death Cap. Do not bruise blue. Conocybe and Pholiotina species \u2014 also potentially
+    deadly. The blue-bruise reaction is the safest single indicator, but should be
+    confirmed with multiple features."
+  _notes: "Possession is illegal in many jurisdictions. Effects last 4-6 hours and
+    are dose-dependent. Easy to confuse with deadly Galerina species when not bruised
+    \u2014 never collect by appearance alone."
+  _photo: {fileID: 21300000, guid: 2ee3be24c4dae4c2180158e9f017bd0d, type: 3}
+  _photoCredit: Wikimedia Commons
+  _displayNameId: mushroom.libertyCap.name
+  _descriptionId: mushroom.libertyCap.description

@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e87372d7e93ba463eb87888088361dca, type: 3}
+  m_Name: StoryCard_05_FirstForage
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.StoryCardData
+  _id: first_forage
+  _act: Act I
+  _scene: Scene 5
+  _title: The First Forage
+  _subtitle: Edge Woods, morning. A girl watches from the path.
+  _body: The Edge Woods have always been at the village's back door, but most folk
+    never walked into them. Wren finds the Field Caps in a fairy ring, a Wood Ear
+    soft as a folded scrap on a fallen birch, and a Pinecrest under the third pine
+    she touches. A small girl watches her work the whole time, and never says her
+    name.
+  _wrenNote: I felt my father's hand on my shoulder twice this morning. He wasn't
+    there. I don't mind that he wasn't there.
+  _beats:
+  - Wren forages her first three mushrooms.
+  - Edda watches in silence from the path's edge.
+  - The Edge Woods feel less haunted than the village said.
+  _image: {fileID: 21300000, guid: fb2b665d220ab49e9bb2a198f410c1e0, type: 3}
+  _unlockAt: 4
+  _questId: firstForage
+  _displayNameId: story.first_forage.title
+  _descriptionId: story.first_forage.body

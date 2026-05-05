@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e87372d7e93ba463eb87888088361dca, type: 3}
+  m_Name: StoryCard_11_TheoTrade
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.StoryCardData
+  _id: theo_trade
+  _act: Act II
+  _scene: Scene 4
+  _title: The Trader's Ledger
+  _subtitle: Theo's wagon comes through every five to seven days.
+  _body: "Theo is cheerful, worldly, slightly too smooth. He pays well and he talks
+    too easily, and he keeps a ledger of which mushrooms fetch what price in which
+    town. The first time Wren shows him a goldfoot he buys the lot before she can
+    name a price, and tells her not to sell to peddlers \u2014 they'll cheat her,
+    and he won't."
+  _wrenNote: Theo is the first person who has looked at me as if I were a business
+    and not a homecoming. I am not sure how I feel about that yet. I know it is useful.
+  _beats:
+  - Theo establishes a regular trade route through Hollowfen.
+  - Wren learns market prices in Veyrwick and the Capital.
+  - Mushroom income overtakes the village's field income for the first time in years.
+  _image: {fileID: 21300000, guid: e425fc24287e148a086b09ef036f3696, type: 3}
+  _unlockAt: 10
+  _questId: theoTrade
+  _displayNameId: story.theo_trade.title
+  _descriptionId: story.theo_trade.body

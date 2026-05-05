@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e87372d7e93ba463eb87888088361dca, type: 3}
+  m_Name: StoryCard_30_EndingWitchsPath
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.StoryCardData
+  _id: ending_witchs_path
+  _act: Endings
+  _scene: Ending D
+  _title: The Witch's Path
+  _subtitle: Wren and Hollin take up the old mantle together.
+  _body: Wren turns down Aldric and turns down the Capital. The Witch's Cottage is
+    repaired by the time the first snow falls. Wren and Hollin spend most of their
+    days walking the deep wood, naming what is there, writing what is not yet written.
+    Hollowfen prospers, more quietly than the other paths. People come from Veyrwick
+    to ask questions and leave more thoughtful than they came.
+  _wrenNote: I do not know what to call what we are doing. We are not witches. We
+    are not herbalists. We are reading a book that was almost erased, with hands
+    that were almost forgotten. That is enough of a name for now.
+  _beats:
+  - Wren takes up Sister Almy's mantle alongside Hollin.
+  - Hollowfen becomes a place of quiet wisdom rather than commercial recovery.
+  - The most introspective ending. Requires the highest knowledge score.
+  _image: {fileID: 21300000, guid: b4dd9dc8bf86c48938b97885033906df, type: 3}
+  _unlockAt: 26
+  _questId: endingWitch
+  _displayNameId: story.ending_witchs_path.title
+  _descriptionId: story.ending_witchs_path.body

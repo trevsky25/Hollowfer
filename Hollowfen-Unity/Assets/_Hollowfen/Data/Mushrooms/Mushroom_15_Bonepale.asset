@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fbeeb9dfd308426da67b82545b339a0, type: 3}
+  m_Name: Mushroom_15_Bonepale
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.MushroomFieldGuideData
+  _id: bonepale
+  _commonName: Bonepale
+  _latinName: Fomitopsis betulina
+  _edibility: 3
+  _edibilityLabel: Medicinal
+  _description: A pale hoof-like bracket fungus known in the old herbals as birch
+    polypore. Bonepale is not dinner; it is cut from birch trunks, dried, and shaved
+    into bitter medicine. Sister Almy marks it with a black thread in her field notes
+    because it belongs to illness, not supper.
+  _idFeatures:
+  - Pale tan to ivory bracket, rounded like a small shelf
+  - Grows directly from birch wood with no central stem
+  - White pore surface underneath, not gills
+  - Firm corky flesh with a bitter smell when cut
+  _habitat: Living, fallen, or dead birch trunks in cool damp woods
+  _season: Visible year-round, freshest in late summer and autumn
+  _lookalikes: Other pale bracket fungi on hardwood. The birch host, smooth rounded
+    cap, and white pore surface matter more than color.
+  _notes: 'Almy will eventually teach Wren what this is worth to the sick. Its lesson
+    is restraint: not every useful mushroom belongs in a pan.'
+  _photo: {fileID: 21300000, guid: 245c65c216980465c8ac57c2d49e4002, type: 3}
+  _photoCredit: 
+  _displayNameId: mushroom.bonepale.name
+  _descriptionId: mushroom.bonepale.description

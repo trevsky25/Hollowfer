@@ -10,15 +10,19 @@ namespace Hollowfen.UI
 {
     public class SettingsScreen : UIScreen
     {
-        public enum Tab { Audio = 0, Graphics = 1, Controls = 2 }
+        public enum Tab { Audio = 0, Graphics = 1, Controls = 2, Credits = 3 }
+
+        private const int TabCount = 4;
 
         [Header("Tabs")]
         [SerializeField] private Button _audioTabButton;
         [SerializeField] private Button _graphicsTabButton;
         [SerializeField] private Button _controlsTabButton;
+        [SerializeField] private Button _creditsTabButton;
         [SerializeField] private GameObject _audioPanel;
         [SerializeField] private GameObject _graphicsPanel;
         [SerializeField] private GameObject _controlsPanel;
+        [SerializeField] private GameObject _creditsPanel;
 
         [Header("Audio")]
         [SerializeField] private AudioMixer _audioMixer;
@@ -39,6 +43,7 @@ namespace Hollowfen.UI
         [SerializeField] private GameObject _audioDefaultSelected;
         [SerializeField] private GameObject _graphicsDefaultSelected;
         [SerializeField] private GameObject _controlsDefaultSelected;
+        [SerializeField] private GameObject _creditsDefaultSelected;
 
         [Header("Tab visual state")]
         [SerializeField] private Color _tabActiveColor   = new Color(0.55f, 0.40f, 0.10f, 0.95f);
@@ -65,7 +70,8 @@ namespace Hollowfen.UI
                 {
                     case Tab.Graphics: return _graphicsDefaultSelected != null ? _graphicsDefaultSelected : base.DefaultSelected;
                     case Tab.Controls: return _controlsDefaultSelected != null ? _controlsDefaultSelected : base.DefaultSelected;
-                    default:           return _audioDefaultSelected != null    ? _audioDefaultSelected    : base.DefaultSelected;
+                    case Tab.Credits:  return _creditsDefaultSelected  != null ? _creditsDefaultSelected  : base.DefaultSelected;
+                    default:           return _audioDefaultSelected    != null ? _audioDefaultSelected    : base.DefaultSelected;
                 }
             }
         }
@@ -81,6 +87,7 @@ namespace Hollowfen.UI
             if (_audioTabButton    != null) _audioTabButton.onClick.AddListener(SwitchToAudio);
             if (_graphicsTabButton != null) _graphicsTabButton.onClick.AddListener(SwitchToGraphics);
             if (_controlsTabButton != null) _controlsTabButton.onClick.AddListener(SwitchToControls);
+            if (_creditsTabButton  != null) _creditsTabButton.onClick.AddListener(SwitchToCredits);
 
             if (_masterSlider != null) _masterSlider.onValueChanged.AddListener(OnMasterChanged);
             if (_musicSlider  != null) _musicSlider.onValueChanged.AddListener(OnMusicChanged);
@@ -216,12 +223,13 @@ namespace Hollowfen.UI
             }
         }
 
-        private void OnTabLeftInput(UnityEngine.InputSystem.InputAction.CallbackContext _)  => SwitchTab((Tab)(((int)_currentTab + 2) % 3));
-        private void OnTabRightInput(UnityEngine.InputSystem.InputAction.CallbackContext _) => SwitchTab((Tab)(((int)_currentTab + 1) % 3));
+        private void OnTabLeftInput(UnityEngine.InputSystem.InputAction.CallbackContext _)  => SwitchTab((Tab)(((int)_currentTab + TabCount - 1) % TabCount));
+        private void OnTabRightInput(UnityEngine.InputSystem.InputAction.CallbackContext _) => SwitchTab((Tab)(((int)_currentTab + 1) % TabCount));
 
         private void SwitchToAudio()    => SwitchTab(Tab.Audio);
         private void SwitchToGraphics() => SwitchTab(Tab.Graphics);
         private void SwitchToControls() => SwitchTab(Tab.Controls);
+        private void SwitchToCredits()  => SwitchTab(Tab.Credits);
 
         private void SwitchTab(Tab tab)
         {
@@ -241,10 +249,12 @@ namespace Hollowfen.UI
             if (_audioPanel    != null) _audioPanel.SetActive(_currentTab == Tab.Audio);
             if (_graphicsPanel != null) _graphicsPanel.SetActive(_currentTab == Tab.Graphics);
             if (_controlsPanel != null) _controlsPanel.SetActive(_currentTab == Tab.Controls);
+            if (_creditsPanel  != null) _creditsPanel.SetActive(_currentTab  == Tab.Credits);
 
             SetTabActiveBackground(_audioTabButton,    _currentTab == Tab.Audio);
             SetTabActiveBackground(_graphicsTabButton, _currentTab == Tab.Graphics);
             SetTabActiveBackground(_controlsTabButton, _currentTab == Tab.Controls);
+            SetTabActiveBackground(_creditsTabButton,  _currentTab == Tab.Credits);
         }
 
         private void SetTabActiveBackground(Button btn, bool active)

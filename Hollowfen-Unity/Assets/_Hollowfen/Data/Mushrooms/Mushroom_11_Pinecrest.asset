@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fbeeb9dfd308426da67b82545b339a0, type: 3}
+  m_Name: Mushroom_11_Pinecrest
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.MushroomFieldGuideData
+  _id: pinecrest
+  _commonName: Pinecrest
+  _latinName: Suillus luteus
+  _edibility: 0
+  _edibilityLabel: "Edible \u2014 fair"
+  _description: A pine-loving bolete known to travelers as slippery jack. Its brown
+    cap can shine after rain as if brushed with oil, and the underside carries pores
+    rather than gills. In Hollowfen, children call it Pinecrest because the best
+    ones lift the pine needles like small brown hills.
+  _idFeatures:
+  - Glossy chestnut-brown cap, especially sticky in wet weather
+  - Yellow pore surface underneath instead of blade-like gills
+  - Pale stem with a ring or ring zone from the partial veil
+  - Fruits with pines, often pushing through needle litter
+  _habitat: Pine duff, mossy roots, and the edges of highland conifer stands
+  _season: Autumn
+  _lookalikes: Other boletes and brown woodland mushrooms. Any gilled brown mushroom
+    is not Pinecrest; any bolete that bruises strongly blue should be treated with
+    caution.
+  _notes: 'A good trade mushroom once dried. Its lesson is structural: turn it over.
+    Pores, gills, and ridges are different worlds.'
+  _photo: {fileID: 21300000, guid: 5bf8a762b805f42b3874d042478210fc, type: 3}
+  _photoCredit: 
+  _displayNameId: mushroom.pinecrest.name
+  _descriptionId: mushroom.pinecrest.description

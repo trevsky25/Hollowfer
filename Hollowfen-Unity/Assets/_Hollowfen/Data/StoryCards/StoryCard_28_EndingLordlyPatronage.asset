@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e87372d7e93ba463eb87888088361dca, type: 3}
+  m_Name: StoryCard_28_EndingLordlyPatronage
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.StoryCardData
+  _id: ending_lordly_patronage
+  _act: Endings
+  _scene: Ending B
+  _title: The Lordly Patronage
+  _subtitle: Wren accepts. The village prospers, and changes.
+  _body: 'Wren signs. The terms are generous. The village swells: roofs are repaired,
+    the well is rebuilt with stone, the mill wheel turns again on a paid stipend.
+    Theo leaves quietly for the Capital alone. Edda asks if she can leave with him.
+    Wren tells her yes, and stands at the door until Edda is out of sight, and then
+    a little longer.'
+  _wrenNote: I made the bargain my grandmother would not have made. The village will
+    eat. I will live with that. So will the village.
+  _beats:
+  - Wren accepts Lord Aldric's offer.
+  - "Hollowfen prospers under his banner \u2014 and loses some of its soul."
+  - Several villagers, including Theo and Edda, eventually leave.
+  _image: {fileID: 21300000, guid: 7db39e0d0d2c449e28a1bff79046755a, type: 3}
+  _unlockAt: 26
+  _questId: endingPatronage
+  _displayNameId: story.ending_lordly_patronage.title
+  _descriptionId: story.ending_lordly_patronage.body

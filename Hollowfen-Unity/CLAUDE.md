@@ -61,6 +61,58 @@ Scene_MainMenu  ──Continue──►  Medieval Environment - Demo 1  ──Pa
 | `LoadingScreen` | `_Hollowfen/Scripts/UI/LoadingScreen.cs` | Wren forest hero + animated "Traveling to Hollowfen…" with rolling dots on `WaitForSecondsRealtime`. Used by `LoadSceneAndOpen` during async scene transitions. |
 | `FocusHighlight` | `_Hollowfen/Scripts/UI/FocusHighlight.cs` | Per-Selectable focus visual. Color tint + scale + optional glow. `_underlineText` rich-text mode exists but is disabled scene-wide — UI.Text would render the literal `<u>` tags in our setup; left in place for future re-implementation as a child Image bar if a true underline visual is wanted. Routes `OnPointerEnter` through `EventSystem.SetSelectedGameObject` so mouse hover and gamepad focus share state. |
 
+### Story / Wren / Field Guide pages
+
+Three menu pages reachable from the Main Menu — all data-driven, all built programmatically in `OnInitialize` from ScriptableObject databases. Visuals match the web prototype at `/src/`: Georgia serif headings, sage / gold / cream palette, full-bleed hero on detail views, gold-rule act dividers.
+
+| Component | Path | Role |
+|---|---|---|
+| `StoryScreen` | `_Hollowfen/Scripts/UI/StoryScreen.cs` (`screenId="story"`) | Three-column grid grouped by act. Each act block: gold uppercase label · gold-fading rule · `N CARDS` count badge. Cell shows photo + scene eyebrow + serif title + subtitle. Click → `StoryDetailScreen`. |
+| `StoryDetailScreen` | `_Hollowfen/Scripts/UI/StoryDetailScreen.cs` (`screenId="story-detail"`) | Full-bleed hero image with bottom-up dark gradient + dedicated content scrim for legibility. 3-col content overlay: heading column · body between vertical separators · italic Wren note (gold left border) + beats list. Top-right `✕` close, bottom row prev/page-indicator/next walking the database. |
+| `WrenScreen` | `_Hollowfen/Scripts/UI/WrenScreen.cs` (`screenId="wren"`) | Single scrolling page. Hero = portrait left + dark-gradient info panel right (eyebrow, big serif name, italic tagline, lead paragraph, 2×2 stats grid w/ gold values). 4-tile kit row, two body cards, gold-bordered italic pullquote at the bottom. |
+| `FieldGuideScreen` | `_Hollowfen/Scripts/UI/FieldGuideScreen.cs` (`screenId="field-guide"`) | Four-column grid. Cell shows photo + serif common name + italic Latin + edibility dot + tinted edibility label. Click → `MushroomDetailScreen`. |
+| `MushroomDetailScreen` | `_Hollowfen/Scripts/UI/MushroomDetailScreen.cs` (`screenId="mushroom-detail"`) | Hero photo + edibility chip + serif name + italic Latin + description + meta strip (HABITAT / SEASON / LOOK-ALIKES) on the right. Bottom row splits "Identifying features" bullets and "Forager's note" italic. Bottom-left Back button. |
+
+#### Card / cell helpers
+
+| Component | Path | Role |
+|---|---|---|
+| `StoryCardCell` / `MushroomCardCell` | `_Hollowfen/Scripts/UI/` | Tiny MonoBehaviours on each instantiated cell. Hold the SO reference + an `Action` callback the screen wires when building the cell. |
+| `ScrollFocusFollower` | `_Hollowfen/Scripts/UI/ScrollFocusFollower.cs` | Watches `EventSystem.currentSelectedGameObject` and `SmoothDamp`s the parent `ScrollRect` to keep the focused cell inside the viewport. **Math is in content-local space, not world** — using world coords breaks under `CanvasScaler` (the original implementation jumped to the bottom on every D-pad press at non-1× canvas scale). |
+| `UICanvasUtil` | `_Hollowfen/Scripts/UI/UICanvasUtil.cs` | Programmatic UI factories. `NewRect / NewImage / NewText / NewHeading / NewEyebrow / NewBody`. `NewHeading` uses Georgia SDF; `NewEyebrow` is bold uppercase with `+24` `characterSpacing` (≈0.32em letter-spacing). Procedural gradient sprite builder (`MakeVerticalGradient` / `MakeHorizontalGradient`) — used for the detail-page scrims and Wren info-panel gradient. |
+| `HollowfenPalette` | `_Hollowfen/Scripts/UI/HollowfenPalette.cs` | Single source of truth for cream / parchment / moss / gold / sage tokens **and** the verbatim edibility colors from the handoff (`#7ec38a` edible, `#d36a5b` deadly, `#a47bd0` psychoactive, `#7da7c8` medicinal, `#bbb190` unknown). |
+
+#### ScriptableObject content
+
+| SO | Path | Notes |
+|---|---|---|
+| `StoryCardData` | `_Hollowfen/Scripts/Data/StoryCardData.cs` | `id, act, scene, title, subtitle, body, wrenNote, beats[], image, unlockAt, questId, displayNameId, descriptionId`. 30 assets at `_Hollowfen/Data/StoryCards/StoryCard_NN_*.asset` — verbatim copy from `src/data/StoryCards.js`. |
+| `MushroomFieldGuideData` | `_Hollowfen/Scripts/Data/MushroomFieldGuideData.cs` | `id, commonName, latinName, edibility (enum), edibilityLabel, description, idFeatures[], habitat, season, lookalikes, notes, photo, photoCredit`. 16 assets at `_Hollowfen/Data/Mushrooms/`. |
+| `CharacterProfileData` | `_Hollowfen/Scripts/Data/CharacterProfileData.cs` | Designed to hold any cast member; one Wren asset today at `_Hollowfen/Data/Characters/Character_WrenTobin.asset`. |
+| `StoryCardDatabase` / `MushroomFieldGuideDatabase` | `_Hollowfen/Scripts/Data/` | Registry SOs holding ordered arrays. Screens read from a `[SerializeField]` reference; iteration order is canonical (matches `src/data/mushroomIndex.js` for mushrooms; JS-file order for cards). |
+| `DataImporter` | `_Hollowfen/Scripts/Editor/DataImporter.cs` | One-shot editor utility that parses JSON dumps in `Hollowfen-Unity/Temp/` and recreates the 30 + 16 + 1 SO assets. Useful when web data changes — re-export JSON, run via `execute_code`, re-import. |
+
+#### Image assets
+
+PNGs from `/public` are imported under `_Hollowfen/UI/{StoryCards,Mushrooms,Characters}/` (47 files), all configured Sprite (2D and UI). Sprite refs are wired into the SOs by `DataImporter`.
+
+#### Settings: 4 tabs
+
+`SettingsScreen` now cycles 4 tabs: AUDIO · GRAPHICS · CONTROLS · CREDITS. The Credits panel was cloned from AudioPanel and populated with placeholder copy. `LB`/`RB` cycle through all four (mod 4). Credits is no longer a top-level main-menu button.
+
+#### Main menu reshape
+
+Main menu's `NavRow` now reads `Continue · Story · Wren · Field Guide · Settings` with gold `|` dividers between each, left-aligned with the New Game CTA above. Credits moved into Settings (above). `Quit` is a floating bottom-left button (`Btn_Quit_Floating`), muted red `#A04338` italic on transparent bg, hover/focus glides to brighter red `#E36B5E` with a 6% scale via `FocusHighlight` (Button.transition is `None` so the legacy ColorBlock doesn't fight the FH animation).
+
+#### Conventions / gotchas worth remembering
+
+- **All UI built programmatically.** The screen GameObjects in `Scene_MainMenu` are essentially empty Canvas hosts with the screen script + `[SerializeField]` database refs. `OnInitialize` builds everything. `_built` flag prevents rebuilding on subsequent OnInitialize calls. Means re-running the scene rebuilds from current code — no prefabs to keep in sync.
+- **`FocusHighlight._baseColor` caches at Awake.** When you reassign `_targetGraphic` via reflection AFTER AddComponent, the original target's color is already cached and will be painted onto the new target on first state change. Symptom: a dark/light overlay appears across the whole control. Fix: also set `_baseColor` via reflection **and** snap the target's color to the new resting value immediately. Story / Field Guide cards do this for their `FocusGlow` overlay images.
+- **`Outline` is a `BaseMeshEffect`, not a `Graphic`.** Reflection-assigning it to `FocusHighlight._targetGraphic` throws `ArgumentException` — use a real Graphic (Image) overlay instead.
+- **`Mask` + a near-transparent Image clips everything.** A scroll viewport using `Mask` with `Image.color = (0,0,0,0.001)` produces zero visible mask area → all children clipped. Use `RectMask2D` (rect-based, no Graphic dependency) for scroll viewports.
+- **TMP everywhere on these pages, but Georgia loads via `AssetDatabase` editor-only.** `UICanvasUtil.HeadingFont` uses `#if UNITY_EDITOR` AssetDatabase to find Georgia SDF. For Steam builds, either move Georgia SDF into a `Resources/` folder or wire it as a serialized field on the screens.
+- **Localization IDs are stamped on every SO** (`story.<id>.title`, `mushroom.<id>.name`, etc.) but the screens currently read raw fields directly. Wiring through `Localization.Get(id)` is a follow-up — needs the LUT entries added first.
+
 ### Map system
 
 A mini-map widget plus a toggleable full-screen map in `Scene_Hollowfen`, both rendering the actual 3D world via secondary orthographic cameras → RenderTextures → UI. A Skyrim-style compass strip sits at the top of the gameplay HUD.

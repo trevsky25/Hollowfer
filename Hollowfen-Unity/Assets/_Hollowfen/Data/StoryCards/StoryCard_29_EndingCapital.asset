@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e87372d7e93ba463eb87888088361dca, type: 3}
+  m_Name: StoryCard_29_EndingCapital
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.StoryCardData
+  _id: ending_capital
+  _act: Endings
+  _scene: Ending C
+  _title: The Capital
+  _subtitle: Wren leaves with Theo. Hollowfen becomes legend.
+  _body: "Wren goes with Theo. Her kitchen in the Capital is famous within a year,
+    infamous within three. The Hollow is a place she talks about quietly to a cook
+    over wine, the place where, briefly, things were saved. Hollin stays and takes
+    Almy's mantle. Edda writes letters. Wren writes back, less every winter \u2014
+    she catches herself doing what her father did, and stops, and starts again."
+  _wrenNote: 'I left because there was a door open. I am writing this on a table
+    that does not belong to my family. I cooked the goldfoot stew tonight. The chef
+    across from me asked where the recipe came from. I said: a place I am from.'
+  _beats:
+  - Wren leaves with Theo for the Capital.
+  - Her name becomes synonymous with a moment Hollowfen had.
+  - Hollin remains and continues the foraging lineage.
+  _image: {fileID: 21300000, guid: 0aa6004dbb0184c1ca22640ae57c9295, type: 3}
+  _unlockAt: 26
+  _questId: endingCapital
+  _displayNameId: story.ending_capital.title
+  _descriptionId: story.ending_capital.body

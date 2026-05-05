@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fbeeb9dfd308426da67b82545b339a0, type: 3}
+  m_Name: Mushroom_06_DestroyingAngel
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.MushroomFieldGuideData
+  _id: destroyingAngel
+  _commonName: Destroying Angel
+  _latinName: Amanita virosa
+  _edibility: 1
+  _edibilityLabel: Deadly
+  _description: Pure white and elegant. Among the deadliest mushrooms in the world,
+    containing the same liver-destroying amatoxins as the Death Cap. Easily mistaken
+    for the edible Field Mushroom, especially when young.
+  _idFeatures:
+  - "Entirely pure white \u2014 cap, gills, stem, all white"
+  - Cap convex when young, expanding to flat with maturity, often umbonate
+  - White FREE gills (never pink, never brown)
+  - White ring (annulus) on the upper stem
+  - "BULBOUS VOLVA at the base \u2014 sac-like, often hidden in soil or moss"
+  - White spore print
+  _habitat: "Mycorrhizal with broadleaf trees \u2014 birch, beech, oak. Often in
+    mixed woodland edges."
+  _season: Mid-summer through autumn
+  _lookalikes: "Field Mushroom (Agaricus campestris) \u2014 EDIBLE, but has PINK
+    or BROWN gills (never white) and no volva. Horse Mushroom (A. arvensis) \u2014
+    edible, also has dark gills. The unchanging white gills of Destroying Angel are
+    the universal warning."
+  _notes: 'Together with Death Cap, accounts for nearly all fatal mushroom poisonings
+    in temperate regions. The same delayed-onset pattern: 6-12 hours of nothing,
+    then violent illness, then a fake recovery, then liver failure. Treat any all-white
+    gilled mushroom with extreme suspicion.'
+  _photo: {fileID: 21300000, guid: a74608848eb6942deb4c8b7a8485083b, type: 3}
+  _photoCredit: Wikimedia Commons
+  _displayNameId: mushroom.destroyingAngel.name
+  _descriptionId: mushroom.destroyingAngel.description

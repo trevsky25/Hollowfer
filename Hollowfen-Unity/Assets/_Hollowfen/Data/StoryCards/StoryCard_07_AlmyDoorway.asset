@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e87372d7e93ba463eb87888088361dca, type: 3}
+  m_Name: StoryCard_07_AlmyDoorway
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.StoryCardData
+  _id: almy_doorway
+  _act: Act I
+  _scene: "Scene 7 \u2014 Act break"
+  _title: A Knock at the Door
+  _subtitle: Sister Almy stands at the mill threshold the next morning.
+  _body: "Sister Almy doesn't make small talk. She watched Wren forage yesterday
+    \u2014 picked the goldfoots and didn't pick the false ones beside them \u2014
+    and her father couldn't have taught her that, because he didn't know it. There
+    is a chair pulled out at the kitchen table before Wren has time to say good morning."
+  _wrenNote: She said my grandmother's name like a key turning. I don't remember
+    my grandmother. Apparently my hands do.
+  _beats:
+  - Sister Almy arrives unannounced at the mill.
+  - She tells Wren her grandmother knew the old foraging lore.
+  - Wren's personal hook becomes a generational one.
+  _image: {fileID: 21300000, guid: 9a23bc8e44cd14c389e35c4f5acbdf44, type: 3}
+  _unlockAt: 6
+  _questId: meetAlmy
+  _displayNameId: story.almy_doorway.title
+  _descriptionId: story.almy_doorway.body

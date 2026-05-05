@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fbeeb9dfd308426da67b82545b339a0, type: 3}
+  m_Name: Mushroom_10_WoodEar
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.MushroomFieldGuideData
+  _id: woodEar
+  _commonName: Wood Ear
+  _latinName: Auricularia auricula-judae
+  _edibility: 0
+  _edibilityLabel: "Edible \u2014 stew"
+  _description: A soft, ear-shaped jelly fungus that appears after rain on fallen
+    branches and old elder or willow wood. It looks more like a folded scrap of leather
+    than a cap-and-stem mushroom, but in broth it becomes silky, dark, and deeply
+    comforting.
+  _idFeatures:
+  - Ear-like folded cap, brown to smoke-gray
+  - Rubbery texture rather than brittle flesh
+  - No true stem
+  - Grows directly from damp dead logs
+  _habitat: Rotting willow, alder, and fallen branches in damp woods
+  _season: Most common after rain
+  _lookalikes: Other jelly fungi. Avoid firm brackets with pores, moldy growth on
+    treated wood, or anything growing from painted lumber.
+  _notes: Wood Ear teaches Wren that not every mushroom has a stem. Look for the
+    rubbery fold, the damp deadwood, and the absence of true gills.
+  _photo: {fileID: 21300000, guid: 1a058e6ecfc4245769e8309e594a44cd, type: 3}
+  _photoCredit: 
+  _displayNameId: mushroom.woodEar.name
+  _descriptionId: mushroom.woodEar.description

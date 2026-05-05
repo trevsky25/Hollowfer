@@ -12,6 +12,9 @@ namespace Hollowfen.UI
         [SerializeField] private Button _settingsButton;
         [SerializeField] private Button _creditsButton;
         [SerializeField] private Button _quitButton;
+        [SerializeField] private Button _storyButton;
+        [SerializeField] private Button _wrenButton;
+        [SerializeField] private Button _fieldGuideButton;
 
         public override GameObject DefaultSelected =>
             HasAnySave() && _continueButton != null
@@ -26,6 +29,24 @@ namespace Hollowfen.UI
             if (_settingsButton != null) _settingsButton.onClick.AddListener(OnSettings);
             if (_creditsButton  != null) _creditsButton.onClick.AddListener(OnCredits);
             if (_quitButton     != null) _quitButton.onClick.AddListener(OnQuit);
+            if (_storyButton      != null) _storyButton.onClick.AddListener(OnStory);
+            if (_wrenButton       != null) _wrenButton.onClick.AddListener(OnWren);
+            if (_fieldGuideButton != null) _fieldGuideButton.onClick.AddListener(OnFieldGuide);
+        }
+
+        private void OnStory()
+        {
+            if (UIManager.Instance != null) UIManager.Instance.OpenScreen("story");
+        }
+
+        private void OnWren()
+        {
+            if (UIManager.Instance != null) UIManager.Instance.OpenScreen("wren");
+        }
+
+        private void OnFieldGuide()
+        {
+            if (UIManager.Instance != null) UIManager.Instance.OpenScreen("field-guide");
         }
 
         public override void OnOpen()

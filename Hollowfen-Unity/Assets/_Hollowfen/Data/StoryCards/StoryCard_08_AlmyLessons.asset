@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e87372d7e93ba463eb87888088361dca, type: 3}
+  m_Name: StoryCard_08_AlmyLessons
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.StoryCardData
+  _id: almy_lessons
+  _act: Act II
+  _scene: Scene 1
+  _title: The Vine-Tender's Lessons
+  _subtitle: Almy teaches what was meant for an apprentice she never had.
+  _body: "They sit in Almy's back garden among raised beds of unfamiliar herbs, and
+    Almy talks about her own mentor \u2014 the last hedge-witch of Hollowfen, dead
+    a generation. Three things her grandmother taught her, three things she was forbidden
+    to pass on to anyone but Wren. By the end of the morning, Wren has put her first
+    wood-ear log to soak."
+  _wrenNote: 'I asked Almy why she was teaching me, all at once, after a generation
+    of silence. She said: because you came back. Because nobody else has, in twenty-six
+    years.'
+  _beats:
+  - Sister Almy reveals she was the unfinished apprentice of the old hedge-witch.
+  - She teaches Wren the basics of mushroom cultivation.
+  - Wren plants her first crop in the mill's back yard.
+  _image: {fileID: 21300000, guid: 1a7fc5bcf0f7141acaa3f7e7e22421fc, type: 3}
+  _unlockAt: 7
+  _questId: almyTeach
+  _displayNameId: story.almy_lessons.title
+  _descriptionId: story.almy_lessons.body
