@@ -23,12 +23,25 @@ namespace Hollowfen.Foraging
         private RectTransform _previewBgRT;
         private TMP_Text _eyebrow;
         private TMP_Text _title;
+        private TMP_Text _titleRule;
         private TMP_Text _latin;
         private Image _edibilityDot;
         private TMP_Text _edibilityLabel;
+        private RectTransform _edibilityChip;
         private TMP_Text _body;
+        private RectTransform _statStrip;
+        private TMP_Text _statHabitat;
+        private TMP_Text _statSeason;
+        private TMP_Text _statLookalikes;
+        private TMP_Text _foragerNote;
         private Button _forageBtn;
         private Button _leaveBtn;
+        private TMP_Text _forageGlyph;
+        private TMP_Text _leaveGlyph;
+
+        [Header("Inspect art")]
+        [SerializeField, Tooltip("Optional parchment texture used as the panel background. Falls back to a procedural cream when null.")]
+        private Sprite _parchmentSprite;
 
         [Header("Inspect controls")]
         [SerializeField, Tooltip("Mouse-drag rotation: degrees per pixel.")]
@@ -116,7 +129,8 @@ namespace Hollowfen.Foraging
             bool discovered = MushroomDiscovery.IsDiscovered(data.Id);
             ApplyContent(data, discovered);
 
-            if (MushroomPreviewer.Instance != null) MushroomPreviewer.Instance.Show(data);
+            if (MushroomPreviewer.Instance != null)
+                MushroomPreviewer.Instance.Show(data, !discovered);
 
             _canvas.enabled = true;
             _group.alpha = 1f;
@@ -193,6 +207,9 @@ namespace Hollowfen.Foraging
         private void Update()
         {
             if (!IsOpen) return;
+
+            // Hot-swap button glyphs to whatever pad the player is using right now.
+            RefreshButtonGlyphs();
 
             // Keep gamepad navigation alive: if the EventSystem deselected (e.g., mouse moved off a button),
             // restore the last button we focused so left/right still toggles Forage <-> Leave.
@@ -279,204 +296,487 @@ namespace Hollowfen.Foraging
                 _title.text = data.CommonName;
                 _latin.text = data.LatinName;
                 _latin.gameObject.SetActive(!string.IsNullOrEmpty(data.LatinName));
-                _edibilityDot.color = HollowfenPalette.Edibility(data.Edibility);
-                _edibilityLabel.color = HollowfenPalette.Edibility(data.Edibility);
+
+                var ediColor = HollowfenPalette.Edibility(data.Edibility);
+                _edibilityDot.color = ediColor;
+                _edibilityLabel.color = HollowfenPalette.InkDeep;
                 _edibilityLabel.text = data.Edibility.ToString().ToUpperInvariant();
-                _edibilityDot.transform.parent.gameObject.SetActive(true);
+                if (_edibilityChip != null) _edibilityChip.gameObject.SetActive(true);
+
                 _body.text = string.IsNullOrEmpty(data.Description) ? "" : data.Description;
+
+                if (_statStrip != null)
+                {
+                    bool any = !string.IsNullOrEmpty(data.Habitat)
+                            || !string.IsNullOrEmpty(data.Season)
+                            || !string.IsNullOrEmpty(data.Lookalikes);
+                    _statStrip.gameObject.SetActive(any);
+                    SetStat(_statHabitat, "HABITAT", data.Habitat);
+                    SetStat(_statSeason, "SEASON", data.Season);
+                    SetStat(_statLookalikes, "LOOK-ALIKES", data.Lookalikes);
+                }
+
+                if (_foragerNote != null)
+                {
+                    bool hasNote = !string.IsNullOrEmpty(data.Notes);
+                    _foragerNote.gameObject.SetActive(hasNote);
+                    if (hasNote) _foragerNote.text = "“" + data.Notes + "”";
+                }
             }
             else
             {
                 _eyebrow.text = Hollowfen.Localization.Get("inspect.unknown.eyebrow");
                 _title.text = Hollowfen.Localization.Get("inspect.unknown.title");
                 _latin.gameObject.SetActive(false);
-                _edibilityDot.transform.parent.gameObject.SetActive(false);
+                if (_edibilityChip != null) _edibilityChip.gameObject.SetActive(false);
                 _body.text = Hollowfen.Localization.Get("inspect.unknown.body");
+                if (_statStrip != null) _statStrip.gameObject.SetActive(false);
+                if (_foragerNote != null) _foragerNote.gameObject.SetActive(false);
             }
         }
+
+        private void RefreshButtonGlyphs()
+        {
+            if (_forageGlyph == null || _leaveGlyph == null) return;
+            string forage, leave;
+            ResolveGlyphs(out forage, out leave);
+            if (_forageGlyph.text != forage) _forageGlyph.text = forage;
+            if (_leaveGlyph.text  != leave)  _leaveGlyph.text  = leave;
+        }
+
+        // Detects the most recently used gamepad and picks the right brand glyphs.
+        // Falls back to keyboard prompts when no pad is connected.
+        private static void ResolveGlyphs(out string forage, out string leave)
+        {
+            // Forage shortcut = Player/Interact (buttonNorth) → Triangle (PS) / Y (Xbox) / X (Switch).
+            // Leave shortcut  = UI/Cancel (buttonEast)       → Circle   (PS) / B (Xbox) / A (Switch).
+            var pad = UnityEngine.InputSystem.Gamepad.current;
+            if (pad == null)
+            {
+                forage = "E";
+                leave = "Esc";
+                return;
+            }
+            string n = pad.GetType().Name;
+            string product = pad.description.product != null ? pad.description.product.ToLowerInvariant() : "";
+
+            bool isPS = n.Contains("DualSense") || n.Contains("DualShock") || n.Contains("PS4") || n.Contains("PS5")
+                     || product.Contains("dualsense") || product.Contains("dualshock") || product.Contains("playstation")
+                     || product.Contains("wireless controller"); // Sony's marketing name on macOS HID
+            bool isXbox = n.Contains("XInput") || n.Contains("Xbox")
+                       || product.Contains("xbox");
+            bool isSwitch = n.Contains("Switch") || n.Contains("Joy")
+                         || product.Contains("nintendo") || product.Contains("pro controller");
+
+            if (isPS)
+            {
+                forage = "△";
+                leave = "○";
+            }
+            else if (isXbox)
+            {
+                forage = "Y";
+                leave = "B";
+            }
+            else if (isSwitch)
+            {
+                // Nintendo: top button is X, east button is A (note: SOUTH is B on Switch — face buttons swapped vs Xbox)
+                forage = "X";
+                leave = "A";
+            }
+            else
+            {
+                // Generic gamepad — default to PS since DualSense is what's commonly used here.
+                forage = "△";
+                leave = "○";
+            }
+        }
+
+        private static void SetStat(TMP_Text t, string label, string value)
+        {
+            if (t == null) return;
+            if (string.IsNullOrEmpty(value)) { t.gameObject.SetActive(false); return; }
+            t.gameObject.SetActive(true);
+            string goldHex = ColorUtility.ToHtmlStringRGB(HollowfenPalette.Gold);
+            string inkHex = ColorUtility.ToHtmlStringRGB(InkSoftDark);
+            t.richText = true;
+            t.text = $"<size=11><color=#{goldHex}><b>{label}</b></color></size>\n<color=#{inkHex}>{value}</color>";
+        }
+
+        private static readonly Color InkSoftDark = new Color(0.20f, 0.16f, 0.12f, 1f);
+        private static readonly Color BodyInk     = new Color(0.18f, 0.14f, 0.10f, 1f);
 
         private void BuildIfNeeded()
         {
             if (_built) return;
             _built = true;
 
-            // Scrim
-            var scrim = UICanvasUtil.NewImage("Scrim", transform, new Color(0f, 0f, 0f, 0.72f), true);
+            // Full-screen dark scrim — gameplay reads but the panel pops
+            var scrim = UICanvasUtil.NewImage("Scrim", transform, new Color(0f, 0f, 0f, 0.78f), true);
             UICanvasUtil.Stretch((RectTransform)scrim.transform);
 
-            // Center panel
-            var panel = UICanvasUtil.NewImage("Panel", transform, HollowfenPalette.InkSoft, true);
+            // Panel: 1500×940 parchment journal page (taller so buttons sit cleanly below preview)
+            const float panelW = 1500f;
+            const float panelH = 940f;
+            const float pad = 56f;
+
+            var panel = new GameObject("Panel", typeof(RectTransform));
+            panel.transform.SetParent(transform, false);
+            var panelImg = panel.AddComponent<Image>();
+            panelImg.raycastTarget = true;
+            if (_parchmentSprite != null)
+            {
+                panelImg.sprite = _parchmentSprite;
+                panelImg.color = Color.white;
+                panelImg.preserveAspect = false;
+                panelImg.type = Image.Type.Simple;
+            }
+            else
+            {
+                panelImg.color = HollowfenPalette.Parchment;
+            }
             var panelRT = (RectTransform)panel.transform;
             panelRT.anchorMin = new Vector2(0.5f, 0.5f);
             panelRT.anchorMax = new Vector2(0.5f, 0.5f);
             panelRT.pivot = new Vector2(0.5f, 0.5f);
-            panelRT.sizeDelta = new Vector2(1280f, 720f);
+            panelRT.sizeDelta = new Vector2(panelW, panelH);
             panelRT.anchoredPosition = Vector2.zero;
 
-            // Subtle gold border at top of panel
-            var rule = UICanvasUtil.NewImage("TopRule", panel.transform, HollowfenPalette.GoldFaint, false);
-            var ruleRT = (RectTransform)rule.transform;
-            ruleRT.anchorMin = new Vector2(0f, 1f);
-            ruleRT.anchorMax = new Vector2(1f, 1f);
-            ruleRT.pivot = new Vector2(0.5f, 1f);
-            ruleRT.sizeDelta = new Vector2(-64f, 1.5f);
-            ruleRT.anchoredPosition = new Vector2(0f, -28f);
+            // Vignette overlay — darkens the corners slightly so the parchment reads aged
+            var vignette = UICanvasUtil.NewImage("Vignette", panel.transform, new Color(0f, 0f, 0f, 0.18f), false);
+            var vignetteImg = vignette.GetComponent<Image>();
+            UICanvasUtil.Stretch((RectTransform)vignette.transform);
+            // Replace flat with a vertical gradient (top + bottom darker, mid clear)
+            vignetteImg.sprite = UICanvasUtil.MakeVerticalGradient(new[]
+            {
+                new UICanvasUtil.GradientStop(0.00f, new Color(0f, 0f, 0f, 0.32f)),
+                new UICanvasUtil.GradientStop(0.18f, new Color(0f, 0f, 0f, 0.00f)),
+                new UICanvasUtil.GradientStop(0.82f, new Color(0f, 0f, 0f, 0.00f)),
+                new UICanvasUtil.GradientStop(1.00f, new Color(0f, 0f, 0f, 0.28f)),
+            }, 256);
+            vignetteImg.color = Color.white;
 
-            // Left: 3D preview
-            var previewBg = UICanvasUtil.NewImage("PreviewBg", panel.transform, new Color(0.040f, 0.035f, 0.028f, 1f), false);
+            // Double-rule frame inside the panel (outer + inner gold lines, both faint)
+            BuildPanelFrame(panelRT, panelW, panelH);
+
+            // Eyebrow strip at the very top: "FIELD JOURNAL — SPECIMEN"
+            var topEyebrow = UICanvasUtil.NewEyebrow("TopEyebrow", panel.transform,
+                "FIELD JOURNAL  ·  SPECIMEN", 13f, HollowfenPalette.Gold, TMPro.TextAlignmentOptions.Center);
+            var teRT = topEyebrow.rectTransform;
+            teRT.anchorMin = new Vector2(0f, 1f);
+            teRT.anchorMax = new Vector2(1f, 1f);
+            teRT.pivot = new Vector2(0.5f, 1f);
+            teRT.sizeDelta = new Vector2(0f, 18f);
+            teRT.anchoredPosition = new Vector2(0f, -22f);
+
+            // === LEFT: 3D PREVIEW ===
+            // Frame around the preview area — thin gold inset. Sits in the upper portion of the panel
+            // so the centered button row below has clear vertical room.
+            const float previewSize = 700f;
+            const float previewYOffset = 60f;
+            var previewFrame = UICanvasUtil.NewImage("PreviewFrame", panel.transform, HollowfenPalette.GoldFaint, false);
+            var pfRT = (RectTransform)previewFrame.transform;
+            pfRT.anchorMin = new Vector2(0f, 0.5f);
+            pfRT.anchorMax = new Vector2(0f, 0.5f);
+            pfRT.pivot = new Vector2(0f, 0.5f);
+            pfRT.sizeDelta = new Vector2(previewSize + 4f, previewSize + 4f);
+            pfRT.anchoredPosition = new Vector2(pad - 2f, previewYOffset - 2f);
+
+            var previewBg = UICanvasUtil.NewImage("PreviewBg", panel.transform, HollowfenPalette.Parchment, false);
             _previewBgRT = (RectTransform)previewBg.transform;
             _previewBgRT.anchorMin = new Vector2(0f, 0.5f);
             _previewBgRT.anchorMax = new Vector2(0f, 0.5f);
             _previewBgRT.pivot = new Vector2(0f, 0.5f);
-            _previewBgRT.sizeDelta = new Vector2(560f, 560f);
-            _previewBgRT.anchoredPosition = new Vector2(48f, 28f);
+            _previewBgRT.sizeDelta = new Vector2(previewSize, previewSize);
+            _previewBgRT.anchoredPosition = new Vector2(pad, previewYOffset);
 
             var previewGO = new GameObject("Preview", typeof(RectTransform));
             previewGO.transform.SetParent(previewBg.transform, false);
             _previewImage = previewGO.AddComponent<RawImage>();
             _previewImage.raycastTarget = false;
             UICanvasUtil.Stretch((RectTransform)previewGO.transform);
-            ((RectTransform)previewGO.transform).offsetMin = new Vector2(8f, 8f);
-            ((RectTransform)previewGO.transform).offsetMax = new Vector2(-8f, -8f);
             if (MushroomPreviewer.Instance != null)
                 _previewImage.texture = MushroomPreviewer.Instance.RenderTexture;
 
-            // Hint inside the preview frame, bottom-center, with a subtle dark scrim for legibility
-            var hintScrim = UICanvasUtil.NewImage("HintScrim", previewBg.transform, new Color(0f, 0f, 0f, 0.40f), false);
-            var hintScrimRT = (RectTransform)hintScrim.transform;
-            hintScrimRT.anchorMin = new Vector2(0f, 0f);
-            hintScrimRT.anchorMax = new Vector2(1f, 0f);
-            hintScrimRT.pivot = new Vector2(0.5f, 0f);
-            hintScrimRT.sizeDelta = new Vector2(-16f, 26f);
-            hintScrimRT.anchoredPosition = new Vector2(0f, 8f);
-
+            // Hint moved to TOP of preview frame so it never collides with the centered button row below.
+            var hintScrim = UICanvasUtil.NewImage("HintScrim", previewBg.transform, new Color(0f, 0f, 0f, 0.28f), false);
+            var hsRT = (RectTransform)hintScrim.transform;
+            hsRT.anchorMin = new Vector2(0f, 1f);
+            hsRT.anchorMax = new Vector2(1f, 1f);
+            hsRT.pivot = new Vector2(0.5f, 1f);
+            hsRT.sizeDelta = new Vector2(0f, 26f);
+            hsRT.anchoredPosition = Vector2.zero;
             var hint = UICanvasUtil.NewBody("Hint", hintScrim.transform,
-                "Drag · Scroll  |  R-Stick · LT/RT",
-                13f, HollowfenPalette.Parchment,
+                "Drag · Scroll   ·   R-Stick · LT/RT",
+                12f, HollowfenPalette.Cream,
                 TMPro.FontStyles.Italic, TMPro.TextAlignmentOptions.Center);
             UICanvasUtil.Stretch(hint.rectTransform);
 
-            // Right: text column
+            // === RIGHT: TEXT COLUMN ===
             var col = UICanvasUtil.NewRect("TextCol", panel.transform);
+            const float colLeft = pad + previewSize + 56f;
             col.anchorMin = new Vector2(0f, 0f);
             col.anchorMax = new Vector2(1f, 1f);
-            col.pivot = new Vector2(0f, 0.5f);
-            col.offsetMin = new Vector2(656f, 120f);
-            col.offsetMax = new Vector2(-48f, -76f);
+            col.pivot = new Vector2(0f, 1f);
+            col.offsetMin = new Vector2(colLeft, 130f);
+            col.offsetMax = new Vector2(-pad, -78f);
 
-            _eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", col, "", 18f, HollowfenPalette.Gold);
-            var eyebrowRT = _eyebrow.rectTransform;
-            eyebrowRT.anchorMin = new Vector2(0f, 1f);
-            eyebrowRT.anchorMax = new Vector2(1f, 1f);
-            eyebrowRT.pivot = new Vector2(0f, 1f);
-            eyebrowRT.sizeDelta = new Vector2(0f, 24f);
-            eyebrowRT.anchoredPosition = Vector2.zero;
+            float y = 0f;
 
-            _title = UICanvasUtil.NewHeading("Title", col, "", 64f, HollowfenPalette.Cream,
+            // Eyebrow (edibility category, gold uppercase, letter-spaced)
+            _eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", col, "", 14f, HollowfenPalette.Gold);
+            var eRT = _eyebrow.rectTransform;
+            eRT.anchorMin = new Vector2(0f, 1f); eRT.anchorMax = new Vector2(1f, 1f);
+            eRT.pivot = new Vector2(0f, 1f);
+            eRT.sizeDelta = new Vector2(0f, 18f);
+            eRT.anchoredPosition = new Vector2(0f, y);
+            y -= 30f;
+
+            // Title (Georgia serif, dark on parchment)
+            _title = UICanvasUtil.NewHeading("Title", col, "", 68f, HollowfenPalette.InkDeep,
                 TMPro.FontStyles.Normal, TMPro.TextAlignmentOptions.TopLeft);
-            var titleRT = _title.rectTransform;
-            titleRT.anchorMin = new Vector2(0f, 1f);
-            titleRT.anchorMax = new Vector2(1f, 1f);
-            titleRT.pivot = new Vector2(0f, 1f);
-            titleRT.sizeDelta = new Vector2(0f, 80f);
-            titleRT.anchoredPosition = new Vector2(0f, -28f);
+            var tRT = _title.rectTransform;
+            tRT.anchorMin = new Vector2(0f, 1f); tRT.anchorMax = new Vector2(1f, 1f);
+            tRT.pivot = new Vector2(0f, 1f);
+            tRT.sizeDelta = new Vector2(0f, 80f);
+            tRT.anchoredPosition = new Vector2(0f, y);
+            y -= 88f;
 
+            // Gold underline rule
+            var underline = UICanvasUtil.NewImage("TitleRule", col, HollowfenPalette.Gold, false);
+            var urRT = (RectTransform)underline.transform;
+            urRT.anchorMin = new Vector2(0f, 1f); urRT.anchorMax = new Vector2(0f, 1f);
+            urRT.pivot = new Vector2(0f, 1f);
+            urRT.sizeDelta = new Vector2(120f, 2f);
+            urRT.anchoredPosition = new Vector2(0f, y);
+            y -= 18f;
+
+            // Latin (italic moss)
             _latin = UICanvasUtil.NewBody("Latin", col, "", 22f, HollowfenPalette.Moss,
                 TMPro.FontStyles.Italic, TMPro.TextAlignmentOptions.TopLeft);
-            var latinRT = _latin.rectTransform;
-            latinRT.anchorMin = new Vector2(0f, 1f);
-            latinRT.anchorMax = new Vector2(1f, 1f);
-            latinRT.pivot = new Vector2(0f, 1f);
-            latinRT.sizeDelta = new Vector2(0f, 28f);
-            latinRT.anchoredPosition = new Vector2(0f, -116f);
+            var lRT = _latin.rectTransform;
+            lRT.anchorMin = new Vector2(0f, 1f); lRT.anchorMax = new Vector2(1f, 1f);
+            lRT.pivot = new Vector2(0f, 1f);
+            lRT.sizeDelta = new Vector2(0f, 30f);
+            lRT.anchoredPosition = new Vector2(0f, y);
+            y -= 36f;
 
-            // Edibility chip
-            var chip = UICanvasUtil.NewRect("Edibility", col);
-            chip.anchorMin = new Vector2(0f, 1f);
-            chip.anchorMax = new Vector2(0f, 1f);
-            chip.pivot = new Vector2(0f, 1f);
-            chip.sizeDelta = new Vector2(280f, 24f);
-            chip.anchoredPosition = new Vector2(0f, -156f);
+            // Edibility chip — pill: dot inside, label inside, parchment with gold border feel
+            _edibilityChip = UICanvasUtil.NewRect("EdibilityChip", col);
+            _edibilityChip.anchorMin = new Vector2(0f, 1f); _edibilityChip.anchorMax = new Vector2(0f, 1f);
+            _edibilityChip.pivot = new Vector2(0f, 1f);
+            _edibilityChip.sizeDelta = new Vector2(220f, 30f);
+            _edibilityChip.anchoredPosition = new Vector2(0f, y);
 
-            var dotGO = UICanvasUtil.NewImage("Dot", chip, Color.white, false);
+            var chipBg = UICanvasUtil.NewImage("ChipBg", _edibilityChip, new Color(0f, 0f, 0f, 0.06f), false);
+            UICanvasUtil.Stretch((RectTransform)chipBg.transform);
+
+            var dotGO = UICanvasUtil.NewImage("Dot", _edibilityChip, Color.white, false);
             var dotRT = (RectTransform)dotGO.transform;
-            dotRT.anchorMin = new Vector2(0f, 0.5f);
-            dotRT.anchorMax = new Vector2(0f, 0.5f);
+            dotRT.anchorMin = new Vector2(0f, 0.5f); dotRT.anchorMax = new Vector2(0f, 0.5f);
             dotRT.pivot = new Vector2(0f, 0.5f);
             dotRT.sizeDelta = new Vector2(12f, 12f);
-            dotRT.anchoredPosition = new Vector2(0f, 0f);
+            dotRT.anchoredPosition = new Vector2(12f, 0f);
             _edibilityDot = dotGO.GetComponent<Image>();
 
-            _edibilityLabel = UICanvasUtil.NewEyebrow("EdibilityLabel", chip, "", 16f, Color.white);
+            _edibilityLabel = UICanvasUtil.NewEyebrow("EdibilityLabel", _edibilityChip, "", 14f, HollowfenPalette.InkDeep);
             var elRT = _edibilityLabel.rectTransform;
-            elRT.anchorMin = new Vector2(0f, 0.5f);
-            elRT.anchorMax = new Vector2(1f, 0.5f);
+            elRT.anchorMin = new Vector2(0f, 0.5f); elRT.anchorMax = new Vector2(1f, 0.5f);
             elRT.pivot = new Vector2(0f, 0.5f);
-            elRT.sizeDelta = new Vector2(-22f, 24f);
-            elRT.anchoredPosition = new Vector2(22f, 0f);
+            elRT.sizeDelta = new Vector2(-32f, 24f);
+            elRT.anchoredPosition = new Vector2(32f, 0f);
+            y -= 44f;
 
-            _body = UICanvasUtil.NewBody("Body", col, "", 22f, HollowfenPalette.Parchment,
+            // Body description (dark on parchment)
+            _body = UICanvasUtil.NewBody("Body", col, "", 21f, BodyInk,
                 TMPro.FontStyles.Normal, TMPro.TextAlignmentOptions.TopLeft);
-            var bodyRT = _body.rectTransform;
-            bodyRT.anchorMin = new Vector2(0f, 0f);
-            bodyRT.anchorMax = new Vector2(1f, 1f);
-            bodyRT.pivot = new Vector2(0f, 1f);
-            bodyRT.offsetMin = new Vector2(0f, 100f);
-            bodyRT.offsetMax = new Vector2(0f, -200f);
+            var bRT = _body.rectTransform;
+            bRT.anchorMin = new Vector2(0f, 1f); bRT.anchorMax = new Vector2(1f, 1f);
+            bRT.pivot = new Vector2(0f, 1f);
+            bRT.sizeDelta = new Vector2(0f, 200f);
+            bRT.anchoredPosition = new Vector2(0f, y);
+            _body.lineSpacing = 8f;
+            y -= 220f;
 
-            // Buttons row
+            // Stat strip — three columns: HABITAT / SEASON / LOOK-ALIKES.
+            // Height sized for the worst-case stat value (LOOK-ALIKES tends to run long with safety copy).
+            const float statStripH = 170f;
+            _statStrip = UICanvasUtil.NewRect("StatStrip", col);
+            _statStrip.anchorMin = new Vector2(0f, 1f); _statStrip.anchorMax = new Vector2(1f, 1f);
+            _statStrip.pivot = new Vector2(0f, 1f);
+            _statStrip.sizeDelta = new Vector2(0f, statStripH);
+            _statStrip.anchoredPosition = new Vector2(0f, y);
+
+            // Top rule on stat strip
+            var statRule = UICanvasUtil.NewImage("StatRule", _statStrip, HollowfenPalette.GoldFaint, false);
+            var srRT = (RectTransform)statRule.transform;
+            srRT.anchorMin = new Vector2(0f, 1f); srRT.anchorMax = new Vector2(1f, 1f);
+            srRT.pivot = new Vector2(0.5f, 1f);
+            srRT.sizeDelta = new Vector2(0f, 1f);
+            srRT.anchoredPosition = Vector2.zero;
+
+            _statHabitat   = MakeStatColumn(_statStrip, 0f / 3f);
+            _statSeason    = MakeStatColumn(_statStrip, 1f / 3f);
+            _statLookalikes= MakeStatColumn(_statStrip, 2f / 3f);
+
+            y -= statStripH + 12f;
+
+            // Forager's note — italic gold pull-quote
+            _foragerNote = UICanvasUtil.NewBody("ForagerNote", col, "", 18f, HollowfenPalette.Gold,
+                TMPro.FontStyles.Italic, TMPro.TextAlignmentOptions.TopLeft);
+            var fnRT = _foragerNote.rectTransform;
+            fnRT.anchorMin = new Vector2(0f, 1f); fnRT.anchorMax = new Vector2(1f, 1f);
+            fnRT.pivot = new Vector2(0f, 1f);
+            fnRT.sizeDelta = new Vector2(0f, 80f);
+            fnRT.anchoredPosition = new Vector2(0f, y);
+            _foragerNote.lineSpacing = 6f;
+
+            // === BUTTONS ===
             var btnRow = UICanvasUtil.NewRect("Buttons", panel.transform);
-            btnRow.anchorMin = new Vector2(0.5f, 0f);
-            btnRow.anchorMax = new Vector2(0.5f, 0f);
+            btnRow.anchorMin = new Vector2(0.5f, 0f); btnRow.anchorMax = new Vector2(0.5f, 0f);
             btnRow.pivot = new Vector2(0.5f, 0f);
-            btnRow.sizeDelta = new Vector2(680f, 64f);
-            btnRow.anchoredPosition = new Vector2(0f, 32f);
+            btnRow.sizeDelta = new Vector2(720f, 78f);
+            btnRow.anchoredPosition = new Vector2(0f, 36f);
 
-            _forageBtn = MakeButton("ForageBtn", btnRow, Hollowfen.Localization.Get("inspect.btn.forage"),
-                HollowfenPalette.Gold, HollowfenPalette.InkDeep, new Vector2(-160f, 0f));
+            _forageBtn = MakeJournalButton("ForageBtn", btnRow,
+                Hollowfen.Localization.Get("inspect.btn.forage"),
+                HollowfenPalette.Gold, HollowfenPalette.InkDeep, true,
+                new Vector2(-176f, 0f), out _forageGlyph);
             _forageBtn.onClick.AddListener(OnForageClicked);
 
-            _leaveBtn = MakeButton("LeaveBtn", btnRow, Hollowfen.Localization.Get("inspect.btn.leave"),
-                new Color(0.30f, 0.27f, 0.22f, 1f), HollowfenPalette.Cream, new Vector2(160f, 0f));
+            _leaveBtn = MakeJournalButton("LeaveBtn", btnRow,
+                Hollowfen.Localization.Get("inspect.btn.leave"),
+                Color.white, HollowfenPalette.InkDeep, false,
+                new Vector2(176f, 0f), out _leaveGlyph);
             _leaveBtn.onClick.AddListener(OnLeaveClicked);
 
-            // Hook gamepad navigation Forage <-> Leave
-            var fNav = _forageBtn.navigation;
-            fNav.mode = Navigation.Mode.Explicit;
-            fNav.selectOnRight = _leaveBtn;
-            _forageBtn.navigation = fNav;
+            RefreshButtonGlyphs();
 
-            var lNav = _leaveBtn.navigation;
-            lNav.mode = Navigation.Mode.Explicit;
-            lNav.selectOnLeft = _forageBtn;
-            _leaveBtn.navigation = lNav;
+            var fNav = _forageBtn.navigation; fNav.mode = Navigation.Mode.Explicit;
+            fNav.selectOnRight = _leaveBtn; _forageBtn.navigation = fNav;
+            var lNav = _leaveBtn.navigation; lNav.mode = Navigation.Mode.Explicit;
+            lNav.selectOnLeft = _forageBtn; _leaveBtn.navigation = lNav;
         }
 
-        private static Button MakeButton(string name, RectTransform parent, string label, Color bg, Color fg, Vector2 anchored)
+        // Inner-frame double-rule: outer thin gold + inner thinner gold, both at panel-edge inset.
+        private static void BuildPanelFrame(RectTransform panelRT, float w, float h)
         {
-            var bgGO = UICanvasUtil.NewImage(name, parent, bg, true);
+            const float outerInset = 14f;
+            const float innerInset = 22f;
+            BuildRect(panelRT, "FrameOuter", outerInset, HollowfenPalette.GoldFaint, 1.5f);
+            BuildRect(panelRT, "FrameInner", innerInset, new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0.22f), 1f);
+        }
+
+        private static void BuildRect(RectTransform parent, string name, float inset, Color color, float thickness)
+        {
+            // Top
+            var top = UICanvasUtil.NewImage(name + ".Top", parent, color, false);
+            var tr = (RectTransform)top.transform;
+            tr.anchorMin = new Vector2(0f, 1f); tr.anchorMax = new Vector2(1f, 1f);
+            tr.pivot = new Vector2(0.5f, 1f);
+            tr.sizeDelta = new Vector2(-inset * 2f, thickness);
+            tr.anchoredPosition = new Vector2(0f, -inset);
+            // Bottom
+            var bot = UICanvasUtil.NewImage(name + ".Bot", parent, color, false);
+            var br = (RectTransform)bot.transform;
+            br.anchorMin = new Vector2(0f, 0f); br.anchorMax = new Vector2(1f, 0f);
+            br.pivot = new Vector2(0.5f, 0f);
+            br.sizeDelta = new Vector2(-inset * 2f, thickness);
+            br.anchoredPosition = new Vector2(0f, inset);
+            // Left
+            var left = UICanvasUtil.NewImage(name + ".Left", parent, color, false);
+            var lr = (RectTransform)left.transform;
+            lr.anchorMin = new Vector2(0f, 0f); lr.anchorMax = new Vector2(0f, 1f);
+            lr.pivot = new Vector2(0f, 0.5f);
+            lr.sizeDelta = new Vector2(thickness, -inset * 2f);
+            lr.anchoredPosition = new Vector2(inset, 0f);
+            // Right
+            var right = UICanvasUtil.NewImage(name + ".Right", parent, color, false);
+            var rr = (RectTransform)right.transform;
+            rr.anchorMin = new Vector2(1f, 0f); rr.anchorMax = new Vector2(1f, 1f);
+            rr.pivot = new Vector2(1f, 0.5f);
+            rr.sizeDelta = new Vector2(thickness, -inset * 2f);
+            rr.anchoredPosition = new Vector2(-inset, 0f);
+        }
+
+        private static TMP_Text MakeStatColumn(RectTransform parent, float anchorX)
+        {
+            var t = UICanvasUtil.NewBody("Stat", parent, "", 14f, BodyInk,
+                TMPro.FontStyles.Normal, TMPro.TextAlignmentOptions.TopLeft);
+            var rt = t.rectTransform;
+            rt.anchorMin = new Vector2(anchorX, 0f); rt.anchorMax = new Vector2(anchorX + 1f / 3f, 1f);
+            rt.pivot = new Vector2(0f, 1f);
+            rt.offsetMin = new Vector2(8f, 4f);
+            rt.offsetMax = new Vector2(-8f, -10f);
+            t.lineSpacing = 4f;
+            return t;
+        }
+
+        // Solid CTA button (Forage) vs outlined parchment button (Leave). Includes a small glyph pill on the left
+        // so users see exactly which controller button maps to it without leaving the screen.
+        // Returns the inner glyph TMP_Text via `out` so the caller can hot-swap PS/Xbox/keyboard glyphs.
+        private static Button MakeJournalButton(string name, RectTransform parent, string label,
+                                                Color bg, Color fg, bool isSolid, Vector2 anchored,
+                                                out TMP_Text glyphTextOut)
+        {
+            var bgGO = new GameObject(name, typeof(RectTransform));
+            bgGO.transform.SetParent(parent, false);
             var bgRT = (RectTransform)bgGO.transform;
-            bgRT.anchorMin = new Vector2(0.5f, 0.5f);
-            bgRT.anchorMax = new Vector2(0.5f, 0.5f);
+            bgRT.anchorMin = new Vector2(0.5f, 0.5f); bgRT.anchorMax = new Vector2(0.5f, 0.5f);
             bgRT.pivot = new Vector2(0.5f, 0.5f);
-            bgRT.sizeDelta = new Vector2(280f, 56f);
+            bgRT.sizeDelta = new Vector2(316f, 64f);
             bgRT.anchoredPosition = anchored;
 
+            var img = bgGO.AddComponent<Image>();
+            img.color = isSolid ? bg : new Color(bg.r, bg.g, bg.b, 0.15f);
+            img.raycastTarget = true;
+
+            // Outline ring for the non-solid (Leave) button
+            if (!isSolid)
+            {
+                var outline = UICanvasUtil.NewImage("Outline", bgRT, new Color(0f, 0f, 0f, 0f), false);
+                BuildRect((RectTransform)outline.transform, "Edge", 0f, HollowfenPalette.GoldFaint, 1.5f);
+                outline.transform.SetSiblingIndex(0);
+                UICanvasUtil.Stretch((RectTransform)outline.transform);
+            }
+
             var btn = bgGO.AddComponent<Button>();
-            var img = bgGO.GetComponent<Image>();
             btn.targetGraphic = img;
             var cb = btn.colors;
-            cb.normalColor = bg;
-            cb.highlightedColor = Color.Lerp(bg, Color.white, 0.18f);
-            cb.selectedColor = Color.Lerp(bg, Color.white, 0.22f);
-            cb.pressedColor = Color.Lerp(bg, Color.black, 0.18f);
-            cb.disabledColor = Color.Lerp(bg, Color.black, 0.5f);
+            Color baseCol = img.color;
+            cb.normalColor = baseCol;
+            cb.highlightedColor = isSolid ? Color.Lerp(bg, Color.white, 0.18f) : new Color(bg.r, bg.g, bg.b, 0.30f);
+            cb.selectedColor   = isSolid ? Color.Lerp(bg, Color.white, 0.22f) : new Color(bg.r, bg.g, bg.b, 0.35f);
+            cb.pressedColor    = isSolid ? Color.Lerp(bg, Color.black, 0.18f) : new Color(bg.r, bg.g, bg.b, 0.10f);
+            cb.disabledColor   = Color.Lerp(baseCol, Color.black, 0.5f);
             cb.colorMultiplier = 1f;
             cb.fadeDuration = 0.08f;
             btn.colors = cb;
 
-            var text = UICanvasUtil.NewEyebrow("Label", bgGO.transform, label, 18f, fg, TMPro.TextAlignmentOptions.Center);
-            UICanvasUtil.Stretch((RectTransform)text.transform);
+            // Glyph pill on the left
+            var glyphGO = UICanvasUtil.NewImage("Glyph", bgRT,
+                new Color(0f, 0f, 0f, isSolid ? 0.18f : 0.10f), false);
+            var gRT = (RectTransform)glyphGO.transform;
+            gRT.anchorMin = new Vector2(0f, 0.5f); gRT.anchorMax = new Vector2(0f, 0.5f);
+            gRT.pivot = new Vector2(0f, 0.5f);
+            gRT.sizeDelta = new Vector2(36f, 36f);
+            gRT.anchoredPosition = new Vector2(14f, 0f);
+
+            var glyphTxt = UICanvasUtil.NewBody("GlyphTxt", glyphGO.transform, "?", 22f, fg,
+                TMPro.FontStyles.Bold, TMPro.TextAlignmentOptions.Center);
+            UICanvasUtil.Stretch(glyphTxt.rectTransform);
+            glyphTxt.raycastTarget = false;
+            glyphTextOut = glyphTxt;
+
+            // Label
+            var lblTxt = UICanvasUtil.NewEyebrow("Label", bgRT, label, 18f, fg, TMPro.TextAlignmentOptions.Center);
+            var lblRT = lblTxt.rectTransform;
+            lblRT.anchorMin = new Vector2(0f, 0f); lblRT.anchorMax = new Vector2(1f, 1f);
+            lblRT.pivot = new Vector2(0.5f, 0.5f);
+            lblRT.offsetMin = new Vector2(60f, 0f);
+            lblRT.offsetMax = new Vector2(-16f, 0f);
+            lblTxt.raycastTarget = false;
+
             return btn;
         }
     }

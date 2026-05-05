@@ -10,11 +10,14 @@ namespace Hollowfen.Foraging
 
         [SerializeField] private int _renderTextureSize = 1024;
         [SerializeField] private float _rotationSpeedDeg = 25f;
-        [SerializeField] private Color _backgroundColor = new Color(0.094f, 0.082f, 0.067f, 1f);
+        [SerializeField, Tooltip("Background color of the preview RT — warm cream to read as journal paper.")]
+        private Color _backgroundColor = new Color(0.870f, 0.831f, 0.745f, 1f);
+        [SerializeField, Tooltip("Silhouette color used for undiscovered mushrooms — near-black walnut.")]
+        private Color _silhouetteColor = new Color(0.052f, 0.043f, 0.034f, 1f);
         [SerializeField, Tooltip("Camera ortho size — half-height of the framing in world units.")]
         private float _orthoSize = 0.13f;
-        [SerializeField] private float _minOrthoSize = 0.015f;
-        [SerializeField] private float _maxOrthoSize = 0.30f;
+        [SerializeField] private float _minOrthoSize = 0.005f;
+        [SerializeField] private float _maxOrthoSize = 0.50f;
         [SerializeField, Tooltip("Pitch clamp in degrees (rotation around X).")]
         private float _pitchClampDeg = 80f;
 
@@ -27,6 +30,12 @@ namespace Hollowfen.Foraging
         public float MinOrthoSize => _minOrthoSize;
         public float MaxOrthoSize => _maxOrthoSize;
 
+        public void SetBackgroundColor(Color c)
+        {
+            _backgroundColor = c;
+            if (_cam != null) _cam.backgroundColor = c;
+        }
+
         public RenderTexture RenderTexture { get; private set; }
 
         private Camera _cam;
@@ -36,6 +45,7 @@ namespace Hollowfen.Foraging
         private float _yawDeg;
         private float _pitchDeg;
         private float _defaultOrthoSize;
+        private Material _silhouetteMaterial;
 
         private void Awake()
         {
@@ -106,7 +116,9 @@ namespace Hollowfen.Foraging
             _mount = mountGO.transform;
         }
 
-        public void Show(MushroomFieldGuideData data)
+        public void Show(MushroomFieldGuideData data) => Show(data, false);
+
+        public void Show(MushroomFieldGuideData data, bool silhouette)
         {
             Clear();
             if (data == null || data.WorldPrefab == null) return;
@@ -114,7 +126,28 @@ namespace Hollowfen.Foraging
             _current.transform.localPosition = Vector3.zero;
             _current.transform.localRotation = Quaternion.identity;
             SetLayerRecursively(_current, _previewLayer);
+            if (silhouette) ApplySilhouette(_current);
             ResetView();
+        }
+
+        private void ApplySilhouette(GameObject root)
+        {
+            if (_silhouetteMaterial == null)
+            {
+                var sh = Shader.Find("Universal Render Pipeline/Unlit");
+                if (sh == null) sh = Shader.Find("Unlit/Color");
+                _silhouetteMaterial = new Material(sh) { name = "M_Silhouette" };
+                _silhouetteMaterial.SetColor("_BaseColor", _silhouetteColor);
+                _silhouetteMaterial.SetColor("_Color", _silhouetteColor);
+            }
+            var rends = root.GetComponentsInChildren<Renderer>(true);
+            foreach (var r in rends)
+            {
+                int n = r.sharedMaterials.Length;
+                var arr = new Material[n];
+                for (int i = 0; i < n; i++) arr[i] = _silhouetteMaterial;
+                r.sharedMaterials = arr;
+            }
         }
 
         public void Clear()
