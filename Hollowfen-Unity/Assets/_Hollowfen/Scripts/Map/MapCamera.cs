@@ -14,6 +14,11 @@ namespace Hollowfen.Map
         [SerializeField] private bool _disableFogWhileRendering = true;
         [SerializeField] private bool _useFixedCenter;
 
+        [SerializeField, Tooltip("Runtime RenderTexture size. 2:1 aspect (2048×1024) matches the map zone in MapScreen so the parchment hugs the rendered world without distortion or empty padding.")]
+        private Vector2Int _renderTextureSize = new Vector2Int(2048, 1024);
+
+        public RenderTexture RenderTexture { get; private set; }
+
         private Camera _cam;
         private bool _savedFog;
         private Color _savedFogColor;
@@ -31,7 +36,21 @@ namespace Hollowfen.Map
             _cam.clearFlags = CameraClearFlags.SolidColor;
             _cam.backgroundColor = new Color(0.05f, 0.05f, 0.06f, 1f);
             transform.rotation = Quaternion.Euler(90f, 0f, 0f);
+
+            // Create a runtime RT at the configured landscape aspect. Overrides any project RT asset
+            // assigned in the inspector — that asset can stay orphaned (no longer referenced).
+            RenderTexture = new RenderTexture(_renderTextureSize.x, _renderTextureSize.y, 24, RenderTextureFormat.ARGB32);
+            RenderTexture.name = "MapViewRT_Runtime";
+            RenderTexture.antiAliasing = 4;
+            RenderTexture.Create();
+            _cam.targetTexture = RenderTexture;
+
             ApplyPosition();
+        }
+
+        private void OnDestroy()
+        {
+            if (RenderTexture != null) { RenderTexture.Release(); Destroy(RenderTexture); RenderTexture = null; }
         }
 
         private Transform ResolveTarget()
