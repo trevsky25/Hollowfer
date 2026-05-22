@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00c9c9bb92b3b44fb84ca335c48467d8, type: 3}
+  m_Name: Dialogue_Act1_Homecoming_Bram
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Dialogue.DialogueData
+  _id: act1.homecoming.bram.recognition
+  _lines:
+  - speaker: Bram
+    text: Wren?
+    isCloseup: 0
+  - speaker: Wren
+    text: Evening, Bram.
+    isCloseup: 0
+  - speaker: Bram
+    text: Lord help me. You've got your father's height.
+    isCloseup: 1
+  - speaker: Wren
+    text: I came as soon as I could.
+    isCloseup: 0
+  - speaker: Bram
+    text: 'Aye. I know.
+
+
+      I''ve got the key inside.'
+    isCloseup: 0
+  _unlockStoryCard: {fileID: 11400000, guid: 4d3b302c8f5404f1e9b2d48978d76977, type: 2}
+  _completeQuest: {fileID: 11400000, guid: 233a00ead1da24556a276c9f50260699, type: 2}
+  _giveItemId: 
+  _nextDialog: {fileID: 0}

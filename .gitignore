@@ -29,3 +29,21 @@ public/world/demo3/demo3_village_pbr_full.glb
 
 # Large legacy export — keep the active 18 MB GLB, skip the others
 public/world/demo3/raw/
+
+# Unity build artifacts (Hollowfen-Unity)
+Hollowfen-Unity/[Ll]ibrary/
+Hollowfen-Unity/[Tt]emp/
+Hollowfen-Unity/[Oo]bj/
+Hollowfen-Unity/[Bb]uild/
+Hollowfen-Unity/[Bb]uilds/
+Hollowfen-Unity/[Ll]ogs/
+Hollowfen-Unity/[Uu]ser[Ss]ettings/
+Hollowfen-Unity/[Mm]emoryCaptures/
+Hollowfen-Unity/*.csproj
+Hollowfen-Unity/*.sln
+Hollowfen-Unity/*.suo
+Hollowfen-Unity/*.unitypackage
+
+# Claude Code + Playwright local state
+.claude/
+.playwright-cli/

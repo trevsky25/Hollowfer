@@ -12,9 +12,11 @@ namespace Hollowfen.Map
 
         public static event Action<string> LocationDiscovered;
         public static event Action<string> RegionChanged;
+        public static event Action<LocationMarker> WaypointChanged;
 
         public static IReadOnlyList<LocationMarker> Markers => _markers;
         public static string CurrentRegion { get; private set; }
+        public static LocationMarker ActiveWaypoint { get; private set; }
 
 #if UNITY_2019_3_OR_NEWER
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -27,8 +29,10 @@ namespace Hollowfen.Map
             _discovered.Clear();
             _activeRegions.Clear();
             CurrentRegion = null;
+            ActiveWaypoint = null;
             LocationDiscovered = null;
             RegionChanged = null;
+            WaypointChanged = null;
         }
 
         public static void RegisterMarker(LocationMarker marker)
@@ -44,6 +48,28 @@ namespace Hollowfen.Map
         {
             if (marker == null) return;
             _markers.Remove(marker);
+            if (ActiveWaypoint == marker) ClearWaypoint();
+        }
+
+        public static void SetWaypoint(LocationMarker marker)
+        {
+            if (marker == ActiveWaypoint) return;
+            ActiveWaypoint = marker;
+            WaypointChanged?.Invoke(marker);
+        }
+
+        public static void ToggleWaypoint(LocationMarker marker)
+        {
+            if (marker == null) return;
+            if (ActiveWaypoint == marker) ClearWaypoint();
+            else SetWaypoint(marker);
+        }
+
+        public static void ClearWaypoint()
+        {
+            if (ActiveWaypoint == null) return;
+            ActiveWaypoint = null;
+            WaypointChanged?.Invoke(null);
         }
 
         public static void MarkDiscovered(string id)
