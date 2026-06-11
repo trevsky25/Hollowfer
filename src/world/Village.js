@@ -9,14 +9,21 @@ const WALL_THICKNESS = 0.4;
 const COLLIDER_TOP_FALLBACK = 8;
 
 export class Village {
-  constructor({ scene, terrainHeightAt }) {
+  constructor({ scene, terrainHeightAt, backdrop = null, spawn = null }) {
     this.scene = scene;
     this.terrainHeightAt = terrainHeightAt;
     this.group = new THREE.Group();
     this.group.name = 'Village';
     this.scene.add(this.group);
 
-    this.spawn = VILLAGE_LAYOUT.spawn;
+    // backdrop: { path } loads a single pre-baked village GLB instead of placing
+    // individual prefabs. Used for the Magic Pig Games Demo 1 export which is
+    // already a complete medieval town. When set, the per-prefab placement loop
+    // is skipped entirely. Collision data is not derived from the backdrop yet
+    // (Phase 2 follow-up).
+    this.backdrop = backdrop;
+
+    this.spawn = spawn || VILLAGE_LAYOUT.spawn;
     this.colliders = [];
     this.placedById = new Map();
     this.cache = new Map();
@@ -29,6 +36,11 @@ export class Village {
   }
 
   async load() {
+    if (this.backdrop) {
+      await this._loadBackdrop(this.backdrop.path);
+      return { spawn: this.spawn, colliders: this.colliders };
+    }
+
     const allEntries = [
       ...VILLAGE_LAYOUT.buildings,
       ...VILLAGE_LAYOUT.props
@@ -67,6 +79,223 @@ export class Village {
     }
 
     return { spawn: this.spawn, colliders: this.colliders };
+  }
+
+  async _loadBackdrop(path) {
+    const gltf = await this.loader.loadAsync(path);
+    gltf.scene.name = 'VillageBackdrop';
+
+    // Walk meshes once to set shadow/cull flags. We deliberately don't try
+    // to auto-center here: the GLB ships a baked TerrainMesh that shares a
+    // coordinate system with the buildings, so any centering offset has to
+    // apply to BOTH or nothing. Easiest "both" is "nothing" — load at world
+    // origin and let the user nudge via backdrop.offset if needed.
+    gltf.scene.traverse((obj) => {
+      if (!obj.isMesh && !obj.isInstancedMesh) return;
+      obj.castShadow = true;
+      obj.receiveShadow = true;
+      obj.frustumCulled = true;
+    });
+
+    const off = this.backdrop.offset || {};
+    gltf.scene.position.set(off.x || 0, off.y || 0, off.z || 0);
+
+    // Detect the baked Unity TerrainMesh. When present it becomes the only
+    // ground in the village area — the player's ground-snap raycasts against
+    // it via getBackdropHeightAt(), and main.js skips creating the procedural
+    // sculpted plane.
+    this.terrainMesh = null;
+    gltf.scene.traverse((o) => {
+      if (o.name === 'TerrainMesh' && (o.isMesh || o.isInstancedMesh)) {
+        this.terrainMesh = o;
+      }
+    });
+    if (this.terrainMesh) {
+      this._terrainRaycaster = new THREE.Raycaster();
+      this._terrainRayDir = new THREE.Vector3(0, -1, 0);
+      this._applyTerrainMaterial();
+    }
+
+    this.group.add(gltf.scene);
+    this.backdropScene = gltf.scene;
+
+    // Phase A collision: outer perimeter walls + tower bases only. Skips
+    // building interiors so Wren can still walk around freely inside the
+    // village. Per-building shells are Phase B.
+    this._buildPerimeterColliders();
+
+    console.info(
+      `[Village] backdrop loaded at`, gltf.scene.position.toArray(),
+      `terrainMesh=${!!this.terrainMesh}`
+    );
+  }
+
+  /** Swap the TerrainMesh's default white/gray Standard material for one
+   * that uses the Magic Pig Games VillageGround02 texture set (resized to
+   * 1K and saved under public/textures/ground/). The dirt is tinted mossy-
+   * green via the material color so the hill looks like grass + dirt
+   * rather than bare cobble. */
+  _applyTerrainMaterial() {
+    if (!this.terrainMesh) return;
+
+    // gltf-transform's `optimize --palette` flag (default-on) remapped the
+    // TerrainMesh's UVs to a tiny region of a shared palette texture. The
+    // geometry's POSITION attribute also got quantized to int16 (the
+    // dequantization scale lives in the node's matrixWorld). Fix: pull the
+    // actual WORLD positions of each vertex (post-dequantization), then
+    // build planar UVs from those — bypassing both the palette UV remap
+    // and the position quantization.
+    const geo = this.terrainMesh.geometry;
+    const pos = geo.attributes.position;
+    const tileSize = 10;  // metres per texture tile
+    const uvs = new Float32Array(pos.count * 2);
+    this.terrainMesh.updateMatrixWorld(true);
+    const m = this.terrainMesh.matrixWorld;
+    const v = new THREE.Vector3();
+    for (let i = 0; i < pos.count; i++) {
+      v.fromBufferAttribute(pos, i).applyMatrix4(m);
+      uvs[i * 2]     = v.x / tileSize;
+      uvs[i * 2 + 1] = v.z / tileSize;
+    }
+    geo.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
+    console.info('[Village] regenerated TerrainMesh UVs from world position; vertex count:', pos.count);
+
+    const texLoader = new THREE.TextureLoader();
+    // aerial_grass_rock from Poly Haven (CC0). Natural grass with
+    // scattered rocks/dirt patches — reads as a real medieval village
+    // ground without needing a tint hack. The Unity demo's exact textures
+    // come from Forest Environment - Dynamic Nature (paid asset, ~$35);
+    // these free CC0 ones are visually equivalent for our purposes.
+    const albedo = texLoader.load('/textures/ground/grass_diff.jpg');
+    const normal = texLoader.load('/textures/ground/grass_nor.jpg');
+    albedo.colorSpace = THREE.SRGBColorSpace;
+    for (const tex of [albedo, normal]) {
+      tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+      tex.anisotropy = 16;
+      // No .repeat set — the geometry's UV step (1 unit per tileSize metres)
+      // already handles tiling. Setting repeat would compound it.
+    }
+
+    this.terrainMesh.material = new THREE.MeshStandardMaterial({
+      map: albedo,
+      normalMap: normal,
+      color: 0xffffff,  // texture is already real grass — no tint needed
+      roughness: 0.95,
+      metalness: 0
+    });
+    this.terrainMesh.receiveShadow = true;
+  }
+
+  /** Generate AABB colliders for every "solid" mesh in the loaded backdrop
+   * — walls, towers, building shells, fences, larger props. Phase B-lite:
+   * blocks Wren from walking through anything substantial. Trade-off:
+   * doorways are also blocked (she can't enter buildings yet) — that's
+   * the future "enterable buildings" task.
+   *
+   * Heuristic — a mesh's AABB becomes a collider when:
+   *   - taller than 1.0m (excludes ground decals, small debris, mushrooms)
+   *   - shorter than 80m (excludes any sky/helper outliers)
+   *   - has at least one horizontal dimension >= 1.0m (excludes tiny posts)
+   * Per-instance AABBs are computed for InstancedMesh so each placed wall
+   * segment / building / cart becomes its own collider.
+   */
+  _buildPerimeterColliders() {
+    if (!this.backdropScene) return;
+
+    this.backdropScene.updateMatrixWorld(true);
+
+    const _localBox = new THREE.Box3();
+    const _tmp = new THREE.Matrix4();
+    const _inst = new THREE.Matrix4();
+
+    let added = 0;
+    let scanned = 0;
+
+    this.backdropScene.traverse((obj) => {
+      if (obj === this.terrainMesh) return;
+      if (!obj.isMesh && !obj.isInstancedMesh) return;
+
+      // Build the list of world-space AABBs for this object (one per
+      // instance for InstancedMesh, else just the mesh's own AABB).
+      const aabbs = [];
+      if (obj.isInstancedMesh) {
+        if (!obj.geometry.boundingBox) obj.geometry.computeBoundingBox();
+        _localBox.copy(obj.geometry.boundingBox);
+        for (let i = 0; i < obj.count; i++) {
+          obj.getMatrixAt(i, _tmp);
+          _inst.multiplyMatrices(obj.matrixWorld, _tmp);
+          aabbs.push(_localBox.clone().applyMatrix4(_inst));
+        }
+      } else {
+        aabbs.push(new THREE.Box3().setFromObject(obj));
+      }
+
+      for (const box of aabbs) {
+        scanned++;
+        if (box.isEmpty()) continue;
+        const sx = box.max.x - box.min.x;
+        const sy = box.max.y - box.min.y;
+        const sz = box.max.z - box.min.z;
+        if (sy < 1.0 || sy > 80) continue;
+        if (Math.max(sx, sz) < 1.0) continue;
+        // Cap upper bound: real wall sections / towers / buildings max out
+        // around 30m. Anything bigger is a `gltf-transform optimize --join`
+        // artifact (many small meshes merged into one giant mesh whose AABB
+        // spans the whole village). Skip — those colliders are useless.
+        if (Math.max(sx, sz) > 30) continue;
+
+        this.colliders.push({
+          minX: box.min.x,
+          maxX: box.max.x,
+          minZ: box.min.z,
+          maxZ: box.max.z,
+          top: box.max.y,
+          bottom: box.min.y,  // for "walk-under" check (overhangs, archways)
+          name: `wall:${obj.name || 'mesh'}`
+        });
+        added++;
+      }
+    });
+
+    console.info(
+      `[Village] collision: scanned ${scanned} AABBs, added ${added} colliders.`
+    );
+  }
+
+  /** Raycast straight down at (x, z) onto the backdrop's TerrainMesh ONLY.
+   * Use for foliage placement and other "I want the natural ground here,
+   * ignoring buildings/stairs/roofs" callers. Returns world Y or null. */
+  getBackdropHeightAt(x, z) {
+    if (!this.terrainMesh) return null;
+    this.terrainMesh.updateMatrixWorld(true);
+    this._terrainRaycaster.set(
+      new THREE.Vector3(x, 1000, z),
+      this._terrainRayDir
+    );
+    this._terrainRaycaster.far = 2000;
+    const hits = this._terrainRaycaster.intersectObject(this.terrainMesh, false);
+    return hits.length ? hits[0].point.y : null;
+  }
+
+  /** Raycast straight down at (x, z) onto the ENTIRE backdrop scene —
+   * terrain, building floors, porches, stair tops, etc. The ray starts
+   * from `fromY` and casts downward; pass `fromY = playerY + 2` so the
+   * ray doesn't hit roofs Wren is standing under. Returns the highest
+   * surface beneath the ray origin (world Y), or null if nothing hit.
+   *
+   * This is the "what surface is Wren actually standing on?" query that
+   * makes stairs / decks / ramps work — Wren's Y rises naturally as she
+   * walks up. */
+  getStandableHeightAt(x, z, fromY = 1000) {
+    if (!this.backdropScene) return null;
+    this.backdropScene.updateMatrixWorld(true);
+    this._terrainRaycaster.set(
+      new THREE.Vector3(x, fromY, z),
+      this._terrainRayDir
+    );
+    this._terrainRaycaster.far = fromY + 200;
+    const hits = this._terrainRaycaster.intersectObject(this.backdropScene, true);
+    return hits.length ? hits[0].point.y : null;
   }
 
   async _loadAsset(asset) {

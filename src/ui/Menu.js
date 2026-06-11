@@ -5,7 +5,12 @@
 
 import { MUSHROOM_INFO } from '../data/mushroomIndex.js';
 import { STORY_CARDS } from '../data/StoryCards.js';
-import { WrenPortrait3D } from './WrenPortrait3D.js';
+import {
+  HOLLOWFEN_LOCATION_OPTIONS,
+  LOCATION_OPTION_BY_ID,
+  LOCATION_PIN_STORAGE_KEY,
+  mergeLocationPins
+} from '../data/HollowfenLocations.js';
 
 const SAVE_KEY = 'hollowfen.save.v1';
 
@@ -33,6 +38,21 @@ function persistSave(save) {
   try { localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch {}
 }
 
+function loadLocationPins() {
+  try {
+    const raw = localStorage.getItem(LOCATION_PIN_STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function persistLocationPins(pins) {
+  try { localStorage.setItem(LOCATION_PIN_STORAGE_KEY, JSON.stringify(pins, null, 2)); } catch {}
+}
+
 const EDIBILITY_TINT = {
   edible: '#7ec38a',
   deadly: '#d36a5b',
@@ -42,13 +62,22 @@ const EDIBILITY_TINT = {
 };
 
 export class Menu {
-  constructor({ onBeginGame, onResume, dev }) {
+  constructor({ onBeginGame, onResume, dev, awaitVillageReady, onRequestCameraLock, setQuality, getQuality }) {
     this.onBeginGame = onBeginGame;
     this.onResume = onResume;
     this.dev = dev || null;
+    this.awaitVillageReady = awaitVillageReady || null;
+    this.onRequestCameraLock = onRequestCameraLock || null;
+    // Live-apply render quality from the Settings tab — the renderer owner
+    // (main.js) provides setter/getter so this UI module stays decoupled.
+    this.setQuality = setQuality || null;
+    this.getQuality = getQuality || null;
     this.save = loadSave();
+    this.localLocationPins = loadLocationPins();
+    this.locationPins = mergeLocationPins(this.localLocationPins);
     this.activeTab = 'story';
     this.modal = null;
+    this.loadingOverlay = null;
 
     this.root = document.createElement('div');
     this.root.className = 'menu-root';
@@ -78,6 +107,10 @@ export class Menu {
     this._closeModal();
     this._closeFullpage();
     this._disposeWrenPortrait();
+    if (this.loadingOverlay) {
+      this.loadingOverlay.remove();
+      this.loadingOverlay = null;
+    }
   }
 
   _disposeWrenPortrait() {
@@ -97,15 +130,21 @@ export class Menu {
     wrap.innerHTML = `
       <div class="menu-main-bg"></div>
       <div class="menu-main-card">
-        <div class="menu-main-eyebrow">Hollowfen</div>
-        <h1 class="menu-main-title">The Failing Village</h1>
-        <p class="menu-main-tagline">Wren returns home with a forager's eye and an empty pack. The village is smaller than she remembers, and hungrier.</p>
+        <div class="menu-main-eyebrow">Wren Tobin's Return</div>
+        <h1 class="menu-main-title">Hollowfen</h1>
+        <div class="menu-main-subtitle">The Failing Village</div>
+        <p class="menu-main-tagline">Forage the Edge Woods, learn what grows in the damp, and keep a hungry village alive.</p>
         <div class="menu-main-actions">
-          <button class="menu-btn menu-btn-primary" data-action="begin">${this.save.started ? 'Continue' : 'Begin'}</button>
-          <button class="menu-btn" data-action="story">Story</button>
-          <button class="menu-btn" data-action="guide">Field Guide</button>
-          <button class="menu-btn" data-action="wren">Wren</button>
-          <button class="menu-btn" data-action="settings">Settings</button>
+          <button class="menu-main-cta" data-action="begin">
+            <span class="menu-main-cta-label">${this.save.started ? 'Continue' : 'Begin Foraging'}</span>
+            <span class="menu-main-cta-arrow" aria-hidden="true">→</span>
+          </button>
+          <nav class="menu-main-links" aria-label="Menu sections">
+            <button class="menu-main-link" data-action="story"><span>Story</span></button>
+            <button class="menu-main-link" data-action="guide"><span>Field Guide</span></button>
+            <button class="menu-main-link" data-action="wren"><span>Wren</span></button>
+            <button class="menu-main-link" data-action="settings"><span>Settings</span></button>
+          </nav>
         </div>
       </div>
     `;
@@ -118,11 +157,61 @@ export class Menu {
     return wrap;
   }
 
-  _begin() {
+  async _begin() {
     this.save.started = true;
     persistSave(this.save);
-    this.hide();
+    // Request pointer lock SYNCHRONOUSLY — must run inside the same call
+    // stack as the click event, before any await suspends the function, or
+    // the browser drops the user-gesture context and rejects the request.
+    // This is what gives the player camera control immediately when the
+    // loading screen fades to game, with no need to click the canvas.
+    this.onRequestCameraLock?.();
+    // The loading overlay handles the title-menu teardown internally, in this
+    // order: append overlay (covers screen instantly) → hide menu underneath
+    // (no flicker of the 3D world) → hold + wait → fade out → reveal game.
+    await this._showLoadingTransition();
     this.onBeginGame?.();
+  }
+
+  // ---------- LOADING TRANSITION ----------
+  async _showLoadingTransition({ minHold = 2500, fadeOut = 520 } = {}) {
+    const overlay = el('div', 'menu-loading');
+    overlay.innerHTML = `
+      <div class="menu-loading-bg"></div>
+      <div class="menu-loading-vignette"></div>
+      <div class="menu-loading-content">
+        <div class="menu-loading-eyebrow">Hollowfen</div>
+        <div class="menu-loading-title">Entering the Edge Woods</div>
+        <div class="menu-loading-dots"><span></span><span></span><span></span></div>
+      </div>
+    `;
+    // Append overlay FIRST so it covers the screen at opacity 1 the instant
+    // it mounts. Only after the cover is up do we tear down the title menu
+    // — otherwise there's a 1–2 frame flicker where the 3D world peeks
+    // through between menu hide and overlay fade-in.
+    document.body.appendChild(overlay);
+    this.loadingOverlay = overlay;
+
+    // Tear down the title menu under the overlay. Avoid this.hide() — that
+    // path clears this.loadingOverlay too and would remove the cover.
+    this.root.style.display = 'none';
+    this.root.innerHTML = '';
+    this._disposeWrenPortrait();
+
+    const start = performance.now();
+    if (this.awaitVillageReady) {
+      try { await this.awaitVillageReady(); } catch {}
+    }
+    const elapsed = performance.now() - start;
+    if (elapsed < minHold) {
+      await new Promise((r) => setTimeout(r, minHold - elapsed));
+    }
+
+    // Fade overlay out → reveal the 3D world.
+    overlay.classList.add('fading');
+    await new Promise((r) => setTimeout(r, fadeOut));
+    overlay.remove();
+    if (this.loadingOverlay === overlay) this.loadingOverlay = null;
   }
 
   _openTabFromMain(tab) {
@@ -136,7 +225,10 @@ export class Menu {
 
   // ---------- PAUSE MENU ----------
   _renderPause({ fromMain = false } = {}) {
-    const wrap = el('div', 'menu-pause');
+    // Two layouts:
+    //   - fromMain (browsing tabs from title): full-screen sidebar layout
+    //   - in-game (ESC or HUD hotkey): compact parchment popup centred on the
+    //     dimmed game world. Same tab content, smaller frame, "in-world" feel.
     const tabs = [
       { id: 'story', label: 'Story', body: () => this._renderStoryTab() },
       { id: 'guide', label: 'Field Guide', body: () => this._renderGuideTab() },
@@ -147,34 +239,40 @@ export class Menu {
     if (this.dev) {
       tabs.push({ id: 'dev', label: 'Developer', body: () => this._renderDevTab() });
     }
+    return fromMain ? this._renderPauseFull(tabs) : this._renderPausePopup(tabs);
+  }
 
+  _renderPauseFull(tabs) {
+    const wrap = el('div', 'menu-pause');
     const sidebar = el('div', 'menu-pause-side');
-    const closeLabel = fromMain ? 'Back to title' : 'Resume game';
-    const closeBtn = el('button', 'menu-btn menu-btn-resume');
-    closeBtn.textContent = closeLabel;
-    closeBtn.addEventListener('click', () => {
-      if (fromMain) this.showMain();
-      else this._closePause();
-    });
-    sidebar.appendChild(closeBtn);
+
+    const brand = el('div', 'menu-pause-brand');
+    brand.innerHTML = `
+      <div class="menu-pause-eyebrow">Wren Tobin's Return</div>
+      <div class="menu-pause-wordmark">Hollowfen</div>
+    `;
+    sidebar.appendChild(brand);
+
+    const backBtn = el('button', 'menu-pause-back');
+    backBtn.innerHTML = `
+      <span class="menu-pause-back-arrow" aria-hidden="true">←</span>
+      <span class="menu-pause-back-label">Back to title</span>
+    `;
+    backBtn.addEventListener('click', () => this.showMain());
+    sidebar.appendChild(backBtn);
+
+    const nav = el('nav', 'menu-pause-nav');
+    nav.setAttribute('aria-label', 'Menu sections');
+    sidebar.appendChild(nav);
 
     const tabButtons = {};
     for (const t of tabs) {
-      const b = el('button', 'menu-tab');
-      b.textContent = t.label;
+      const b = el('button', 'menu-pause-tab');
+      b.innerHTML = `<span class="menu-pause-tab-label">${t.label}</span>`;
       b.addEventListener('click', () => this._switchTab(t.id));
-      sidebar.appendChild(b);
+      nav.appendChild(b);
       tabButtons[t.id] = b;
     }
-
-    // Bottom-left "Back to Title" — always available, reverts to the main
-    // landing page (whether we're paused mid-game or browsing from the title).
-    const spacer = el('div', 'menu-pause-spacer');
-    sidebar.appendChild(spacer);
-    const backBtn = el('button', 'menu-btn menu-btn-back');
-    backBtn.textContent = '← Back to Title';
-    backBtn.addEventListener('click', () => this.showMain());
-    sidebar.appendChild(backBtn);
 
     const main = el('div', 'menu-pause-main');
     const renderActive = () => {
@@ -184,7 +282,6 @@ export class Menu {
       main.appendChild(tab.body());
     };
     this._switchTab = (id) => {
-      // Dispose the 3D portrait when leaving the Wren tab so we don't leak GPU
       if (this.activeTab === 'wren' && id !== 'wren') this._disposeWrenPortrait();
       this.activeTab = id;
       renderActive();
@@ -193,6 +290,130 @@ export class Menu {
 
     wrap.appendChild(sidebar);
     wrap.appendChild(main);
+    return wrap;
+  }
+
+  _renderPausePopup(tabs) {
+    // Wren's open journal — dark brown leather covers wrap a two-page spread.
+    // Left page: hand-numbered "Contents" index of sections.
+    // Right page: active section heading + scrollable body (existing tab.body()).
+    // Click-outside, ESC, or the corner ✕ all dismiss; hotkeys (T/J/C/K/O) jump tabs.
+    const wrap = el('div', 'menu-pause-popup');
+    wrap.addEventListener('click', (e) => {
+      if (e.target === wrap) this._closePause();
+    });
+
+    // Animation container (runs the "book opens" keyframe once on mount).
+    const journal = el('div', 'journal');
+    const book = el('div', 'journal-book');
+
+    // -------- LEFT PAGE: Contents index --------
+    const leftPage = el('div', 'journal-page journal-page--left');
+    const leftInner = el('div', 'journal-page-inner');
+
+    const eyebrow = el('div', 'journal-eyebrow');
+    eyebrow.textContent = 'Hollowfen';
+    const title = el('div', 'journal-title');
+    title.textContent = "Wren's Journal";
+    const rule = el('div', 'journal-rule');
+    leftInner.appendChild(eyebrow);
+    leftInner.appendChild(title);
+    leftInner.appendChild(rule);
+
+    const indexHeading = el('div', 'journal-index-heading');
+    indexHeading.textContent = 'Contents';
+    leftInner.appendChild(indexHeading);
+
+    const indexList = el('ul', 'journal-index');
+    const TAB_NUMERALS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'];
+    const tabButtons = {};
+    tabs.forEach((t, i) => {
+      const item = el('li', 'journal-index-item');
+      const btn = el('button', 'journal-index-btn');
+      btn.setAttribute('type', 'button');
+      btn.innerHTML = `
+        <span class="journal-index-numeral">${TAB_NUMERALS[i] || String(i + 1)}.</span>
+        <span class="journal-index-label">${t.label}</span>
+      `;
+      btn.addEventListener('click', () => this._switchTab(t.id));
+      item.appendChild(btn);
+      indexList.appendChild(item);
+      tabButtons[t.id] = item; // toggle .active on the <li>
+    });
+    leftInner.appendChild(indexList);
+
+    // Footer at the bottom of the left page — resume hint + back to title
+    const foot = el('div', 'journal-foot');
+    const hint = el('span', 'journal-hint');
+    hint.textContent = 'Press ESC to resume';
+    const back = el('button', 'journal-back');
+    back.textContent = '← Back to Title';
+    back.addEventListener('click', () => this.showMain());
+    foot.appendChild(hint);
+    foot.appendChild(back);
+    leftInner.appendChild(foot);
+
+    leftPage.appendChild(leftInner);
+
+    // -------- SPINE --------
+    const spine = el('div', 'journal-spine');
+
+    // -------- RIGHT PAGE: active content --------
+    const rightPage = el('div', 'journal-page journal-page--right');
+    const rightInner = el('div', 'journal-page-inner');
+
+    const closeX = el('button', 'journal-close');
+    closeX.setAttribute('aria-label', 'Close');
+    closeX.setAttribute('type', 'button');
+    closeX.innerHTML = '&times;';
+    closeX.addEventListener('click', () => this._closePause());
+
+    const pageHead = el('div', 'journal-page-head');
+    // Body keeps the legacy `.pause-panel-body` class so all the existing
+    // content overrides (cards, settings rows, kbd, etc.) keep applying.
+    const body = el('div', 'journal-page-body pause-panel-body');
+
+    rightInner.appendChild(closeX);
+    rightInner.appendChild(pageHead);
+    rightInner.appendChild(body);
+    rightPage.appendChild(rightInner);
+
+    const renderActive = () => {
+      body.innerHTML = '';
+      const activeIdx = tabs.findIndex((t) => t.id === this.activeTab);
+      const tab = activeIdx >= 0 ? tabs[activeIdx] : tabs[0];
+      // Detail views blank/hide the page-head — switching tabs always restores
+      // both visibility and the normal text content.
+      pageHead.classList.remove('journal-page-head--blank');
+      pageHead.style.display = '';
+      // Roman numerals stay on the left-page contents index (a journal-style
+      // table of contents) but the right-page heading is just the section
+      // name — the numerals there were redundant noise.
+      pageHead.textContent = tab.label;
+      this._journalStoryBaseHead = null;
+      this._journalGuideBaseHead = null;
+      // Remove story-detail leftovers if a previous render left them hanging
+      // — switching tabs should never carry the back button across to a
+      // different section.
+      rightInner.querySelector('.story-page-back')?.remove();
+      for (const id in tabButtons) tabButtons[id].classList.toggle('active', id === tab.id);
+      body.appendChild(tab.body());
+      // Reset scroll to top when switching sections — feels like turning to a
+      // fresh page rather than landing mid-paragraph.
+      body.scrollTop = 0;
+    };
+    this._switchTab = (id) => {
+      if (this.activeTab === 'wren' && id !== 'wren') this._disposeWrenPortrait();
+      this.activeTab = id;
+      renderActive();
+    };
+    renderActive();
+
+    book.appendChild(leftPage);
+    book.appendChild(spine);
+    book.appendChild(rightPage);
+    journal.appendChild(book);
+    wrap.appendChild(journal);
     return wrap;
   }
 
@@ -255,10 +476,19 @@ export class Menu {
     return wrap;
   }
 
-  _showStoryDetail(card) {
-    // Full-page takeover — the image fills the viewport and the text sits over
-    // a long horizontal gradient on the left, giving the card a "page-turn in
-    // an illustrated novel" feel.
+  _showStoryDetail(card, transitionDirection = null) {
+    // Two render paths:
+    //   1. Pause journal open  → inline detail mounted into .journal-page-body
+    //      (right page of the open book) — keeps the player in the journal
+    //      metaphor and avoids a jarring full-screen takeover mid-game.
+    //   2. Main menu (no pause popup) → existing full-screen takeover.
+    const journalBody = document.querySelector('.menu-pause-popup .journal-page-body');
+    if (journalBody) {
+      this._showStoryDetailInJournal(card, journalBody, transitionDirection);
+      return;
+    }
+
+    // Full-page takeover with a gallery-first image and a low reading tray.
     const idx = STORY_CARDS.findIndex((c) => c.id === card.id);
     const prev = idx > 0 ? STORY_CARDS[idx - 1] : null;
     const next = idx < STORY_CARDS.length - 1 ? STORY_CARDS[idx + 1] : null;
@@ -268,58 +498,82 @@ export class Menu {
     fullpage.innerHTML = `
       <div class="story-fullpage-bg" style="background-image: url('${card.image}')"></div>
       <div class="story-fullpage-fade"></div>
-      <button class="story-fullpage-close" aria-label="Close">✕</button>
+      <button class="story-fullpage-close" aria-label="Close">
+        <span aria-hidden="true">✕</span>
+      </button>
 
       <div class="story-fullpage-content">
-        <div class="story-fullpage-eyebrow">${escapeHtml(sceneLabel)}</div>
-        <h1 class="story-fullpage-title">${escapeHtml(card.title)}</h1>
-        <div class="story-fullpage-subtitle">${escapeHtml(card.subtitle)}</div>
+        <div class="story-fullpage-heading">
+          <div class="story-fullpage-eyebrow">${escapeHtml(sceneLabel)}</div>
+          <h1 class="story-fullpage-title">${escapeHtml(card.title)}</h1>
+          <div class="story-fullpage-subtitle">${escapeHtml(card.subtitle)}</div>
+        </div>
 
-        <p class="story-fullpage-body">${escapeHtml(card.body)}</p>
+        <div class="story-fullpage-copy">
+          <p class="story-fullpage-body">${escapeHtml(card.body)}</p>
+        </div>
 
-        <blockquote class="story-fullpage-note">${escapeHtml(card.wrenNote)}</blockquote>
+        <div class="story-fullpage-aside">
+          <blockquote class="story-fullpage-note">${escapeHtml(card.wrenNote)}</blockquote>
+          <ul class="story-fullpage-beats">
+            ${card.beats.map((b) => `<li>${escapeHtml(b)}</li>`).join('')}
+          </ul>
+        </div>
 
-        <ul class="story-fullpage-beats">
-          ${card.beats.map((b) => `<li>${escapeHtml(b)}</li>`).join('')}
-        </ul>
-      </div>
-
-      <div class="story-fullpage-nav">
-        <button class="story-fullpage-navbtn" data-nav="prev" ${prev ? '' : 'disabled'}>
-          <span class="story-fullpage-navarrow">←</span>
-          <span class="story-fullpage-navlabel">
-            <span class="story-fullpage-navhint">Previous</span>
-            <span class="story-fullpage-navtitle">${prev ? escapeHtml(prev.title) : '—'}</span>
-          </span>
-        </button>
-        <div class="story-fullpage-counter">${idx + 1} / ${STORY_CARDS.length}</div>
-        <button class="story-fullpage-navbtn story-fullpage-navbtn-next" data-nav="next" ${next ? '' : 'disabled'}>
-          <span class="story-fullpage-navlabel">
-            <span class="story-fullpage-navhint">Next</span>
-            <span class="story-fullpage-navtitle">${next ? escapeHtml(next.title) : '—'}</span>
-          </span>
-          <span class="story-fullpage-navarrow">→</span>
-        </button>
+        <nav class="story-fullpage-nav" aria-label="Story card navigation">
+          <button class="story-fullpage-navbtn" data-nav="prev" ${prev ? '' : 'disabled'}>
+            <span class="story-fullpage-navarrow">←</span>
+            <span class="story-fullpage-navlabel">
+              <span class="story-fullpage-navhint">Previous</span>
+              <span class="story-fullpage-navtitle">${prev ? escapeHtml(prev.title) : '—'}</span>
+            </span>
+          </button>
+          <div class="story-fullpage-counter">
+            <span class="story-fullpage-counter-num">${idx + 1}</span>
+            <span class="story-fullpage-counter-sep">of</span>
+            <span class="story-fullpage-counter-total">${STORY_CARDS.length}</span>
+          </div>
+          <button class="story-fullpage-navbtn story-fullpage-navbtn-next" data-nav="next" ${next ? '' : 'disabled'}>
+            <span class="story-fullpage-navlabel">
+              <span class="story-fullpage-navhint">Next</span>
+              <span class="story-fullpage-navtitle">${next ? escapeHtml(next.title) : '—'}</span>
+            </span>
+            <span class="story-fullpage-navarrow">→</span>
+          </button>
+        </nav>
       </div>
     `;
 
     fullpage.querySelector('.story-fullpage-close').addEventListener('click', () => this._closeFullpage());
     if (prev) fullpage.querySelector('[data-nav="prev"]').addEventListener('click', () => {
-      this._closeFullpage();
-      this._showStoryDetail(prev);
+      this._showStoryDetail(prev, 'prev');
     });
     if (next) fullpage.querySelector('[data-nav="next"]').addEventListener('click', () => {
-      this._closeFullpage();
-      this._showStoryDetail(next);
+      this._showStoryDetail(next, 'next');
     });
 
-    this._closeFullpage();
+    const previousFullpage = this.fullpage;
+    const isPageTurn = transitionDirection && previousFullpage;
+    if (this._fullpageKey) {
+      window.removeEventListener('keydown', this._fullpageKey, true);
+      this._fullpageKey = null;
+    }
+    if (!isPageTurn) this._closeFullpage();
+
+    if (isPageTurn) {
+      fullpage.classList.add(`story-fullpage-enter-${transitionDirection}`);
+      previousFullpage.classList.add(`story-fullpage-exit-${transitionDirection}`);
+    }
+
     document.body.appendChild(fullpage);
+    if (isPageTurn) {
+      window.setTimeout(() => previousFullpage.remove(), 280);
+    }
     this.fullpage = fullpage;
     this._fullpageKey = (e) => {
       if (e.code === 'Escape') { e.preventDefault(); this._closeFullpage(); }
-      if (e.code === 'ArrowLeft' && prev) { e.preventDefault(); this._closeFullpage(); this._showStoryDetail(prev); }
-      if (e.code === 'ArrowRight' && next) { e.preventDefault(); this._closeFullpage(); this._showStoryDetail(next); }
+      if (e.code === 'ArrowLeft' && prev) { e.preventDefault(); this._showStoryDetail(prev, 'prev'); }
+      if (e.code === 'ArrowRight' && next) { e.preventDefault(); this._showStoryDetail(next, 'next'); }
     };
     window.addEventListener('keydown', this._fullpageKey, true);
   }
@@ -333,6 +587,154 @@ export class Menu {
       window.removeEventListener('keydown', this._fullpageKey, true);
       this._fullpageKey = null;
     }
+  }
+
+  // Inline story-card detail for the pause journal — fills the right page
+  // (.journal-page-body) instead of taking over the whole screen. Stays in
+  // the open-book metaphor, supports prev/next swaps, and a "back" button
+  // restores the act-grouped story grid.
+  _showStoryDetailInJournal(card, body, transitionDirection = null) {
+    const idx = STORY_CARDS.findIndex((c) => c.id === card.id);
+    const prev = idx > 0 ? STORY_CARDS[idx - 1] : null;
+    const next = idx < STORY_CARDS.length - 1 ? STORY_CARDS[idx + 1] : null;
+    const sceneLabel = card.scene ? `${card.act} · ${card.scene}` : card.act;
+
+    // Blank out the page-head text but KEEP its vertical space — that gives
+    // the back/✕ buttons a "header zone" of paper to sit on, and pushes the
+    // body's top edge (where overflow clipping happens) safely below the
+    // buttons so scrolled content can't creep up behind them. Cache the
+    // original text for restoration on back-nav.
+    const head = document.querySelector('.menu-pause-popup .journal-page-head');
+    if (head) {
+      if (!this._journalStoryBaseHead) this._journalStoryBaseHead = head.textContent || '';
+      head.textContent = '';
+      head.classList.add('journal-page-head--blank');
+    }
+
+    const detail = el('div', 'story-page');
+    detail.innerHTML = `
+      <div class="story-page-image" style="background-image: url('${card.image}')"></div>
+
+      <div class="story-page-heading">
+        <div class="story-page-eyebrow">${escapeHtml(sceneLabel)}</div>
+        <h2 class="story-page-title">${escapeHtml(card.title)}</h2>
+        <div class="story-page-subtitle">${escapeHtml(card.subtitle)}</div>
+      </div>
+
+      <p class="story-page-body">${escapeHtml(card.body)}</p>
+
+      <blockquote class="story-page-note">${escapeHtml(card.wrenNote)}</blockquote>
+
+      <ul class="story-page-beats">
+        ${card.beats.map((b) => `<li>${escapeHtml(b)}</li>`).join('')}
+      </ul>
+
+      <div class="story-page-nav">
+        <button class="story-page-navbtn" data-nav="prev" ${prev ? '' : 'disabled'}>
+          <span class="story-page-navarrow">←</span>
+          <span class="story-page-navlabel">
+            <span class="story-page-navhint">Previous</span>
+            <span class="story-page-navtitle">${prev ? escapeHtml(prev.title) : '—'}</span>
+          </span>
+        </button>
+        <div class="story-page-counter">${idx + 1} / ${STORY_CARDS.length}</div>
+        <button class="story-page-navbtn story-page-navbtn-next" data-nav="next" ${next ? '' : 'disabled'}>
+          <span class="story-page-navlabel">
+            <span class="story-page-navhint">Next</span>
+            <span class="story-page-navtitle">${next ? escapeHtml(next.title) : '—'}</span>
+          </span>
+          <span class="story-page-navarrow">→</span>
+        </button>
+      </div>
+    `;
+
+    if (prev) detail.querySelector('[data-nav="prev"]').addEventListener('click', () => {
+      this._showStoryDetailInJournal(prev, body, 'prev');
+    });
+    if (next) detail.querySelector('[data-nav="next"]').addEventListener('click', () => {
+      this._showStoryDetailInJournal(next, body, 'next');
+    });
+
+    body.innerHTML = '';
+    if (transitionDirection) {
+      detail.classList.add(`story-page-enter-${transitionDirection}`);
+    }
+    body.appendChild(detail);
+    body.scrollTop = 0;
+
+    // Click the card image to enlarge it to fill the journal book (covers
+    // both pages + spine, leather frame still visible). Click again to close.
+    const imageEl = detail.querySelector('.story-page-image');
+    if (imageEl) {
+      imageEl.addEventListener('click', () => this._showStoryImageZoom(card.image));
+    }
+
+    // Mount the back button as a sibling of `.journal-close` inside
+    // `.journal-page-inner`. No header bar — buttons sit directly on the
+    // paper texture (matches the Wren tab's plain page-head treatment). The
+    // body's `overflow: auto` already clips scrolled content at its edges,
+    // so we don't need a covering bar to hide content scrolling past.
+    const inner = document.querySelector('.menu-pause-popup .journal-page--right .journal-page-inner');
+    if (inner) {
+      // Clean up any leftover button from a previous detail render.
+      inner.querySelector('.story-page-back')?.remove();
+
+      const backBtn = el('button', 'story-page-back');
+      backBtn.setAttribute('aria-label', 'Back to story list');
+      backBtn.innerHTML = '<span class="story-page-back-arrow">←</span><span>Back</span>';
+      backBtn.addEventListener('click', () => {
+        // Restore the page-head (cached when we hid it) and re-render the story
+        // tab grid via _switchTab — same effect as clicking "I. Story" in the
+        // contents index.
+        if (head) {
+          head.classList.remove('journal-page-head--blank');
+          if (this._journalStoryBaseHead) head.textContent = this._journalStoryBaseHead;
+          this._journalStoryBaseHead = null;
+        }
+        backBtn.remove();
+        this._switchTab('story');
+      });
+      inner.appendChild(backBtn);
+    }
+  }
+
+  // Enlarge the story-card image to fill the open journal book (both pages
+  // + spine), leaving the leather frame visible. Click anywhere on the
+  // overlay or hit ESC to close — the underlying detail view is untouched.
+  _showStoryImageZoom(imageUrl) {
+    const journalBook = document.querySelector('.menu-pause-popup .journal-book');
+    if (!journalBook) return;
+    // Wipe any existing zoom (defensive — clicking the image twice fast).
+    journalBook.querySelector('.story-image-zoom')?.remove();
+
+    const zoom = el('div', 'story-image-zoom');
+    zoom.style.backgroundImage = `url('${imageUrl}')`;
+
+    const close = el('button', 'story-image-zoom-close');
+    close.setAttribute('aria-label', 'Close image');
+    close.setAttribute('type', 'button');
+    close.innerHTML = '&times;';
+    zoom.appendChild(close);
+
+    const dismiss = () => {
+      zoom.remove();
+      window.removeEventListener('keydown', escHandler, true);
+    };
+    const escHandler = (e) => {
+      if (e.code === 'Escape') {
+        // Stop the journal's outer ESC handler so closing the zoom doesn't
+        // also close the entire pause menu.
+        e.preventDefault();
+        e.stopPropagation();
+        dismiss();
+      }
+    };
+    // Click anywhere on the overlay (or the ✕) to dismiss.
+    zoom.addEventListener('click', dismiss);
+    close.addEventListener('click', (e) => { e.stopPropagation(); dismiss(); });
+    window.addEventListener('keydown', escHandler, true);
+
+    journalBook.appendChild(zoom);
   }
 
   // ---------- FIELD GUIDE TAB ----------
@@ -369,6 +771,14 @@ export class Menu {
   }
 
   _showMushroomDetail(info) {
+    // Same two-path branching as story cards: in the pause journal we render
+    // an inline detail page (matches the story-page UX); from the main menu
+    // (no pause popup) we fall back to the legacy dark-themed modal.
+    const journalBody = document.querySelector('.menu-pause-popup .journal-page-body');
+    if (journalBody) {
+      this._showMushroomDetailInJournal(info, journalBody);
+      return;
+    }
     const tint = EDIBILITY_TINT[info.edibility] || EDIBILITY_TINT.unknown;
     const modal = el('div', 'menu-modal');
     modal.innerHTML = `
@@ -396,67 +806,150 @@ export class Menu {
     this._showModal(modal);
   }
 
+  // Inline mushroom-species detail for the pause journal — matches the
+  // story-page UX: sticky header bar with back + close ✕, full-width photo
+  // (click to zoom), then handwritten copy in the journal aesthetic. The
+  // sticky bar and back-button DOM are shared with the story flow (same
+  // .story-page-headerbar / .story-page-back classes) so the two pages
+  // feel like the same UI surface.
+  _showMushroomDetailInJournal(info, body) {
+    const tint = EDIBILITY_TINT[info.edibility] || EDIBILITY_TINT.unknown;
+
+    // Blank the page-head but keep its vertical space (same pattern as story
+    // detail) so the back/✕ buttons sit on a tall enough paper "header zone"
+    // and scrolled content stays below them.
+    const head = document.querySelector('.menu-pause-popup .journal-page-head');
+    if (head) {
+      if (!this._journalGuideBaseHead) this._journalGuideBaseHead = head.textContent || '';
+      head.textContent = '';
+      head.classList.add('journal-page-head--blank');
+    }
+
+    const detail = el('div', 'species-page');
+    detail.innerHTML = `
+      <div class="species-page-image" style="background-image: url('${info.photoUrl}')"></div>
+
+      <div class="species-page-heading">
+        <div class="species-page-edibility" style="color:${tint}">${escapeHtml(info.edibilityLabel)}</div>
+        <h2 class="species-page-name">${escapeHtml(info.commonName)}</h2>
+        <div class="species-page-latin">${escapeHtml(info.latinName)}</div>
+      </div>
+
+      <p class="species-page-body">${escapeHtml(info.description)}</p>
+
+      <div class="species-page-section">
+        <h3>Identifying features</h3>
+        <ul class="species-page-list">
+          ${info.idFeatures.map((f) => `<li>${escapeHtml(f)}</li>`).join('')}
+        </ul>
+      </div>
+
+      <div class="species-page-meta">
+        <div><span>Habitat</span><p>${escapeHtml(info.habitat)}</p></div>
+        <div><span>Season</span><p>${escapeHtml(info.season)}</p></div>
+        <div><span>Look-alikes</span><p>${escapeHtml(info.lookalikes)}</p></div>
+      </div>
+
+      <blockquote class="species-page-notes">${escapeHtml(info.notes)}</blockquote>
+    `;
+
+    body.innerHTML = '';
+    body.appendChild(detail);
+    body.scrollTop = 0;
+
+    // Click the species photo to enlarge it inside the journal. Reuses the
+    // story-detail zoom — generic image-overlay scoped to .journal-book.
+    const imageEl = detail.querySelector('.species-page-image');
+    if (imageEl) imageEl.addEventListener('click', () => this._showStoryImageZoom(info.photoUrl));
+
+    // Mount the back button alongside the close ✕ — same plain treatment as
+    // story detail. No header bar; buttons sit on the natural paper.
+    const inner = document.querySelector('.menu-pause-popup .journal-page--right .journal-page-inner');
+    if (inner) {
+      inner.querySelector('.story-page-back')?.remove();
+
+      const backBtn = el('button', 'story-page-back');
+      backBtn.setAttribute('aria-label', 'Back to species list');
+      backBtn.innerHTML = '<span class="story-page-back-arrow">←</span><span>Back</span>';
+      backBtn.addEventListener('click', () => {
+        if (head) {
+          head.classList.remove('journal-page-head--blank');
+          if (this._journalGuideBaseHead) head.textContent = this._journalGuideBaseHead;
+          this._journalGuideBaseHead = null;
+        }
+        backBtn.remove();
+        this._switchTab('guide');
+      });
+      inner.appendChild(backBtn);
+    }
+  }
+
   // ---------- WREN TAB ----------
   _renderWrenTab() {
     const wrap = el('div', 'tab-pane wren-tab');
     wrap.innerHTML = `
       <div class="wren-hero">
-        <div class="wren-hero-portrait" data-wren-portrait>
-          <div class="wren-hero-loading" data-wren-loading>Loading portrait…</div>
+        <div class="wren-profile-art">
+          <img src="/ui/wren-profile.png" alt="Wren Tobin with her foraging tools, journal, basket, and mushrooms">
         </div>
         <div class="wren-hero-info">
           <div class="wren-hero-eyebrow">Protagonist</div>
-          <h2 class="wren-hero-name">Wren of the Mill</h2>
-          <div class="wren-hero-tagline">The forager who came home.</div>
-          <p class="wren-hero-lead">Daughter of the late village miller. Returns to Hollowfen at eighteen with a knife at her hip and her father's hidden journal in her pocket. She can read the woods. The village has forgotten how.</p>
+          <h2 class="wren-hero-name">Wren Tobin</h2>
+          <div class="wren-hero-tagline">The miller's daughter who came home with a forager's eye.</div>
+          <p class="wren-hero-lead">Wren returns to Hollowfen after three winters away and finds the mill silent, the village hungry, and her father's hidden journal waiting in a drawer. She can read damp bark, shadow, season, and soil. The woods have not forgotten her family, even if the village nearly has.</p>
 
           <div class="wren-stats">
             <div class="wren-stat">
               <div class="wren-stat-label">Age</div>
-              <div class="wren-stat-value">18</div>
+              <div class="wren-stat-value">Late twenties</div>
             </div>
             <div class="wren-stat">
-              <div class="wren-stat-label">Hometown</div>
+              <div class="wren-stat-label">Home</div>
               <div class="wren-stat-value">Hollowfen</div>
             </div>
             <div class="wren-stat">
-              <div class="wren-stat-label">Trade</div>
+              <div class="wren-stat-label">Work</div>
               <div class="wren-stat-value">Forager</div>
             </div>
             <div class="wren-stat">
-              <div class="wren-stat-label">Lineage</div>
-              <div class="wren-stat-value">Tobin · Miller</div>
+              <div class="wren-stat-label">Keepsake</div>
+              <div class="wren-stat-value">Tobin's journal</div>
             </div>
           </div>
-
-          <div class="wren-hero-hint">Drag the model to rotate · Releases to auto-spin</div>
         </div>
+      </div>
+
+      <div class="wren-kit-strip">
+        <div><span>Knife</span> Horn-handled, sharp enough for clean cuts.</div>
+        <div><span>Basket</span> Wicker, moss-lined, never quite empty.</div>
+        <div><span>Journal</span> Her father's notes, half confession.</div>
+        <div><span>Brightspore</span> The woods' smallest impossible light.</div>
       </div>
 
       <div class="wren-grid">
         <article class="wren-card">
           <div class="wren-card-eyebrow">Background</div>
-          <p>Born above her father Tobin's mill on the River Wend. Her mother died when she was eight; Tobin raised her among grain dust, ledgers, and the mushrooms he collected in secret. At fifteen she was sent to apprentice as a kitchen girl in Veyrwick. Her father's letters got shorter. Then they stopped. She returned to find Hollowfen smaller, the mill silent, and her father four months gone.</p>
+          <p>Born above Tobin's mill on the River Wend, Wren grew up among grain dust, ledgers, and the quiet habits of a father who knew more about mushrooms than he ever admitted aloud. She left for kitchen work in Veyrwick and came back to a village smaller than memory, with boarded windows and a dead mill wheel.</p>
         </article>
 
         <article class="wren-card">
           <div class="wren-card-eyebrow">How she sees the world</div>
-          <p>Wren reads habitat the way other people read faces. A single damp log tells her what season it is and what is about to fruit on it. She is patient with mushrooms, less patient with people who pretend the village is doing fine. She prefers small exact words. She apologises before correcting someone, and corrects them anyway.</p>
+          <p>Wren reads habitat the way other people read faces. A damp birch log tells her what season it is, what will fruit next, and whether the woods are safe to trust. She is patient with mushrooms, less patient with people who pretend Hollowfen is doing fine.</p>
         </article>
 
         <article class="wren-card wren-card-list">
           <div class="wren-card-eyebrow">What she carries</div>
           <ul>
-            <li><strong>A folding knife</strong> with a horn handle — her father's.</li>
-            <li><strong>A wicker basket</strong> lined with damp moss for delicate caps.</li>
-            <li><strong>A worn field journal</strong> half its pages still blank.</li>
-            <li><strong>A wide-brimmed hat</strong> for sun, rain, and not being recognised.</li>
-            <li><strong>A coin purse</strong> light enough to be cruel.</li>
+            <li><strong>A foraging knife</strong> with a horn handle and a dark leather sheath.</li>
+            <li><strong>A wicker basket</strong> with a leather strap and room for the day's risk.</li>
+            <li><strong>Tobin's field journal</strong> filled with sketches, warnings, and omissions.</li>
+            <li><strong>A belt pouch</strong> for coins, twine, oilcloth, and careful scraps.</li>
+            <li><strong>Found mushrooms</strong> goldfoots, field caps, wood-ear, pinecrest, and Brightspore.</li>
           </ul>
         </article>
 
         <article class="wren-card wren-card-list">
-          <div class="wren-card-eyebrow">Who she meets again</div>
+          <div class="wren-card-eyebrow">People around her</div>
           <ul class="wren-npc-list">
             <li><span class="wren-npc-name">Old Bram</span><span class="wren-npc-role">Innkeeper · gave her the mill key</span></li>
             <li><span class="wren-npc-name">Marra</span><span class="wren-npc-role">Cook · kept the inn's fire lit</span></li>
@@ -475,24 +968,15 @@ export class Menu {
       </blockquote>
     `;
 
-    // Mount the 3D portrait after the layout settles. queueMicrotask runs
-    // before reflow — the container can be 0×0 then. requestAnimationFrame
-    // gives the browser one frame to lay out the element.
-    const portraitDiv = wrap.querySelector('[data-wren-portrait]');
-    const loadingEl = wrap.querySelector('[data-wren-loading]');
-    requestAnimationFrame(() => {
-      if (this._wrenPortrait) {
-        try { this._wrenPortrait.dispose(); } catch {}
-        this._wrenPortrait = null;
-      }
-      try {
-        this._wrenPortrait = new WrenPortrait3D(portraitDiv);
-        if (loadingEl) loadingEl.style.display = 'none';
-      } catch (err) {
-        console.error('[Menu] failed to mount WrenPortrait3D:', err);
-        if (loadingEl) loadingEl.textContent = 'Portrait failed to load — see console';
-      }
-    });
+    // Wren's portrait is clickable in the pause journal — opens the same
+    // full-journal zoom overlay used by story cards and species photos.
+    // The image inside .wren-profile-art is targeted directly so the click
+    // works on the visible artwork.
+    const portrait = wrap.querySelector('.wren-profile-art img');
+    if (portrait) {
+      portrait.style.cursor = 'zoom-in';
+      portrait.addEventListener('click', () => this._showStoryImageZoom(portrait.getAttribute('src')));
+    }
 
     return wrap;
   }
@@ -576,7 +1060,11 @@ export class Menu {
       btn.addEventListener('click', () => {
         wrap.querySelectorAll('.settings-btn-group [data-quality]').forEach((b) => b.classList.remove('active'));
         btn.classList.add('active');
-        updateSettings({ quality: btn.dataset.quality });
+        const level = btn.dataset.quality;
+        updateSettings({ quality: level });
+        // Live-apply: renderer DPR cap, shadow map size, shadow filter type,
+        // and camera far update immediately. No reload required.
+        this.setQuality?.(level);
       });
     });
     wrap.querySelector('[data-setting="invertY"]').addEventListener('change', (e) => {
@@ -598,6 +1086,12 @@ export class Menu {
     const dev = this.dev;
     const hours = dev.getHours();
     const speed = dev.getSpeed();
+    const fly = dev.getFlyMode ? dev.getFlyMode() : false;
+    const locationOptions = HOLLOWFEN_LOCATION_OPTIONS.map((group) => `
+      <optgroup label="${escapeHtml(group.group)}">
+        ${group.items.map((item) => `<option value="${item.id}">${escapeHtml(item.name)}</option>`).join('')}
+      </optgroup>
+    `).join('');
 
     wrap.innerHTML = `
       <div class="tab-heading">
@@ -631,6 +1125,30 @@ export class Menu {
           <input type="checkbox" data-setting="noclip" ${dev.getNoclip() ? 'checked' : ''}>
           <span>Disable collision (noclip)</span>
         </label>
+        <label class="settings-row settings-row-checkbox">
+          <input type="checkbox" data-setting="fly" ${fly ? 'checked' : ''}>
+          <span>Fly mode for mapping</span>
+        </label>
+        <p class="settings-note">Fly mode uses WASD to move, Shift to speed up, Space/E to rise, and Q to lower. It also disables collision while active.</p>
+      </div>
+
+      <div class="settings-section">
+        <h3>Location Mapping</h3>
+        <p class="settings-row-text">Choose a story location, move Wren to the doorway or NPC standing spot, then pin the current position. Pins save locally and can be copied into the canon map data later.</p>
+        <label class="settings-row">
+          <span>Location</span>
+          <select data-location-select>
+            ${locationOptions}
+          </select>
+        </label>
+        <div class="location-option-help" data-location-help></div>
+        <div class="settings-btn-row">
+          <button class="menu-btn" data-action="pin-location">Pin at Wren</button>
+          <button class="menu-btn" data-action="copy-pins">Copy JSON</button>
+          <button class="menu-btn" data-action="download-pins">Download JSON</button>
+        </div>
+        <div class="location-pin-readout" data-pin-readout></div>
+        <div class="location-pin-list" data-pin-list></div>
       </div>
 
       <div class="settings-section">
@@ -672,9 +1190,117 @@ export class Menu {
       wrap.querySelector('[data-display="speed"]').textContent = `${v.toFixed(2)}×`;
     });
     wrap.querySelector('[data-setting="noclip"]').addEventListener('change', (e) => dev.setNoclip(e.target.checked));
+    wrap.querySelector('[data-setting="fly"]').addEventListener('change', (e) => {
+      dev.setFlyMode?.(e.target.checked);
+      if (e.target.checked) {
+        const noclip = wrap.querySelector('[data-setting="noclip"]');
+        noclip.checked = true;
+      }
+    });
     wrap.querySelector('[data-setting="fog"]').addEventListener('change', (e) => dev.setFog(e.target.checked));
     wrap.querySelector('[data-setting="wireframe"]').addEventListener('change', (e) => dev.setWireframe(e.target.checked));
     wrap.querySelector('[data-setting="fps"]').addEventListener('change', (e) => dev.setShowFps(e.target.checked));
+
+    const readout = wrap.querySelector('[data-pin-readout]');
+    const pinList = wrap.querySelector('[data-pin-list]');
+    const locationSelect = wrap.querySelector('[data-location-select]');
+    const locationHelp = wrap.querySelector('[data-location-help]');
+
+    const renderLocationHelp = () => {
+      const option = LOCATION_OPTION_BY_ID.get(locationSelect.value);
+      if (!option) {
+        locationHelp.innerHTML = '';
+        return;
+      }
+      locationHelp.innerHTML = `
+        <strong>${escapeHtml(option.name)}</strong>
+        <span>${escapeHtml(option.type || 'location')}</span>
+        <p>${escapeHtml(option.description || '')}</p>
+      `;
+    };
+
+    const renderPins = () => {
+      if (!this.locationPins.length) {
+        pinList.innerHTML = '<p class="settings-note">No locations pinned yet.</p>';
+        this.dev.setLocationPins?.(this.locationPins);
+        return;
+      }
+      pinList.innerHTML = this.locationPins.map((pin) => `
+        <div class="location-pin-row ${pin.source === 'canon' ? 'is-canon' : ''}">
+          <div>
+            <strong>${escapeHtml(pin.name)}</strong>
+            <span>${escapeHtml(pin.source === 'canon' ? 'canon' : 'local')} · ${escapeHtml(pin.type || 'location')} · x ${pin.position.x.toFixed(2)}, y ${pin.position.y.toFixed(2)}, z ${pin.position.z.toFixed(2)}</span>
+          </div>
+          ${pin.source === 'canon'
+            ? '<button type="button" disabled>Canon</button>'
+            : `<button type="button" data-clear-pin="${pin.id}">Clear</button>`}
+        </div>
+      `).join('');
+      pinList.querySelectorAll('[data-clear-pin]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          this.localLocationPins = this.localLocationPins.filter((pin) => pin.id !== btn.dataset.clearPin);
+          persistLocationPins(this.localLocationPins);
+          this.locationPins = mergeLocationPins(this.localLocationPins);
+          this.dev.setLocationPins?.(this.locationPins);
+          renderPins();
+        });
+      });
+      this.dev.setLocationPins?.(this.locationPins);
+    };
+
+    wrap.querySelector('[data-action="pin-location"]').addEventListener('click', () => {
+      const option = LOCATION_OPTION_BY_ID.get(locationSelect.value);
+      if (!option) return;
+      const snapshot = this.dev.getPlayerSnapshot?.();
+      if (!snapshot) {
+        readout.textContent = 'Wren is not ready yet. Start the game world first.';
+        return;
+      }
+      const pin = {
+        id: option.id,
+        name: option.name,
+        type: option.type,
+        description: option.description,
+        position: snapshot.position,
+        facing: snapshot.facing,
+        camera: snapshot.camera,
+        updatedAt: new Date().toISOString()
+      };
+      this.localLocationPins = [
+        ...this.localLocationPins.filter((existing) => existing.id !== pin.id),
+        pin
+      ].sort((a, b) => a.name.localeCompare(b.name));
+      persistLocationPins(this.localLocationPins);
+      this.locationPins = mergeLocationPins(this.localLocationPins);
+      this.dev.setLocationPins?.(this.locationPins);
+      readout.textContent = `Pinned ${pin.name} at x ${pin.position.x.toFixed(2)}, y ${pin.position.y.toFixed(2)}, z ${pin.position.z.toFixed(2)}.`;
+      renderPins();
+    });
+
+    locationSelect.addEventListener('change', renderLocationHelp);
+
+    wrap.querySelector('[data-action="copy-pins"]').addEventListener('click', async () => {
+      const json = JSON.stringify(this.locationPins, null, 2);
+      try {
+        await navigator.clipboard.writeText(json);
+        readout.textContent = 'Copied location pins JSON to clipboard.';
+      } catch {
+        readout.textContent = json;
+      }
+    });
+
+    wrap.querySelector('[data-action="download-pins"]').addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(this.locationPins, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'hollowfen-location-pins.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    renderPins();
+    renderLocationHelp();
 
     return wrap;
   }
@@ -693,7 +1319,7 @@ export class Menu {
         <div><kbd>Drag</kbd><span>Turn camera</span></div>
         <div><kbd>ESC</kbd><span>Open / close menu</span></div>
       </div>
-      <h3 style="margin: 28px 0 10px; font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; color: #d9bd6d;">Menu shortcuts</h3>
+      <h3 class="controls-subhead">Menu shortcuts</h3>
       <div class="controls-grid">
         <div><kbd>T</kbd><span>Story</span></div>
         <div><kbd>J</kbd><span>Field Guide</span></div>

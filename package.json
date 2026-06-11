@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "vite --host 127.0.0.1 --port 5175",
     "build": "vite build",
+    "build:storybook": "vite build && rm -rf dist/world dist/draco dist/textures dist/models dist/nature dist/videos && rm -f dist/assets/main-*.js dist/assets/main-*.css && rm -f dist/index.html && mv dist/story.html dist/index.html && find dist -name .DS_Store -delete",
     "preview": "vite preview --host 127.0.0.1 --port 4175"
   },
   "keywords": [],

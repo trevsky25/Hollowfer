@@ -1,0 +1,2215 @@
+{
+  "source": "Unity Medieval Village Demo 3",
+  "model": "demo3_village_clean.glb",
+  "offset": {
+    "x": 0.0,
+    "y": 0.0,
+    "z": 0.0
+  },
+  "bounds": {
+    "minX": -107.8626,
+    "maxX": 107.8626,
+    "minY": 0,
+    "maxY": 36.28079,
+    "minZ": -61.59024,
+    "maxZ": 61.59024
+  },
+  "terrain": null,
+  "colliders": [
+    {
+      "shape": "box",
+      "name": "VillageWallSupport",
+      "minX": 23.76328,
+      "maxX": 24.50516,
+      "minZ": 17.09906,
+      "maxZ": 17.79135,
+      "top": 24.25222,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 7.180588,
+      "maxX": 8.22554,
+      "minZ": -61.40393,
+      "maxZ": -60.35779,
+      "top": 29.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 10.95518,
+      "maxX": 12.00133,
+      "minZ": -58.50769,
+      "maxZ": -57.46271,
+      "top": 29.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 6.209244,
+      "maxX": 7.254196,
+      "minZ": -52.32874,
+      "maxZ": -51.28259,
+      "top": 24.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "VillageWall3M (1)",
+      "minX": 26.64038,
+      "maxX": 29.64883,
+      "minZ": 28.86021,
+      "maxZ": 28.90483,
+      "top": 23.22434,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones2Arch (3)",
+      "minX": 6.278717,
+      "maxX": 11.38123,
+      "minZ": -52.23126,
+      "maxZ": -48.09705,
+      "top": 32.93379,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "WallPart1 (1)",
+      "minX": 18.71008,
+      "maxX": 22.67538,
+      "minZ": -42.47385,
+      "maxZ": -39.42813,
+      "top": 34.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 39.05998,
+      "maxX": 40.10493,
+      "minZ": -36.92119,
+      "maxZ": -35.87505,
+      "top": 19.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "BasicBuilding1_WallsInside",
+      "minX": 22.85466,
+      "maxX": 26.8423,
+      "minZ": 22.46779,
+      "maxZ": 29.50264,
+      "top": 24.25401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "BattlementTower",
+      "minX": -54.88928,
+      "maxX": -44.91034,
+      "minZ": 17.75305,
+      "maxZ": 27.73203,
+      "top": 31.1511,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 10.47729,
+      "maxX": 11.52344,
+      "minZ": -49.04935,
+      "maxZ": -48.00436,
+      "top": 29.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 15.26836,
+      "maxX": 16.31331,
+      "minZ": -55.19571,
+      "maxZ": -54.14957,
+      "top": 29.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 18.88206,
+      "maxX": 19.92821,
+      "minZ": -52.41898,
+      "maxZ": -51.37399,
+      "top": 29.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "WellFrame",
+      "minX": 97.01001,
+      "maxX": 99.3992,
+      "minZ": 56.80856,
+      "maxZ": 57.24408,
+      "top": 19.05034,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Quad (1)",
+      "minX": 26.64064,
+      "maxX": 31.51384,
+      "minZ": -42.72678,
+      "maxZ": -36.38235,
+      "top": 34.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Door 1 Square Frame 2",
+      "minX": 99.53943,
+      "maxX": 100.6826,
+      "minZ": 48.86473,
+      "maxZ": 50.61644,
+      "top": 19.35309,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Wall4c (4)",
+      "minX": 22.67537,
+      "maxX": 31.51384,
+      "minZ": -45.77255,
+      "maxZ": -36.38235,
+      "top": 24.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "FenceB",
+      "minX": -8.486313,
+      "maxX": -7.708755,
+      "minZ": -1.414017,
+      "maxZ": -0.4441071,
+      "top": 19.95586,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 30.97221,
+      "maxX": 32.01717,
+      "minZ": -43.12939,
+      "maxZ": -42.08325,
+      "top": 19.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "FenceD",
+      "minX": -11.09006,
+      "maxX": -9.631927,
+      "minZ": 1.086487,
+      "maxZ": 2.534027,
+      "top": 19.83351,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 18.88206,
+      "maxX": 19.92821,
+      "minZ": -52.41898,
+      "maxZ": -51.37399,
+      "top": 34.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 39.05998,
+      "maxX": 40.10493,
+      "minZ": -36.92119,
+      "maxZ": -35.87505,
+      "top": 29.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Barrel",
+      "minX": 57.85437,
+      "maxX": 58.68124,
+      "minZ": 45.55559,
+      "maxZ": 46.37523,
+      "top": 20.13755,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 22.851,
+      "maxX": 23.89714,
+      "minZ": -49.37042,
+      "maxZ": -48.32544,
+      "top": 29.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Well",
+      "minX": 97.44014,
+      "maxX": 98.96907,
+      "minZ": 56.25809,
+      "maxZ": 57.78699,
+      "top": 17.64063,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 34.26892,
+      "maxX": 35.31506,
+      "minZ": -30.77481,
+      "maxZ": -29.72986,
+      "top": 19.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 14.16638,
+      "maxX": 15.21133,
+      "minZ": -46.22263,
+      "maxZ": -45.17648,
+      "top": 24.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Wall4c (4)",
+      "minX": 10.77956,
+      "maxX": 19.61803,
+      "minZ": -54.90982,
+      "maxZ": -45.51962,
+      "top": 24.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 37.95801,
+      "maxX": 39.00296,
+      "minZ": -27.94806,
+      "maxZ": -26.90192,
+      "top": 19.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones2Arch (1)",
+      "minX": 34.87744,
+      "maxX": 39.97995,
+      "minZ": -40.14938,
+      "maxZ": -36.01512,
+      "top": 32.93379,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Tower Arched Push Out 1 (3)",
+      "minX": 31.77312,
+      "maxX": 34.75673,
+      "minZ": -42.91513,
+      "maxZ": -40.30161,
+      "top": 32.63467,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 10.47729,
+      "maxX": 11.52344,
+      "minZ": -49.04935,
+      "maxZ": -48.00436,
+      "top": 19.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Wall4c (8)",
+      "minX": 2.849014,
+      "maxX": 11.68748,
+      "minZ": -61.00134,
+      "maxZ": -51.61115,
+      "top": 19.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "CartBWheelsBack",
+      "minX": -36.52881,
+      "maxX": -34.92572,
+      "minZ": 0.1489868,
+      "maxZ": 2.198395,
+      "top": 14.07584,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 37.95801,
+      "maxX": 39.00296,
+      "minZ": -27.94806,
+      "maxZ": -26.90192,
+      "top": 29.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 2.46373,
+      "maxX": 3.509872,
+      "minZ": -55.20639,
+      "maxZ": -54.16141,
+      "top": 34.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones2Arch (1)",
+      "minX": 22.98163,
+      "maxX": 28.08414,
+      "minZ": -49.28665,
+      "maxZ": -45.15237,
+      "top": 32.93379,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "BasicBuilding1_WallsOutside",
+      "minX": 22.84914,
+      "maxX": 26.84914,
+      "minZ": 22.46649,
+      "maxZ": 29.50293,
+      "top": 27.25401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "BasicBuilding1_FoundationB",
+      "minX": 22.61098,
+      "maxX": 27.0656,
+      "minZ": 22.3004,
+      "maxZ": 29.63426,
+      "top": 21.16283,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "WallPart2",
+      "minX": 39.44438,
+      "maxX": 43.40965,
+      "minZ": -36.63527,
+      "maxZ": -33.58952,
+      "top": 34.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 30.77788,
+      "maxX": 31.82402,
+      "minZ": -43.28171,
+      "maxZ": -42.23672,
+      "top": 19.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "BattlementBlocker",
+      "minX": -106.8803,
+      "maxX": -101.8459,
+      "minZ": 43.31342,
+      "maxZ": 43.80002,
+      "top": 17.09573,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "FenceB",
+      "minX": -8.971771,
+      "maxX": -8.194214,
+      "minZ": -0.6721802,
+      "maxZ": 0.2977295,
+      "top": 19.92741,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Quad (1)",
+      "minX": 14.74483,
+      "maxX": 19.61803,
+      "minZ": -51.86404,
+      "maxZ": -45.51962,
+      "top": 34.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 14.16638,
+      "maxX": 15.21133,
+      "minZ": -46.22263,
+      "maxZ": -45.17648,
+      "top": 29.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 39.05998,
+      "maxX": 40.10493,
+      "minZ": -36.92119,
+      "maxZ": -35.87505,
+      "top": 24.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "WallArch2c (1)",
+      "minX": 30.60591,
+      "maxX": 39.44438,
+      "minZ": -39.68103,
+      "maxZ": -30.29085,
+      "top": 32.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones2Arch (3)",
+      "minX": 30.07034,
+      "maxX": 35.17285,
+      "minZ": -33.95673,
+      "maxZ": -29.82251,
+      "top": 32.93379,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "WallPart2",
+      "minX": 27.54857,
+      "maxX": 31.51384,
+      "minZ": -45.77255,
+      "maxZ": -42.72678,
+      "top": 34.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "BasicBuilding1_WallsOutside",
+      "minX": 22.84914,
+      "maxX": 26.84914,
+      "minZ": 22.46649,
+      "maxZ": 29.50293,
+      "top": 24.25401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 26.06219,
+      "maxX": 27.10715,
+      "minZ": -37.08533,
+      "maxZ": -36.03918,
+      "top": 19.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 26.25536,
+      "maxX": 27.3015,
+      "minZ": -36.93185,
+      "maxZ": -35.8869,
+      "top": 29.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "BattlementBlocker",
+      "minX": -107.3715,
+      "maxX": -102.337,
+      "minZ": 31.32349,
+      "maxZ": 31.81009,
+      "top": 17.09573,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 34.26892,
+      "maxX": 35.31506,
+      "minZ": -30.77481,
+      "maxZ": -29.72986,
+      "top": 29.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "FenceC",
+      "minX": -8.720139,
+      "maxX": -6.404404,
+      "minZ": -4.13504,
+      "maxZ": -1.823334,
+      "top": 20.03016,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "WallPart2 (3)",
+      "minX": 2.848999,
+      "maxX": 6.814301,
+      "minZ": -54.65686,
+      "maxZ": -51.61115,
+      "top": 34.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 34.74681,
+      "maxX": 35.79295,
+      "minZ": -40.23315,
+      "maxZ": -39.18817,
+      "top": 19.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Door1Peak1_Bolts",
+      "minX": -103.8162,
+      "maxX": -103.6544,
+      "minZ": 37.02859,
+      "maxZ": 38.05139,
+      "top": 5.486839,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Wall4c (9)",
+      "minX": 14.74483,
+      "maxX": 23.5833,
+      "minZ": -51.86407,
+      "maxZ": -42.47388,
+      "top": 24.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 15.26836,
+      "maxX": 16.31331,
+      "minZ": -55.19571,
+      "maxZ": -54.14957,
+      "top": 19.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Wall4c (3)",
+      "minX": 10.77956,
+      "maxX": 19.61803,
+      "minZ": -54.90982,
+      "maxZ": -45.51962,
+      "top": 19.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Door1Square2",
+      "minX": 99.79048,
+      "maxX": 100.4305,
+      "minZ": 49.22575,
+      "maxZ": 50.23137,
+      "top": 19.08083,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 42.67369,
+      "maxX": 43.71983,
+      "minZ": -34.14442,
+      "maxZ": -33.09947,
+      "top": 29.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Tower Arched Push Out 1",
+      "minX": 35.29735,
+      "maxX": 38.28096,
+      "minZ": -30.26619,
+      "maxZ": -27.65266,
+      "top": 32.63467,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "WallPart2 (1)",
+      "minX": 19.61803,
+      "maxX": 23.5833,
+      "minZ": -51.86407,
+      "maxZ": -48.8183,
+      "top": 34.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 22.851,
+      "maxX": 23.89714,
+      "minZ": -49.37042,
+      "maxZ": -48.32544,
+      "top": 19.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Wall4c (3)",
+      "minX": 22.67537,
+      "maxX": 31.51384,
+      "minZ": -45.77255,
+      "maxZ": -36.38235,
+      "top": 19.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones2Arch (3)",
+      "minX": 18.17453,
+      "maxX": 23.27704,
+      "minZ": -43.09399,
+      "maxZ": -38.95978,
+      "top": 32.93379,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Tower Arched Push Out 1 (4)",
+      "minX": 16.30856,
+      "maxX": 19.29218,
+      "minZ": -54.79358,
+      "maxZ": -52.18005,
+      "top": 32.63467,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Ivy_Well_02 - Well & Frame",
+      "minX": 94.95969,
+      "maxX": 101.8042,
+      "minZ": 51.99458,
+      "maxZ": 58.81181,
+      "top": 17.86766,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Wall4c (3)",
+      "minX": 34.57118,
+      "maxX": 43.40965,
+      "minZ": -36.63528,
+      "maxZ": -27.24509,
+      "top": 19.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 30.77788,
+      "maxX": 31.82402,
+      "minZ": -43.28171,
+      "maxZ": -42.23672,
+      "top": 24.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 10.95518,
+      "maxX": 12.00133,
+      "minZ": -58.50769,
+      "maxZ": -57.46271,
+      "top": 19.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "VillageWall3M",
+      "minX": 26.64038,
+      "maxX": 29.64883,
+      "minZ": 28.46022,
+      "maxZ": 28.50484,
+      "top": 23.22434,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "BattlementA",
+      "minX": -107.6989,
+      "maxX": -102.4064,
+      "minZ": 19.43465,
+      "maxZ": 31.679,
+      "top": 17.11129,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 14.35954,
+      "maxX": 15.40569,
+      "minZ": -46.06912,
+      "maxZ": -45.02414,
+      "top": 34.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Quad",
+      "minX": 14.74483,
+      "maxX": 19.61803,
+      "minZ": -51.86404,
+      "maxZ": -45.51962,
+      "top": 34.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "WallPart1",
+      "minX": 35.47911,
+      "maxX": 39.44438,
+      "minZ": -39.68103,
+      "maxZ": -36.63527,
+      "top": 34.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Tower Arched Push Out 1",
+      "minX": 23.40154,
+      "maxX": 26.38515,
+      "minZ": -39.40344,
+      "maxZ": -36.78992,
+      "top": 32.63467,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "BBQPitMain",
+      "minX": 58.97923,
+      "maxX": 62.57997,
+      "minZ": 46.54744,
+      "maxZ": 48.63142,
+      "top": 22.31268,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "BasicBuilding1_WallsInside",
+      "minX": 99.05669,
+      "maxX": 107.1429,
+      "minZ": 44.52885,
+      "maxZ": 51.49968,
+      "top": 19.56401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "CartB",
+      "minX": -36.56378,
+      "maxX": -33.479,
+      "minZ": 0.3415833,
+      "maxZ": 2.189728,
+      "top": 15.16913,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 37.95801,
+      "maxX": 39.00296,
+      "minZ": -27.94806,
+      "maxZ": -26.90192,
+      "top": 24.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 30.77788,
+      "maxX": 31.82402,
+      "minZ": -43.28171,
+      "maxZ": -42.23672,
+      "top": 29.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 18.88206,
+      "maxX": 19.92821,
+      "minZ": -52.41898,
+      "maxZ": -51.37399,
+      "top": 24.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 19.0764,
+      "maxX": 20.12135,
+      "minZ": -52.26666,
+      "maxZ": -51.22052,
+      "top": 34.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 2.46373,
+      "maxX": 3.509872,
+      "minZ": -55.20639,
+      "maxZ": -54.16141,
+      "top": 19.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "BasicBuilding1_DoorCover",
+      "minX": 24.28101,
+      "maxX": 25.41727,
+      "minZ": 29.38513,
+      "maxZ": 29.50293,
+      "top": 26.90944,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "WallArch2c (1)",
+      "minX": 18.7101,
+      "maxX": 27.54857,
+      "minZ": -48.81833,
+      "maxZ": -39.42813,
+      "top": 32.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Door1Peak2",
+      "minX": -103.8123,
+      "maxX": -103.6629,
+      "minZ": 36.99217,
+      "maxZ": 38.10231,
+      "top": 5.54895,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 30.77788,
+      "maxX": 31.82402,
+      "minZ": -43.28171,
+      "maxZ": -42.23672,
+      "top": 34.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Quad",
+      "minX": 38.53645,
+      "maxX": 43.40965,
+      "minZ": -33.58952,
+      "maxZ": -27.2451,
+      "top": 34.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 26.25536,
+      "maxX": 27.3015,
+      "minZ": -36.93185,
+      "maxZ": -35.8869,
+      "top": 34.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "CartBWheelsFront",
+      "minX": -35.16068,
+      "maxX": -33.55759,
+      "minZ": 0.3272247,
+      "maxZ": 2.376633,
+      "top": 14.53777,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Tower Arched Push Out 1 (3)",
+      "minX": 19.8773,
+      "maxX": 22.86092,
+      "minZ": -52.0524,
+      "maxZ": -49.43887,
+      "top": 32.63467,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 22.37311,
+      "maxX": 23.41925,
+      "minZ": -39.91208,
+      "maxZ": -38.8671,
+      "top": 24.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Wall4c (5)",
+      "minX": 34.57118,
+      "maxX": 43.40965,
+      "minZ": -36.63528,
+      "maxZ": -27.24509,
+      "top": 29.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 7.180588,
+      "maxX": 8.22554,
+      "minZ": -61.40393,
+      "maxZ": -60.35779,
+      "top": 19.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Wall4c (5)",
+      "minX": 10.77956,
+      "maxX": 19.61803,
+      "minZ": -54.90982,
+      "maxZ": -45.51962,
+      "top": 29.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 26.25536,
+      "maxX": 27.3015,
+      "minZ": -36.93185,
+      "maxZ": -35.8869,
+      "top": 24.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "DoorInterior1",
+      "minX": -53.84903,
+      "maxX": -53.74503,
+      "minZ": 22.20445,
+      "maxZ": 23.27782,
+      "top": 7.497223,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "WallPart2 (3)",
+      "minX": 14.74481,
+      "maxX": 18.71011,
+      "minZ": -45.51959,
+      "maxZ": -42.47388,
+      "top": 34.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 6.209244,
+      "maxX": 7.254196,
+      "minZ": -52.32874,
+      "maxZ": -51.28259,
+      "top": 19.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "DoorInterior1",
+      "minX": -50.43988,
+      "maxX": -49.36652,
+      "minZ": 26.58473,
+      "maxZ": 26.68874,
+      "top": 7.497223,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "WallPart2 (2)",
+      "minX": 22.67535,
+      "maxX": 26.64066,
+      "minZ": -39.4281,
+      "maxZ": -36.38237,
+      "top": 34.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 18.10506,
+      "maxX": 19.15001,
+      "minZ": -43.19147,
+      "maxZ": -42.14532,
+      "top": 29.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 42.67369,
+      "maxX": 43.71983,
+      "minZ": -34.14442,
+      "maxZ": -33.09947,
+      "top": 19.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Ivy_Well_05 - Frame & Bucket",
+      "minX": 97.08066,
+      "maxX": 98.14438,
+      "minZ": 56.27281,
+      "maxZ": 58.46443,
+      "top": 18.92633,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "WallPart1",
+      "minX": 11.68748,
+      "maxX": 15.65276,
+      "minZ": -57.95557,
+      "maxZ": -54.90979,
+      "top": 34.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "BasicBuilding1_FoundationB",
+      "minX": 98.82086,
+      "maxX": 107.3995,
+      "minZ": 44.23413,
+      "maxZ": 51.75888,
+      "top": 16.47282,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Wall2a",
+      "minX": -106.9812,
+      "maxX": -103.4925,
+      "minZ": 31.51715,
+      "maxZ": 43.62988,
+      "top": 10.86401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "BattlementBlocker",
+      "minX": -107.8626,
+      "maxX": -102.8282,
+      "minZ": 19.33354,
+      "maxZ": 19.82014,
+      "top": 17.09573,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Quad",
+      "minX": 26.64064,
+      "maxX": 31.51384,
+      "minZ": -42.72678,
+      "maxZ": -36.38235,
+      "top": 34.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Wall4c (8)",
+      "minX": 26.64064,
+      "maxX": 35.47911,
+      "minZ": -42.72681,
+      "maxZ": -33.33661,
+      "top": 19.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "WallPart2 (2)",
+      "minX": 34.57117,
+      "maxX": 38.53647,
+      "minZ": -30.29085,
+      "maxZ": -27.2451,
+      "top": 34.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "VillageWall1X1End",
+      "minX": 23.87155,
+      "maxX": 25.81723,
+      "minZ": 28.69191,
+      "maxZ": 30.63899,
+      "top": 21.09164,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 34.74681,
+      "maxX": 35.79295,
+      "minZ": -40.23315,
+      "maxZ": -39.18817,
+      "top": 24.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 22.851,
+      "maxX": 23.89714,
+      "minZ": -49.37042,
+      "maxZ": -48.32544,
+      "top": 24.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 19.0764,
+      "maxX": 20.12135,
+      "minZ": -52.26666,
+      "maxZ": -51.22052,
+      "top": 19.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Wood3B",
+      "minX": 23.80998,
+      "maxX": 25.91042,
+      "minZ": 29.47672,
+      "maxZ": 29.5267,
+      "top": 27.24341,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "WallPart2 (2)",
+      "minX": 10.77954,
+      "maxX": 14.74484,
+      "minZ": -48.56537,
+      "maxZ": -45.51965,
+      "top": 34.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 34.26892,
+      "maxX": 35.31506,
+      "minZ": -30.77481,
+      "maxZ": -29.72986,
+      "top": 24.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "WallPart2",
+      "minX": 15.65276,
+      "maxX": 19.61803,
+      "minZ": -54.90982,
+      "maxZ": -51.86404,
+      "top": 34.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Tower Arched Push Out 1 (2)",
+      "minX": 26.97028,
+      "maxX": 29.95389,
+      "minZ": -36.66228,
+      "maxZ": -34.04875,
+      "top": 32.63467,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 19.0764,
+      "maxX": 20.12135,
+      "minZ": -52.26666,
+      "maxZ": -51.22052,
+      "top": 29.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Tower Arched Push Out 1 (2)",
+      "minX": 15.07446,
+      "maxX": 18.05807,
+      "minZ": -45.79953,
+      "maxZ": -43.186,
+      "top": 32.63467,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 22.37311,
+      "maxX": 23.41925,
+      "minZ": -39.91208,
+      "maxZ": -38.8671,
+      "top": 19.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "CartA",
+      "minX": 98.96095,
+      "maxX": 100.9188,
+      "minZ": 51.91512,
+      "maxZ": 55.35127,
+      "top": 18.31481,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 2.46373,
+      "maxX": 3.509872,
+      "minZ": -55.20639,
+      "maxZ": -54.16141,
+      "top": 24.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "WallPart2 (1)",
+      "minX": 7.722214,
+      "maxX": 11.68748,
+      "minZ": -61.00134,
+      "maxZ": -57.95557,
+      "top": 34.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "BattlementA",
+      "minX": -106.7166,
+      "maxX": -101.424,
+      "minZ": 43.41452,
+      "maxZ": 55.65887,
+      "top": 17.11129,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "FenceB",
+      "minX": -9.934128,
+      "maxX": -9.15657,
+      "minZ": 0.7984009,
+      "maxZ": 1.768311,
+      "top": 19.87101,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Wall1a",
+      "minX": -106.49,
+      "maxX": -103.0014,
+      "minZ": 43.50706,
+      "maxZ": 55.6198,
+      "top": 10.86401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "DoorInterior1",
+      "minX": -46.0596,
+      "maxX": -45.9556,
+      "minZ": 22.20625,
+      "maxZ": 23.27962,
+      "top": 7.497223,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Tower Arched Push Out 1 (2)",
+      "minX": 3.17865,
+      "maxX": 6.162262,
+      "minZ": -54.9368,
+      "maxZ": -52.32327,
+      "top": 32.63467,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "WallPart1 (1)",
+      "minX": 6.81427,
+      "maxX": 10.77957,
+      "minZ": -51.61111,
+      "maxZ": -48.5654,
+      "top": 34.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 7.180588,
+      "maxX": 8.22554,
+      "minZ": -61.40393,
+      "maxZ": -60.35779,
+      "top": 34.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Ivy_Well_08 - Roof",
+      "minX": 96.72841,
+      "maxX": 99.42522,
+      "minZ": 55.81328,
+      "maxZ": 58.24254,
+      "top": 20.06711,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Tower Arched Push Out 1 (3)",
+      "minX": 7.981491,
+      "maxX": 10.9651,
+      "minZ": -61.18967,
+      "maxZ": -58.57614,
+      "top": 32.63467,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "BBQPit",
+      "minX": 55.86723,
+      "maxX": 65.12492,
+      "minZ": 44.18843,
+      "maxZ": 50.7827,
+      "top": 22.46012,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 30.97221,
+      "maxX": 32.01717,
+      "minZ": -43.12939,
+      "maxZ": -42.08325,
+      "top": 24.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 7.180588,
+      "maxX": 8.22554,
+      "minZ": -61.40393,
+      "maxZ": -60.35779,
+      "top": 24.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Wall4c (4)",
+      "minX": 34.57118,
+      "maxX": 43.40965,
+      "minZ": -36.63528,
+      "maxZ": -27.24509,
+      "top": 24.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 15.26836,
+      "maxX": 16.31331,
+      "minZ": -55.19571,
+      "maxZ": -54.14957,
+      "top": 24.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 19.0764,
+      "maxX": 20.12135,
+      "minZ": -52.26666,
+      "maxZ": -51.22052,
+      "top": 24.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Wall4c (10)",
+      "minX": 26.64064,
+      "maxX": 35.47911,
+      "minZ": -42.72681,
+      "maxZ": -33.33661,
+      "top": 29.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 14.35954,
+      "maxX": 15.40569,
+      "minZ": -46.06912,
+      "maxZ": -45.02414,
+      "top": 24.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 42.67369,
+      "maxX": 43.71983,
+      "minZ": -34.14442,
+      "maxZ": -33.09947,
+      "top": 24.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 30.00087,
+      "maxX": 31.04582,
+      "minZ": -34.05418,
+      "maxZ": -33.00804,
+      "top": 24.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Door1Peak1",
+      "minX": -103.8168,
+      "maxX": -103.5771,
+      "minZ": 36.98988,
+      "maxZ": 38.10463,
+      "top": 5.54895,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 27.16417,
+      "maxX": 28.20912,
+      "minZ": -46.05844,
+      "maxZ": -45.0123,
+      "top": 24.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 27.16417,
+      "maxX": 28.20912,
+      "minZ": -46.05844,
+      "maxZ": -45.0123,
+      "top": 29.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Stairs1",
+      "minX": -103.7799,
+      "maxX": -99.37183,
+      "minZ": 36.40692,
+      "maxZ": 38.42642,
+      "top": 2.994118,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "WallPart1 (1)",
+      "minX": 30.6059,
+      "maxX": 34.5712,
+      "minZ": -33.33659,
+      "maxZ": -30.29085,
+      "top": 34.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "BattlementBlocker",
+      "minX": -106.8803,
+      "maxX": -101.8459,
+      "minZ": 43.31345,
+      "maxZ": 43.80005,
+      "top": 17.09573,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Ivy_Well_01 - Well & Frame",
+      "minX": 95.61928,
+      "maxX": 102.1019,
+      "minZ": 55.00487,
+      "maxZ": 61.59026,
+      "top": 17.93548,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "DoorInterior1",
+      "minX": -50.43811,
+      "maxX": -49.36475,
+      "minZ": 18.79532,
+      "maxZ": 18.89932,
+      "top": 7.497223,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 42.67369,
+      "maxX": 43.71983,
+      "minZ": -34.14442,
+      "maxZ": -33.09947,
+      "top": 34.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 30.97221,
+      "maxX": 32.01717,
+      "minZ": -43.12939,
+      "maxZ": -42.08325,
+      "top": 29.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "FenceB",
+      "minX": -9.449005,
+      "maxX": -8.671448,
+      "minZ": 0.05708313,
+      "maxZ": 1.026993,
+      "top": 19.89944,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 6.209244,
+      "maxX": 7.254196,
+      "minZ": -52.32874,
+      "maxZ": -51.28259,
+      "top": 29.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Tower Arched Push Out 1",
+      "minX": 11.50572,
+      "maxX": 14.48933,
+      "minZ": -48.54071,
+      "maxZ": -45.92719,
+      "top": 32.63467,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 26.06219,
+      "maxX": 27.10715,
+      "minZ": -37.08533,
+      "maxZ": -36.03918,
+      "top": 24.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Tower Arched Push Out 1 (4)",
+      "minX": 28.20438,
+      "maxX": 31.18799,
+      "minZ": -45.65631,
+      "maxZ": -43.04279,
+      "top": 32.63467,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Wall4c (9)",
+      "minX": 26.64064,
+      "maxX": 35.47911,
+      "minZ": -42.72681,
+      "maxZ": -33.33661,
+      "top": 24.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 18.10506,
+      "maxX": 19.15001,
+      "minZ": -43.19147,
+      "maxZ": -42.14532,
+      "top": 19.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Wall4c (8)",
+      "minX": 14.74483,
+      "maxX": 23.5833,
+      "minZ": -51.86407,
+      "maxZ": -42.47388,
+      "top": 19.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 10.95518,
+      "maxX": 12.00133,
+      "minZ": -58.50769,
+      "maxZ": -57.46271,
+      "top": 24.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Wood3B",
+      "minX": 23.80562,
+      "maxX": 25.89427,
+      "minZ": 29.47272,
+      "maxZ": 29.52271,
+      "top": 27.25398,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "WallPart2 (1)",
+      "minX": 31.51384,
+      "maxX": 35.47911,
+      "minZ": -42.72681,
+      "maxZ": -39.68103,
+      "top": 34.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Tower Arched Push Out 1 (4)",
+      "minX": 40.10019,
+      "maxX": 43.0838,
+      "minZ": -36.51904,
+      "maxZ": -33.90552,
+      "top": 32.63467,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Wall4c (10)",
+      "minX": 14.74483,
+      "maxX": 23.5833,
+      "minZ": -51.86407,
+      "maxZ": -42.47388,
+      "top": 29.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 22.37311,
+      "maxX": 23.41925,
+      "minZ": -39.91208,
+      "maxZ": -38.8671,
+      "top": 29.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Door Interior Frame 1",
+      "minX": -50.67062,
+      "maxX": -49.13901,
+      "minZ": 18.73402,
+      "maxZ": 18.96904,
+      "top": 7.79837,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "BasicBuilding1_WallsOutside",
+      "minX": 99.05368,
+      "maxX": 107.1474,
+      "minZ": 44.52342,
+      "maxZ": 51.50575,
+      "top": 19.56401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "BasicBuilding1_Roof",
+      "minX": 22.2347,
+      "maxX": 27.46358,
+      "minZ": 21.99535,
+      "maxZ": 29.96349,
+      "top": 29.55185,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 26.25536,
+      "maxX": 27.3015,
+      "minZ": -36.93185,
+      "maxZ": -35.8869,
+      "top": 19.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 2.46373,
+      "maxX": 3.509872,
+      "minZ": -55.20639,
+      "maxZ": -54.16141,
+      "top": 29.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Wall4c (5)",
+      "minX": 22.67537,
+      "maxX": 31.51384,
+      "minZ": -45.77255,
+      "maxZ": -36.38235,
+      "top": 29.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 26.06219,
+      "maxX": 27.10715,
+      "minZ": -37.08533,
+      "maxZ": -36.03918,
+      "top": 29.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Quad (1)",
+      "minX": 2.849014,
+      "maxX": 7.722214,
+      "minZ": -61.00131,
+      "maxZ": -54.65689,
+      "top": 34.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 18.10506,
+      "maxX": 19.15001,
+      "minZ": -43.19147,
+      "maxZ": -42.14532,
+      "top": 24.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "CartAWheels",
+      "minX": 99,
+      "maxX": 101.0761,
+      "minZ": 53.45706,
+      "maxZ": 55.1044,
+      "top": 17.622,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "BattlementA",
+      "minX": -107.2077,
+      "maxX": -101.9152,
+      "minZ": 31.42461,
+      "maxZ": 43.66896,
+      "top": 17.11129,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "FenceB",
+      "minX": -8.006348,
+      "maxX": -7.22879,
+      "minZ": -2.147476,
+      "maxZ": -1.177567,
+      "top": 19.984,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "VillageWall",
+      "minX": 23.75294,
+      "maxX": 23.95741,
+      "minZ": 17.41318,
+      "maxZ": 22.43713,
+      "top": 24.05434,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "VillageWall (1)",
+      "minX": 24.15273,
+      "maxX": 24.35722,
+      "minZ": 17.4259,
+      "maxZ": 22.44986,
+      "top": 24.05434,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 30.97221,
+      "maxX": 32.01717,
+      "minZ": -43.12939,
+      "maxZ": -42.08325,
+      "top": 34.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 14.16638,
+      "maxX": 15.21133,
+      "minZ": -46.22263,
+      "maxZ": -45.17648,
+      "top": 19.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Balcony1B (1)",
+      "minX": 26.74382,
+      "maxX": 29.17854,
+      "minZ": 22.43805,
+      "maxZ": 26.97287,
+      "top": 27.19251,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "WallArch2c (1)",
+      "minX": 6.814285,
+      "maxX": 15.65276,
+      "minZ": -57.9556,
+      "maxZ": -48.5654,
+      "top": 32.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones2Arch (1)",
+      "minX": 11.08582,
+      "maxX": 16.18832,
+      "minZ": -58.42392,
+      "maxZ": -54.28964,
+      "top": 32.93379,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 18.88206,
+      "maxX": 19.92821,
+      "minZ": -52.41898,
+      "maxZ": -51.37399,
+      "top": 19.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Door1Arch1",
+      "minX": 24.28624,
+      "maxX": 25.39174,
+      "minZ": 29.38271,
+      "maxZ": 29.49422,
+      "top": 23.9081,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "BasicBuilding1_Roof",
+      "minX": 98.3476,
+      "maxX": 107.8626,
+      "minZ": 43.75574,
+      "maxZ": 52.26816,
+      "top": 21.86185,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "BattlementBlocker",
+      "minX": -106.3891,
+      "maxX": -101.3547,
+      "minZ": 55.30336,
+      "maxZ": 55.78996,
+      "top": 17.09573,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 10.47729,
+      "maxX": 11.52344,
+      "minZ": -49.04935,
+      "maxZ": -48.00436,
+      "top": 24.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Ivy_Well_06 - Frame",
+      "minX": 97.34702,
+      "maxX": 99.34302,
+      "minZ": 56.63109,
+      "maxZ": 58.76353,
+      "top": 18.89244,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 37.95801,
+      "maxX": 39.00296,
+      "minZ": -27.94806,
+      "maxZ": -26.90192,
+      "top": 34.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 30.00087,
+      "maxX": 31.04582,
+      "minZ": -34.05418,
+      "maxZ": -33.00804,
+      "top": 19.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Door Interior Frame 1",
+      "minX": -53.91031,
+      "maxX": -53.67526,
+      "minZ": 21.97874,
+      "maxZ": 23.51036,
+      "top": 7.79837,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 26.06219,
+      "maxX": 27.10715,
+      "minZ": -37.08533,
+      "maxZ": -36.03918,
+      "top": 34.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Wall4c (10)",
+      "minX": 2.849014,
+      "maxX": 11.68748,
+      "minZ": -61.00134,
+      "maxZ": -51.61115,
+      "top": 29.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Door Interior Frame 1",
+      "minX": -46.12936,
+      "maxX": -45.89432,
+      "minZ": 21.97371,
+      "maxZ": 23.50533,
+      "top": 7.79837,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 34.74681,
+      "maxX": 35.79295,
+      "minZ": -40.23315,
+      "maxZ": -39.18817,
+      "top": 29.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 27.16417,
+      "maxX": 28.20912,
+      "minZ": -46.05844,
+      "maxZ": -45.0123,
+      "top": 19.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "BattlementBlocker",
+      "minX": -107.3715,
+      "maxX": -102.337,
+      "minZ": 31.3235,
+      "maxZ": 31.8101,
+      "top": 17.09573,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "VillageWallSupport",
+      "minX": 29.29733,
+      "maxX": 29.96704,
+      "minZ": 28.32207,
+      "maxZ": 29.04298,
+      "top": 23.42223,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Door 1 Arch Frame 1",
+      "minX": 23.88776,
+      "maxX": 25.81052,
+      "minZ": 29.26184,
+      "maxZ": 29.61157,
+      "top": 24.26619,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 14.16638,
+      "maxX": 15.21133,
+      "minZ": -46.22263,
+      "maxZ": -45.17648,
+      "top": 34.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Wall1a",
+      "minX": -107.4724,
+      "maxX": -103.9837,
+      "minZ": 19.52719,
+      "maxZ": 31.63992,
+      "top": 10.86401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 14.35954,
+      "maxX": 15.40569,
+      "minZ": -46.06912,
+      "maxZ": -45.02414,
+      "top": 19.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Wall4c (9)",
+      "minX": 2.849014,
+      "maxX": 11.68748,
+      "minZ": -61.00134,
+      "maxZ": -51.61115,
+      "top": 24.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "WallPart1",
+      "minX": 23.5833,
+      "maxX": 27.54857,
+      "minZ": -48.8183,
+      "maxZ": -45.77252,
+      "top": 34.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Door 1 Peak Frame 1",
+      "minX": -103.9458,
+      "maxX": -103.5298,
+      "minZ": 36.51961,
+      "maxZ": 38.55498,
+      "top": 6.16246,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "Door Interior Frame 1",
+      "minX": -50.66562,
+      "maxX": -49.134,
+      "minZ": 26.51503,
+      "maxZ": 26.75005,
+      "top": 7.79837,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "WallPart2 (3)",
+      "minX": 26.64063,
+      "maxX": 30.60593,
+      "minZ": -36.38235,
+      "maxZ": -33.33661,
+      "top": 34.44401,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 14.35954,
+      "maxX": 15.40569,
+      "minZ": -46.06912,
+      "maxZ": -45.02414,
+      "top": 29.51302,
+      "active": true
+    },
+    {
+      "shape": "box",
+      "name": "TowerStones1A",
+      "minX": 30.00087,
+      "maxX": 31.04582,
+      "minZ": -34.05418,
+      "maxZ": -33.00804,
+      "top": 29.51302,
+      "active": true
+    }
+  ],
+  "source_offset_applied": {
+    "x": 239.2846,
+    "y": -86.18599,
+    "z": 218.5325
+  }
+}

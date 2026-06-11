@@ -1,0 +1,13 @@
+{
+  "active": "/models/bram/Bram-Final/Bram-TPose.fbx",
+  "height": 1.78,
+  "position": { "x": -224.9, "y": 0, "z": 113.6 },
+  "facing": -1.55,
+  "animations": {
+    "idle": { "path": "/models/bram/Bram-Final/Bram-Idle.fbx" },
+    "talking": { "path": "/models/bram/Bram-Final/Bram-Talking.fbx" },
+    "handoff": { "path": "/models/bram/Bram-Final/Bram-Handoff.fbx" },
+    "walking": { "path": "/models/bram/Bram-Final/Bram-Walking.fbx" }
+  },
+  "note": "Old Bram, the Crooked Pintle innkeeper. Mixamo-rigged from the Bram-Final TPose. Stands just outside the inn door, slightly off-doorway so Wren can pass."
+}

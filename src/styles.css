@@ -1,3 +1,11 @@
+/* Wren's journal handwriting — Walter Turncoat is a single-weight, casual
+   hand-print face that reads as actual notebook scribbling rather than a
+   stylized marker. Used only inside the pause-menu journal; the rest of the
+   UI keeps Inter/Georgia. Single weight (400), so font-weight rules below
+   are decorative — they don't change rendered weight, but kept for clarity
+   in case the font is swapped later. */
+@import url('https://fonts.googleapis.com/css2?family=Walter+Turncoat&display=swap');
+
 * {
   box-sizing: border-box;
 }
@@ -231,6 +239,29 @@ p {
   align-items: stretch;
   gap: 6px;
 }
+.hud-minimap-open {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  color: #f1d99a;
+  background: rgba(8, 12, 10, 0.74);
+  border: 1px solid rgba(217, 189, 109, 0.34);
+  border-radius: 6px;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.hud-minimap-open:hover {
+  background: rgba(217, 189, 109, 0.16);
+}
+.hud-minimap-open svg {
+  width: 18px;
+  height: 18px;
+}
 .hud-minimap canvas {
   width: 200px;
   height: 200px;
@@ -354,6 +385,567 @@ p {
   font-weight: 600;
 }
 
+/* ===== FULLSCREEN WORLD MAP ===== */
+.hud-world-map[hidden] {
+  display: none;
+}
+.hud-world-map {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  padding: clamp(8px, 1vw, 16px);
+  background: rgba(5, 8, 7, 0.84);
+  backdrop-filter: blur(12px);
+  color: #f5ecda;
+  font-family: Inter, system-ui, sans-serif;
+}
+.hud-world-map-panel {
+  width: 100%;
+  max-width: 2400px;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background:
+    linear-gradient(135deg, rgba(24, 34, 25, 0.96), rgba(9, 14, 12, 0.96)),
+    #111b15;
+  border: 1px solid rgba(217, 189, 109, 0.28);
+  border-radius: 8px;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.58);
+  overflow: hidden;
+}
+.hud-world-map-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 0 18px;
+  border-bottom: 1px solid rgba(217, 189, 109, 0.2);
+}
+.hud-world-map-title-block {
+  min-width: 0;
+}
+.hud-world-map-eyebrow {
+  margin-bottom: 4px;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(217, 189, 109, 0.82);
+}
+.hud-world-map-header h2 {
+  margin: 0;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(34px, 5vw, 58px);
+  font-weight: 500;
+  line-height: 0.95;
+}
+.hud-world-map-close {
+  height: 42px;
+  padding: 0 18px;
+  border: 1px solid rgba(217, 189, 109, 0.36);
+  border-radius: 6px;
+  background: rgba(217, 189, 109, 0.12);
+  color: #f1d99a;
+  font: 700 11px/1 Inter, system-ui, sans-serif;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.hud-world-map-close:hover {
+  background: rgba(217, 189, 109, 0.2);
+}
+.hud-world-map-layout {
+  min-height: 0;
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) minmax(0, 2fr);
+}
+.hud-world-map-side {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 22px clamp(20px, 1.6vw, 30px) 24px;
+  border-right: 1px solid rgba(217, 189, 109, 0.18);
+  background: rgba(8, 12, 10, 0.36);
+  overflow: hidden;
+}
+.hud-world-map-stage {
+  position: relative;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #1a2418;
+  isolation: isolate;
+}
+.hud-world-map-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.hud-world-map-art * {
+  vector-effect: non-scaling-stroke;
+}
+.hud-world-map-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+  background:
+    radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0,0,0,0.55) 100%),
+    linear-gradient(180deg, rgba(0,0,0,0.18) 0%, transparent 12%, transparent 88%, rgba(0,0,0,0.22) 100%);
+}
+.hud-world-map-frame {
+  position: absolute;
+  inset: 10px;
+  pointer-events: none;
+  z-index: 5;
+  border: 1px solid rgba(217, 189, 109, 0.32);
+  outline: 1px solid rgba(8, 12, 10, 0.4);
+  box-shadow:
+    inset 0 0 0 1px rgba(217, 189, 109, 0.08),
+    inset 0 0 36px rgba(0, 0, 0, 0.45);
+  border-radius: 2px;
+}
+.hud-world-map-frame::before,
+.hud-world-map-frame::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 1px solid rgba(217, 189, 109, 0.55);
+}
+.hud-world-map-frame::before {
+  top: -1px;
+  left: -1px;
+  border-right: 0;
+  border-bottom: 0;
+}
+.hud-world-map-frame::after {
+  bottom: -1px;
+  right: -1px;
+  border-left: 0;
+  border-top: 0;
+}
+
+/* ---- Forest layer ---- */
+.map-forest-fill {
+  fill: rgba(20, 38, 22, 0.78);
+  stroke: none;
+}
+.map-forest-pattern {
+  fill: url(#mapForestPattern);
+  stroke: none;
+  opacity: 0.85;
+}
+.map-forest-edge {
+  fill: none;
+  stroke: rgba(38, 60, 34, 0.9);
+  stroke-width: 1.2;
+  stroke-dasharray: 0.8 0.6;
+  stroke-linecap: round;
+}
+.map-forest-deep {
+  fill: rgba(10, 22, 14, 0.55);
+  stroke: rgba(60, 92, 56, 0.4);
+  stroke-width: 0.6;
+}
+
+/* ---- River (dry) ---- */
+.map-river-bed {
+  fill: none;
+  stroke: rgba(96, 84, 60, 0.85);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+}
+.map-river-line {
+  fill: none;
+  stroke: rgba(216, 196, 150, 0.95);
+  stroke-width: 0.55;
+  stroke-linecap: round;
+  stroke-dasharray: 1.4 0.7;
+  filter: drop-shadow(0 0 0.6px rgba(0, 0, 0, 0.7));
+}
+.map-river-channel {
+  fill: none;
+  stroke: rgba(160, 140, 100, 0.6);
+  stroke-width: 0.55;
+  stroke-linecap: round;
+  stroke-dasharray: 0.45 0.4;
+}
+
+/* ---- Roads ---- */
+.map-road-shadow {
+  fill: none;
+  stroke: rgba(20, 14, 8, 0.85);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+.map-road {
+  fill: none;
+  stroke: rgba(228, 202, 142, 0.95);
+  stroke-width: 0.9;
+  stroke-linecap: round;
+}
+.map-path {
+  fill: none;
+  stroke: rgba(214, 188, 130, 0.7);
+  stroke-width: 0.5;
+  stroke-linecap: round;
+  stroke-dasharray: 0.9 0.5;
+}
+.map-trail {
+  fill: none;
+  stroke: rgba(196, 174, 122, 0.55);
+  stroke-width: 0.35;
+  stroke-linecap: round;
+  stroke-dasharray: 0.35 0.5;
+}
+
+/* ---- Village wall ---- */
+.map-wall-fill {
+  fill: rgba(184, 160, 96, 0.10);
+  stroke: none;
+}
+.map-wall-hatch {
+  fill: url(#mapWallHatch);
+  stroke: none;
+}
+.map-wall-line {
+  fill: none;
+  stroke: rgba(240, 212, 140, 1);
+  stroke-width: 0.7;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 1.4px rgba(0, 0, 0, 0.7));
+}
+
+/* ---- Trees ---- */
+.map-tree-canopy {
+  fill: rgba(46, 78, 44, 0.95);
+  stroke: rgba(20, 36, 20, 0.95);
+  stroke-width: 0.12;
+}
+.map-tree-trunk {
+  stroke: rgba(40, 28, 18, 0.75);
+  stroke-width: 0.18;
+  stroke-linecap: round;
+}
+
+/* ---- Buildings (from colliders) ---- */
+/* Buildings — fill only. The dark outline is supplied by the
+   #bldgUnionOutline SVG filter so internal wall-segment seams disappear. */
+.map-bldg-base {
+  fill: rgba(218, 192, 138, 1);
+  stroke: none;
+}
+.map-bldg-roof {
+  fill: rgba(118, 70, 42, 0.95);
+  stroke: none;
+}
+
+/* ---- Landmark glyphs ---- */
+.map-mark { color: #f5ecda; }
+.map-well-ring { fill: rgba(80, 70, 56, 0.95); stroke: rgba(20, 14, 8, 0.95); stroke-width: 0.14; }
+.map-well-water { fill: rgba(50, 70, 80, 0.85); }
+.map-well-bar { stroke: rgba(34, 24, 14, 0.95); stroke-width: 0.16; }
+
+.map-cross { stroke: rgba(245, 236, 218, 0.95); stroke-width: 0.34; stroke-linecap: round; }
+
+.map-garden-bed { fill: rgba(70, 90, 50, 0.85); stroke: rgba(34, 24, 14, 0.85); stroke-width: 0.15; }
+.map-garden-row { stroke: rgba(214, 188, 130, 0.85); stroke-width: 0.14; stroke-dasharray: 0.3 0.2; }
+
+.map-mill-wheel { fill: rgba(40, 28, 18, 0.7); stroke: rgba(34, 24, 14, 0.95); stroke-width: 0.18; }
+.map-mill-spoke { stroke: rgba(214, 188, 130, 0.85); stroke-width: 0.16; }
+
+.map-sign-post { stroke: rgba(34, 24, 14, 0.95); stroke-width: 0.18; }
+.map-sign-board { fill: rgba(120, 70, 40, 0.95); stroke: rgba(34, 24, 14, 0.95); stroke-width: 0.15; }
+
+.map-forge-anvil { fill: rgba(40, 30, 22, 0.95); stroke: rgba(20, 14, 8, 0.95); stroke-width: 0.12; }
+.map-forge-flame { fill: rgba(212, 116, 56, 0.95); stroke: none; }
+
+.map-manor-body { fill: rgba(160, 140, 96, 0.95); stroke: rgba(34, 24, 14, 0.95); stroke-width: 0.18; }
+.map-manor-tower { fill: rgba(120, 100, 70, 0.95); stroke: rgba(34, 24, 14, 0.95); stroke-width: 0.18; }
+
+.map-witch-body { fill: rgba(86, 64, 40, 0.95); stroke: rgba(20, 14, 8, 0.95); stroke-width: 0.16; }
+.map-witch-roof { fill: rgba(48, 32, 20, 0.95); stroke: rgba(20, 14, 8, 0.95); stroke-width: 0.14; }
+
+.map-stall { fill: rgba(186, 88, 60, 0.95); stroke: rgba(34, 24, 14, 0.95); stroke-width: 0.12; }
+
+.map-festival-table { fill: rgba(160, 110, 70, 0.95); stroke: rgba(34, 24, 14, 0.95); stroke-width: 0.15; }
+.map-festival-leg { stroke: rgba(34, 24, 14, 0.95); stroke-width: 0.15; }
+
+/* ---- Compass / scale / legend ---- */
+.hud-world-map-compass {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  width: 64px;
+  height: 64px;
+  z-index: 6;
+  opacity: 0.85;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+}
+.hud-world-map-compass svg { width: 100%; height: 100%; overflow: visible; }
+.hud-world-map-compass .compass-ring { fill: rgba(8, 12, 10, 0.6); stroke: rgba(217, 189, 109, 0.7); stroke-width: 1; }
+.hud-world-map-compass .compass-ring-inner { fill: none; stroke: rgba(217, 189, 109, 0.3); stroke-width: 0.5; }
+.hud-world-map-compass .compass-needle-n { fill: #d9bd6d; stroke: #1d2118; stroke-width: 0.5; }
+.hud-world-map-compass .compass-needle-s { fill: rgba(245, 236, 218, 0.55); stroke: #1d2118; stroke-width: 0.5; }
+.hud-world-map-compass .compass-letter {
+  fill: #d9bd6d;
+  font: 700 7px/1 Georgia, serif;
+  letter-spacing: 0.05em;
+}
+.hud-world-map-compass .compass-letter.small { font-size: 5px; fill: rgba(217, 189, 109, 0.7); }
+
+.hud-world-map-scale {
+  position: absolute;
+  left: 22px;
+  bottom: 22px;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+  pointer-events: none;
+  font: 700 10px/1 Inter, system-ui, sans-serif;
+  letter-spacing: 0.16em;
+  color: rgba(245, 236, 218, 0.7);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+}
+.hud-world-map-scale-bar {
+  width: 80px;
+  height: 6px;
+  background:
+    linear-gradient(to right, #f5ecda 0 50%, #1d2118 50% 100%);
+  border: 1px solid rgba(217, 189, 109, 0.7);
+}
+.hud-world-map-scale-label {
+  text-transform: uppercase;
+}
+
+.hud-world-map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  margin: 14px 0 4px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(217, 189, 109, 0.12);
+  font: 600 10px/1 Inter, system-ui, sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(245, 236, 218, 0.72);
+}
+.hud-world-map-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.hud-world-map-legend .legend-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--c, #d9bd6d);
+  box-shadow: 0 0 6px var(--c, #d9bd6d);
+}
+.hud-world-map-legend .legend-dot.primary  { --c: #d9bd6d; }
+.hud-world-map-legend .legend-dot.secondary { --c: #7ec38a; }
+.hud-world-map-legend .legend-dot.story    { --c: #c489d0; }
+.hud-world-map-legend .legend-dot.npc      { --c: #7da7c8; }
+.hud-world-map-pins {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+}
+.hud-world-map-pin {
+  --pin-color: #d9bd6d;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 180px;
+  padding: 0;
+  border: 0;
+  color: #f5ecda;
+  background: transparent;
+  transform: translate(-10px, -50%);
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+}
+.hud-world-map-pin.primary { --pin-color: #d9bd6d; }
+.hud-world-map-pin.secondary { --pin-color: #7ec38a; }
+.hud-world-map-pin.story { --pin-color: #c489d0; }
+.hud-world-map-pin.npc { --pin-color: #7da7c8; }
+.hud-world-map-pin-dot {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 14px;
+  border-radius: 50%;
+  background: var(--pin-color);
+  border: 2px solid rgba(8, 12, 10, 0.9);
+  box-shadow: 0 0 0 2px rgba(245, 236, 218, 0.18), 0 0 14px var(--pin-color);
+}
+.hud-world-map-pin-label {
+  max-width: 156px;
+  padding: 3px 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(245, 236, 218, 0.12);
+  background: rgba(8, 12, 10, 0.7);
+  color: rgba(245, 236, 218, 0.86);
+  font-size: 10px;
+  line-height: 1.15;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  opacity: 0;
+  transform: translateY(2px);
+  transition: opacity 120ms ease, transform 120ms ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.hud-world-map-pin:hover .hud-world-map-pin-label,
+.hud-world-map-pin.selected .hud-world-map-pin-label,
+.hud-world-map-pin.always-show .hud-world-map-pin-label {
+  opacity: 1;
+  transform: none;
+  color: #fff8df;
+  border-color: var(--pin-color);
+  background: rgba(8, 12, 10, 0.92);
+}
+.hud-world-map-pin.selected .hud-world-map-pin-label {
+  font-weight: 700;
+}
+.hud-world-map-pin.selected .hud-world-map-pin-dot {
+  width: 18px;
+  height: 18px;
+  flex-basis: 18px;
+}
+.hud-world-map-player {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50% 50% 50% 0;
+  background: #f5ecda;
+  border: 2px solid #1d2118;
+  box-shadow: 0 0 18px rgba(245, 236, 218, 0.72);
+  transform: translate(-50%, -50%) rotate(-45deg);
+  pointer-events: none;
+}
+.hud-world-map-player::after {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  left: 4px;
+  top: 4px;
+  border-radius: 50%;
+  background: #1d2118;
+}
+.hud-world-map-info {
+  min-height: 0;
+  overflow: auto;
+  padding: 18px 0 8px;
+  flex: 1;
+}
+.hud-world-map-info-type,
+.hud-world-map-card-meta {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(217, 189, 109, 0.82);
+}
+.hud-world-map-info h3 {
+  margin: 8px 0 10px;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 34px;
+  font-weight: 500;
+  line-height: 1.02;
+}
+.hud-world-map-info p {
+  margin: 0;
+  color: rgba(245, 236, 218, 0.78);
+  line-height: 1.55;
+}
+.hud-world-map-coords {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 20px 0 18px;
+}
+.hud-world-map-coords div {
+  padding: 10px;
+  border: 1px solid rgba(217, 189, 109, 0.18);
+  border-radius: 6px;
+  background: rgba(245, 236, 218, 0.05);
+}
+.hud-world-map-coords dt {
+  margin-bottom: 4px;
+  color: rgba(245, 236, 218, 0.52);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.hud-world-map-coords dd {
+  margin: 0;
+  color: #f1d99a;
+  font-weight: 700;
+}
+.hud-world-map-info-actions {
+  margin-bottom: 26px;
+}
+.hud-world-map-info-actions button {
+  width: 100%;
+  height: 42px;
+  border: 1px solid rgba(217, 189, 109, 0.34);
+  border-radius: 6px;
+  background: #d9bd6d;
+  color: #11140f;
+  font: 800 11px/1 Inter, system-ui, sans-serif;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.hud-world-map-card-heading {
+  margin-bottom: 10px;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(245, 236, 218, 0.64);
+}
+.hud-world-map-cards {
+  display: grid;
+  gap: 12px;
+}
+.hud-world-map-card {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 12px;
+  padding: 10px;
+  border: 1px solid rgba(217, 189, 109, 0.16);
+  border-radius: 7px;
+  background: rgba(245, 236, 218, 0.045);
+}
+.hud-world-map-card img {
+  width: 92px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.24);
+}
+.hud-world-map-card h4 {
+  margin: 4px 0 3px;
+  color: #f5ecda;
+  font-size: 15px;
+  line-height: 1.2;
+}
+.hud-world-map-card p,
+.hud-world-map-empty {
+  font-size: 13px;
+}
+
 @media (max-width: 720px) {
   .hud-compass { width: calc(100vw - 240px); }
   .hud-minimap { width: 140px; }
@@ -362,6 +954,27 @@ p {
   .hud-hotbtn { width: 48px; height: 48px; }
   .hud-hotbtn-label { display: none; }
   .hud-hotbar { gap: 10px; padding: 8px 12px; }
+  .hud-world-map {
+    padding: 10px;
+  }
+  .hud-world-map-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+  .hud-world-map-side {
+    border-right: 0;
+    border-bottom: 1px solid rgba(217, 189, 109, 0.18);
+    max-height: 40vh;
+  }
+  .hud-world-map-stage {
+    min-height: 54vh;
+  }
+  .hud-world-map-pin-label {
+    display: none;
+  }
+  .hud-world-map-coords {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ===== MENU ROOT ===== */
@@ -378,6 +991,13 @@ p {
   color: #f5ecda;
   overflow: hidden;
 }
+/* In-game pause popup needs the 3D world visible behind it. The popup's
+   own .menu-pause-popup wrapper provides a soft dim+blur; the root just
+   stays transparent so the canvas underneath isn't double-covered. */
+.menu-root[data-mode="pause"] {
+  background: transparent;
+  backdrop-filter: none;
+}
 
 /* ===== MAIN MENU (title screen) ===== */
 .menu-main {
@@ -385,57 +1005,194 @@ p {
   width: 100%;
   height: 100%;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: flex-start;
-  padding: 0 0 0 max(8vw, 64px);
+  padding: clamp(32px, 6vw, 86px);
   overflow: hidden;
 }
 .menu-main-bg {
   position: absolute;
   inset: 0;
-  background-image: url('/story/cards/main-menu.png');
+  background-image: url('/story/cards/main-menu-wren.png');
   background-size: cover;
   background-position: center;
-  filter: brightness(0.62) saturate(1.05);
+  filter: brightness(0.68) saturate(0.95);
   z-index: 0;
 }
 .menu-main-bg::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(95deg, rgba(8, 12, 10, 0.86) 0%, rgba(8, 12, 10, 0.45) 40%, rgba(8, 12, 10, 0.0) 75%);
+  background:
+    linear-gradient(90deg, rgba(4, 8, 7, 0.9) 0%, rgba(4, 8, 7, 0.66) 28%, rgba(4, 8, 7, 0.18) 62%, rgba(4, 8, 7, 0) 100%),
+    linear-gradient(180deg, rgba(4, 8, 7, 0.18) 0%, rgba(4, 8, 7, 0.05) 42%, rgba(4, 8, 7, 0.78) 100%);
 }
 .menu-main-card {
   position: relative;
   z-index: 1;
-  max-width: 600px;
+  width: min(520px, 100%);
+  padding-bottom: clamp(8px, 4vh, 42px);
+  transform: translateY(clamp(-86px, -8vh, -42px));
 }
 .menu-main-eyebrow {
-  color: #d9bd6d;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.32em;
+  color: #b8c7a6;
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.26em;
   text-transform: uppercase;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 .menu-main-title {
-  font-size: clamp(48px, 6vw, 84px);
-  font-weight: 520;
-  line-height: 0.95;
-  letter-spacing: -0.01em;
-  margin: 0 0 18px;
+  font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+  font-size: clamp(62px, 8.4vw, 128px);
+  font-weight: 500;
+  line-height: 0.82;
+  letter-spacing: 0;
+  margin: 0;
+  color: #fbf2dc;
+  text-shadow: 0 4px 26px rgba(0, 0, 0, 0.76);
+}
+.menu-main-subtitle {
+  width: fit-content;
+  margin: 16px 0 0;
+  padding-top: 13px;
+  border-top: 1px solid rgba(198, 174, 104, 0.56);
+  color: #d5bf78;
+  font-size: clamp(15px, 1.5vw, 20px);
+  font-weight: 650;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
 }
 .menu-main-tagline {
-  font-size: 17px;
-  line-height: 1.55;
-  color: rgba(245, 236, 218, 0.88);
-  max-width: 520px;
-  margin: 0 0 32px;
+  max-width: 430px;
+  margin: 18px 0 30px;
+  color: rgba(245, 236, 218, 0.82);
+  font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+  font-size: clamp(18px, 1.8vw, 23px);
+  line-height: 1.45;
 }
 .menu-main-actions {
   display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin-top: 8px;
+}
+/* ===== PRIMARY CALL-TO-ACTION =====
+   Editorial typography instead of a button box. The serif label sits on a
+   thin gold underline; on hover the underline thickens and the arrow drifts
+   forward slightly. */
+.menu-main-cta {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 18px;
+  padding: 0 0 12px;
+  border: 0;
+  background: transparent;
+  color: #fbf2dc;
+  cursor: pointer;
+  position: relative;
+  font-family: inherit;
+  text-align: left;
+}
+.menu-main-cta::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: rgba(213, 191, 120, 0.55);
+  transition: height 180ms ease, background 180ms ease;
+}
+.menu-main-cta:hover::after,
+.menu-main-cta:focus-visible::after {
+  height: 3px;
+  background: #ead58d;
+}
+.menu-main-cta-label {
+  font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+  font-size: clamp(28px, 3vw, 40px);
+  font-weight: 500;
+  font-style: italic;
+  line-height: 1;
+  letter-spacing: 0.005em;
+  color: #fbf2dc;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.6);
+}
+.menu-main-cta-arrow {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(28px, 3vw, 40px);
+  line-height: 1;
+  color: #d5bf78;
+  transition: transform 180ms ease, color 180ms ease;
+}
+.menu-main-cta:hover .menu-main-cta-arrow,
+.menu-main-cta:focus-visible .menu-main-cta-arrow {
+  transform: translateX(8px);
+  color: #ead58d;
+}
+.menu-main-cta:focus-visible {
+  outline: none;
+}
+
+/* ===== SECONDARY LINKS =====
+   Inline row of typographic links separated by thin dividers. No boxes. */
+.menu-main-links {
+  display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  align-items: center;
+  gap: 0;
+  margin-top: 4px;
+}
+.menu-main-link {
+  position: relative;
+  padding: 6px 18px;
+  border: 0;
+  background: transparent;
+  color: rgba(245, 236, 218, 0.68);
+  font: 700 11px/1 Inter, system-ui, sans-serif;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 150ms ease;
+}
+.menu-main-link:first-child { padding-left: 0; }
+.menu-main-link + .menu-main-link::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  height: 12px;
+  width: 1px;
+  background: rgba(245, 236, 218, 0.18);
+  transform: translateY(-50%);
+}
+.menu-main-link span {
+  position: relative;
+  display: inline-block;
+}
+.menu-main-link span::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -5px;
+  height: 1px;
+  background: #d5bf78;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 180ms ease;
+}
+.menu-main-link:hover,
+.menu-main-link:focus-visible {
+  color: #fbf2dc;
+  outline: none;
+}
+.menu-main-link:hover span::after,
+.menu-main-link:focus-visible span::after {
+  transform: scaleX(1);
 }
 .menu-main-footer {
   margin-top: 36px;
@@ -478,67 +1235,195 @@ p {
   border-color: rgba(217, 189, 109, 0.5);
 }
 
+@media (max-width: 720px) {
+  .menu-main {
+    padding: 24px 18px 28px;
+  }
+  .menu-main-bg {
+    background-position: 62% center;
+  }
+  .menu-main-bg::after {
+    background:
+      linear-gradient(90deg, rgba(4, 8, 7, 0.92) 0%, rgba(4, 8, 7, 0.7) 44%, rgba(4, 8, 7, 0.18) 100%),
+      linear-gradient(180deg, rgba(4, 8, 7, 0.12) 0%, rgba(4, 8, 7, 0.22) 42%, rgba(4, 8, 7, 0.88) 100%);
+  }
+  .menu-main-card {
+    padding-bottom: 0;
+    transform: translateY(-72px);
+  }
+  .menu-main-title {
+    font-size: clamp(50px, 17vw, 78px);
+  }
+  .menu-main-subtitle {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+  }
+  .menu-main-tagline {
+    max-width: 330px;
+    margin-bottom: 24px;
+    font-size: 17px;
+  }
+  .menu-main-actions {
+    gap: 22px;
+  }
+  .menu-main-cta-label,
+  .menu-main-cta-arrow {
+    font-size: 26px;
+  }
+  .menu-main-link {
+    padding: 6px 12px;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+  }
+}
+
 /* ===== PAUSE LAYOUT ===== */
 .menu-pause {
   width: 100%;
   height: 100%;
   display: grid;
-  grid-template-columns: 220px 1fr;
-  background: rgba(8, 12, 10, 0.96);
+  grid-template-columns: 248px 1fr;
+  background: rgba(8, 12, 10, 0.97);
 }
 .menu-pause-side {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 32px 20px;
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(14, 20, 16, 0.5);
+  gap: 0;
+  padding: 38px 28px 28px 32px;
+  border-right: 1px solid rgba(217, 189, 109, 0.14);
+  background: rgba(14, 20, 16, 0.55);
   min-height: 100%;
 }
-.menu-pause-spacer {
-  flex: 1;
+
+/* ---- Brand block ---- */
+.menu-pause-brand {
+  margin-bottom: 28px;
 }
-.menu-btn-back {
-  margin-top: 18px;
-  font-size: 12.5px;
-  letter-spacing: 0.06em;
-  padding: 9px 14px;
+.menu-pause-eyebrow {
+  color: rgba(184, 199, 166, 0.85);
+  font: 650 10px/1 Inter, system-ui, sans-serif;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.menu-pause-wordmark {
+  font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 1;
+  color: #fbf2dc;
+  letter-spacing: 0;
+}
+
+/* ---- "Back to title" — italic serif with sliding arrow ---- */
+.menu-pause-back {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 0 0 10px;
+  margin-bottom: 30px;
+  border: 0;
   background: transparent;
-  border-color: rgba(255, 255, 255, 0.18);
-  color: rgba(245, 236, 218, 0.7);
-}
-.menu-btn-back:hover {
-  border-color: rgba(217, 189, 109, 0.5);
-  color: #d9bd6d;
-  background: rgba(217, 189, 109, 0.08);
-}
-.menu-pause-side .menu-btn-resume {
-  margin-bottom: 22px;
-  align-self: stretch;
-}
-.menu-tab {
-  padding: 11px 14px;
-  background: transparent;
-  border: 1px solid transparent;
-  color: rgba(245, 236, 218, 0.7);
-  font-size: 14px;
-  letter-spacing: 0.04em;
-  text-align: left;
-  border-radius: 6px;
+  color: #fbf2dc;
   cursor: pointer;
   font-family: inherit;
+  position: relative;
 }
-.menu-tab:hover {
-  background: rgba(255, 255, 255, 0.04);
-  color: #f5ecda;
+.menu-pause-back::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: rgba(213, 191, 120, 0.45);
+  transition: height 180ms ease, background 180ms ease;
 }
-.menu-tab.active {
-  background: rgba(217, 189, 109, 0.14);
-  color: #d9bd6d;
-  border-color: rgba(217, 189, 109, 0.3);
+.menu-pause-back:hover::after,
+.menu-pause-back:focus-visible::after {
+  height: 2px;
+  background: #ead58d;
 }
+.menu-pause-back-label {
+  font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+  font-size: 17px;
+  font-style: italic;
+  font-weight: 500;
+  color: #fbf2dc;
+  line-height: 1;
+}
+.menu-pause-back-arrow {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 17px;
+  color: #d5bf78;
+  line-height: 1;
+  transition: transform 180ms ease, color 180ms ease;
+}
+.menu-pause-back:hover .menu-pause-back-arrow,
+.menu-pause-back:focus-visible .menu-pause-back-arrow {
+  transform: translateX(-6px);
+  color: #ead58d;
+}
+.menu-pause-back:focus-visible {
+  outline: none;
+}
+
+/* ---- Tabs — text-led, gold accent bar when active ---- */
+.menu-pause-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border-top: 1px solid rgba(217, 189, 109, 0.14);
+  padding-top: 22px;
+}
+.menu-pause-tab {
+  position: relative;
+  display: block;
+  padding: 12px 0 12px 18px;
+  border: 0;
+  background: transparent;
+  color: rgba(245, 236, 218, 0.62);
+  font: 600 13px/1.1 Inter, system-ui, sans-serif;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 150ms ease, padding-left 150ms ease;
+}
+.menu-pause-tab::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 2px;
+  height: 0;
+  background: #d5bf78;
+  transform: translateY(-50%);
+  transition: height 180ms ease;
+}
+.menu-pause-tab:hover {
+  color: #fbf2dc;
+}
+.menu-pause-tab:hover::before {
+  height: 16px;
+}
+.menu-pause-tab.active {
+  color: #ead58d;
+  padding-left: 22px;
+}
+.menu-pause-tab.active::before {
+  height: 22px;
+  background: #ead58d;
+}
+.menu-pause-tab:focus-visible {
+  outline: none;
+  color: #fbf2dc;
+}
+
 .menu-pause-main {
-  padding: 32px 38px;
+  padding: 38px 44px 44px;
   overflow-y: auto;
 }
 
@@ -705,56 +1590,40 @@ p {
   letter-spacing: 0.04em;
 }
 
-/* ===== WREN TAB (magazine layout) ===== */
-.wren-tab { max-width: 1180px; }
+/* ===== WREN TAB (profile layout) ===== */
+.wren-tab { max-width: 1280px; }
 
-/* Hero — 3D portrait + intro + stats */
 .wren-hero {
   display: grid;
-  grid-template-columns: 360px 1fr;
-  gap: 32px;
-  padding: 24px;
-  margin-bottom: 28px;
-  background:
-    radial-gradient(ellipse at 30% 0%, rgba(217, 189, 109, 0.06), rgba(8, 12, 10, 0) 60%),
-    linear-gradient(180deg, rgba(20, 28, 22, 0.7), rgba(14, 20, 16, 0.85));
-  border: 1px solid rgba(217, 189, 109, 0.18);
-  border-radius: 12px;
-  align-items: center;
+  grid-template-columns: minmax(480px, 1.35fr) minmax(320px, 0.75fr);
+  gap: 24px;
+  margin-bottom: 18px;
+  align-items: stretch;
 }
-.wren-hero-portrait {
-  position: relative;
-  width: 100%;
-  height: 480px;
-  min-height: 480px;
-  border-radius: 10px;
-  border: 1px solid rgba(217, 189, 109, 0.22);
-  background:
-    radial-gradient(ellipse at 50% 30%, rgba(217, 189, 109, 0.14), rgba(8, 12, 10, 0) 60%),
-    linear-gradient(180deg, rgba(28, 36, 28, 0.92), rgba(8, 12, 10, 0.98));
+.wren-profile-art {
+  min-height: 430px;
+  border: 1px solid rgba(217, 189, 109, 0.2);
+  border-radius: 8px;
   overflow: hidden;
-  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.45);
+  background: #10150f;
+  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.36);
 }
-.wren-hero-portrait canvas {
+.wren-profile-art img {
   display: block;
-  width: 100% !important;
-  height: 100% !important;
-}
-.wren-hero-loading {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: rgba(245, 236, 218, 0.45);
-  pointer-events: none;
+  width: 100%;
+  height: 100%;
+  min-height: 430px;
+  object-fit: cover;
 }
 .wren-hero-info {
   display: flex;
   flex-direction: column;
+  padding: 28px 30px;
+  background:
+    linear-gradient(180deg, rgba(22, 31, 24, 0.76), rgba(12, 18, 14, 0.9)),
+    rgba(12, 18, 14, 0.88);
+  border: 1px solid rgba(217, 189, 109, 0.16);
+  border-radius: 8px;
 }
 .wren-hero-eyebrow {
   font-size: 10.5px;
@@ -765,17 +1634,18 @@ p {
   font-weight: 700;
 }
 .wren-hero-name {
-  margin: 0 0 4px;
-  font-size: 36px;
+  margin: 0 0 6px;
+  font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+  font-size: clamp(38px, 4.2vw, 58px);
   font-weight: 520;
-  letter-spacing: -0.01em;
-  line-height: 1.05;
+  letter-spacing: 0;
+  line-height: 0.98;
 }
 .wren-hero-tagline {
-  font-size: 15px;
+  font-size: 15.5px;
   font-style: italic;
   color: rgba(245, 236, 218, 0.7);
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 .wren-hero-lead {
   margin: 0 0 22px;
@@ -787,7 +1657,7 @@ p {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
-  margin-bottom: 18px;
+  margin-top: auto;
 }
 .wren-stat {
   padding: 10px 12px;
@@ -807,12 +1677,31 @@ p {
   color: #d9bd6d;
   font-weight: 520;
 }
-.wren-hero-hint {
+
+.wren-kit-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.wren-kit-strip div {
+  min-height: 78px;
+  padding: 13px 14px;
+  border: 1px solid rgba(217, 189, 109, 0.14);
+  border-radius: 8px;
+  background: rgba(8, 12, 10, 0.42);
+  color: rgba(245, 236, 218, 0.76);
+  font-size: 13px;
+  line-height: 1.45;
+}
+.wren-kit-strip span {
+  display: block;
+  margin-bottom: 5px;
+  color: #d9bd6d;
   font-size: 10px;
-  letter-spacing: 0.2em;
+  font-weight: 700;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(245, 236, 218, 0.4);
-  margin-top: auto;
 }
 
 /* Cards grid */
@@ -895,10 +1784,20 @@ p {
 
 @media (max-width: 900px) {
   .wren-hero { grid-template-columns: 1fr; }
-  .wren-hero-portrait { height: 420px; min-height: 420px; }
+  .wren-profile-art,
+  .wren-profile-art img { min-height: 320px; }
+  .wren-kit-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .wren-grid { grid-template-columns: 1fr; }
   .wren-stats { grid-template-columns: 1fr 1fr; }
   .wren-npc-list li { grid-template-columns: 1fr; gap: 0; }
+}
+
+@media (max-width: 560px) {
+  .wren-hero-info { padding: 22px; }
+  .wren-profile-art,
+  .wren-profile-art img { min-height: 260px; }
+  .wren-kit-strip { grid-template-columns: 1fr; }
+  .wren-stats { grid-template-columns: 1fr; }
 }
 
 /* ===== SETTINGS ===== */
@@ -958,6 +1857,16 @@ p {
   cursor: pointer;
   border: none;
 }
+.settings-row select {
+  width: 100%;
+  min-height: 38px;
+  padding: 0 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.22);
+  color: #f3ead8;
+  font: 13px ui-sans-serif, system-ui, sans-serif;
+}
 .settings-value {
   font-family: ui-monospace, monospace;
   font-size: 13px;
@@ -976,6 +1885,90 @@ p {
   margin: 0 0 12px;
   max-width: 540px;
   line-height: 1.55;
+}
+.location-pin-readout {
+  min-height: 22px;
+  margin-top: 12px;
+  color: #d9bd6d;
+  font: 12px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  white-space: pre-wrap;
+}
+.location-option-help {
+  margin-top: 8px;
+  padding: 10px 12px;
+  border: 1px solid rgba(217, 189, 109, 0.16);
+  border-radius: 8px;
+  background: rgba(217, 189, 109, 0.06);
+  color: rgba(245, 236, 218, 0.76);
+}
+.location-option-help strong {
+  color: #f3ead8;
+  font-size: 13px;
+}
+.location-option-help span {
+  margin-left: 8px;
+  color: #d9bd6d;
+  font: 700 10px ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.location-option-help p {
+  margin: 5px 0 0;
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+.location-pin-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+  max-height: 260px;
+  overflow: auto;
+}
+.location-pin-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid rgba(217, 189, 109, 0.18);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+}
+.location-pin-row strong,
+.location-pin-row span {
+  display: block;
+}
+.location-pin-row strong {
+  color: #f3ead8;
+  font-size: 13px;
+}
+.location-pin-row span {
+  color: rgba(237, 222, 194, 0.66);
+  font: 11px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.location-pin-row button {
+  cursor: pointer;
+  min-height: 30px;
+  padding: 6px 10px;
+  border: 1px solid rgba(217, 189, 109, 0.24);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.18);
+  color: #d9bd6d;
+  font: 700 10px ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.location-pin-row button:hover {
+  background: rgba(217, 189, 109, 0.12);
+}
+.location-pin-row.is-canon {
+  border-color: rgba(126, 195, 138, 0.24);
+}
+.location-pin-row button[disabled] {
+  cursor: default;
+  color: rgba(126, 195, 138, 0.9);
+  border-color: rgba(126, 195, 138, 0.24);
+  background: rgba(126, 195, 138, 0.08);
 }
 .settings-row-buttons {
   grid-template-columns: 200px 1fr;
@@ -1119,12 +2112,42 @@ p {
   from { opacity: 0; transform: scale(1.01); }
   to { opacity: 1; transform: scale(1); }
 }
+.story-fullpage-enter-next {
+  animation: storyFullNextIn 0.26s ease both;
+}
+.story-fullpage-exit-next {
+  pointer-events: none;
+  animation: storyFullNextOut 0.26s ease both;
+}
+.story-fullpage-enter-prev {
+  animation: storyFullPrevIn 0.26s ease both;
+}
+.story-fullpage-exit-prev {
+  pointer-events: none;
+  animation: storyFullPrevOut 0.26s ease both;
+}
+@keyframes storyFullNextIn {
+  from { opacity: 0; transform: translateX(18px) scale(1.006); }
+  to { opacity: 1; transform: translateX(0) scale(1); }
+}
+@keyframes storyFullNextOut {
+  from { opacity: 1; transform: translateX(0) scale(1); }
+  to { opacity: 0; transform: translateX(-18px) scale(0.996); }
+}
+@keyframes storyFullPrevIn {
+  from { opacity: 0; transform: translateX(-18px) scale(1.006); }
+  to { opacity: 1; transform: translateX(0) scale(1); }
+}
+@keyframes storyFullPrevOut {
+  from { opacity: 1; transform: translateX(0) scale(1); }
+  to { opacity: 0; transform: translateX(18px) scale(0.996); }
+}
 .story-fullpage-bg {
   position: absolute;
   inset: 0;
   background-size: cover;
   background-position: center;
-  filter: brightness(0.78) saturate(1.05);
+  filter: brightness(1) saturate(1.04);
   z-index: 0;
   animation: storyBgZoom 24s ease-out forwards;
 }
@@ -1132,89 +2155,139 @@ p {
   from { transform: scale(1.02); }
   to { transform: scale(1.06); }
 }
+/* Long bottom-up gradient that anchors the text without hiding the image.
+   Top of frame stays nearly clear so the artwork reads; the bottom third
+   fades to dark for legibility. */
 .story-fullpage-fade {
   position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
   background:
-    linear-gradient(95deg, rgba(5, 8, 5, 0.94) 0%, rgba(5, 8, 5, 0.82) 28%, rgba(5, 8, 5, 0.35) 55%, rgba(5, 8, 5, 0.05) 80%, rgba(5, 8, 5, 0) 100%),
-    linear-gradient(180deg, rgba(5, 8, 5, 0.4) 0%, rgba(5, 8, 5, 0.05) 30%, rgba(5, 8, 5, 0.05) 70%, rgba(5, 8, 5, 0.55) 100%);
+    linear-gradient(
+      180deg,
+      rgba(5, 8, 5, 0.18) 0%,
+      rgba(5, 8, 5, 0) 14%,
+      rgba(5, 8, 5, 0) 48%,
+      rgba(5, 8, 5, 0.55) 76%,
+      rgba(5, 8, 5, 0.92) 100%
+    );
 }
 .story-fullpage-close {
   position: absolute;
   top: 22px;
   right: 26px;
   z-index: 10;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  background: rgba(0, 0, 0, 0.55);
-  color: #f5ecda;
-  font-size: 16px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  color: rgba(245, 236, 218, 0.78);
+  font-size: 22px;
+  line-height: 1;
   cursor: pointer;
-  backdrop-filter: blur(6px);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7);
+  transition: color 150ms ease, transform 150ms ease;
 }
-.story-fullpage-close:hover {
-  background: rgba(0, 0, 0, 0.85);
-  border-color: rgba(217, 189, 109, 0.6);
+.story-fullpage-close:hover,
+.story-fullpage-close:focus-visible {
+  color: #ead58d;
+  transform: scale(1.08);
+  outline: none;
 }
 
 .story-fullpage-content {
   position: absolute;
   z-index: 5;
-  top: 50%;
-  left: max(7vw, 64px);
-  max-width: 560px;
-  transform: translateY(-50%);
+  left: 50%;
+  right: auto;
+  bottom: 0;
+  width: min(1480px, calc(100vw - 64px));
+  max-height: min(48vh, 420px);
+  display: grid;
+  grid-template-columns: minmax(260px, 0.85fr) minmax(360px, 1.25fr) minmax(280px, 0.85fr);
+  column-gap: 38px;
+  row-gap: 18px;
+  align-items: start;
+  padding: 36px 8px 28px;
+  overflow-y: auto;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid rgba(217, 189, 109, 0.22);
+  border-radius: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  transform: translateX(-50%);
   animation: storyContentRise 0.5s ease;
 }
+.story-fullpage-heading,
+.story-fullpage-copy,
+.story-fullpage-aside {
+  min-width: 0;
+}
+.story-fullpage-copy {
+  padding: 0 28px;
+  border-left: 1px solid rgba(245, 236, 218, 0.14);
+  border-right: 1px solid rgba(245, 236, 218, 0.1);
+}
+.story-fullpage-nav {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 24px;
+  padding-top: 18px;
+  margin-top: 6px;
+  border-top: 1px solid rgba(245, 236, 218, 0.1);
+}
 @keyframes storyContentRise {
-  from { opacity: 0; transform: translateY(calc(-50% + 14px)); }
-  to { opacity: 1; transform: translateY(-50%); }
+  from { opacity: 0; transform: translate(-50%, 14px); }
+  to { opacity: 1; transform: translateX(-50%); }
 }
 .story-fullpage-eyebrow {
   font-size: 11px;
   letter-spacing: 0.32em;
   text-transform: uppercase;
   color: #d9bd6d;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
   font-weight: 700;
 }
 .story-fullpage-title {
-  font-size: clamp(36px, 4.6vw, 64px);
+  font-size: clamp(28px, 3vw, 46px);
   font-weight: 520;
-  line-height: 1.0;
-  letter-spacing: -0.01em;
-  margin: 0 0 14px;
+  line-height: 1.04;
+  letter-spacing: 0;
+  margin: 0 0 10px;
   text-shadow: 0 2px 14px rgba(0, 0, 0, 0.55);
 }
 .story-fullpage-subtitle {
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.55;
   color: rgba(245, 236, 218, 0.78);
-  margin-bottom: 24px;
+  margin-bottom: 0;
   font-style: italic;
 }
 .story-fullpage-body {
   font-size: 16px;
-  line-height: 1.7;
+  line-height: 1.62;
   color: rgba(245, 236, 218, 0.95);
-  margin: 0 0 22px;
+  margin: 0;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
 }
 .story-fullpage-note {
-  margin: 0 0 24px;
-  padding: 14px 18px;
+  margin: 0 0 18px;
+  padding: 0 0 0 16px;
   border-left: 2px solid rgba(217, 189, 109, 0.6);
-  background: rgba(8, 12, 10, 0.55);
+  background: transparent;
   font-style: italic;
-  font-size: 15.5px;
+  font-size: 14.5px;
   color: rgba(245, 236, 218, 0.92);
   line-height: 1.55;
-  border-radius: 0 6px 6px 0;
-  backdrop-filter: blur(4px);
+  border-radius: 0;
+  backdrop-filter: none;
 }
 .story-fullpage-beats {
   margin: 0;
@@ -1223,10 +2296,10 @@ p {
 }
 .story-fullpage-beats li {
   position: relative;
-  padding: 4px 0 4px 18px;
-  font-size: 13.5px;
+  padding: 3px 0 3px 18px;
+  font-size: 13px;
   color: rgba(245, 236, 218, 0.78);
-  line-height: 1.55;
+  line-height: 1.45;
 }
 .story-fullpage-beats li::before {
   content: '';
@@ -1240,90 +2313,142 @@ p {
   opacity: 0.7;
 }
 
-.story-fullpage-nav {
-  position: absolute;
-  z-index: 6;
-  bottom: 28px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  padding: 10px 14px;
-  background: rgba(8, 12, 10, 0.78);
-  border: 1px solid rgba(217, 189, 109, 0.22);
-  border-radius: 10px;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.6);
-}
 .story-fullpage-navbtn {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 14px;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 0;
   background: transparent;
-  border: 1px solid transparent;
-  border-radius: 7px;
-  color: rgba(245, 236, 218, 0.85);
+  border: 0;
+  color: #fbf2dc;
   font-family: inherit;
   cursor: pointer;
   text-align: left;
-  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.08s;
-  max-width: 220px;
+  transition: color 150ms ease;
 }
-.story-fullpage-navbtn:hover:not([disabled]) {
-  background: rgba(217, 189, 109, 0.12);
-  border-color: rgba(217, 189, 109, 0.4);
-  color: #d9bd6d;
+.story-fullpage-navbtn:hover:not([disabled]),
+.story-fullpage-navbtn:focus-visible:not([disabled]) {
+  outline: none;
+}
+.story-fullpage-navbtn:hover:not([disabled]) .story-fullpage-navtitle,
+.story-fullpage-navbtn:focus-visible:not([disabled]) .story-fullpage-navtitle {
+  color: #ead58d;
+}
+.story-fullpage-navbtn:hover:not([disabled]) .story-fullpage-navarrow,
+.story-fullpage-navbtn:focus-visible:not([disabled]) .story-fullpage-navarrow {
+  color: #ead58d;
 }
 .story-fullpage-navbtn[disabled] {
-  opacity: 0.32;
+  opacity: 0.28;
   cursor: not-allowed;
 }
-.story-fullpage-navbtn:active:not([disabled]) { transform: translateY(1px); }
-.story-fullpage-navbtn-next { text-align: right; }
-.story-fullpage-navbtn-next .story-fullpage-navlabel { text-align: right; }
+.story-fullpage-navbtn-next {
+  margin-left: auto;
+  flex-direction: row-reverse;
+  text-align: right;
+}
+.story-fullpage-navbtn-next .story-fullpage-navlabel { text-align: right; align-items: flex-end; }
+.story-fullpage-navbtn:hover:not([disabled]) .story-fullpage-navarrow {
+  transform: translateX(-4px);
+}
+.story-fullpage-navbtn-next:hover:not([disabled]) .story-fullpage-navarrow {
+  transform: translateX(4px);
+}
 .story-fullpage-navarrow {
-  font-size: 18px;
-  color: #d9bd6d;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 22px;
+  color: #d5bf78;
+  line-height: 1;
   flex-shrink: 0;
+  transition: transform 180ms ease, color 180ms ease;
 }
 .story-fullpage-navlabel {
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 4px;
+  align-items: flex-start;
+  min-width: 0;
 }
 .story-fullpage-navhint {
-  font-size: 9px;
-  letter-spacing: 0.22em;
+  font: 700 9px/1 Inter, system-ui, sans-serif;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: rgba(245, 236, 218, 0.55);
+  color: rgba(245, 236, 218, 0.5);
 }
 .story-fullpage-navtitle {
-  font-size: 13px;
+  font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+  font-size: 16px;
+  font-style: italic;
+  font-weight: 500;
+  color: #fbf2dc;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 180px;
+  max-width: 240px;
+  line-height: 1.1;
+  transition: color 150ms ease;
 }
 .story-fullpage-counter {
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  color: rgba(245, 236, 218, 0.55);
-  font-family: ui-monospace, monospace;
-  padding: 0 8px;
-  border-left: 1px solid rgba(255, 255, 255, 0.08);
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: Georgia, "Times New Roman", serif;
+  color: rgba(245, 236, 218, 0.6);
+  letter-spacing: 0.04em;
+  padding: 0 12px;
+  white-space: nowrap;
+}
+.story-fullpage-counter-num {
+  font-size: 18px;
+  font-style: italic;
+  color: #ead58d;
+}
+.story-fullpage-counter-sep {
+  font: 700 9px/1 Inter, system-ui, sans-serif;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(245, 236, 218, 0.42);
+}
+.story-fullpage-counter-total {
+  font-size: 14px;
+  color: rgba(245, 236, 218, 0.6);
 }
 
 @media (max-width: 800px) {
-  .story-fullpage-content { max-width: calc(100vw - 80px); left: 24px; right: 24px; }
+  .story-fullpage-content {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    width: auto;
+    max-height: 54vh;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 18px;
+    transform: none;
+  }
+  @keyframes storyContentRise {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: none; }
+  }
   .story-fullpage-fade {
     background:
-      linear-gradient(180deg, rgba(5, 8, 5, 0.55) 0%, rgba(5, 8, 5, 0.4) 30%, rgba(5, 8, 5, 0.85) 100%);
+      linear-gradient(180deg, rgba(5, 8, 5, 0.48) 0%, rgba(5, 8, 5, 0.04) 34%, rgba(5, 8, 5, 0.86) 100%);
   }
-  .story-fullpage-navbtn { padding: 6px 10px; max-width: 140px; }
+  .story-fullpage-title { font-size: clamp(26px, 8vw, 36px); }
+  .story-fullpage-body { font-size: 14.5px; line-height: 1.58; }
+  .story-fullpage-note { font-size: 14px; margin-bottom: 12px; }
+  .story-fullpage-copy {
+    padding: 0;
+    border-left: 0;
+    border-right: 0;
+  }
+  .story-fullpage-nav {
+    grid-template-columns: 1fr auto 1fr;
+    gap: 12px;
+    padding-top: 14px;
+  }
   .story-fullpage-navtitle { display: none; }
+  .story-fullpage-navarrow { font-size: 18px; }
 }
 
 /* (legacy story modal — kept for any other usage) */
@@ -1476,9 +2601,1306 @@ p {
 }
 
 @media (max-width: 900px) {
-  .menu-pause { grid-template-columns: 160px 1fr; }
+  .menu-pause { grid-template-columns: 200px 1fr; }
+  .menu-pause-side { padding: 28px 18px 22px 22px; }
+  .menu-pause-wordmark { font-size: 26px; }
+  .menu-pause-tab { font-size: 12px; padding-left: 14px; }
+  .menu-pause-tab.active { padding-left: 18px; }
   .menu-modal-story, .menu-modal-mushroom { grid-template-columns: 1fr; }
   .story-modal-image, .mushroom-modal-image { min-height: 280px; }
   .wren-pane { grid-template-columns: 1fr; }
   .wren-portrait { height: 360px; }
 }
+
+/* ===== LOADING TRANSITION ===== */
+/* Full-bleed wren photo (same as title bg) bridging title → 3D world.
+   Holds at least 700ms and waits for the village to finish loading, then
+   crossfades out so Wren is revealed standing in town. */
+.menu-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+  opacity: 1;  /* Visible immediately on mount — no fade-in. The overlay is
+                  appended BEFORE the title menu is hidden, so this opacity:1
+                  default is what prevents the 3D-world flicker on Begin. */
+}
+.menu-loading.fading { opacity: 0; transition: opacity 520ms ease; }
+.menu-loading-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url('/story/cards/main-menu-wren.png');
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.62) saturate(0.92);
+}
+.menu-loading-vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at center, rgba(4, 8, 7, 0) 30%, rgba(4, 8, 7, 0.62) 100%),
+    linear-gradient(180deg, rgba(4, 8, 7, 0.18) 0%, rgba(4, 8, 7, 0.0) 38%, rgba(4, 8, 7, 0.62) 100%);
+}
+.menu-loading-content {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(56px, 11vh, 132px);
+  transform: translateX(-50%);
+  text-align: center;
+  color: #f5ecda;
+}
+.menu-loading-eyebrow {
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: #d5bf78;
+  margin-bottom: 12px;
+}
+.menu-loading-title {
+  font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+  font-size: clamp(26px, 3.4vw, 42px);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  margin-bottom: 18px;
+  text-shadow: 0 4px 22px rgba(0, 0, 0, 0.78);
+}
+.menu-loading-dots {
+  display: inline-flex;
+  gap: 8px;
+}
+.menu-loading-dots span {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #d5bf78;
+  opacity: 0.35;
+  animation: hf-loading-dot 1.4s ease-in-out infinite;
+}
+.menu-loading-dots span:nth-child(2) { animation-delay: 0.18s; }
+.menu-loading-dots span:nth-child(3) { animation-delay: 0.36s; }
+@keyframes hf-loading-dot {
+  0%, 60%, 100% { opacity: 0.32; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-3px); }
+}
+
+/* ===== IN-GAME PAUSE POPUP — Wren's Open Journal =====
+   The pause screen reads as Wren's actual journal lying open in front of the
+   player: dark brown leather covers wrap a two-page ivory spread with a
+   stitched spine down the middle. Left page = hand-numbered Contents index
+   of sections; right page = the active section's heading + scrollable body
+   (which keeps the legacy `.pause-panel-body` class so all the existing
+   content overrides further down still apply unchanged). */
+.menu-pause-popup {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(8, 12, 10, 0.62);
+  backdrop-filter: blur(2px);
+  /* Establish a 3D context so the book-open transform reads with depth. */
+  perspective: 1400px;
+}
+
+/* Animation container — the book "opens" into view on mount. */
+.journal {
+  width: min(1100px, 96vw);
+  height: min(680px, 92vh);
+  animation: journal-open 260ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  transform-style: preserve-3d;
+}
+@keyframes journal-open {
+  0%   { transform: scale(0.82) rotateX(8deg); opacity: 0; filter: brightness(0.6); }
+  60%  { opacity: 1; }
+  100% { transform: scale(1) rotateX(0); opacity: 1; filter: none; }
+}
+
+/* The book — dark brown leather frame using a real photo texture.
+   Padding widened from 18→30 so the leather strip around the pages is
+   actually visible (at 18px the photo had no real estate to render grain).
+   Multiply blend was crushing the dark photo against the dark gradient —
+   replaced with `normal` so the photo's natural mid-tones come through.
+   The SVG noise layer was removed entirely; the real photo provides far
+   richer grain than the procedural fallback ever did. */
+.journal-book {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  /* Spine is now a 2px hairline so the paper photo reads as one open spread
+     with a natural fold instead of being split by a 32px leather bar. */
+  grid-template-columns: 1fr 2px 1fr;
+  border-radius: 6px;
+  background:
+    url('/ui/journal/journal-leather.webp'),
+    linear-gradient(135deg, #3a2415 0%, #2a190d 55%, #1d100a 100%);
+  background-size: cover, 100% 100%;
+  background-position: center, 0 0;
+  /* The leather photo renders normally (the gradient is now just a
+     fallback when the image fails to load). */
+  background-blend-mode: normal, normal;
+  box-shadow:
+    0 0 0 1px #1a0d06,
+    0 0 0 5px rgba(166, 130, 70, 0.35), /* gold leaf piping (kept) */
+    0 30px 70px rgba(0, 0, 0, 0.65),
+    inset 0 1px 0 rgba(255, 200, 140, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+  padding: 30px;
+  overflow: hidden;
+}
+
+/* SPINE — collapsed from a 32px leather channel with stitched cords down to
+   a 2px hairline shadow that reads as the natural fold of an open book. The
+   adjacent pages already cast inset gutter shadows on their spine-side edges
+   (see .journal-page--left/--right), which combine with this hairline to
+   sell the "open spread" feel without breaking the continuous paper photo. */
+.journal-spine {
+  position: relative;
+  align-self: stretch;
+  /* Soft dark hairline; the surrounding gutter shadows do most of the work. */
+  background: linear-gradient(180deg,
+    rgba(60, 40, 20, 0.0) 0%,
+    rgba(60, 40, 20, 0.45) 14%,
+    rgba(40, 25, 12, 0.55) 50%,
+    rgba(60, 40, 20, 0.45) 86%,
+    rgba(60, 40, 20, 0.0) 100%);
+}
+
+/* PAGES — one continuous landscape paper photo spans both pages of the
+   open spread. The image is sized to 200% page width so each page renders
+   exactly one half of it (via `background-position` on left/right below).
+   That makes the natural paper crease run right down the spine, like a
+   real open book. The gradient stays as the bottom-layer fallback. */
+.journal-page {
+  position: relative;
+  background:
+    url('/ui/journal/journal-paper.webp'),
+    linear-gradient(180deg, #fbf6e8 0%, #f3ead0 100%);
+  background-size: 200% 100%, 100% 100%;
+  background-repeat: no-repeat, no-repeat;
+  background-blend-mode: multiply, normal;
+  color: #2a1d0e;
+  font-family: 'Walter Turncoat', 'Bradley Hand', 'Segoe Script', cursive;
+  overflow: hidden;
+  display: flex;
+}
+.journal-page--left {
+  border-radius: 3px 0 0 3px;
+  /* Show the LEFT half of the shared paper image (sized 200% above). */
+  background-position: 0% 0%, 0 0;
+  /* Gutter shadow on the spine (right) edge */
+  box-shadow:
+    inset -24px 0 28px -22px rgba(60, 40, 20, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  /* Page-open animation: pages fan out from the spine */
+  transform-origin: right center;
+  animation: page-open-left 260ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.journal-page--right {
+  border-radius: 0 3px 3px 0;
+  /* Show the RIGHT half of the shared paper image so the two pages form a
+     continuous spread with the natural crease at the spine. */
+  background-position: 100% 0%, 0 0;
+  /* Gutter shadow on the spine (left) edge */
+  box-shadow:
+    inset 24px 0 28px -22px rgba(60, 40, 20, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  transform-origin: left center;
+  animation: page-open-right 260ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes page-open-left {
+  0%   { transform: rotateY(8deg); }
+  100% { transform: rotateY(0); }
+}
+@keyframes page-open-right {
+  0%   { transform: rotateY(-8deg); }
+  100% { transform: rotateY(0); }
+}
+
+/* (Red margin line removed — felt costumey. Pure paper now.) */
+
+/* Soft paper-grain noise — same trick as before, lower opacity for the lighter ivory. */
+.journal-page::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.32  0 0 0 0 0.22  0 0 0 0 0.10  0 0 0 0.16 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  opacity: 0.22;
+  mix-blend-mode: multiply;
+}
+
+/* Page inner container — gives content padding that respects the red margin. */
+.journal-page-inner {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.journal-page--left  .journal-page-inner { padding: 30px 44px 22px 44px; }
+/* Right page: drop the right outer padding so the body — and its scrollbar —
+   can sit flush with the page edge. The page-head keeps a right pad to clear
+   the close button; the body itself adds a smaller inner right pad just so
+   text and cards don't slam into the scrollbar. */
+.journal-page--right .journal-page-inner { padding: 30px 0 22px 36px; }
+
+/* ---- LEFT PAGE: Title + Contents index ---- */
+/* Wren's hand. Slightly tilted, marker-weight, dark-ink color. The journal
+   reads as her own writing rather than printed type — no all-caps, no tracked
+   letter-spacing, no UI-style eyebrows. */
+.journal-eyebrow {
+  font-family: 'Walter Turncoat', 'Bradley Hand', 'Segoe Script', cursive;
+  font-size: 22px;
+  font-weight: 500;
+  color: #6b461c;
+  letter-spacing: 0;
+  text-transform: none;
+  font-style: italic;
+  opacity: 0.85;
+  transform: rotate(-1.4deg);
+  transform-origin: left center;
+}
+.journal-title {
+  font-family: 'Walter Turncoat', 'Bradley Hand', 'Segoe Script', cursive;
+  font-size: clamp(44px, 4vw, 56px);
+  font-weight: 700;
+  color: #1f140a;
+  margin-top: 2px;
+  line-height: 1;
+  letter-spacing: 0;
+  transform: rotate(-0.6deg);
+  transform-origin: left center;
+}
+.journal-rule {
+  height: 1px;
+  margin: 14px 0 14px;
+  background: linear-gradient(90deg, transparent 0%, rgba(74, 48, 22, 0.45) 18%, rgba(74, 48, 22, 0.45) 82%, transparent 100%);
+}
+.journal-index-heading {
+  font-family: 'Walter Turncoat', 'Bradley Hand', 'Segoe Script', cursive;
+  font-size: 26px;
+  font-weight: 600;
+  color: #4a3016;
+  letter-spacing: 0;
+  text-transform: none;
+  margin-bottom: 4px;
+  transform: rotate(-0.4deg);
+  transform-origin: left center;
+}
+.journal-index {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.journal-index-item {
+  position: relative;
+}
+/* Each entry's resting tilt is held in a custom property so the click-pop
+   animation can compose scale + rotation on top of it without us having to
+   write six per-item keyframes. */
+.journal-index-item:nth-child(1) { --idx-rot: -0.6deg; }
+.journal-index-item:nth-child(2) { --idx-rot:  0.4deg; }
+.journal-index-item:nth-child(3) { --idx-rot: -0.3deg; }
+.journal-index-item:nth-child(4) { --idx-rot:  0.5deg; }
+.journal-index-item:nth-child(5) { --idx-rot: -0.5deg; }
+.journal-index-item:nth-child(6) { --idx-rot:  0.3deg; }
+.journal-index-btn {
+  display: grid;
+  /* Two columns: roman numeral (fixed) + label (fluid). The old ink-dot
+     column was removed when we dropped the active marker. */
+  grid-template-columns: 44px 1fr;
+  align-items: baseline;
+  gap: 8px;
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-family: 'Walter Turncoat', 'Bradley Hand', 'Segoe Script', cursive;
+  font-size: 28px;
+  font-weight: 500;
+  /* Inactive entries are faded ink — gives the active entry strong relative
+     contrast without needing a marker dot or underline. */
+  color: rgba(42, 29, 14, 0.55);
+  text-align: left;
+  padding: 4px 6px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: color 0.18s;
+  transform: rotate(var(--idx-rot, 0deg));
+  transform-origin: left center;
+}
+.journal-index-btn:hover { color: #2a1d0e; }
+.journal-index-btn:focus-visible {
+  outline: 2px solid rgba(74, 48, 22, 0.5);
+  outline-offset: 2px;
+}
+.journal-index-mark { display: none; }
+.journal-index-numeral {
+  font-style: italic;
+  color: rgba(107, 70, 28, 0.55);
+  font-weight: 600;
+  transition: color 0.18s;
+}
+.journal-index-btn:hover .journal-index-numeral { color: #6b461c; }
+.journal-index-label {
+  padding-bottom: 1px;
+  transition: color 0.18s;
+}
+/* Active entry — deep burnt-amber ink (much darker / richer than the muted
+   body inactives) plus a one-shot "ink pop" animation that runs on each
+   transition into active. The keyframe composes the per-item resting
+   rotation (--idx-rot) with a scale + extra tilt pulse so the entry briefly
+   leans further into the page like Wren just pressed the pen down on it. */
+.journal-index-item.active .journal-index-btn {
+  color: #7a4a14;
+  animation: journal-index-pop 360ms cubic-bezier(0.2, 0.8, 0.25, 1) both;
+}
+.journal-index-item.active .journal-index-numeral {
+  color: #8a5418;
+}
+@keyframes journal-index-pop {
+  0%   { transform: rotate(var(--idx-rot, 0deg)) scale(1); }
+  35%  { transform: rotate(calc(var(--idx-rot, 0deg) - 1.6deg)) scale(1.08); }
+  70%  { transform: rotate(calc(var(--idx-rot, 0deg) + 0.3deg)) scale(1.02); }
+  100% { transform: rotate(var(--idx-rot, 0deg)) scale(1.04); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .journal-index-item.active .journal-index-btn { animation: none; transform: rotate(var(--idx-rot, 0deg)) scale(1.04); }
+}
+
+/* Left page footer — resume hint + back to title */
+.journal-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 12px;
+  margin-top: 14px;
+  border-top: 1px solid rgba(74, 48, 22, 0.18);
+  flex-wrap: wrap;
+}
+.journal-hint {
+  font-family: 'Walter Turncoat', 'Bradley Hand', 'Segoe Script', cursive;
+  font-size: 20px;
+  font-weight: 500;
+  font-style: italic;
+  letter-spacing: 0;
+  text-transform: none;
+  color: rgba(74, 48, 22, 0.75);
+  transform: rotate(-0.6deg);
+  transform-origin: left center;
+}
+.journal-back {
+  border: 1px solid rgba(74, 48, 22, 0.4);
+  background: transparent;
+  color: #4a3016;
+  font-family: 'Walter Turncoat', 'Bradley Hand', 'Segoe Script', cursive;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0;
+  padding: 2px 14px 4px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.journal-back:hover {
+  background: #4a3016;
+  border-color: #4a3016;
+  color: #f3e3bd;
+}
+
+/* ---- RIGHT PAGE: heading + scrollable content ---- */
+.journal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  border: 1px solid rgba(74, 48, 22, 0.35);
+  background: rgba(255, 247, 220, 0.4);
+  color: #4a3016;
+  font-size: 20px;
+  line-height: 1;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  /* z-index 3 keeps the close button above the .story-page-headerbar
+     (z-index 1) when the story-detail view is active. */
+  z-index: 3;
+}
+.journal-close:hover {
+  background: #4a3016;
+  border-color: #4a3016;
+  color: #fbf6e8;
+}
+.journal-page-head {
+  font-family: 'Walter Turncoat', 'Bradley Hand', 'Segoe Script', cursive;
+  font-size: clamp(34px, 3vw, 44px);
+  font-weight: 700;
+  letter-spacing: 0;
+  color: #1f140a;
+  padding-right: 56px; /* clear the close button — matches the dropped outer pad */
+  margin-bottom: 6px;
+  padding-bottom: 4px;
+  line-height: 1;
+  transform: rotate(-0.5deg);
+  transform-origin: left center;
+  /* Pull the title up into the inner's padding-top zone so its visual
+     cap-center aligns with the close ✕ button (which is positioned at
+     top:14). Without this, the title text sat ~27px below the buttons
+     because its line-box started after the 30px inner padding. The
+     `--blank` modifier (used in detail views) explicitly resets this
+     margin-top so the body's top edge isn't pushed up underneath the
+     buttons. */
+  margin-top: -22px;
+}
+/* When a story or species detail is mounted, the page-head text gets blanked
+   out but the element keeps a fixed height — preserves a paper "header zone"
+   above the body where the back/✕ buttons sit. The 22px value is tuned so
+   the buttons (top:14, ~30px tall) end up vertically centred:
+     inner.padding-top (30) + this min-height (22) + .journal-page-head
+     margin-bottom (6) = 58px total → 14px above the button + 14px below.
+   Reset margin-top to 0 — only the regular (titled) page-head needs the
+   negative pull-up to align with the buttons. */
+.journal-page-head--blank {
+  min-height: 22px;
+  margin-top: 0;
+}
+/* The body keeps the legacy `.pause-panel-body` class so all the dark-on-
+   parchment content overrides further down still target it. We just adjust
+   sizing/scroll here. */
+.journal-page-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  /* Body extends to the page's right edge so the scrollbar sits flush there.
+     Inner right padding gives content a small breathing gap from the bar. */
+  padding: 14px 18px 8px 0;
+  position: relative;
+}
+/* The journal page already shows a handwritten section heading
+   ("I. Story", "II. Field Guide", …). The legacy `.tab-heading h2`
+   inside the body just duplicates that, so hide it inside the journal. */
+.journal-page-body > .tab-pane > .tab-heading > h2,
+.journal-page-body > .wren-tab > .wren-hero > .wren-hero-info > .wren-hero-eyebrow + .wren-hero-name { /* keep wren name */ }
+.journal-page-body .tab-pane > .tab-heading > h2 { display: none; }
+/* Bump body sizes a touch — handwritten faces (Walter Turncoat here) read
+   smaller than their nominal point size, and the legacy uppercase eyebrows
+   carry letter-spacing tuned for Inter. */
+/* IMPORTANT: the body element carries both `.journal-page-body` and the
+   legacy `.pause-panel-body` class, so the older `.pause-panel-body .X`
+   rules further down the file have equal specificity and (because they
+   come later) win. Use the double-class selector here to bump specificity
+   above any single-class `.pause-panel-body` rule. */
+.journal-page-body.pause-panel-body { font-size: 21px; line-height: 1.45; }
+/* Tighten the legacy `.tab-heading` block inside the journal — it was tuned
+   for the wider sidebar (24px margin-bottom + 18px padding-bottom + a 1px
+   border below). Inside the compact right page that's ~43px of dead space
+   between the heading text and the first content row. Strip it down: no
+   border, minimal padding/margin. */
+.journal-page-body.pause-panel-body .tab-heading {
+  margin-bottom: 8px;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+/* Tighten story-act headers (the "Act I — 7 cards" rows on the Story tab).
+   Original 28px/14px was tuned for the sidebar; in the journal we want
+   something more like 16px/6px so the grid sits closer to the heading. */
+.journal-page-body.pause-panel-body .story-act-header {
+  margin: 14px 0 6px;
+}
+.journal-page-body.pause-panel-body .story-act-header:first-of-type {
+  margin-top: 4px;
+}
+/* Settings sections — drop the 28px/20px gap to half. The border line
+   between sections is enough visual separation; the big margin was for
+   the wider sidebar. */
+.journal-page-body.pause-panel-body .settings-section {
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+}
+.journal-page-body.pause-panel-body .settings-section h3 {
+  margin: 0 0 6px;
+}
+.journal-page-body.pause-panel-body .settings-row {
+  padding: 6px 0;
+}
+/* Wren hero block: drop the 22px inner padding to 14px so the bio sits
+   tighter under the portrait. */
+.journal-page-body.pause-panel-body .wren-hero-info {
+  padding: 14px 18px;
+}
+.journal-page-body.pause-panel-body .wren-hero {
+  gap: 10px;
+}
+/* Card / mushroom grids — reduce row gap from 16/14 to 10 inside the
+   journal so more cells fit on screen at once. */
+.journal-page-body.pause-panel-body .card-grid,
+.journal-page-body.pause-panel-body .mushroom-grid {
+  gap: 10px;
+}
+.journal-page-body.pause-panel-body .tab-heading p,
+.journal-page-body.pause-panel-body p,
+.journal-page-body.pause-panel-body li,
+.journal-page-body.pause-panel-body span,
+.journal-page-body.pause-panel-body label,
+.journal-page-body.pause-panel-body .settings-row > span:first-child,
+.journal-page-body.pause-panel-body .settings-row-text,
+.journal-page-body.pause-panel-body .wren-card-list li,
+.journal-page-body.pause-panel-body .wren-hero-lead,
+.journal-page-body.pause-panel-body .wren-pullquote,
+.journal-page-body.pause-panel-body .card-cell-title,
+.journal-page-body.pause-panel-body .card-cell-subtitle,
+.journal-page-body.pause-panel-body .mushroom-cell-name,
+.journal-page-body.pause-panel-body .mushroom-cell-edibility {
+  font-size: 22px;
+  line-height: 1.35;
+}
+/* Section eyebrows (Audio, Graphics, Camera, People around her, etc.) —
+   strip the tracked-uppercase styling so they read as handwritten labels. */
+.journal-page-body.pause-panel-body .settings-section h3,
+.journal-page-body.pause-panel-body h3,
+.journal-page-body.pause-panel-body .wren-card-eyebrow,
+.journal-page-body.pause-panel-body .wren-hero-eyebrow,
+.journal-page-body.pause-panel-body .wren-stat-label,
+.journal-page-body.pause-panel-body .wren-kit-strip span,
+.journal-page-body.pause-panel-body .card-cell-act,
+.journal-page-body.pause-panel-body .story-act-label {
+  font-family: 'Walter Turncoat', 'Bradley Hand', 'Segoe Script', cursive;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  font-style: italic;
+}
+/* Buttons, kbd, and the settings button group should NOT use Walter Turncoat
+   — they're UI affordances, not journal text. Keep them legible in Inter. */
+.journal-page-body.pause-panel-body .settings-btn-group button,
+.journal-page-body.pause-panel-body .settings-value,
+.journal-page-body.pause-panel-body kbd,
+.journal-page-body.pause-panel-body .menu-btn,
+.journal-page-body.pause-panel-body input,
+.journal-page-body.pause-panel-body select {
+  font-family: Inter, system-ui, -apple-system, sans-serif;
+  letter-spacing: 0.04em;
+}
+/* Subtle ink-line scrollbar */
+.journal-page-body::-webkit-scrollbar { width: 8px; }
+.journal-page-body::-webkit-scrollbar-track { background: transparent; }
+.journal-page-body::-webkit-scrollbar-thumb {
+  background: rgba(74, 48, 22, 0.3);
+  border-radius: 4px;
+}
+.journal-page-body::-webkit-scrollbar-thumb:hover { background: rgba(74, 48, 22, 0.5); }
+
+/* Reduced motion — skip the open animation entirely. */
+@media (prefers-reduced-motion: reduce) {
+  .journal,
+  .journal-page--left,
+  .journal-page--right { animation: none; }
+}
+
+/* ===== In-journal story-card detail =====
+   When a story card is clicked while the pause journal is open, the right
+   page swaps from the act-grouped grid to a single-card "page" — image at
+   top, handwritten copy below, prev/next at the bottom. Stays inside the
+   open-book metaphor. The full-screen `.story-fullpage` takeover is reserved
+   for the main-menu story tab only. */
+.story-page {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  /* Image sits flush at the top of the scrolling area — the body's own
+     14px top pad already provides breathing room from the header zone
+     above. No extra inset here. */
+  padding: 0 4px 4px 0;
+  animation: story-page-fade 220ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes story-page-fade {
+  0%   { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+/* Sticky header bar — solid ivory band that holds the back button and the
+   close ✕. The right-page body scrolls underneath it, so when the user
+   scrolls down the image slides UNDER the bar instead of butting up against
+   the buttons. The bar is mounted in .journal-page-inner (above the body
+   in z-order) and matches the page background so it's visually seamless
+   with the rest of the page when at scrollTop = 0. */
+/* (The .story-page-headerbar element was removed — the body's `overflow: auto`
+   already clips content at its top edge, so the buttons sit on the natural
+   paper above the body, matching the Wren / page-head treatment elsewhere.) */
+
+/* Back button is mounted in .journal-page-inner (sibling of .journal-close
+   and the header bar), so it shares the same positioning context — they all
+   sit on the same y-coordinate paired as a header. z-index keeps the buttons
+   above the header bar. */
+.story-page-back {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(74, 48, 22, 0.35);
+  background: rgba(255, 247, 220, 0.55);
+  color: #4a3016;
+  font-family: 'Walter Turncoat', 'Bradley Hand', 'Segoe Script', cursive;
+  font-size: 16px;
+  padding: 2px 10px 4px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.story-page-back:hover {
+  background: #4a3016;
+  border-color: #4a3016;
+  color: #fbf6e8;
+}
+.story-page-back-arrow { font-size: 16px; line-height: 1; }
+.story-page-image {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background-size: cover;
+  background-position: center;
+  border-radius: 4px;
+  border: 1px solid rgba(74, 48, 22, 0.3);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.15),
+    inset 0 0 0 1px rgba(255, 247, 220, 0.5);
+  cursor: zoom-in;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.story-page-image:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.22),
+    inset 0 0 0 1px rgba(255, 247, 220, 0.5);
+}
+/* Click-to-zoom overlay — fills the journal book interior (covers both
+   pages + spine) but leaves the dark leather frame visible at the edges.
+   Mounted inside .journal-book; click anywhere or ESC to close. */
+.story-image-zoom {
+  position: absolute;
+  /* `.journal-book` has padding: 18px (the leather inner-edge). Insetting
+     by that same amount means the zoom fills exactly the page-area interior
+     without overlapping the leather frame. */
+  inset: 18px;
+  background-size: cover;
+  background-position: center;
+  background-color: #1a0d06;
+  border-radius: 4px;
+  cursor: zoom-out;
+  z-index: 20;
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.6),
+    0 8px 24px rgba(0, 0, 0, 0.5);
+  animation: story-zoom-in 220ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes story-zoom-in {
+  0%   { opacity: 0; transform: scale(0.96); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.story-image-zoom-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 247, 220, 0.4);
+  background: rgba(20, 12, 6, 0.55);
+  color: #fbf6e8;
+  font-size: 22px;
+  line-height: 1;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, border-color 0.15s;
+}
+.story-image-zoom-close:hover {
+  background: rgba(20, 12, 6, 0.85);
+  border-color: rgba(255, 247, 220, 0.7);
+}
+.story-page-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 4px;
+}
+.story-page-eyebrow {
+  font-family: 'Walter Turncoat', 'Bradley Hand', 'Segoe Script', cursive;
+  font-size: 18px;
+  color: #8a5e1d;
+  font-style: italic;
+}
+.story-page-title {
+  font-family: 'Walter Turncoat', 'Bradley Hand', 'Segoe Script', cursive;
+  font-size: clamp(28px, 2.6vw, 36px);
+  font-weight: 400;
+  line-height: 1.05;
+  margin: 0;
+  color: #1f140a;
+  letter-spacing: 0;
+}
+.story-page-subtitle {
+  font-family: 'Walter Turncoat', 'Bradley Hand', 'Segoe Script', cursive;
+  font-size: 20px;
+  color: rgba(74, 48, 22, 0.85);
+  font-style: italic;
+}
+.story-page-body {
+  font-family: 'Walter Turncoat', 'Bradley Hand', 'Segoe Script', cursive;
+  font-size: 22px;
+  line-height: 1.4;
+  color: #2a1d0e;
+  margin: 0;
+}
+/* Wren's first-person note — her direct voice from the journal. Treated as
+   a hand-drawn pull-quote: indented body with oversize gold quotation marks
+   bracketing it, plus a subtle "— Wren" attribution at the end. No box,
+   no border line — feels like a passage she actually wrote, not a UI panel. */
+.story-page-note {
+  position: relative;
+  margin: 8px 8px 18px 8px;
+  padding: 6px 28px 28px 48px;
+  background: transparent;
+  border: none;
+  font-family: 'Walter Turncoat', 'Bradley Hand', 'Segoe Script', cursive;
+  font-size: 22px;
+  font-style: italic;
+  color: #3a2415;
+  line-height: 1.45;
+  border-radius: 0;
+  /* Slight hand-laid tilt so the quote feels written, not typeset. */
+  transform: rotate(-0.3deg);
+}
+.story-page-note::before {
+  /* Oversize opening quote in burnt-amber, inked by hand. */
+  content: '\201C'; /* “ */
+  position: absolute;
+  top: -14px;
+  left: -2px;
+  font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+  font-size: 88px;
+  line-height: 1;
+  color: #a6823a;
+  font-style: normal;
+  pointer-events: none;
+  text-shadow: 1px 1px 0 rgba(74, 48, 22, 0.08);
+}
+.story-page-note::after {
+  /* Attribution line — appears as a hand-flourish below the quote. */
+  content: '— Wren';
+  position: absolute;
+  right: 10px;
+  bottom: 0;
+  font-family: 'Walter Turncoat', 'Bradley Hand', 'Segoe Script', cursive;
+  font-size: 16px;
+  font-style: italic;
+  color: rgba(74, 48, 22, 0.7);
+  pointer-events: none;
+  transform: rotate(-1deg);
+}
+.story-page-beats {
+  margin: 0;
+  padding: 0 0 0 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: 'Walter Turncoat', 'Bradley Hand', 'Segoe Script', cursive;
+  font-size: 20px;
+  color: #2a1d0e;
+}
+.story-page-beats li { line-height: 1.35; }
+.story-page-nav {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(74, 48, 22, 0.22);
+}
+.story-page-navbtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(74, 48, 22, 0.3);
+  background: rgba(255, 247, 220, 0.4);
+  font-family: 'Walter Turncoat', 'Bradley Hand', 'Segoe Script', cursive;
+  color: #2a1d0e;
+  text-align: left;
+  padding: 6px 10px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  min-width: 0;
+}
+.story-page-navbtn:hover:not([disabled]) {
+  background: rgba(166, 130, 70, 0.18);
+  border-color: rgba(74, 48, 22, 0.5);
+}
+.story-page-navbtn[disabled] {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.story-page-navbtn-next {
+  flex-direction: row;
+  text-align: right;
+  justify-content: flex-end;
+}
+.story-page-navarrow { font-size: 20px; line-height: 1; flex-shrink: 0; }
+.story-page-navlabel {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  min-width: 0;
+}
+.story-page-navhint {
+  font-size: 14px;
+  font-style: italic;
+  color: rgba(74, 48, 22, 0.65);
+}
+.story-page-navtitle {
+  font-size: 18px;
+  color: #2a1d0e;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.story-page-counter {
+  font-family: 'Walter Turncoat', 'Bradley Hand', 'Segoe Script', cursive;
+  font-size: 16px;
+  color: rgba(74, 48, 22, 0.7);
+  white-space: nowrap;
+}
+/* Slide transitions when paging via prev/next inside the journal — subtle,
+   ~200ms. */
+.story-page-enter-prev { animation: story-page-slide-from-left 220ms cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.story-page-enter-next { animation: story-page-slide-from-right 220ms cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+@keyframes story-page-slide-from-left {
+  0%   { opacity: 0; transform: translateX(-12px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+@keyframes story-page-slide-from-right {
+  0%   { opacity: 0; transform: translateX(12px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+/* ===== In-journal species (mushroom) detail =====
+   Mirrors the story-page UX: sticky header bar with back + close (shared
+   `.story-page-headerbar` / `.story-page-back` classes), photo at the top
+   (click to enlarge), handwritten body copy below. */
+.species-page {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  /* Image sits flush at the top of the scroll area — same as story-page. */
+  padding: 0 4px 4px 0;
+  animation: story-page-fade 220ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.species-page-image {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background-size: cover;
+  background-position: center;
+  background-color: #1a0d06;
+  border-radius: 4px;
+  border: 1px solid rgba(74, 48, 22, 0.3);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.15),
+    inset 0 0 0 1px rgba(255, 247, 220, 0.5);
+  cursor: zoom-in;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.species-page-image:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.22),
+    inset 0 0 0 1px rgba(255, 247, 220, 0.5);
+}
+.species-page-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-bottom: 4px;
+}
+.species-page-edibility {
+  font-family: 'Walter Turncoat', 'Bradley Hand', 'Segoe Script', cursive;
+  font-size: 18px;
+  font-style: italic;
+  /* color is set inline by JS to the EDIBILITY_TINT value */
+}
+.species-page-name {
+  font-family: 'Walter Turncoat', 'Bradley Hand', 'Segoe Script', cursive;
+  font-size: clamp(28px, 2.6vw, 36px);
+  font-weight: 400;
+  line-height: 1.05;
+  margin: 0;
+  color: #1f140a;
+  letter-spacing: 0;
+}
+.species-page-latin {
+  font-family: 'Walter Turncoat', 'Bradley Hand', 'Segoe Script', cursive;
+  font-size: 20px;
+  font-style: italic;
+  color: rgba(74, 48, 22, 0.7);
+}
+.species-page-body {
+  font-family: 'Walter Turncoat', 'Bradley Hand', 'Segoe Script', cursive;
+  font-size: 22px;
+  line-height: 1.4;
+  color: #2a1d0e;
+  margin: 0;
+}
+.species-page-section h3 {
+  font-family: 'Walter Turncoat', 'Bradley Hand', 'Segoe Script', cursive;
+  font-size: 22px;
+  font-weight: 600;
+  font-style: italic;
+  color: #6b461c;
+  margin: 0 0 6px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.species-page-list {
+  margin: 0;
+  padding: 0 0 0 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: 'Walter Turncoat', 'Bradley Hand', 'Segoe Script', cursive;
+  font-size: 20px;
+  color: #2a1d0e;
+}
+.species-page-list li { line-height: 1.35; }
+.species-page-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.species-page-meta > div {
+  background: rgba(255, 247, 220, 0.55);
+  border: 1px solid rgba(74, 48, 22, 0.18);
+  border-radius: 4px;
+  padding: 8px 12px 10px;
+}
+/* Habitat + Season are short — they sit side-by-side in the first row.
+   Look-alikes is typically a paragraph (description of similar species,
+   their distinguishing features, toxicity warnings), so it spans both
+   columns instead of getting squeezed into a half-width tower. */
+.species-page-meta > div:nth-child(3) {
+  grid-column: 1 / -1;
+}
+.species-page-meta span {
+  display: block;
+  font-family: 'Walter Turncoat', 'Bradley Hand', 'Segoe Script', cursive;
+  font-size: 18px;
+  font-style: italic;
+  color: #8a5e1d;
+  margin-bottom: 2px;
+}
+.species-page-meta p {
+  margin: 0;
+  font-family: 'Walter Turncoat', 'Bradley Hand', 'Segoe Script', cursive;
+  font-size: 19px;
+  line-height: 1.3;
+  color: #2a1d0e;
+}
+.species-page-notes {
+  margin: 0;
+  padding: 12px 16px 12px 22px;
+  background: rgba(255, 247, 220, 0.55);
+  border-left: 3px solid #a6823a;
+  font-family: 'Walter Turncoat', 'Bradley Hand', 'Segoe Script', cursive;
+  font-size: 21px;
+  font-style: italic;
+  color: #4a3016;
+  border-radius: 0 4px 4px 0;
+  line-height: 1.4;
+}
+
+/* ===== Controls page overrides for the journal context =====
+   The base `.controls-grid` was tuned for the wider sidebar layout. In the
+   ~500px right page it was forcing two columns, truncating "Turn camera".
+   Force single-column inside the journal, and replace the inline-styled
+   "Menu shortcuts" h3 with a journal-aesthetic subhead. */
+.journal-page-body.pause-panel-body .controls-grid {
+  grid-template-columns: 1fr;
+  max-width: none;
+  gap: 8px;
+}
+.journal-page-body.pause-panel-body .controls-grid > div {
+  padding: 8px 14px;
+  border-radius: 4px;
+}
+.journal-page-body.pause-panel-body .controls-grid kbd {
+  background: rgba(74, 48, 22, 0.08);
+  border-color: rgba(74, 48, 22, 0.3);
+  color: #2a1d0e;
+  letter-spacing: 0.04em;
+}
+.journal-page-body.pause-panel-body .controls-subhead {
+  font-family: 'Walter Turncoat', 'Bradley Hand', 'Segoe Script', cursive;
+  font-size: 22px;
+  font-weight: 600;
+  font-style: italic;
+  color: #6b461c;
+  letter-spacing: 0;
+  text-transform: none;
+  margin: 22px 0 8px;
+}
+
+/* Responsive: collapse to a single page on narrow viewports. The journal
+   metaphor is preserved (leather frame, ivory paper, stitched margin) but
+   the index moves above the active content. */
+@media (max-width: 820px) {
+  .journal-book {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+  .journal-spine,
+  .journal-page--left::before,
+  .journal-page--right::before { display: none; }
+  .journal-page--left {
+    border-radius: 3px 3px 0 0;
+    box-shadow: inset 0 -24px 28px -22px rgba(60, 40, 20, 0.45);
+    border-bottom: 1px solid rgba(74, 48, 22, 0.25);
+  }
+  .journal-page--right {
+    border-radius: 0 0 3px 3px;
+    box-shadow: inset 0 24px 28px -22px rgba(60, 40, 20, 0.45);
+  }
+  .journal-page--left .journal-page-inner,
+  .journal-page--right .journal-page-inner { padding: 18px 22px; }
+  .journal-index { gap: 0; flex-direction: row; flex-wrap: wrap; }
+  .journal-index-btn {
+    grid-template-columns: auto auto auto;
+    gap: 6px;
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+  .journal-foot { display: none; }
+}
+/* The shared tab content (.tab-pane / .tab-heading / cards) was styled
+   for the dark sidebar layout. Inside parchment, override the colour
+   palette without rewriting markup. */
+.pause-panel-body .tab-heading h2 {
+  font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+  color: #2a1d0e;
+  font-weight: 500;
+  font-size: 22px;
+  margin: 0 0 4px;
+}
+.pause-panel-body .tab-heading p {
+  color: rgba(74, 48, 22, 0.78);
+  font-size: 13px;
+  margin: 0 0 14px;
+}
+.pause-panel-body h3 {
+  color: #6b461c;
+  font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.pause-panel-body p,
+.pause-panel-body li,
+.pause-panel-body span,
+.pause-panel-body label {
+  color: #2a1d0e;
+}
+.pause-panel-body .settings-section {
+  border-color: rgba(74, 48, 22, 0.2);
+}
+.pause-panel-body .settings-section h3 {
+  color: #6b461c;
+}
+.pause-panel-body .settings-row > span:first-child,
+.pause-panel-body .settings-row-checkbox span,
+.pause-panel-body .settings-row-text {
+  color: #2a1d0e;
+}
+.pause-panel-body .settings-value {
+  color: #6b461c;
+  font-weight: 600;
+}
+.pause-panel-body .settings-note {
+  color: rgba(74, 48, 22, 0.72);
+}
+.pause-panel-body .settings-btn-group {
+  border: 1px solid rgba(74, 48, 22, 0.4);
+  background: rgba(255, 247, 220, 0.46);
+}
+.pause-panel-body .settings-btn-group button {
+  background: transparent;
+  color: #2a1d0e;
+  border-right-color: rgba(74, 48, 22, 0.3);
+}
+.pause-panel-body .settings-btn-group button:hover {
+  background: rgba(166, 130, 70, 0.18);
+}
+.pause-panel-body .settings-btn-group button.active {
+  background: #4a3016;
+  color: #f3e3bd;
+}
+.pause-panel-body .settings-row input[type="range"] {
+  background: rgba(74, 48, 22, 0.22);
+}
+.pause-panel-body .settings-row input[type="range"]::-webkit-slider-thumb {
+  background: #6b461c;
+  border-color: #f3e3bd;
+}
+.pause-panel-body .settings-row input[type="range"]::-moz-range-thumb {
+  background: #6b461c;
+  border-color: #f3e3bd;
+}
+.pause-panel-body input[type="range"] {
+  accent-color: #a6823a;
+}
+.pause-panel-body kbd {
+  background: rgba(255, 247, 220, 0.5);
+  border: 1px solid rgba(74, 48, 22, 0.3);
+  color: #2a1d0e;
+  box-shadow: inset 0 -1px 0 rgba(74, 48, 22, 0.18);
+}
+.pause-panel-body .menu-btn {
+  background: rgba(255, 247, 220, 0.46);
+  color: #2a1d0e;
+  border: 1px solid rgba(74, 48, 22, 0.4);
+}
+.pause-panel-body .menu-btn:hover {
+  background: #4a3016;
+  color: #f3e3bd;
+  border-color: #4a3016;
+}
+.pause-panel-body .menu-btn-danger {
+  border-color: rgba(150, 60, 40, 0.6);
+  color: #8a3a25;
+}
+.pause-panel-body .menu-btn-danger:hover {
+  background: #8a3a25;
+  color: #fbf2dc;
+  border-color: #8a3a25;
+}
+.pause-panel-body .card-cell,
+.pause-panel-body .mushroom-cell {
+  background: rgba(255, 247, 220, 0.5);
+  border: 1px solid rgba(74, 48, 22, 0.25);
+  color: #2a1d0e;
+}
+.pause-panel-body .card-cell:hover,
+.pause-panel-body .mushroom-cell:hover {
+  border-color: #a6823a;
+  background: rgba(255, 247, 220, 0.78);
+}
+.pause-panel-body .card-cell-title,
+.pause-panel-body .mushroom-cell-name { color: #2a1d0e; }
+.pause-panel-body .card-cell-act,
+.pause-panel-body .card-cell-subtitle { color: rgba(74, 48, 22, 0.75); }
+.pause-panel-body .story-act-label {
+  color: #6b461c;
+}
+.pause-panel-body .wren-card,
+.pause-panel-body .wren-pullquote,
+.pause-panel-body .wren-hero-info,
+.pause-panel-body .wren-stat,
+.pause-panel-body .wren-kit-strip div {
+  background: rgba(255, 247, 220, 0.48);
+  border: 1px solid rgba(74, 48, 22, 0.22);
+  color: #2a1d0e;
+  border-radius: 6px;
+}
+.pause-panel-body .wren-profile-art {
+  /* Image fills the container; the wrapper itself shouldn't show as a
+     separate frame — the image's own border+shadow is the only chrome.
+     Kill the base rule's heavy 0 22px 70px drop shadow that was casting
+     a dark wash between the photo and the "Protagonist" box below. */
+  background: transparent;
+  border: 0;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 4px;
+  box-shadow: none;
+}
+/* Wren's portrait sits flat on the paper at rest — thin ink border, no drop
+   shadow. Hovering still gently lifts it with a soft shadow + 1px translate
+   so the click affordance remains. The same `_showStoryImageZoom` handler
+   runs from the JS click listener attached in `_renderWrenTab`. */
+.journal-page-body.pause-panel-body .wren-profile-art img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  border: 1px solid rgba(74, 48, 22, 0.3);
+  box-shadow: none;
+  cursor: zoom-in;
+  transition: transform 0.15s, box-shadow 0.15s;
+  /* Drop the existing min-height on the image inside the journal — the wide
+     responsive override (1006-1018) was forcing 260-320px of empty space
+     when the image is loading or shorter than that. */
+  min-height: 0;
+}
+.journal-page-body.pause-panel-body .wren-profile-art img:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.22),
+    inset 0 0 0 1px rgba(255, 247, 220, 0.5);
+}
+.pause-panel-body .wren-pullquote { color: #4a3016; font-style: italic; }
+.pause-panel-body .wren-stat-label,
+.pause-panel-body .wren-card-eyebrow,
+.pause-panel-body .wren-hero-eyebrow,
+.pause-panel-body .wren-kit-strip span {
+  color: #8a5e1d;
+}
+.pause-panel-body .wren-hero-name { color: #2a1d0e; }
+.pause-panel-body .wren-hero-tagline { color: rgba(74, 48, 22, 0.85); }
+.pause-panel-body .wren-hero-lead,
+.pause-panel-body .wren-card p,
+.pause-panel-body .wren-card-list li {
+  color: #2a1d0e;
+}
+.pause-panel-body .wren-card-list li { border-bottom-color: rgba(74, 48, 22, 0.18); }
+/* Compact-popup overrides: Wren tab's 2-col hero / 4-col kit / 2-col grid
+   were tuned for the full pause sidebar (~900px content). Inside the
+   popup (~720px) they overflow; collapse to single columns. */
+.pause-panel-body .wren-hero { grid-template-columns: 1fr; gap: 14px; }
+.pause-panel-body .wren-profile-art { min-height: 240px; }
+.pause-panel-body .wren-profile-art img { min-height: 240px; }
+.pause-panel-body .wren-grid { grid-template-columns: 1fr; }
+.pause-panel-body .wren-kit-strip { grid-template-columns: repeat(2, 1fr); }
+.pause-panel-body .wren-stats { grid-template-columns: repeat(2, 1fr); }
+.pause-panel-body .wren-hero-name { font-size: clamp(28px, 4vw, 38px); }
+.pause-panel-body .wren-hero-info { padding: 18px 20px; }
+.pause-panel-body .wren-card-list li strong,
+.pause-panel-body .wren-npc-name,
+.pause-panel-body .wren-stat-value {
+  color: #6b461c;
+}
+.pause-panel-body .wren-npc-role { color: rgba(74, 48, 22, 0.7); }
+/* Field Guide cells — same lookalike styling tweak */
+.pause-panel-body .mushroom-cell-edibility { /* keep its tint as set inline */ }
+/* Story-modal & details — defensive overrides for any remaining dark surfaces */
+.pause-panel-body .story-act-line { background: rgba(74, 48, 22, 0.25); }
+.pause-panel-body .story-act-count { color: rgba(74, 48, 22, 0.7); }
+.pause-panel-body .controls-grid > div {
+  background: rgba(255, 247, 220, 0.4);
+  border: 1px solid rgba(74, 48, 22, 0.18);
+  color: #2a1d0e;
+}
+/* (Old `.pause-panel-footer / .pause-panel-hint / .pause-panel-back` chrome
+   moved into `.journal-foot / .journal-hint / .journal-back` on the left
+   page. The old narrow-viewport @media targeted the removed top tab strip.) */
