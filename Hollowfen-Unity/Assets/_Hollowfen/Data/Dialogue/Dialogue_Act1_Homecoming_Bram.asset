@@ -22,17 +22,17 @@ MonoBehaviour:
     isCloseup: 0
   - speaker: Bram
     text: Lord help me. You've got your father's height.
-    isCloseup: 1
+    isCloseup: 0
   - speaker: Wren
     text: I came as soon as I could.
-    isCloseup: 0
+    isCloseup: 1
   - speaker: Bram
     text: 'Aye. I know.
 
 
       I''ve got the key inside.'
     isCloseup: 0
-  _unlockStoryCard: {fileID: 11400000, guid: 4d3b302c8f5404f1e9b2d48978d76977, type: 2}
-  _completeQuest: {fileID: 11400000, guid: 233a00ead1da24556a276c9f50260699, type: 2}
-  _giveItemId: 
-  _nextDialog: {fileID: 0}
+  _unlockStoryCard: {fileID: 0}
+  _completeQuest: {fileID: 0}
+  _giveItemId:
+  _nextDialog: {fileID: 11400000, guid: 43cd89d9348548e59b405b515bf1df9a, type: 2}

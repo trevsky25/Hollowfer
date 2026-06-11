@@ -236,6 +236,203 @@ namespace Hollowfen.UI
             public GradientStop(float t, Color c) { T = t; C = c; }
         }
 
+        // ---------- Crisp-shape primitives (procedural, AA-edged, cached) ----------
+
+        private static readonly System.Collections.Generic.Dictionary<string, Sprite> _shapeCache
+            = new System.Collections.Generic.Dictionary<string, Sprite>();
+
+        // White rounded-rect 9-slice with ~1.5px anti-aliased edge. Tint via Image.color.
+        // Use Image.type = Sliced so corners stay crisp at any size.
+        public static Sprite RoundedRect(int radius)
+        {
+            string key = "rr" + radius;
+            if (_shapeCache.TryGetValue(key, out var cached) && cached != null) return cached;
+
+            int pad = 2;
+            int size = radius * 2 + pad * 2 + 8; // center band for slicing
+            var tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
+            tex.wrapMode = TextureWrapMode.Clamp;
+            tex.filterMode = FilterMode.Bilinear;
+            float r = radius;
+            for (int y = 0; y < size; y++)
+            for (int x = 0; x < size; x++)
+            {
+                float dx = Mathf.Max(0f, Mathf.Max((pad + r) - (x + 0.5f), (x + 0.5f) - (size - pad - r)));
+                float dy = Mathf.Max(0f, Mathf.Max((pad + r) - (y + 0.5f), (y + 0.5f) - (size - pad - r)));
+                float d = Mathf.Sqrt(dx * dx + dy * dy);
+                float a = Mathf.Clamp01(r - d + 0.75f); // ~1.5px AA falloff
+                if (r <= 0f) a = (x >= pad && x < size - pad && y >= pad && y < size - pad) ? 1f : 0f;
+                tex.SetPixel(x, y, new Color(1f, 1f, 1f, a));
+            }
+            tex.Apply(false, false);
+            int border = radius + pad + 2;
+            var sp = Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f), 100f, 0u,
+                SpriteMeshType.FullRect, new Vector4(border, border, border, border));
+            _shapeCache[key] = sp;
+            return sp;
+        }
+
+        // Rounded-rect outline ring (hairline stroke), 9-sliced, AA on both edges.
+        public static Sprite RoundedOutline(int radius, float thickness)
+        {
+            string key = "ro" + radius + "_" + thickness.ToString("F1");
+            if (_shapeCache.TryGetValue(key, out var cached) && cached != null) return cached;
+
+            int pad = 2;
+            int size = radius * 2 + pad * 2 + 8;
+            var tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
+            tex.wrapMode = TextureWrapMode.Clamp;
+            tex.filterMode = FilterMode.Bilinear;
+            float r = radius;
+            for (int y = 0; y < size; y++)
+            for (int x = 0; x < size; x++)
+            {
+                float dx = Mathf.Max(0f, Mathf.Max((pad + r) - (x + 0.5f), (x + 0.5f) - (size - pad - r)));
+                float dy = Mathf.Max(0f, Mathf.Max((pad + r) - (y + 0.5f), (y + 0.5f) - (size - pad - r)));
+                float d = Mathf.Sqrt(dx * dx + dy * dy);
+                // signed distance to the rounded-rect edge: positive outside, negative inside
+                float sd = d - r;
+                float a = Mathf.Clamp01(0.75f - Mathf.Abs(sd + thickness * 0.5f) + thickness * 0.5f);
+                tex.SetPixel(x, y, new Color(1f, 1f, 1f, a));
+            }
+            tex.Apply(false, false);
+            int border = radius + pad + 2;
+            var sp = Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f), 100f, 0u,
+                SpriteMeshType.FullRect, new Vector4(border, border, border, border));
+            _shapeCache[key] = sp;
+            return sp;
+        }
+
+        // Soft drop-shadow blob: rounded rect with wide gaussian-ish falloff. 9-sliced.
+        public static Sprite SoftShadow(int radius, int blur)
+        {
+            string key = "sh" + radius + "_" + blur;
+            if (_shapeCache.TryGetValue(key, out var cached) && cached != null) return cached;
+
+            int pad = blur + 2;
+            int size = (radius + pad) * 2 + 8;
+            var tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
+            tex.wrapMode = TextureWrapMode.Clamp;
+            tex.filterMode = FilterMode.Bilinear;
+            float r = radius;
+            for (int y = 0; y < size; y++)
+            for (int x = 0; x < size; x++)
+            {
+                float dx = Mathf.Max(0f, Mathf.Max((pad + r) - (x + 0.5f), (x + 0.5f) - (size - pad - r)));
+                float dy = Mathf.Max(0f, Mathf.Max((pad + r) - (y + 0.5f), (y + 0.5f) - (size - pad - r)));
+                float d = Mathf.Sqrt(dx * dx + dy * dy) - r;
+                float t = Mathf.Clamp01(1f - d / blur);
+                float a = t * t * (3f - 2f * t); // smoothstep falloff
+                tex.SetPixel(x, y, new Color(1f, 1f, 1f, a));
+            }
+            tex.Apply(false, false);
+            int border = radius + pad + 2;
+            var sp = Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f), 100f, 0u,
+                SpriteMeshType.FullRect, new Vector4(border, border, border, border));
+            _shapeCache[key] = sp;
+            return sp;
+        }
+
+        // AA filled circle. Tint via Image.color.
+        public static Sprite Circle(int diameter = 128)
+        {
+            string key = "ci" + diameter;
+            if (_shapeCache.TryGetValue(key, out var cached) && cached != null) return cached;
+            var tex = new Texture2D(diameter, diameter, TextureFormat.RGBA32, false);
+            tex.wrapMode = TextureWrapMode.Clamp;
+            tex.filterMode = FilterMode.Bilinear;
+            float r = diameter * 0.5f - 1.5f;
+            float c = diameter * 0.5f;
+            for (int y = 0; y < diameter; y++)
+            for (int x = 0; x < diameter; x++)
+            {
+                float d = Mathf.Sqrt((x + 0.5f - c) * (x + 0.5f - c) + (y + 0.5f - c) * (y + 0.5f - c));
+                float a = Mathf.Clamp01(r - d + 0.75f);
+                tex.SetPixel(x, y, new Color(1f, 1f, 1f, a));
+            }
+            tex.Apply(false, false);
+            var sp = Sprite.Create(tex, new Rect(0, 0, diameter, diameter), new Vector2(0.5f, 0.5f), 100f, 0u, SpriteMeshType.FullRect);
+            _shapeCache[key] = sp;
+            return sp;
+        }
+
+        // AA circle ring (for the minimap's hairline frame).
+        public static Sprite Ring(int diameter, float thickness)
+        {
+            string key = "ri" + diameter + "_" + thickness.ToString("F1");
+            if (_shapeCache.TryGetValue(key, out var cached) && cached != null) return cached;
+            var tex = new Texture2D(diameter, diameter, TextureFormat.RGBA32, false);
+            tex.wrapMode = TextureWrapMode.Clamp;
+            tex.filterMode = FilterMode.Bilinear;
+            float r = diameter * 0.5f - thickness * 0.5f - 1.5f;
+            float c = diameter * 0.5f;
+            for (int y = 0; y < diameter; y++)
+            for (int x = 0; x < diameter; x++)
+            {
+                float d = Mathf.Sqrt((x + 0.5f - c) * (x + 0.5f - c) + (y + 0.5f - c) * (y + 0.5f - c));
+                float a = Mathf.Clamp01(0.75f - Mathf.Abs(d - r) + thickness * 0.5f);
+                tex.SetPixel(x, y, new Color(1f, 1f, 1f, a));
+            }
+            tex.Apply(false, false);
+            var sp = Sprite.Create(tex, new Rect(0, 0, diameter, diameter), new Vector2(0.5f, 0.5f), 100f, 0u, SpriteMeshType.FullRect);
+            _shapeCache[key] = sp;
+            return sp;
+        }
+
+        // ---------- High-level factories ----------
+
+        // Soft shadow behind a RectTransform (slightly larger, offset down).
+        public static Image AddShadow(RectTransform target, int cornerRadius = 18, int blur = 26, float alpha = 0.35f, float yOffset = -8f)
+        {
+            var go = NewImage("Shadow", target.parent, new Color(0f, 0f, 0f, alpha), false);
+            var img = go.GetComponent<Image>();
+            img.sprite = SoftShadow(cornerRadius, blur);
+            img.type = Image.Type.Sliced;
+            var rt = (RectTransform)go.transform;
+            rt.anchorMin = target.anchorMin; rt.anchorMax = target.anchorMax; rt.pivot = target.pivot;
+            rt.sizeDelta = target.sizeDelta + new Vector2(blur * 1.4f, blur * 1.4f);
+            rt.anchoredPosition = target.anchoredPosition + new Vector2(0f, yOffset);
+            go.transform.SetSiblingIndex(target.GetSiblingIndex());
+            return img;
+        }
+
+        // Rounded parchment panel: fill + hairline gold stroke. Returns the fill image.
+        public static Image MakeRoundedPanel(RectTransform rt, Color fill, int radius = 18, float strokeAlpha = 0.38f)
+        {
+            var img = rt.gameObject.GetComponent<Image>();
+            if (img == null) img = rt.gameObject.AddComponent<Image>();
+            img.sprite = RoundedRect(radius);
+            img.type = Image.Type.Sliced;
+            img.color = fill;
+
+            var stroke = NewImage("Hairline", rt, new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, strokeAlpha), false);
+            var simg = stroke.GetComponent<Image>();
+            simg.sprite = RoundedOutline(radius, 2f);
+            simg.type = Image.Type.Sliced;
+            Stretch((RectTransform)stroke.transform);
+            return img;
+        }
+
+        // Dark "ink glass" HUD pill with hairline. Returns the root rect.
+        public static RectTransform MakePill(string name, Transform parent, Vector2 size, out Image fill, int radius = -1)
+        {
+            if (radius < 0) radius = Mathf.RoundToInt(size.y * 0.5f);
+            var rt = NewRect(name, parent);
+            rt.sizeDelta = size;
+            fill = rt.gameObject.AddComponent<Image>();
+            fill.sprite = RoundedRect(radius);
+            fill.type = Image.Type.Sliced;
+            fill.color = new Color(0.07f, 0.06f, 0.045f, 0.72f);
+            fill.raycastTarget = false;
+
+            var stroke = NewImage("Hairline", rt, new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0.30f), false);
+            var simg = stroke.GetComponent<Image>();
+            simg.sprite = RoundedOutline(radius, 1.6f);
+            simg.type = Image.Type.Sliced;
+            Stretch((RectTransform)stroke.transform);
+            return rt;
+        }
+
         private static Color SampleStops(GradientStop[] stops, float t)
         {
             if (stops.Length == 1) return stops[0].C;

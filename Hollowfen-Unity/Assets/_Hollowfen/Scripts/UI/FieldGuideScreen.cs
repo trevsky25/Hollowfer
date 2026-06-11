@@ -55,9 +55,8 @@ namespace Hollowfen.UI
             var title = UICanvasUtil.NewHeading("Title", header, "Field Guide", 92f, HeadingColor, FontStyles.Normal, TextAlignmentOptions.TopLeft);
             UICanvasUtil.SetRect(title.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, 1f), new Vector2(0f, 100f), Vector2.zero);
 
-            int n = _database != null ? _database.Count : 0;
-            var counter = UICanvasUtil.NewBody("Counter", header, $"{n} of {n} species recorded. Click a thumbnail to see ID features, habitat, and lookalikes.", 20f, SubtleColor, FontStyles.Italic);
-            UICanvasUtil.SetRect(counter.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, 1f), new Vector2(0f, 28f), new Vector2(0f, -106f));
+            _counterText = UICanvasUtil.NewBody("Counter", header, BuildCounterCopy(), 20f, SubtleColor, FontStyles.Italic);
+            UICanvasUtil.SetRect(_counterText.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, 1f), new Vector2(0f, 28f), new Vector2(0f, -106f));
 
             var rule = UICanvasUtil.NewImage("Rule", header, new Color(GoldColor.r, GoldColor.g, GoldColor.b, 0.18f), false);
             UICanvasUtil.SetRect(rule.GetComponent<RectTransform>(), new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, 1f), new Vector2(0f, -148f));
@@ -109,6 +108,59 @@ namespace Hollowfen.UI
                 if (entry == null) continue;
                 var go = BuildCardCell(_gridContent, entry);
                 if (_firstCell == null) _firstCell = go;
+            }
+        }
+
+        // (cell, entry) pairs for discovery gating — refreshed every open.
+        private readonly System.Collections.Generic.List<(GameObject go, MushroomFieldGuideData entry)> _builtCells
+            = new System.Collections.Generic.List<(GameObject, MushroomFieldGuideData)>();
+        private TMP_Text _counterText;
+
+        private string BuildCounterCopy()
+        {
+            int n = _database != null ? _database.Count : 0;
+            int found = 0;
+            if (_database != null)
+                foreach (var e in _database.Entries)
+                    if (e != null && Hollowfen.Foraging.MushroomDiscovery.IsDiscovered(e.Id)) found++;
+            return $"{found} of {n} species recorded. Click a thumbnail to see ID features, habitat, and lookalikes.";
+        }
+
+        public override void OnOpen()
+        {
+            base.OnOpen();
+            RefreshLockStates();
+        }
+
+        // Web-parity '?' silhouette treatment for species Wren hasn't foraged yet.
+        private void RefreshLockStates()
+        {
+            if (_counterText != null) _counterText.text = BuildCounterCopy();
+            var unknownTint = new Color32(0xBB, 0xB1, 0x90, 0xFF);
+            foreach (var (go, entry) in _builtCells)
+            {
+                if (go == null || entry == null) continue;
+                bool locked = !Hollowfen.Foraging.MushroomDiscovery.IsDiscovered(entry.Id);
+
+                var thumb = go.transform.Find("Thumb");
+                if (thumb != null) thumb.GetComponent<Image>().color =
+                    locked ? new Color(0.10f, 0.09f, 0.08f, 1f) : Color.white;
+
+                var body = go.transform.Find("Body");
+                if (body == null) continue;
+                var nameT = body.Find("Name")?.GetComponent<TMP_Text>();
+                var latinT = body.Find("Latin")?.GetComponent<TMP_Text>();
+                var dot = body.Find("Dot")?.GetComponent<Image>();
+                var chipT = body.Find("EdibilityLabel")?.GetComponent<TMP_Text>();
+                if (nameT != null) nameT.text = locked ? "?" : entry.CommonName;
+                if (latinT != null) latinT.text = locked ? "Unknown specimen" : entry.LatinName;
+                var chipColor = HollowfenPalette.Edibility(entry.Edibility);
+                if (dot != null) dot.color = locked ? (Color)unknownTint : chipColor;
+                if (chipT != null)
+                {
+                    chipT.text = locked ? "UNKNOWN" : (entry.EdibilityLabel ?? "").ToUpperInvariant();
+                    chipT.color = locked ? (Color)unknownTint : chipColor;
+                }
             }
         }
 
@@ -187,11 +239,13 @@ namespace Hollowfen.UI
             var cell = go.AddComponent<MushroomCardCell>();
             cell.Bind(entry, OnCellClicked);
             btn.onClick.AddListener(cell.HandleClick);
+            _builtCells.Add((go, entry));
             return go;
         }
 
         private void OnCellClicked(MushroomFieldGuideData entry)
         {
+            if (!Hollowfen.Foraging.MushroomDiscovery.IsDiscovered(entry.Id)) return;
             if (_detailScreen != null) _detailScreen.SetEntry(entry);
             if (UIManager.Instance != null) UIManager.Instance.OpenScreen("mushroom-detail");
         }

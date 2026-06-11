@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ee8ab872fb8546dc970108625d8ee2d, type: 3}
+  m_Name: Quest_Act1_03_SearchMill
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Quests.QuestData
+  _id: searchMill
+  _displayNameId: quest.searchMill.name
+  _objectiveTextId: quest.searchMill.objective
+  _act: 1
+  _order: 3
+  _unlockStoryCardOnComplete: {fileID: 11400000, guid: 2492695286ba042c8a090352e2b87ce3, type: 2}
+  _nextQuest: {fileID: 11400000, guid: 73a0c523c6694c56a13dddda7ad870ec, type: 2}
+  _waypointLocation: {fileID: 11400000, guid: 68150875e462d46d993c04ae1b636395, type: 2}

@@ -60,8 +60,8 @@ namespace Hollowfen.UI
             var title = UICanvasUtil.NewHeading("Title", header, "Story", 92f, HeadingColor, FontStyles.Normal, TextAlignmentOptions.TopLeft);
             UICanvasUtil.SetRect(title.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, 1f), new Vector2(0f, 100f), Vector2.zero);
 
-            var counter = UICanvasUtil.NewBody("Counter", header, BuildCounterCopy(), 20f, SubtleColor, FontStyles.Italic);
-            UICanvasUtil.SetRect(counter.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, 1f), new Vector2(0f, 28f), new Vector2(0f, -106f));
+            _counterText = UICanvasUtil.NewBody("Counter", header, BuildCounterCopy(), 20f, SubtleColor, FontStyles.Italic);
+            UICanvasUtil.SetRect(_counterText.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, 1f), new Vector2(0f, 28f), new Vector2(0f, -106f));
 
             var headerRule = UICanvasUtil.NewImage("HeaderRule", header, new Color(GoldColor.r, GoldColor.g, GoldColor.b, 0.18f), false);
             UICanvasUtil.SetRect(headerRule.GetComponent<RectTransform>(), new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, 1f), new Vector2(0f, -148f));
@@ -108,6 +108,44 @@ namespace Hollowfen.UI
             fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
             _scrollContent = content;
+        }
+
+        // (cell, card) pairs for progression gating — refreshed every open.
+        private readonly List<(GameObject go, StoryCardData card)> _builtCells = new List<(GameObject, StoryCardData)>();
+        private TMP_Text _counterText;
+
+        public override void OnOpen()
+        {
+            base.OnOpen();
+            RefreshLockStates();
+        }
+
+        // Web-parity "Locked Memory" treatment: darkened art, masked copy, click disabled.
+        private void RefreshLockStates()
+        {
+            if (_counterText != null) _counterText.text = BuildCounterCopy();
+            foreach (var (go, card) in _builtCells)
+            {
+                if (go == null || card == null) continue;
+                bool locked = !Hollowfen.Quests.QuestManager.IsStoryCardUnlocked(card.Id);
+
+                var thumb = go.transform.Find("Thumb");
+                if (thumb != null) thumb.GetComponent<Image>().color =
+                    locked ? new Color(0.14f, 0.12f, 0.10f, 1f) : Color.white;
+
+                var body = go.transform.Find("Body");
+                if (body == null) continue;
+                var eyebrow = body.Find("Eyebrow")?.GetComponent<TMP_Text>();
+                var title = body.Find("Title")?.GetComponent<TMP_Text>();
+                var subtitle = body.Find("Subtitle")?.GetComponent<TMP_Text>();
+                if (eyebrow != null)
+                {
+                    eyebrow.text = locked ? "LOCKED MEMORY" : (card.Scene ?? "").ToUpperInvariant();
+                    eyebrow.color = locked ? FaintColor : GoldColor;
+                }
+                if (title != null) title.text = locked ? "· · ·" : card.Title;
+                if (subtitle != null) subtitle.text = locked ? "A memory yet to be made." : card.Subtitle;
+            }
         }
 
         private void PopulateCards()
@@ -251,11 +289,13 @@ namespace Hollowfen.UI
             var cell = go.AddComponent<StoryCardCell>();
             cell.Bind(card, OnCardClicked);
             btn.onClick.AddListener(cell.HandleClick);
+            _builtCells.Add((go, card));
             return go;
         }
 
         private void OnCardClicked(StoryCardData card)
         {
+            if (!Hollowfen.Quests.QuestManager.IsStoryCardUnlocked(card.Id)) return;
             if (_detailScreen != null) _detailScreen.SetCard(card, _database);
             if (UIManager.Instance != null) UIManager.Instance.OpenScreen("story-detail");
         }
@@ -276,7 +316,11 @@ namespace Hollowfen.UI
         private string BuildCounterCopy()
         {
             int n = _database != null ? _database.Count : 0;
-            return $"{n} of {n} memories recorded. Four acts and four possible endings — Hollowfen as Wren lives it.";
+            int unlocked = 0;
+            if (_database != null)
+                foreach (var c in _database.Cards)
+                    if (c != null && Hollowfen.Quests.QuestManager.IsStoryCardUnlocked(c.Id)) unlocked++;
+            return $"{unlocked} of {n} memories recorded. Four acts and four possible endings — Hollowfen as Wren lives it.";
         }
     }
 }

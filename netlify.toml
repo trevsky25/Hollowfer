@@ -1,0 +1,20 @@
+[build]
+  # Build with Vite, then strip 3D-game-only assets out of dist/ so the
+  # deployed bundle is just the story book.
+  command = "npm run build:storybook"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Story book is the deployed homepage. Anyone hitting / gets story.html.
+[[redirects]]
+  from = "/"
+  to = "/story.html"
+  status = 200
+
+# Keep deep links working if someone bookmarks /story or /story.html
+[[redirects]]
+  from = "/story"
+  to = "/story.html"
+  status = 200

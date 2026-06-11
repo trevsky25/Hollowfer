@@ -51,10 +51,7 @@ namespace Hollowfen.UI
 
         public override void OnOpen()
         {
-            // Continue stays interactable while we don't yet have real save state;
-            // it doubles as the "enter gameplay" path for testing the cross-scene
-            // pause flow. Re-enable HasAnySave gating once real save data lands.
-            if (_continueButton != null) _continueButton.interactable = true;
+            if (_continueButton != null) _continueButton.interactable = HasAnySave();
         }
 
         private const string GameplaySceneName = "Scene_Hollowfen";
@@ -68,7 +65,10 @@ namespace Hollowfen.UI
 
         private void OnContinue()
         {
-            Debug.Log("[MainMenu] Continue → loading gameplay scene");
+            int slot = Hollowfen.Save.SaveCoordinator.MostRecentSlot();
+            if (slot < 0) return;
+            Debug.Log($"[MainMenu] Continue → loading slot {slot}");
+            Hollowfen.Save.SaveCoordinator.LoadSlot(slot);
             if (UIManager.Instance != null)
                 UIManager.Instance.LoadSceneAndOpen(GameplaySceneName);
         }

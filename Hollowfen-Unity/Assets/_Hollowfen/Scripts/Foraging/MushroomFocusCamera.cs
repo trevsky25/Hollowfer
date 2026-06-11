@@ -35,6 +35,12 @@ namespace Hollowfen.Foraging
         [SerializeField, Tooltip("Cinemachine blend time (seconds) overrides the brain's default for this transition.")]
         private float _blendSeconds = 0.55f;
 
+        [Header("Engage stability")]
+        [SerializeField, Tooltip("Focus must hold this long before the zoom engages — kills walk-past flicker.")]
+        private float _engageDelaySeconds = 0.45f;
+        [SerializeField, Tooltip("Player must be moving slower than this (m/s) for the zoom to engage.")]
+        private float _maxEngageSpeed = 1.6f;
+
         [Header("Manual orbit while zoomed")]
         [SerializeField, Tooltip("Right-stick yaw rotation: degrees per second at full deflection.")]
         private float _gamepadYawSpeed = 90f;
@@ -54,6 +60,13 @@ namespace Hollowfen.Foraging
         private float _orbitYaw;
         private float _orbitPitch;
         private InputActions _input;
+
+        // Pending focus waiting out the stability gate before the zoom engages.
+        private MushroomNode _pendingNode;
+        private float _pendingSince;
+        private Transform _player;
+        private Vector3 _lastPlayerPos;
+        private float _trackedSpeed;
 
         private void Awake()
         {
@@ -110,27 +123,67 @@ namespace Hollowfen.Foraging
 
         private void HandleFocusChanged(IInteractable focus)
         {
-            // Cast to MonoBehaviour to grab the transform — every concrete IInteractable today is a MB.
-            var mb = focus as MonoBehaviour;
-            if (mb == null)
+            // The discovery shot is for mushrooms only. NPCs, doors, and props keep the
+            // gameplay camera — dialogue gets its own cinematic treatment.
+            var node = focus as MushroomNode;
+            if (node == null)
             {
+                _pendingNode = null;
                 ClearFocus();
                 return;
             }
-            _focusedTarget = mb.transform;
+            if (_focusedTarget == node.transform) return; // already framed
+            // Don't zoom yet — arm the stability gate; Update() engages once the player settles.
+            _pendingNode = node;
+            _pendingSince = Time.unscaledTime;
+        }
+
+        private void Engage(MushroomNode node)
+        {
+            _pendingNode = null;
+            _focusedTarget = node.transform;
             _cam.Follow = _focusedTarget;
             _cam.LookAt = _focusedTarget;
+
+            // Frame from the player's side of the mushroom so the blend stays short and the
+            // camera never crosses through walls or the player to reach a world-fixed angle.
+            Vector3 toPlayer = _player != null
+                ? _player.position - _focusedTarget.position
+                : -_focusedTarget.forward;
+            toPlayer.y = 0f;
+            if (toPlayer.sqrMagnitude < 0.001f) toPlayer = Vector3.back;
+            toPlayer.Normalize();
+            Vector3 side = Vector3.Cross(Vector3.up, toPlayer);
+            _baseOffset = toPlayer * 1.15f + side * 0.45f + Vector3.up * 0.55f;
+            if (_follow != null) _follow.FollowOffset = _baseOffset;
+
             _cam.Priority = _activePriority;
-            // Reset orbit so each new target starts from the configured hero shot
             _orbitYaw = 0f;
             _orbitPitch = 0f;
-            if (_follow != null) _follow.FollowOffset = _baseOffset;
         }
 
         private void ClearFocus()
         {
             _focusedTarget = null;
             if (_cam != null) _cam.Priority = _idlePriority;
+        }
+
+        // Displacement-based speed — CharacterController.velocity only reflects the most recent
+        // Move() call, which the idle controller overwrites each frame, so it can read ~0 mid-run.
+        private void TrackPlayerSpeed()
+        {
+            if (_player == null)
+            {
+                var go = GameObject.FindGameObjectWithTag("Player");
+                if (go == null) return;
+                _player = go.transform;
+                _lastPlayerPos = _player.position;
+            }
+            float dt = Time.deltaTime;
+            if (dt <= 0.0001f) return; // paused — keep the last reading
+            float instant = (_player.position - _lastPlayerPos).magnitude / dt;
+            _trackedSpeed = Mathf.Lerp(_trackedSpeed, instant, 0.5f);
+            _lastPlayerPos = _player.position;
         }
 
         // Public version for the harvest cinematic — clears the cam target before the mushroom
@@ -145,6 +198,25 @@ namespace Hollowfen.Foraging
         // Inactive when no focus, when InspectScreen is open, or when InventoryScreen is open.
         private void Update()
         {
+            TrackPlayerSpeed();
+
+            // Engage the armed zoom once focus has held steady and the player has settled —
+            // or immediately if they committed by opening the inspect screen.
+            if (_pendingNode != null)
+            {
+                if (!_pendingNode.gameObject.activeInHierarchy)
+                {
+                    _pendingNode = null;
+                }
+                else
+                {
+                    bool inspectOpen = InspectScreen.Instance != null && InspectScreen.Instance.IsOpen;
+                    bool stable = Time.unscaledTime - _pendingSince >= _engageDelaySeconds;
+                    bool settled = _trackedSpeed <= _maxEngageSpeed;
+                    if (inspectOpen || (stable && settled)) Engage(_pendingNode);
+                }
+            }
+
             if (_focusedTarget == null || _follow == null) return;
             if (InspectScreen.Instance != null && InspectScreen.Instance.IsOpen) return;
             if (InventoryScreen.Instance != null && InventoryScreen.Instance.IsOpen) return;

@@ -98,12 +98,22 @@ namespace Hollowfen.UI
             }
         }
 
+        private const string GameplaySceneName = "Scene_Hollowfen";
+
         private void OnSlotSelected(int slot)
         {
             if (SaveManager.SlotHasData(slot))
+            {
                 Debug.Log($"[SaveSlot] Load slot {slot}");
+                SaveCoordinator.LoadSlot(slot);
+            }
             else
+            {
                 Debug.Log($"[SaveSlot] Start new game in slot {slot}");
+                SaveCoordinator.StartNewGame(slot);
+            }
+            if (UIManager.Instance != null)
+                UIManager.Instance.LoadSceneAndOpen(GameplaySceneName);
         }
 
         private void OnDeleteInput(InputAction.CallbackContext ctx)

@@ -40,6 +40,21 @@ namespace Hollowfen
             { "quest.arrive.objective",  "Walk the road into Hollowfen." },
             { "quest.speakBram.name",       "The Crooked Pintle" },
             { "quest.speakBram.objective",  "Speak with Bram outside the inn." },
+            { "quest.searchMill.name",      "Your Father's Mill" },
+            { "quest.searchMill.objective", "Enter the mill and search the house." },
+            { "quest.findJournal.name",      "The Hidden Journal" },
+            { "quest.findJournal.objective", "Find Tobin's mushroom journal." },
+            { "quest.firstForage.name",      "The First Forage" },
+            { "quest.firstForage.objective", "Gather the three safe basics and the gold-stemmed find at the Old Wood edge." },
+            { "quest.firstSale.name",      "Marra's Kitchen" },
+            { "quest.firstSale.objective", "Bring your first basket to The Crooked Pintle and see if Hollowfen still has an appetite." },
+            { "quest.meetAlmy.name",      "A Knock at the Door" },
+            { "quest.meetAlmy.objective", "Someone is waiting at the mill door." },
+
+            // Interaction verbs (doors, props)
+            { "prompt.door.unlock",  "Unlock" },
+            { "prompt.examine.verb", "Examine" },
+            { "prompt.journal.read", "Read" },
 
             // Inspect screen
             { "inspect.unknown.eyebrow", "UNKNOWN" },
@@ -51,6 +66,13 @@ namespace Hollowfen
             // Inventory screen
             { "inventory.empty",     "Your pouch is empty. Forage some mushrooms in the woods." },
             { "inventory.btn.close", "Close" },
+            { "inventory.keepsakes", "KEEPSAKES" },
+
+            // Key items
+            { "toast.received",             "Received" },
+            { "item.mill_key.name",         "Mill Key" },
+            { "item.fathers_journal.name",  "Father's Journal" },
+            { "item.sealed_letter.name",    "Sealed Letter" },
 
             // Map locations (POIs)
             { "loc.fathers_mill.name",   "Father's Mill" },

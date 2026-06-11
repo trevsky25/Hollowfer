@@ -46,6 +46,7 @@ namespace Hollowfen.Foraging
         private TMP_Text _selectedCount;
         private Button _closeBtn;
         private TMP_Text _closeGlyph;
+        private TMP_Text _keepsakesLabel;
         private GameObject _lastSelected;
 
         private readonly List<Cell> _cells = new List<Cell>();
@@ -335,6 +336,8 @@ namespace Hollowfen.Foraging
             _emptyState.SetActive(distinct == 0);
             _populatedState.SetActive(distinct > 0);
 
+            RefreshKeepsakes();
+
             if (distinct == 0)
             {
                 if (MushroomPreviewer.Instance != null) MushroomPreviewer.Instance.Clear();
@@ -361,6 +364,30 @@ namespace Hollowfen.Foraging
                 _lastSelected = _cells[0].Button.gameObject;
                 SelectCell(0);
             }
+        }
+
+        // Bottom-left strip of narrative key items ("KEEPSAKES — Mill Key · Father's Journal").
+        // Lives on the panel (not _populatedState) so it shows even with an empty mushroom pouch.
+        private void RefreshKeepsakes()
+        {
+            if (_keepsakesLabel == null) return;
+            var ids = Items.KeyItems.All;
+            if (ids.Count == 0)
+            {
+                _keepsakesLabel.gameObject.SetActive(false);
+                return;
+            }
+            _keepsakesLabel.gameObject.SetActive(true);
+            var names = new System.Text.StringBuilder();
+            names.Append("<color=#9a7b2f>").Append(Hollowfen.Localization.Get("inventory.keepsakes")).Append("</color>   ");
+            bool first = true;
+            foreach (var id in ids)
+            {
+                if (!first) names.Append("   ·   ");
+                names.Append(Hollowfen.Localization.Get(id + ".name"));
+                first = false;
+            }
+            _keepsakesLabel.text = names.ToString();
         }
 
         // Auto navigation gets flaky for grid cells inside a clipped ScrollRect — wire explicit grid neighbors.
@@ -620,6 +647,17 @@ namespace Hollowfen.Foraging
             _populatedState = new GameObject("PopulatedState", typeof(RectTransform));
             _populatedState.transform.SetParent(panel.transform, false);
             UICanvasUtil.Stretch((RectTransform)_populatedState.transform);
+
+            // Keepsakes strip — bottom-left, panel-level so it shows even with an empty pouch.
+            _keepsakesLabel = UICanvasUtil.NewBody("Keepsakes", panel.transform, "", 17f,
+                BodyInk, TMPro.FontStyles.Italic, TMPro.TextAlignmentOptions.BottomLeft);
+            _keepsakesLabel.richText = true;
+            var kRT = _keepsakesLabel.rectTransform;
+            kRT.anchorMin = new Vector2(0f, 0f); kRT.anchorMax = new Vector2(0f, 0f);
+            kRT.pivot = new Vector2(0f, 0f);
+            kRT.sizeDelta = new Vector2(560f, 24f);
+            kRT.anchoredPosition = new Vector2(56f, 36f);
+            _keepsakesLabel.gameObject.SetActive(false);
 
             // === LEFT: GRID with ScrollRect ===
             const float gridLeft = 56f;

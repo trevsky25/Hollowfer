@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00c9c9bb92b3b44fb84ca335c48467d8, type: 3}
+  m_Name: Dialogue_Act1_MarraKitchen_FirstPayment
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Dialogue.DialogueData
+  _id: act1.marra_kitchen.first_payment
+  _lines:
+  - speaker: Bram
+    text: Three silver, two copper.
+    isCloseup: 0
+  - speaker: Wren
+    text: That much?
+    isCloseup: 0
+  - speaker: Bram
+    text: First proper bowl we've sold in a month.
+    isCloseup: 1
+  - speaker: Marra
+    text: Don't look grateful. Bring better ones next time.
+    isCloseup: 0
+  - speaker: Wren
+    text: That is gratitude, from you.
+    isCloseup: 0
+  - speaker: Marra
+    text: Careful.
+    isCloseup: 0
+  _unlockStoryCard: {fileID: 11400000, guid: cf19cd8806b76499fbcad7f7d47f272b, type: 2}
+  _completeQuest: {fileID: 11400000, guid: 8af58c6703004c4392bc2c30a4a102c1, type: 2}
+  _giveItemId:
+  _grantCoinsCopper: 38
+  _sellsForageBasket: 1
+  _villageHopeDelta: 5
+  _knowledgeDelta: 0
+  _relationshipNpcIds:
+  - bram
+  - marra
+  _relationshipDeltas:
+  - 10
+  - 5
+  _nextDialog: {fileID: 0}

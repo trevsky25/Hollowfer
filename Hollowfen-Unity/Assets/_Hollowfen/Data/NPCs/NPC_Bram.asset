@@ -18,4 +18,7 @@ MonoBehaviour:
   - activeQuest: {fileID: 11400000, guid: 233a00ead1da24556a276c9f50260699, type: 2}
     requiresQuestCompleted: {fileID: 0}
     dialog: {fileID: 11400000, guid: 326edced24f414e5ea8d715c29d9859f, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 11400000, guid: 233a00ead1da24556a276c9f50260699, type: 2}
+    dialog: {fileID: 11400000, guid: c0cf675b41b64327adcdc005614923b6, type: 2}
   _repeatDialog: {fileID: 0}

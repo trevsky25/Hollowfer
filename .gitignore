@@ -47,3 +47,10 @@ Hollowfen-Unity/*.unitypackage
 # Claude Code + Playwright local state
 .claude/
 .playwright-cli/
+
+# Asset Store packs — re-importable purchases, too large for plain git (15.6GB).
+# Re-install from the Asset Store on a fresh clone; GUIDs are stable so scene refs survive.
+Hollowfen-Unity/Assets/Magic Pig Games (Infinity PBR)/
+Hollowfen-Unity/Assets/Magic Pig Games (Infinity PBR).meta
+Hollowfen-Unity/Assets/NatureManufacture Assets/
+Hollowfen-Unity/Assets/NatureManufacture Assets.meta

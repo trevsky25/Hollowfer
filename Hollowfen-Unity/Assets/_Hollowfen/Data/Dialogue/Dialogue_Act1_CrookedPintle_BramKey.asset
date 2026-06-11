@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00c9c9bb92b3b44fb84ca335c48467d8, type: 3}
+  m_Name: Dialogue_Act1_CrookedPintle_BramKey
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Dialogue.DialogueData
+  _id: act1.crooked_pintle.bram.key
+  _lines:
+  - speaker: Bram
+    text: Marra's in back. She'll want to see you. Only she won't say so in a way
+      you'll enjoy.
+    isCloseup: 0
+  - speaker: Wren
+    text: That sounds like Marra.
+    isCloseup: 0
+  - speaker: Bram
+    text: Your da left this with me when he took poorly.
+    isCloseup: 0
+  - speaker: Wren
+    text: He knew?
+    isCloseup: 0
+  - speaker: Bram
+    text: 'He knew enough.
+
+
+      You''ll find the mill in a state. I went by when I could.
+
+
+      Wheel hasn''t turned since the Wend went and changed its mind about where it
+      was going.'
+    isCloseup: 0
+  - speaker: Wren
+    text: Three winters ago?
+    isCloseup: 0
+  - speaker: Bram
+    text: Aye.
+    isCloseup: 0
+  - speaker: Wren
+    text: Father wrote that the lower fields flooded.
+    isCloseup: 0
+  - speaker: Bram
+    text: 'He would have written it tidy.
+
+
+      He was a good man, your da.'
+    isCloseup: 0
+  - speaker: Wren
+    text: That sounds like him.
+    isCloseup: 0
+  - speaker: Bram
+    text: I'm sorry, Wren.
+    isCloseup: 1
+  - speaker: Wren
+    text: So am I.
+    isCloseup: 1
+  _unlockStoryCard: {fileID: 11400000, guid: 4d3b302c8f5404f1e9b2d48978d76977, type: 2}
+  _completeQuest: {fileID: 11400000, guid: 233a00ead1da24556a276c9f50260699, type: 2}
+  _giveItemId: item.mill_key
+  _nextDialog: {fileID: 11400000, guid: c0cf675b41b64327adcdc005614923b6, type: 2}

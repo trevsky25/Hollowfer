@@ -149,10 +149,12 @@ namespace Hollowfen.UI
             _card.sizeDelta = _cardSize;
             _card.anchoredPosition = new Vector2(_cardSize.x + 80f, _anchoredY); // off-screen + configured Y
 
-            // Parchment background
+            // Rounded parchment background with soft shadow
+            UICanvasUtil.AddShadow(_card, 18, 24, 0.38f, -7f);
             var bg = cardGO.AddComponent<Image>();
-            if (_parchmentSprite != null) { bg.sprite = _parchmentSprite; bg.color = Color.white; }
-            else bg.color = HollowfenPalette.Parchment;
+            bg.sprite = UICanvasUtil.RoundedRect(16);
+            bg.type = Image.Type.Sliced;
+            bg.color = HollowfenPalette.Parchment;
 
             // Subtle vignette overlay on the parchment (sells the texture)
             var vign = UICanvasUtil.NewImage("Vignette", _card, Color.white, false);
@@ -165,9 +167,12 @@ namespace Hollowfen.UI
                 new UICanvasUtil.GradientStop(1.00f, new Color(0f, 0f, 0f, 0.20f)),
             }, 128);
 
-            // Double-rule frame
-            BuildFrame(_card, 6f, HollowfenPalette.GoldFaint, 1.1f);
-            BuildFrame(_card, 12f, new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0.22f), 1f);
+            // Hairline stroke
+            var stroke = UICanvasUtil.NewImage("Hairline", _card, new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0.4f), false);
+            var strokeImg = stroke.GetComponent<Image>();
+            strokeImg.sprite = UICanvasUtil.RoundedOutline(16, 1.6f);
+            strokeImg.type = Image.Type.Sliced;
+            UICanvasUtil.Stretch((RectTransform)stroke.transform);
 
             // "NEW ENTRY" eyebrow strip top-right
             _newEntryTag = UICanvasUtil.NewEyebrow("NewEntry", _card, "NEW ENTRY", 10f,

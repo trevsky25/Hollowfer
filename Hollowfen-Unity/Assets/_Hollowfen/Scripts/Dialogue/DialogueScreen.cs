@@ -32,6 +32,7 @@ namespace Hollowfen.Dialogue
             { "Bram",  ParseColor("#7a4a1a") },
             { "Wren",  ParseColor("#5b3a6a") },
             { "Marra", ParseColor("#8a3a2a") },
+            { "Almy",  ParseColor("#4a6b3a") },
         };
         private static readonly Color DefaultSpeakerColor = ParseColor("#3a2810");
 
@@ -74,6 +75,7 @@ namespace Hollowfen.Dialogue
             _previousTimeScale = Time.timeScale;
             Time.timeScale = 0f;
             PlayerInteractor.Suspended = true;
+            SetHudVisible(false);
             CursorVisible(true);
             ShowCurrentLine();
         }
@@ -86,6 +88,7 @@ namespace Hollowfen.Dialogue
             SetActiveSilent(false);
             Time.timeScale = _previousTimeScale;
             PlayerInteractor.Suspended = false;
+            SetHudVisible(true);
             CursorVisible(false);
             _currentDialog = null;
         }
@@ -118,7 +121,15 @@ namespace Hollowfen.Dialogue
             if (_currentDialog == null || _currentLineIndex >= _currentDialog.Lines.Length) { FinishDialog(); return; }
             var line = _currentDialog.Lines[_currentLineIndex];
             _speakerLabel.text = (line.speaker ?? "").ToUpperInvariant();
-            _speakerLabel.color = SpeakerColors.TryGetValue(line.speaker ?? "", out var c) ? c : DefaultSpeakerColor;
+            // Plate takes the speaker's ink as a tint; label stays warm cream for contrast.
+            var speakerInk = SpeakerColors.TryGetValue(line.speaker ?? "", out var c) ? c : DefaultSpeakerColor;
+            if (_namePlateFill != null)
+                _namePlateFill.color = Color.Lerp(new Color(0.13f, 0.10f, 0.06f, 0.97f), speakerInk, 0.45f);
+            if (_namePlateRT != null)
+            {
+                float w = Mathf.Max(120f, _speakerLabel.GetPreferredValues(_speakerLabel.text).x + 56f);
+                _namePlateRT.sizeDelta = new Vector2(w, 40f);
+            }
             _bodyText.text = "";
             _lineFullyShown = false;
             if (_typewriterCo != null) StopCoroutine(_typewriterCo);
@@ -159,10 +170,22 @@ namespace Hollowfen.Dialogue
 
             // Fire outcomes. Order: items first, then card unlock, then quest complete, then chain.
             if (!string.IsNullOrEmpty(done.GiveItemId))
+                Items.KeyItems.Grant(done.GiveItemId);
+
+            if (done.SellsForageBasket)
+                InventoryRuntime.RemoveAll();
+
+            if (done.GrantCoinsCopper > 0)
+                Items.CoinPurse.Add(done.GrantCoinsCopper);
+
+            // Score deltas (story.md relationship tables)
+            if (done.VillageHopeDelta != 0) GameScores.AddVillageHope(done.VillageHopeDelta);
+            if (done.KnowledgeDelta != 0) GameScores.AddKnowledge(done.KnowledgeDelta);
+            if (done.RelationshipNpcIds != null && done.RelationshipDeltas != null)
             {
-                // Inventory hook lands later; for now log and route through GameEvents so existing
-                // systems can pick it up.
-                GameEvents.TriggerAchievement("ITEM_GIVEN_" + done.GiveItemId.ToUpperInvariant());
+                int n = Mathf.Min(done.RelationshipNpcIds.Length, done.RelationshipDeltas.Length);
+                for (int i = 0; i < n; i++)
+                    GameScores.AddRelationship(done.RelationshipNpcIds[i], done.RelationshipDeltas[i]);
             }
 
             if (done.UnlockStoryCard != null)
@@ -181,6 +204,20 @@ namespace Hollowfen.Dialogue
             else
             {
                 Close();
+            }
+        }
+
+        // Cinematic frame: the gameplay HUD steps aside while a conversation plays.
+        private static void SetHudVisible(bool visible)
+        {
+            string[] hudRoots = { "_HUDCanvas", "_MiniMapCanvas" };
+            foreach (var name in hudRoots)
+            {
+                var go = GameObject.Find(name);
+                if (go == null) continue;
+                var cg = go.GetComponent<CanvasGroup>();
+                if (cg == null) cg = go.AddComponent<CanvasGroup>();
+                cg.alpha = visible ? 1f : 0f;
             }
         }
 
@@ -203,6 +240,9 @@ namespace Hollowfen.Dialogue
 
         // ----------------- UI BUILDER -----------------
 
+        private Image _namePlateFill;
+        private RectTransform _namePlateRT;
+
         private void BuildIfNeeded()
         {
             if (_built) return;
@@ -214,62 +254,84 @@ namespace Hollowfen.Dialogue
             for (int i = transform.childCount - 1; i >= 0; i--)
                 DestroyImmediate(transform.GetChild(i).gameObject);
 
-            // Letterbox bars top + bottom (subtle, no full scrim — keeps game world readable behind)
-            var top = UICanvasUtil.NewImage("Letterbox.Top", canvasRT, new Color(0f, 0f, 0f, 0.55f), true);
+            // Cinematic letterbox bars — solid enough to read as a deliberate frame.
+            var top = UICanvasUtil.NewImage("Letterbox.Top", canvasRT, new Color(0.02f, 0.02f, 0.015f, 0.85f), true);
             var tRT = (RectTransform)top.transform;
             tRT.anchorMin = new Vector2(0f, 1f); tRT.anchorMax = new Vector2(1f, 1f);
             tRT.pivot = new Vector2(0.5f, 1f);
-            tRT.sizeDelta = new Vector2(0f, 90f);
+            tRT.sizeDelta = new Vector2(0f, 110f);
             tRT.anchoredPosition = Vector2.zero;
 
-            var bot = UICanvasUtil.NewImage("Letterbox.Bot", canvasRT, new Color(0f, 0f, 0f, 0.55f), false);
+            var bot = UICanvasUtil.NewImage("Letterbox.Bot", canvasRT, new Color(0.02f, 0.02f, 0.015f, 0.85f), false);
             var bRT = (RectTransform)bot.transform;
             bRT.anchorMin = new Vector2(0f, 0f); bRT.anchorMax = new Vector2(1f, 0f);
             bRT.pivot = new Vector2(0.5f, 0f);
-            bRT.sizeDelta = new Vector2(0f, 90f);
+            bRT.sizeDelta = new Vector2(0f, 110f);
             bRT.anchoredPosition = Vector2.zero;
 
-            // Parchment panel anchored to BOTTOM of the canvas (above the bottom letterbox)
+            // Rounded parchment panel above the bottom bar, soft shadow, hairline stroke.
             var panel = new GameObject("DialoguePanel", typeof(RectTransform));
             panel.transform.SetParent(canvasRT, false);
-            var panelImg = panel.AddComponent<Image>();
-            if (_parchmentSprite != null) { panelImg.sprite = _parchmentSprite; panelImg.color = Color.white; }
-            else panelImg.color = HollowfenPalette.Parchment;
             var pRT = (RectTransform)panel.transform;
             pRT.anchorMin = new Vector2(0.5f, 0f); pRT.anchorMax = new Vector2(0.5f, 0f);
             pRT.pivot = new Vector2(0.5f, 0f);
-            pRT.sizeDelta = new Vector2(1600f, _panelHeight);
-            pRT.anchoredPosition = new Vector2(0f, _panelMargin);
+            pRT.sizeDelta = new Vector2(1240f, 230f);
+            pRT.anchoredPosition = new Vector2(0f, 134f);
 
-            // Thin gold frame
-            BuildFrame(pRT, 10f, HollowfenPalette.GoldFaint, 1.2f);
-            BuildFrame(pRT, 18f, new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0.22f), 1f);
+            UICanvasUtil.AddShadow(pRT, 20, 30, 0.4f, -8f);
+            var panelImg = UICanvasUtil.MakeRoundedPanel(pRT, HollowfenPalette.Parchment, 18, 0.36f);
+            if (_parchmentSprite != null)
+            {
+                // Parchment texture wash inside the rounded shape.
+                var wash = UICanvasUtil.NewImage("ParchmentWash", pRT, new Color(1f, 1f, 1f, 0.5f), false);
+                var washImg = wash.GetComponent<Image>();
+                washImg.sprite = _parchmentSprite;
+                washImg.type = Image.Type.Simple;
+                UICanvasUtil.Stretch((RectTransform)wash.transform);
+                wash.transform.SetSiblingIndex(0);
+            }
 
-            // Speaker eyebrow (top-left, gold-ish accent color overridden per speaker)
-            _speakerLabel = UICanvasUtil.NewEyebrow("Speaker", pRT, "", 14f, HollowfenPalette.Gold, TextAlignmentOptions.TopLeft);
+            // Speaker name plate — small ink tab riding the panel's top-left edge.
+            _namePlateRT = UICanvasUtil.NewRect("NamePlate", pRT);
+            _namePlateRT.anchorMin = new Vector2(0f, 1f);
+            _namePlateRT.anchorMax = new Vector2(0f, 1f);
+            _namePlateRT.pivot = new Vector2(0f, 0.5f);
+            _namePlateRT.sizeDelta = new Vector2(170f, 40f);
+            _namePlateRT.anchoredPosition = new Vector2(42f, 0f);
+            _namePlateFill = _namePlateRT.gameObject.AddComponent<Image>();
+            _namePlateFill.sprite = UICanvasUtil.RoundedRect(11);
+            _namePlateFill.type = Image.Type.Sliced;
+            _namePlateFill.color = new Color(0.16f, 0.12f, 0.07f, 0.97f);
+            _namePlateFill.raycastTarget = false;
+            var plateStroke = UICanvasUtil.NewImage("Hairline", _namePlateRT, new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0.5f), false);
+            var psImg = plateStroke.GetComponent<Image>();
+            psImg.sprite = UICanvasUtil.RoundedOutline(11, 1.6f);
+            psImg.type = Image.Type.Sliced;
+            UICanvasUtil.Stretch((RectTransform)plateStroke.transform);
+
+            _speakerLabel = UICanvasUtil.NewEyebrow("Speaker", _namePlateRT, "", 14f, HollowfenPalette.GoldGlow, TextAlignmentOptions.Center);
             _speakerLabel.fontStyle = FontStyles.Bold;
-            var slRT = _speakerLabel.rectTransform;
-            slRT.anchorMin = new Vector2(0f, 1f); slRT.anchorMax = new Vector2(1f, 1f);
-            slRT.pivot = new Vector2(0.5f, 1f);
-            slRT.sizeDelta = new Vector2(-80f, 22f);
-            slRT.anchoredPosition = new Vector2(0f, -34f);
+            UICanvasUtil.Stretch(_speakerLabel.rectTransform);
 
-            // Body text (serif italic dialogue body in ink color)
-            _bodyText = UICanvasUtil.NewBody("Body", pRT, "", 26f, HollowfenPalette.InkDeep, FontStyles.Italic, TextAlignmentOptions.TopLeft);
+            // Body — roomy serif italic, vertically centred in the panel.
+            _bodyText = UICanvasUtil.NewBody("Body", pRT, "", 27f, HollowfenPalette.InkDeep, FontStyles.Italic, TextAlignmentOptions.TopLeft);
             _bodyText.textWrappingMode = TextWrappingModes.Normal;
+            _bodyText.lineSpacing = 8f;
             var btRT = _bodyText.rectTransform;
-            btRT.anchorMin = new Vector2(0f, 1f); btRT.anchorMax = new Vector2(1f, 1f);
-            btRT.pivot = new Vector2(0.5f, 1f);
-            btRT.sizeDelta = new Vector2(-80f, _panelHeight - 110f);
-            btRT.anchoredPosition = new Vector2(0f, -72f);
+            btRT.anchorMin = new Vector2(0f, 0f); btRT.anchorMax = new Vector2(1f, 1f);
+            btRT.pivot = new Vector2(0.5f, 0.5f);
+            btRT.offsetMin = new Vector2(56f, 44f);
+            btRT.offsetMax = new Vector2(-56f, -48f);
 
-            // Hint (bottom-right)
-            _hintText = UICanvasUtil.NewBody("Hint", pRT, "Press X / Space / E to continue", 13f, HollowfenPalette.Moss, FontStyles.Italic, TextAlignmentOptions.BottomRight);
+            // Hint (bottom-right, quiet)
+            _hintText = UICanvasUtil.NewBody("Hint", pRT, "Space  ·  continue", 13f,
+                new Color(HollowfenPalette.Moss.r, HollowfenPalette.Moss.g, HollowfenPalette.Moss.b, 0.75f),
+                FontStyles.Italic, TextAlignmentOptions.BottomRight);
             var hRT = _hintText.rectTransform;
             hRT.anchorMin = new Vector2(0f, 0f); hRT.anchorMax = new Vector2(1f, 0f);
             hRT.pivot = new Vector2(0.5f, 0f);
-            hRT.sizeDelta = new Vector2(-40f, 22f);
-            hRT.anchoredPosition = new Vector2(0f, 18f);
+            hRT.sizeDelta = new Vector2(-56f, 22f);
+            hRT.anchoredPosition = new Vector2(0f, 14f);
         }
 
         private static void BuildFrame(RectTransform panelRT, float inset, Color color, float thickness)

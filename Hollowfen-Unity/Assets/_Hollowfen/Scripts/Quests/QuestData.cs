@@ -26,6 +26,13 @@ namespace Hollowfen.Quests
         [SerializeField, Tooltip("Location suggested as waypoint while this quest is active (optional).")]
         private LocationData _waypointLocation;
 
+        [Header("Score deltas applied on completion (story.md tables)")]
+        [SerializeField] private int _villageHopeDelta;
+        [SerializeField] private int _knowledgeDelta;
+        [SerializeField, Tooltip("NPC ids, parallel with the deltas array (e.g. bram, marra).")]
+        private string[] _relationshipNpcIds;
+        [SerializeField] private int[] _relationshipDeltas;
+
         public string Id => _id;
         public string DisplayNameId => _displayNameId;
         public string ObjectiveTextId => _objectiveTextId;
@@ -34,5 +41,9 @@ namespace Hollowfen.Quests
         public StoryCardData UnlockStoryCardOnComplete => _unlockStoryCardOnComplete;
         public QuestData NextQuest => _nextQuest;
         public LocationData WaypointLocation => _waypointLocation;
+        public int VillageHopeDelta => _villageHopeDelta;
+        public int KnowledgeDelta => _knowledgeDelta;
+        public string[] RelationshipNpcIds => _relationshipNpcIds;
+        public int[] RelationshipDeltas => _relationshipDeltas;
     }
 }

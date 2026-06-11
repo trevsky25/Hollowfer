@@ -63,20 +63,19 @@ namespace Hollowfen.UI
             _group.blocksRaycasts = false;
             _group.interactable = false;
 
-            // Background — soft ink with parchment border feel via a thin gold underline
-            var bgGO = UICanvasUtil.NewImage("Bg", transform, HollowfenPalette.InkDeep, false);
-            var bgRT = (RectTransform)bgGO.transform;
-            UICanvasUtil.Stretch(bgRT);
-            bgGO.GetComponent<Image>().color = new Color(0.064f, 0.058f, 0.050f, 0.78f);
+            // Rounded ink-glass pill with hairline stroke
+            int radius = Mathf.RoundToInt(_pillSize.y * 0.5f);
+            var bgGO = UICanvasUtil.NewImage("Bg", transform, new Color(0.07f, 0.06f, 0.045f, 0.74f), false);
+            var bgImg = bgGO.GetComponent<Image>();
+            bgImg.sprite = UICanvasUtil.RoundedRect(radius);
+            bgImg.type = Image.Type.Sliced;
+            UICanvasUtil.Stretch((RectTransform)bgGO.transform);
 
-            // Thin gold underline at the bottom of the pill
-            var rule = UICanvasUtil.NewImage("GoldRule", transform, HollowfenPalette.GoldFaint, false);
-            var ruleRT = (RectTransform)rule.transform;
-            ruleRT.anchorMin = new Vector2(0f, 0f);
-            ruleRT.anchorMax = new Vector2(1f, 0f);
-            ruleRT.pivot = new Vector2(0.5f, 0f);
-            ruleRT.sizeDelta = new Vector2(-32f, 1.5f);
-            ruleRT.anchoredPosition = new Vector2(0f, 4f);
+            var rule = UICanvasUtil.NewImage("Hairline", transform, new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0.32f), false);
+            var ruleImg = rule.GetComponent<Image>();
+            ruleImg.sprite = UICanvasUtil.RoundedOutline(radius, 1.6f);
+            ruleImg.type = Image.Type.Sliced;
+            UICanvasUtil.Stretch((RectTransform)rule.transform);
 
             // Label — keyboard glyph + slash + gamepad glyph + verb + target
             _label = UICanvasUtil.NewBody("Label", transform, "", 22f, HollowfenPalette.Cream,

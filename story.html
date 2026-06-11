@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hollowfen Story Book</title>
+    <link rel="stylesheet" href="/src/story-page.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div>
+        <p class="eyebrow">Hollowfen - The Failing Village</p>
+        <h1>Story & Game Design Book</h1>
+      </div>
+      <div class="header-actions">
+        <label class="voice-control">
+          <span>Voice</span>
+          <select id="narrator-voice">
+            <option value="auto">Best available</option>
+          </select>
+        </label>
+        <label class="voice-control voice-control-rate">
+          <span>Speed</span>
+          <input id="narrator-rate" type="range" min="0.72" max="2" step="0.02" value="0.86" />
+          <output id="narrator-rate-value">0.86x</output>
+        </label>
+        <button id="stop-speech" class="icon-button" type="button" title="Stop narration" aria-label="Stop narration">
+          <span aria-hidden="true">■</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <aside class="toc-panel" aria-label="Story navigation">
+        <button id="toc-toggle" class="toc-toggle" type="button" aria-expanded="true" aria-controls="toc">
+          <span>Jump to section</span>
+          <span aria-hidden="true">v</span>
+        </button>
+        <nav id="toc"></nav>
+      </aside>
+
+      <article id="story" class="story-shell" aria-live="polite">
+        <section class="loading-panel">
+          <p class="eyebrow">Loading</p>
+          <h2>Opening the journal...</h2>
+        </section>
+      </article>
+    </main>
+
+    <script type="module" src="/src/story-page.js"></script>
+  </body>
+</html>

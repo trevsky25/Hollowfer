@@ -11,7 +11,7 @@ namespace Hollowfen.Quests
     {
         [SerializeField] private float _panelWidth = 360f;
         [SerializeField] private float _panelHeight = 80f;
-        [SerializeField] private Vector2 _anchoredPosition = new Vector2(20f, -150f); // top-left offset
+        [SerializeField] private Vector2 _anchoredPosition = new Vector2(24f, -24f); // top-left safe zone
 
         private CanvasGroup _cg;
         private TMP_Text _eyebrow;
@@ -67,17 +67,29 @@ namespace Hollowfen.Quests
             _cg.interactable = false;
             _cg.blocksRaycasts = false;
 
-            // Subtle dark pill background
-            var bg = UICanvasUtil.NewImage("BG", rt, new Color(0.05f, 0.04f, 0.02f, 0.55f), true);
+            // Rounded ink-glass card with hairline + soft shadow
+            var bg = UICanvasUtil.NewImage("BG", rt, new Color(0.07f, 0.06f, 0.045f, 0.66f), true);
+            var bgImg = bg.GetComponent<UnityEngine.UI.Image>();
+            bgImg.sprite = UICanvasUtil.RoundedRect(14);
+            bgImg.type = UnityEngine.UI.Image.Type.Sliced;
             UICanvasUtil.Stretch((RectTransform)bg.transform);
 
-            // Gold left bar accent
-            var bar = UICanvasUtil.NewImage("Accent", rt, HollowfenPalette.Gold, false);
+            var stroke = UICanvasUtil.NewImage("Hairline", rt, new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0.28f), false);
+            var strokeImg = stroke.GetComponent<UnityEngine.UI.Image>();
+            strokeImg.sprite = UICanvasUtil.RoundedOutline(14, 1.6f);
+            strokeImg.type = UnityEngine.UI.Image.Type.Sliced;
+            UICanvasUtil.Stretch((RectTransform)stroke.transform);
+
+            // Rounded gold accent bar hugging the left edge
+            var bar = UICanvasUtil.NewImage("Accent", rt, new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0.9f), false);
+            var barImg = bar.GetComponent<UnityEngine.UI.Image>();
+            barImg.sprite = UICanvasUtil.RoundedRect(2);
+            barImg.type = UnityEngine.UI.Image.Type.Sliced;
             var barRT = (RectTransform)bar.transform;
             barRT.anchorMin = new Vector2(0f, 0f); barRT.anchorMax = new Vector2(0f, 1f);
             barRT.pivot = new Vector2(0f, 0.5f);
-            barRT.sizeDelta = new Vector2(3f, 0f);
-            barRT.anchoredPosition = Vector2.zero;
+            barRT.sizeDelta = new Vector2(4f, -20f);
+            barRT.anchoredPosition = new Vector2(6f, 0f);
 
             _eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", rt, "QUEST  ·  ACT I", 10f, HollowfenPalette.Gold, TextAlignmentOptions.TopLeft);
             _eyebrow.fontStyle = FontStyles.Bold;

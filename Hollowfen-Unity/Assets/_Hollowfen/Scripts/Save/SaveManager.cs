@@ -4,12 +4,27 @@ using UnityEngine;
 
 namespace Hollowfen.Save
 {
-    // Stub. Real game-state serialization comes in a later session — this only
-    // reads/writes SaveSlotMeta so the Save Slot UI has something to display.
+    // Reads/writes SaveSlotMeta JSON per slot. The ACTIVE slot is where all incremental
+    // autosaves land — slot 0 by default; New Game / Load switch it. Full-state gather and
+    // hydrate live in SaveCoordinator; the targeted AutoSave* writers here keep individual
+    // systems (inventory, coins, quests...) persisted on every change.
     public static class SaveManager
     {
         public const int TotalSlots = 4; // 3 manual + 1 autosave
         public const int AutosaveSlot = 0;
+
+        // The slot the current play session reads from and writes to.
+        public static int ActiveSlot { get; private set; } = AutosaveSlot;
+
+        public static void SetActiveSlot(int slot)
+        {
+            ActiveSlot = Mathf.Clamp(slot, 0, TotalSlots - 1);
+        }
+
+#if UNITY_2019_3_OR_NEWER
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetOnLoad() { ActiveSlot = AutosaveSlot; }
+#endif
 
         public static string SaveDirectory =>
             Path.Combine(Application.persistentDataPath, "saves");
@@ -70,16 +85,114 @@ namespace Hollowfen.Save
         public static void AutoSaveInventory(InventorySnapshot snap)
         {
             EnsureDirectory();
-            var meta = GetSlotMeta(AutosaveSlot) ?? new SaveSlotMeta
+            var meta = GetSlotMeta(ActiveSlot) ?? new SaveSlotMeta
             {
-                SlotNumber = AutosaveSlot,
+                SlotNumber = ActiveSlot,
                 CurrentQuest = "Act I — Arrival",
                 CurrentAct = 1,
                 TotalPlayTimeSeconds = 0f
             };
             meta.Inventory = snap;
             meta.TimestampUnix = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-            File.WriteAllText(SlotPath(AutosaveSlot), JsonUtility.ToJson(meta, prettyPrint: true));
+            File.WriteAllText(SlotPath(ActiveSlot), JsonUtility.ToJson(meta, prettyPrint: true));
+        }
+
+        // Marks the homecoming intro as seen on the autosave slot.
+        public static void AutoSaveIntroSeen()
+        {
+            EnsureDirectory();
+            var meta = GetSlotMeta(ActiveSlot) ?? new SaveSlotMeta
+            {
+                SlotNumber = ActiveSlot,
+                CurrentQuest = "Act I — Arrival",
+                CurrentAct = 1,
+                TotalPlayTimeSeconds = 0f
+            };
+            meta.HomecomingIntroSeen = true;
+            meta.TimestampUnix = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            File.WriteAllText(SlotPath(ActiveSlot), JsonUtility.ToJson(meta, prettyPrint: true));
+        }
+
+        // Targeted autosave for coins — same recipe as AutoSaveInventory.
+        public static void AutoSaveCoins(int totalCopper)
+        {
+            EnsureDirectory();
+            var meta = GetSlotMeta(ActiveSlot) ?? new SaveSlotMeta
+            {
+                SlotNumber = ActiveSlot,
+                CurrentQuest = "Act I — Arrival",
+                CurrentAct = 1,
+                TotalPlayTimeSeconds = 0f
+            };
+            meta.CoinsCopper = totalCopper;
+            meta.TimestampUnix = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            File.WriteAllText(SlotPath(ActiveSlot), JsonUtility.ToJson(meta, prettyPrint: true));
+        }
+
+        // Targeted autosave for quest progression — same recipe as AutoSaveInventory.
+        public static void AutoSaveQuestState(string[] completedQuestIds, string[] unlockedStoryCardIds)
+        {
+            EnsureDirectory();
+            var meta = GetSlotMeta(ActiveSlot) ?? new SaveSlotMeta
+            {
+                SlotNumber = ActiveSlot,
+                CurrentQuest = "Act I — Arrival",
+                CurrentAct = 1,
+                TotalPlayTimeSeconds = 0f
+            };
+            meta.CompletedQuestIds = completedQuestIds;
+            meta.UnlockedStoryCardIds = unlockedStoryCardIds;
+            meta.TimestampUnix = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            File.WriteAllText(SlotPath(ActiveSlot), JsonUtility.ToJson(meta, prettyPrint: true));
+        }
+
+        // Targeted autosave for key items — same recipe as AutoSaveInventory.
+        public static void AutoSaveKeyItems(string[] ids)
+        {
+            EnsureDirectory();
+            var meta = GetSlotMeta(ActiveSlot) ?? new SaveSlotMeta
+            {
+                SlotNumber = ActiveSlot,
+                CurrentQuest = "Act I — Arrival",
+                CurrentAct = 1,
+                TotalPlayTimeSeconds = 0f
+            };
+            meta.KeyItemIds = ids;
+            meta.TimestampUnix = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            File.WriteAllText(SlotPath(ActiveSlot), JsonUtility.ToJson(meta, prettyPrint: true));
+        }
+
+        // Targeted autosave for the score engine. Pulls current values from GameScores
+        // (which calls this) to avoid a parallel parameter list.
+        public static void AutoSaveScores()
+        {
+            EnsureDirectory();
+            var meta = GetSlotMeta(ActiveSlot) ?? new SaveSlotMeta
+            {
+                SlotNumber = ActiveSlot,
+                CurrentQuest = "Act I — Arrival",
+                CurrentAct = 1,
+                TotalPlayTimeSeconds = 0f
+            };
+            Hollowfen.Quests.GameScores.WriteTo(meta);
+            meta.TimestampUnix = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            File.WriteAllText(SlotPath(ActiveSlot), JsonUtility.ToJson(meta, prettyPrint: true));
+        }
+
+        // Targeted autosave for field-guide discovery — same recipe as AutoSaveInventory.
+        public static void AutoSaveDiscovery(string[] ids)
+        {
+            EnsureDirectory();
+            var meta = GetSlotMeta(ActiveSlot) ?? new SaveSlotMeta
+            {
+                SlotNumber = ActiveSlot,
+                CurrentQuest = "Act I — Arrival",
+                CurrentAct = 1,
+                TotalPlayTimeSeconds = 0f
+            };
+            meta.DiscoveredMushroomIds = ids;
+            meta.TimestampUnix = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            File.WriteAllText(SlotPath(ActiveSlot), JsonUtility.ToJson(meta, prettyPrint: true));
         }
 
         private static void EnsureDirectory()

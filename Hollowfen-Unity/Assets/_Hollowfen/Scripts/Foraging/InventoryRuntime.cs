@@ -83,6 +83,16 @@ namespace Hollowfen.Foraging
             return true;
         }
 
+        // Empties the basket (firstSale: Marra takes the lot for the pot).
+        public static void RemoveAll()
+        {
+            EnsureHydrated();
+            if (_counts.Count == 0) return;
+            _counts.Clear();
+            Persist();
+            OnChanged?.Invoke(null, 0);
+        }
+
         // Used by save load to reset all in-memory state to a snapshot.
         public static void HydrateFrom(InventorySnapshot snap)
         {
@@ -137,7 +147,7 @@ namespace Hollowfen.Foraging
             ResolveDatabaseIfNeeded();
             try
             {
-                var meta = SaveManager.GetSlotMeta(SaveManager.AutosaveSlot);
+                var meta = SaveManager.GetSlotMeta(SaveManager.ActiveSlot);
                 if (meta != null && meta.Inventory != null)
                 {
                     HydrateFrom(meta.Inventory);
