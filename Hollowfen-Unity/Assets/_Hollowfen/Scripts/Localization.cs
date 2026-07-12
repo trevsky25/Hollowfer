@@ -83,6 +83,8 @@ namespace Hollowfen
             { "quest.eddaApprentice.objective",  "Edda is waiting at the mill door with a speech she has practiced. Hear her out." },
             { "quest.theoCapitalOffer.name",     "Theo's Capital" },
             { "quest.theoCapitalOffer.objective","Theo has an offer to make. Find him at his wagon, hear him out, ask what you like, and leave when you are ready." },
+            { "quest.festivalHosted.name",       "The First Festival in Three Years" },
+            { "quest.festivalHosted.objective",  "The village is ready to celebrate. Find Marra to set the festival in motion." },
 
             // Mushroom tier display names (locked draft 2026-07-11 — QUESTIONS.md Q1; not yet rendered anywhere)
             { "tier.t1.name", "Basket Common" },

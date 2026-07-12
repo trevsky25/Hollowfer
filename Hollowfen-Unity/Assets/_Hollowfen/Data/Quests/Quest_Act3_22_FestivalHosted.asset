@@ -10,19 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8ee8ab872fb8546dc970108625d8ee2d, type: 3}
-  m_Name: Quest_Act3_21_TheoCapitalOffer
+  m_Name: Quest_Act3_22_FestivalHosted
   m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Quests.QuestData
-  _id: theoCapitalOffer
-  _displayNameId: quest.theoCapitalOffer.name
-  _objectiveTextId: quest.theoCapitalOffer.objective
+  _id: festivalHosted
+  _displayNameId: quest.festivalHosted.name
+  _objectiveTextId: quest.festivalHosted.objective
   _act: 3
-  _order: 21
-  _unlockStoryCardOnComplete: {fileID: 11400000, guid: 8e9ad983a9e99408ca370574d3063d32, type: 2}
-  _nextQuest: {fileID: 11400000, guid: 2279b658c2e24d238bd17796d4b16552, type: 2}
-  _waypointLocation: {fileID: 11400000, guid: 0b9a86fea406435ea39f4c38a1b9399b, type: 2}
-  _villageHopeDelta: 0
+  _order: 22
+  _unlockStoryCardOnComplete: {fileID: 11400000, guid: 82d14f4b2c516462c927270accfad75d, type: 2}
+  _nextQuest: {fileID: 0}
+  _waypointLocation: {fileID: 11400000, guid: 83948b99912734547bc3d389153419eb, type: 2}
+  _villageHopeDelta: 20
   _knowledgeDelta: 0
   _relationshipNpcIds:
-  - theo
+  - marra
+  - bram
+  - pell
   _relationshipDeltas:
+  - 15
   - 10
+  - 12

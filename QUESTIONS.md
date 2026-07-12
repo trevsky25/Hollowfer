@@ -4,6 +4,9 @@ The decision inbox. Agents append questions ONLY Trevor can answer (design taste
 
 ## Open
 
+### Q6 — Festival: real cook/gather mechanic, or keep it a coordination scene? (asked 2026-07-12 · batch-22)
+The bible's `festivalHosted` says "collect ingredients for four dishes … timed cooking/prep before sundown." No cooking/recipe system exists, and one of the four dish species (**lacewig/oyster has no world prefab** — not forageable). **What I shipped (veto-able):** the festival as the coordination dialogue scene (Marra/Bram/Pell/Edda, verbatim), completing with Hope +20 + relationships; NO gather or cooking gate. **Options:** (a) keep the scene as-is (my pick — clean, faithful to the dialogue) and treat "cooking" as flavor; (b) add a light gather gate — forage the 3 wild dish species (Goldfoot/Field Cap/Brightspore), lacewig supplied by Marra — via a small `QuestForageObjective` extension (`_setsFlagId`), gating the festival scene; (c) build a real festival cooking/timer minigame (large). Also: **lacewig needs a `_worldPrefab`** if it should ever be forageable. Recommend (a) now, (b) if you want the prep to feel earned before the pre-EA polish pass.
+
 ### Q5 — "Wren's internal conflict journal entry" — mechanism or narrator-voice only? (asked 2026-07-12 · batch-21)
 The bible's `theoCapitalOffer` unlock list includes "Wren internal conflict journal entry," but no Wren-journal mechanic exists (the Story page shows narrator-voice cards, not first-person Wren diary entries). **What I applied (veto-able):** the beat is carried by StoryCard_21's body copy — no new system. **Options:** (a) accept the story card as sufficient (my pick — no new system for one beat); (b) build a small Wren-journal entry type (first-person, unlocked by story flags) — larger, reusable for other introspective beats (the bible implies more of these in Act IV). Recommend (a) for now, revisit if Act IV wants a journal voice.
 
