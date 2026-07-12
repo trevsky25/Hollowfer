@@ -33,6 +33,8 @@ namespace Hollowfen.Dialogue
             { "Wren",  ParseColor("#5b3a6a") },
             { "Marra", ParseColor("#8a3a2a") },
             { "Almy",  ParseColor("#4a6b3a") },
+            { "Joren", ParseColor("#4d4338") },
+            { "Voss",  ParseColor("#3e4e63") },
         };
         private static readonly Color DefaultSpeakerColor = ParseColor("#3a2810");
 
@@ -172,11 +174,27 @@ namespace Hollowfen.Dialogue
             if (!string.IsNullOrEmpty(done.GiveItemId))
                 Items.KeyItems.Grant(done.GiveItemId);
 
-            if (done.SellsForageBasket)
-                InventoryRuntime.RemoveAll();
+            if (done.GrantForage != null && done.GrantForageCount > 0)
+                InventoryRuntime.Add(done.GrantForage, done.GrantForageCount);
 
-            if (done.GrantCoinsCopper > 0)
-                Items.CoinPurse.Add(done.GrantCoinsCopper);
+            // Basket sale pays per item (repeatable Marra loop) on top of any fixed grant,
+            // and the count must be read BEFORE the basket empties.
+            int coinsIn = done.GrantCoinsCopper;
+            if (done.SellsForageBasket)
+            {
+                coinsIn += InventoryRuntime.TotalCount * done.BasketCopperPerItem;
+                InventoryRuntime.RemoveAll();
+            }
+
+            if (done.SpendsCoinsCopper > 0)
+                Items.CoinPurse.TrySpend(done.SpendsCoinsCopper);
+
+            if (coinsIn > 0)
+                Items.CoinPurse.Add(coinsIn);
+
+            if (done.SetFlagIds != null)
+                foreach (var flag in done.SetFlagIds)
+                    GameScores.SetFlag(flag);
 
             // Score deltas (story.md relationship tables)
             if (done.VillageHopeDelta != 0) GameScores.AddVillageHope(done.VillageHopeDelta);

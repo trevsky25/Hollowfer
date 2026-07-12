@@ -179,6 +179,38 @@ namespace Hollowfen.Save
             File.WriteAllText(SlotPath(ActiveSlot), JsonUtility.ToJson(meta, prettyPrint: true));
         }
 
+        // Targeted autosave for map-location discovery — same recipe as AutoSaveInventory.
+        public static void AutoSaveDiscoveredLocations(string[] ids)
+        {
+            EnsureDirectory();
+            var meta = GetSlotMeta(ActiveSlot) ?? new SaveSlotMeta
+            {
+                SlotNumber = ActiveSlot,
+                CurrentQuest = "Act I — Arrival",
+                CurrentAct = 1,
+                TotalPlayTimeSeconds = 0f
+            };
+            meta.DiscoveredLocationIds = ids;
+            meta.TimestampUnix = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            File.WriteAllText(SlotPath(ActiveSlot), JsonUtility.ToJson(meta, prettyPrint: true));
+        }
+
+        // Targeted autosave for grow beds — same recipe as AutoSaveInventory.
+        public static void AutoSaveGrowBeds(GrowBedSnapshot snap)
+        {
+            EnsureDirectory();
+            var meta = GetSlotMeta(ActiveSlot) ?? new SaveSlotMeta
+            {
+                SlotNumber = ActiveSlot,
+                CurrentQuest = "Act I — Arrival",
+                CurrentAct = 1,
+                TotalPlayTimeSeconds = 0f
+            };
+            meta.GrowBeds = snap;
+            meta.TimestampUnix = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            File.WriteAllText(SlotPath(ActiveSlot), JsonUtility.ToJson(meta, prettyPrint: true));
+        }
+
         // Targeted autosave for field-guide discovery — same recipe as AutoSaveInventory.
         public static void AutoSaveDiscovery(string[] ids)
         {

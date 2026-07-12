@@ -59,7 +59,13 @@ namespace Hollowfen.Map
 
         private void SetVisible(bool visible)
         {
-            if (_cg == null) _cg = gameObject.GetComponent<CanvasGroup>() ?? gameObject.AddComponent<CanvasGroup>();
+            // No ?? here — it bypasses Unity's overloaded null check and returns the
+            // "missing component" stub, which then throws on every .alpha access.
+            if (_cg == null)
+            {
+                _cg = gameObject.GetComponent<CanvasGroup>();
+                if (_cg == null) _cg = gameObject.AddComponent<CanvasGroup>();
+            }
             float a = visible ? 1f : 0f;
             if (!Mathf.Approximately(_cg.alpha, a)) _cg.alpha = a;
         }

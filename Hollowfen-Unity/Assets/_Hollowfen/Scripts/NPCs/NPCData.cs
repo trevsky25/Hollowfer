@@ -16,6 +16,12 @@ namespace Hollowfen.NPCs
         public QuestData activeQuest;
         [Tooltip("Dialog fires only AFTER this quest is completed (chained progression). Leave null to ignore.")]
         public QuestData requiresQuestCompleted;
+        [Tooltip("Dialog fires only while this game flag is set (e.g. knife_ready). Empty = ignore.")]
+        public string requiresFlagId;
+        [Tooltip("Dialog fires only if the purse holds at least this much copper (Voss's 144c). 0 = ignore.")]
+        public int requiresCoinsCopper;
+        [Tooltip("Dialog fires only while the forage basket is non-empty (Marra's sale loop).")]
+        public bool requiresBasketNonEmpty;
         public DialogueData dialog;
     }
 
@@ -43,6 +49,9 @@ namespace Hollowfen.NPCs
                     if (e.dialog == null) continue;
                     if (e.requiresQuestCompleted != null && !QuestManager.IsCompleted(e.requiresQuestCompleted.Id)) continue;
                     if (e.activeQuest != null && !QuestManager.IsActive(e.activeQuest.Id)) continue;
+                    if (!string.IsNullOrEmpty(e.requiresFlagId) && !GameScores.HasFlag(e.requiresFlagId)) continue;
+                    if (e.requiresCoinsCopper > 0 && Items.CoinPurse.TotalCopper < e.requiresCoinsCopper) continue;
+                    if (e.requiresBasketNonEmpty && Foraging.InventoryRuntime.TotalCount <= 0) continue;
                     return e.dialog;
                 }
             }

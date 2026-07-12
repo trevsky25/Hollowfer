@@ -6,38 +6,42 @@ using Hollowfen.UI;
 
 namespace Hollowfen.Map
 {
-    // Renders LocationRegistry markers as gold dots (and optional labels) over a map RawImage.
+    // Renders LocationRegistry markers as gold pins with readable label chips over a map RawImage.
     // Place this component on the RawImage GameObject (or on a sibling whose RectTransform fills
     // the same rect as the RawImage). It pools icons lazily and updates positions every LateUpdate
     // by projecting each marker's world position through the supplied camera into the container rect.
+    //
+    // Pin states: discovered (gold dot + dark ring + label chip), undiscovered (dim dot, "?" chip
+    // only while focused), focused (enlarged, glow ring), waypoint (pulsing gold halo).
     public class LocationMarkerOverlay : MonoBehaviour
     {
         [SerializeField] private Camera _mapCamera;
         [SerializeField] private RectTransform _container;
-        [SerializeField] private float _iconSize = 12f;
-        [SerializeField, Range(0f, 1f)] private float _undiscoveredAlpha = 0.35f;
+        [SerializeField] private float _iconSize = 18f;
+        [SerializeField, Range(0f, 1f)] private float _undiscoveredAlpha = 0.4f;
         [SerializeField] private bool _showLabels;
-        [SerializeField] private float _labelFontSize = 12f;
-        [SerializeField] private float _labelOffsetY = -10f;
-        [SerializeField] private float _labelWidth = 140f;
+        [SerializeField] private float _labelFontSize = 12.5f;
+        [SerializeField] private float _labelOffsetY = -8f;
         [SerializeField] private bool _hideOutsideRect = true;
         [SerializeField] private bool _includeUndiscovered = true;
         [SerializeField, Tooltip("Multiplier on icon size for the focused marker.")]
-        private float _focusedScale = 1.7f;
+        private float _focusedScale = 1.45f;
         [SerializeField, Tooltip("Hit-test radius in pixels (uses the focused icon size when a marker is focused; otherwise uses _iconSize × this).")]
-        private float _hitTestPadding = 6f;
+        private float _hitTestPadding = 8f;
 
         private readonly List<MarkerIcon> _pool = new List<MarkerIcon>();
-        private static Sprite _sharedDotSprite;
         private string _focusedId;
 
-        private struct MarkerIcon
+        private class MarkerIcon
         {
             public RectTransform root;
             public Image halo;
             public Image ring;
             public Image dot;
+            public RectTransform chip;
+            public Image chipFill;
             public TMP_Text label;
+            public string lastLabel;
             public LocationMarker marker;
         }
 
@@ -55,58 +59,73 @@ namespace Hollowfen.Map
             var markers = LocationRegistry.Markers;
             EnsurePool(markers.Count);
 
+            float pulse = 1f + 0.14f * Mathf.Sin(Time.unscaledTime * 3.2f);
+
             for (int i = 0; i < _pool.Count; i++)
             {
-                if (i >= markers.Count) { SetActive(_pool[i].root, false); continue; }
+                var icon = _pool[i];
+                if (i >= markers.Count) { SetActive(icon.root, false); continue; }
 
                 var m = markers[i];
-                if (m == null) { SetActive(_pool[i].root, false); continue; }
+                if (m == null) { SetActive(icon.root, false); continue; }
 
                 bool discovered = LocationRegistry.IsDiscovered(m.Id);
-                if (!discovered && !_includeUndiscovered) { SetActive(_pool[i].root, false); continue; }
+                if (!discovered && !_includeUndiscovered) { SetActive(icon.root, false); continue; }
 
                 Vector3 vp = _mapCamera.WorldToViewportPoint(m.WorldPosition);
                 bool insideRect = vp.x >= 0f && vp.x <= 1f && vp.y >= 0f && vp.y <= 1f;
-                if (_hideOutsideRect && !insideRect) { SetActive(_pool[i].root, false); continue; }
+                if (_hideOutsideRect && !insideRect) { SetActive(icon.root, false); continue; }
 
-                SetActive(_pool[i].root, true);
+                SetActive(icon.root, true);
                 Rect r = _container.rect;
-                _pool[i].root.anchoredPosition = new Vector2(
+                icon.root.anchoredPosition = new Vector2(
                     (vp.x - 0.5f) * r.width,
                     (vp.y - 0.5f) * r.height);
-
-                // Cache the marker on the icon so external code (selection / hit-test) can map back.
-                var icon = _pool[i];
                 icon.marker = m;
-                _pool[i] = icon;
 
                 bool isFocused = m.Id == _focusedId;
                 bool isWaypoint = LocationRegistry.ActiveWaypoint == m;
 
-                Color fill = HollowfenPalette.Gold;
+                Color fill = isFocused ? HollowfenPalette.GoldGlow : HollowfenPalette.Gold;
                 if (!discovered) fill.a *= _undiscoveredAlpha;
-                if (isFocused) fill = HollowfenPalette.GoldGlow;
-
-                _pool[i].dot.color = fill;
-                _pool[i].ring.color = isFocused
-                    ? new Color(0.02f, 0.02f, 0.01f, 1f)
-                    : new Color(0.05f, 0.04f, 0.02f, 0.92f);
+                icon.dot.color = fill;
+                icon.ring.color = new Color(0.04f, 0.03f, 0.02f, isFocused ? 1f : 0.9f);
 
                 float sizePx = isFocused ? _iconSize * _focusedScale : _iconSize;
-                _pool[i].root.sizeDelta = new Vector2(sizePx, sizePx);
+                icon.root.sizeDelta = new Vector2(sizePx, sizePx);
 
-                if (_pool[i].halo != null)
+                if (icon.halo != null)
                 {
-                    if (isWaypoint != _pool[i].halo.gameObject.activeSelf)
-                        _pool[i].halo.gameObject.SetActive(isWaypoint);
+                    if (isWaypoint != icon.halo.gameObject.activeSelf)
+                        icon.halo.gameObject.SetActive(isWaypoint);
+                    if (isWaypoint)
+                        icon.halo.rectTransform.localScale = new Vector3(pulse, pulse, 1f);
                 }
 
-                if (_pool[i].label != null)
+                if (icon.chip != null)
                 {
-                    bool showLabel = _showLabels && (discovered || isFocused);
-                    _pool[i].label.gameObject.SetActive(showLabel);
-                    if (showLabel) _pool[i].label.text = ResolveLabel(m.Data);
-                    _pool[i].label.color = isFocused ? HollowfenPalette.InkDeep : HollowfenPalette.InkDeep;
+                    // Waypoints always carry their name — a quest pointed Wren there by name.
+                    bool showLabel = _showLabels && (discovered || isFocused || isWaypoint);
+                    if (showLabel != icon.chip.gameObject.activeSelf)
+                        icon.chip.gameObject.SetActive(showLabel);
+                    if (showLabel)
+                    {
+                        string text = (discovered || isWaypoint) ? ResolveLabel(m.Data) : "?";
+                        if (text != icon.lastLabel)
+                        {
+                            icon.lastLabel = text;
+                            icon.label.text = text;
+                        }
+                        // Re-measure every frame — TMP preferred sizes are unreliable on the frame
+                        // the text is set, so a one-shot measure can bake in garbage. Self-heals.
+                        float w = Mathf.Max(34f, icon.label.preferredWidth + 22f);
+                        if (Mathf.Abs(icon.chip.sizeDelta.x - w) > 0.5f)
+                            icon.chip.sizeDelta = new Vector2(w, 24f);
+                        icon.chipFill.color = isFocused
+                            ? new Color(0.05f, 0.04f, 0.02f, 0.96f)
+                            : new Color(0.05f, 0.04f, 0.02f, 0.78f);
+                        icon.label.color = isFocused ? HollowfenPalette.GoldGlow : HollowfenPalette.Cream;
+                    }
                 }
             }
         }
@@ -169,8 +188,6 @@ namespace Hollowfen.Map
 
         private MarkerIcon CreateIcon(int index)
         {
-            if (_sharedDotSprite == null) _sharedDotSprite = BakeCircleSprite(32);
-
             var root = new GameObject("POI_" + index, typeof(RectTransform));
             root.transform.SetParent(_container, false);
             var rt = (RectTransform)root.transform;
@@ -179,38 +196,36 @@ namespace Hollowfen.Map
             rt.pivot = new Vector2(0.5f, 0.5f);
             rt.sizeDelta = new Vector2(_iconSize, _iconSize);
 
-            // Waypoint halo — only visible when this marker is the active waypoint. Slightly larger
-            // outer ring in faint gold so it reads as a target reticle. Sibling of Ring so it
-            // renders behind the dot but in front of the rendered map texture.
+            // Waypoint halo — pulsing gold ring, only visible on the active waypoint.
             var haloGO = new GameObject("WaypointHalo", typeof(RectTransform));
             haloGO.transform.SetParent(rt, false);
             var halo = haloGO.AddComponent<Image>();
-            halo.sprite = _sharedDotSprite;
-            halo.color = new Color(HollowfenPalette.GoldGlow.r, HollowfenPalette.GoldGlow.g, HollowfenPalette.GoldGlow.b, 0.55f);
+            halo.sprite = UICanvasUtil.Ring(64, 5f);
+            halo.color = new Color(HollowfenPalette.GoldGlow.r, HollowfenPalette.GoldGlow.g, HollowfenPalette.GoldGlow.b, 0.85f);
             halo.raycastTarget = false;
             var haloRT = (RectTransform)haloGO.transform;
             haloRT.anchorMin = new Vector2(0f, 0f);
             haloRT.anchorMax = new Vector2(1f, 1f);
-            haloRT.offsetMin = new Vector2(-8f, -8f);
-            haloRT.offsetMax = new Vector2(8f, 8f);
+            haloRT.offsetMin = new Vector2(-9f, -9f);
+            haloRT.offsetMax = new Vector2(9f, 9f);
             haloGO.SetActive(false);
 
             var ringGO = new GameObject("Ring", typeof(RectTransform));
             ringGO.transform.SetParent(rt, false);
             var ring = ringGO.AddComponent<Image>();
-            ring.sprite = _sharedDotSprite;
-            ring.color = new Color(0.05f, 0.04f, 0.02f, 0.92f);
+            ring.sprite = UICanvasUtil.Circle(64);
+            ring.color = new Color(0.04f, 0.03f, 0.02f, 0.9f);
             ring.raycastTarget = false;
             var ringRT = (RectTransform)ringGO.transform;
             ringRT.anchorMin = new Vector2(0f, 0f);
             ringRT.anchorMax = new Vector2(1f, 1f);
-            ringRT.offsetMin = new Vector2(-2f, -2f);
-            ringRT.offsetMax = new Vector2(2f, 2f);
+            ringRT.offsetMin = new Vector2(-2.5f, -2.5f);
+            ringRT.offsetMax = new Vector2(2.5f, 2.5f);
 
             var dotGO = new GameObject("Dot", typeof(RectTransform));
             dotGO.transform.SetParent(rt, false);
             var dot = dotGO.AddComponent<Image>();
-            dot.sprite = _sharedDotSprite;
+            dot.sprite = UICanvasUtil.Circle(64);
             dot.color = HollowfenPalette.Gold;
             dot.raycastTarget = false;
             var dotRT = (RectTransform)dotGO.transform;
@@ -219,47 +234,39 @@ namespace Hollowfen.Map
             dotRT.offsetMin = Vector2.zero;
             dotRT.offsetMax = Vector2.zero;
 
+            RectTransform chip = null;
+            Image chipFill = null;
             TMP_Text label = null;
             if (_showLabels)
             {
+                // Label chip — rounded ink pill below the pin so names read on any terrain.
+                var chipGO = new GameObject("LabelChip", typeof(RectTransform));
+                chipGO.transform.SetParent(rt, false);
+                chip = (RectTransform)chipGO.transform;
+                chip.anchorMin = new Vector2(0.5f, 0f);
+                chip.anchorMax = new Vector2(0.5f, 0f);
+                chip.pivot = new Vector2(0.5f, 1f);
+                chip.sizeDelta = new Vector2(80f, 24f);
+                chip.anchoredPosition = new Vector2(0f, _labelOffsetY);
+                chipFill = chipGO.AddComponent<Image>();
+                chipFill.sprite = UICanvasUtil.RoundedRect(9);
+                chipFill.type = Image.Type.Sliced;
+                chipFill.color = new Color(0.05f, 0.04f, 0.02f, 0.78f);
+                chipFill.raycastTarget = false;
+
                 var lblGO = new GameObject("Label", typeof(RectTransform));
-                lblGO.transform.SetParent(rt, false);
+                lblGO.transform.SetParent(chip, false);
                 label = lblGO.AddComponent<TextMeshProUGUI>();
+                label.font = UICanvasUtil.BodyFont;
                 label.fontSize = _labelFontSize;
-                label.color = HollowfenPalette.InkDeep;
-                label.alignment = TextAlignmentOptions.Top;
+                label.color = HollowfenPalette.Cream;
+                label.alignment = TextAlignmentOptions.Center;
                 label.raycastTarget = false;
                 label.textWrappingMode = TextWrappingModes.NoWrap;
-                label.fontStyle = FontStyles.Italic;
-                var lRT = (RectTransform)lblGO.transform;
-                lRT.anchorMin = new Vector2(0.5f, 0f);
-                lRT.anchorMax = new Vector2(0.5f, 0f);
-                lRT.pivot = new Vector2(0.5f, 1f);
-                lRT.sizeDelta = new Vector2(_labelWidth, 18f);
-                lRT.anchoredPosition = new Vector2(0f, _labelOffsetY);
+                UICanvasUtil.Stretch((RectTransform)lblGO.transform);
             }
 
-            return new MarkerIcon { root = rt, halo = halo, ring = ring, dot = dot, label = label };
-        }
-
-        private static Sprite BakeCircleSprite(int size)
-        {
-            var tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
-            tex.filterMode = FilterMode.Bilinear;
-            tex.wrapMode = TextureWrapMode.Clamp;
-            float center = (size - 1) * 0.5f;
-            float radius = size * 0.5f;
-            for (int y = 0; y < size; y++)
-            {
-                for (int x = 0; x < size; x++)
-                {
-                    float d = Mathf.Sqrt((x - center) * (x - center) + (y - center) * (y - center));
-                    float a = Mathf.Clamp01(radius - d);
-                    tex.SetPixel(x, y, new Color(1f, 1f, 1f, a));
-                }
-            }
-            tex.Apply(false, true);
-            return Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f), size);
+            return new MarkerIcon { root = rt, halo = halo, ring = ring, dot = dot, chip = chip, chipFill = chipFill, label = label };
         }
 
         public void Configure(Camera cam, RectTransform container, float iconSize, bool showLabels, bool includeUndiscovered)

@@ -9,6 +9,7 @@ namespace Hollowfen.Map
         private static readonly List<LocationMarker> _markers = new List<LocationMarker>();
         private static readonly HashSet<string> _discovered = new HashSet<string>();
         private static readonly List<RegionTrigger> _activeRegions = new List<RegionTrigger>();
+        private static bool _hydrated;
 
         public static event Action<string> LocationDiscovered;
         public static event Action<string> RegionChanged;
@@ -28,11 +29,51 @@ namespace Hollowfen.Map
             _markers.Clear();
             _discovered.Clear();
             _activeRegions.Clear();
+            _hydrated = false;
             CurrentRegion = null;
             ActiveWaypoint = null;
             LocationDiscovered = null;
             RegionChanged = null;
             WaypointChanged = null;
+        }
+
+        // Same persistence recipe as KeyItems: lazy-hydrate from the active slot, write back on change.
+        private static void EnsureHydrated()
+        {
+            if (_hydrated) return;
+            _hydrated = true;
+            try
+            {
+                var meta = Save.SaveManager.GetSlotMeta(Save.SaveManager.ActiveSlot);
+                if (meta != null && meta.DiscoveredLocationIds != null)
+                    foreach (var id in meta.DiscoveredLocationIds)
+                        if (!string.IsNullOrEmpty(id)) _discovered.Add(id);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning("[LocationRegistry] Hydration failed: " + e.Message);
+            }
+        }
+
+        public static void HydrateFromSave(string[] ids)
+        {
+            _discovered.Clear();
+            if (ids != null)
+                foreach (var id in ids)
+                    if (!string.IsNullOrEmpty(id)) _discovered.Add(id);
+            _hydrated = true;
+            // Re-apply default discoveries for markers already registered this scene.
+            for (int i = 0; i < _markers.Count; i++)
+                if (_markers[i] != null && _markers[i].Data != null && _markers[i].Data.DiscoveredByDefault)
+                    _discovered.Add(_markers[i].Id);
+        }
+
+        public static string[] DiscoveredToArray()
+        {
+            EnsureHydrated();
+            var arr = new string[_discovered.Count];
+            _discovered.CopyTo(arr);
+            return arr;
         }
 
         public static void RegisterMarker(LocationMarker marker)
@@ -75,13 +116,24 @@ namespace Hollowfen.Map
         public static void MarkDiscovered(string id)
         {
             if (string.IsNullOrEmpty(id)) return;
+            EnsureHydrated();
             if (!_discovered.Add(id)) return;
+            try
+            {
+                Save.SaveManager.AutoSaveDiscoveredLocations(DiscoveredToArray());
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning("[LocationRegistry] Autosave failed: " + e.Message);
+            }
             LocationDiscovered?.Invoke(id);
         }
 
         public static bool IsDiscovered(string id)
         {
-            return !string.IsNullOrEmpty(id) && _discovered.Contains(id);
+            if (string.IsNullOrEmpty(id)) return false;
+            EnsureHydrated();
+            return _discovered.Contains(id);
         }
 
         public static int DiscoveredCount => _discovered.Count;

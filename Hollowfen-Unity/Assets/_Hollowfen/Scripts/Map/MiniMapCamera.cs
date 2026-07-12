@@ -19,7 +19,11 @@ namespace Hollowfen.Map
             _cam.orthographic = true;
             _cam.orthographicSize = _orthoSize;
             _cam.clearFlags = CameraClearFlags.SolidColor;
-            _cam.backgroundColor = new Color(0.05f, 0.05f, 0.06f, 1f);
+            _cam.backgroundColor = new Color(0.16f, 0.18f, 0.12f, 1f);
+            // The player's own layer renders as a corrupt magenta blob from top-down — exclude it
+            // (the gold heading arrow marks Wren on the widget instead).
+            int foraging = LayerMask.NameToLayer("Foraging");
+            if (foraging >= 0) _cam.cullingMask &= ~(1 << foraging);
         }
 
         private Transform ResolveTarget()

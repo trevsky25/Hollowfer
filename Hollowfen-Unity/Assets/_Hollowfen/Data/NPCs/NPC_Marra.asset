@@ -17,8 +17,20 @@ MonoBehaviour:
   _dialogueEntries:
   - activeQuest: {fileID: 11400000, guid: 8af58c6703004c4392bc2c30a4a102c1, type: 2}
     requiresQuestCompleted: {fileID: 0}
+    requiresFlagId:
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
     dialog: {fileID: 11400000, guid: d576b2075c014c74a9294ac673987888, type: 2}
   - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 11400000, guid: dd4b3b018abd4443b893b8d40870a9f7, type: 2}
+    requiresFlagId:
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 1
+    dialog: {fileID: 11400000, guid: 643b4a29c17d46a2a281e4f8c81ee4f2, type: 2}
+  - activeQuest: {fileID: 0}
     requiresQuestCompleted: {fileID: 11400000, guid: 8af58c6703004c4392bc2c30a4a102c1, type: 2}
+    requiresFlagId:
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
     dialog: {fileID: 11400000, guid: 6eecd938d7a1483d8d487fb188ae14af, type: 2}
   _repeatDialog: {fileID: 0}

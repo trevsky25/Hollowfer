@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c5c5fc2839eb4f6c9631b7dfdb7b2ff, type: 3}
+  m_Name: NPC_Voss
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.NPCs.NPCData
+  _id: voss
+  _displayNameId: npc.voss.name
+  _dialogueEntries:
+  - activeQuest: {fileID: 11400000, guid: 130b3a3e411e43e6b8a8810a5ca6431d, type: 2}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: voss_first_visit_seen
+    requiresCoinsCopper: 144
+    requiresBasketNonEmpty: 0
+    dialog: {fileID: 11400000, guid: 12c0040a2b1f499eab07c7775c609ff8, type: 2}
+  - activeQuest: {fileID: 11400000, guid: 130b3a3e411e43e6b8a8810a5ca6431d, type: 2}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: voss_first_visit_seen
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    dialog: {fileID: 11400000, guid: 9460632100be42f9a630104dab6b9342, type: 2}
+  - activeQuest: {fileID: 11400000, guid: 130b3a3e411e43e6b8a8810a5ca6431d, type: 2}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId:
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    dialog: {fileID: 11400000, guid: da726c2e634b40e79e0bee1d262ea9eb, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 11400000, guid: 130b3a3e411e43e6b8a8810a5ca6431d, type: 2}
+    requiresFlagId:
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    dialog: {fileID: 11400000, guid: ebbe45f478174ba2805a1f77f7f84058, type: 2}
+  _repeatDialog: {fileID: 0}

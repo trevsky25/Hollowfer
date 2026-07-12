@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c5c5fc2839eb4f6c9631b7dfdb7b2ff, type: 3}
+  m_Name: NPC_Joren
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.NPCs.NPCData
+  _id: joren
+  _displayNameId: npc.joren.name
+  _dialogueEntries:
+  - activeQuest: {fileID: 11400000, guid: 361dbfb41db8407590f092f68dd45ae9, type: 2}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: knife_ready
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    dialog: {fileID: 11400000, guid: bf4d804b2711402f9f2039202e0a2b04, type: 2}
+  - activeQuest: {fileID: 11400000, guid: 361dbfb41db8407590f092f68dd45ae9, type: 2}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: knife_commissioned
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    dialog: {fileID: 11400000, guid: aeef982f1e234e2cbc55e1cb98d4d740, type: 2}
+  - activeQuest: {fileID: 11400000, guid: 361dbfb41db8407590f092f68dd45ae9, type: 2}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId:
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    dialog: {fileID: 11400000, guid: 52a4b596716f44658a907072b8d32b4e, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 11400000, guid: 361dbfb41db8407590f092f68dd45ae9, type: 2}
+    requiresFlagId:
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    dialog: {fileID: 11400000, guid: 0d912d5097fa45b39dcdac82f8d38fc5, type: 2}
+  _repeatDialog: {fileID: 0}

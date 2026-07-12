@@ -20,15 +20,14 @@ namespace Hollowfen.Map
         [SerializeField] private bool _freezeTimeWhileOpen = true;
 
         [Header("Map art")]
-        [SerializeField, Tooltip("Optional parchment background sprite. Falls back to flat HollowfenPalette.Parchment.")]
+        [SerializeField, Tooltip("Optional parchment texture washed into the side info card.")]
         private Sprite _parchmentSprite;
 
-        [Header("Layout")]
-        [SerializeField] private Vector2 _panelSize = new Vector2(1820f, 1020f);
-        [SerializeField, Tooltip("Map zone (RawImage) size — match the MapCamera RT aspect for non-stretched rendering. 2:1 ratio matches the default 2048×1024 RT.")]
-        private Vector2 _mapZoneSize = new Vector2(1640f, 820f);
-        [SerializeField] private float _headerHeight = 150f;
-        [SerializeField] private float _hintHeight = 50f;
+        [Header("Layout (1920×1080 reference)")]
+        [SerializeField, Tooltip("Top chrome bar height. 64 + 56 bottom leaves a 1920×960 map — exactly the RT's 2:1 aspect.")]
+        private float _topBarHeight = 64f;
+        [SerializeField] private float _bottomBarHeight = 56f;
+        [SerializeField] private Vector2 _sideCardSize = new Vector2(380f, 640f);
 
         [Header("Pan / Zoom")]
         [SerializeField, Tooltip("World units per second of pan at zoom-regional (ortho 150). Pan speed scales with current ortho so close zoom feels equally fast.")]
@@ -43,7 +42,7 @@ namespace Hollowfen.Map
         private RawImage _mapImage;
         private Texture _mapTexture;
         private TMP_Text _zoomLabel;
-        private TMP_Text _hintText;
+        private TMP_Text _regionLabel;
         private RectTransform _mapZoneRT;
         private Vector2 _lastMousePos;
         private bool _mouseDragging;
@@ -68,7 +67,9 @@ namespace Hollowfen.Map
         private void Awake()
         {
             if (_root == null) _root = gameObject;
-            SetActiveSilent(false);
+            // If the canvas was saved inactive, Awake only fires during Open()'s SetActive(true) —
+            // unconditionally deactivating here would instantly close the map it's opening.
+            if (!_isOpen) SetActiveSilent(false);
         }
 
         public void Toggle()
@@ -84,6 +85,7 @@ namespace Hollowfen.Map
             _isOpen = true;
             SetActiveSilent(true);
             if (_miniMapRoot != null) _miniMapRoot.SetActive(false);
+            SetHudVisible(false);
             // Snap camera to player and regional zoom whenever map opens — predictable starting frame.
             if (_mapCamera != null)
             {
@@ -111,16 +113,27 @@ namespace Hollowfen.Map
             if (playerGO == null) return;
             Vector3 pp = playerGO.transform.position;
 
-            LocationMarker bestDiscovered = null, bestAny = null;
-            float dDiscovered = float.PositiveInfinity, dAny = float.PositiveInfinity;
+            // Prefer the nearest DISCOVERED marker that's inside the visible frame, then any
+            // visible marker, then anything at all — focusing an off-frame pin is disorienting.
+            var cam = _mapCamera != null ? _mapCamera.GetComponent<Camera>() : null;
+            LocationMarker bestDiscovered = null, bestVisible = null, bestAny = null;
+            float dDiscovered = float.PositiveInfinity, dVisible = float.PositiveInfinity, dAny = float.PositiveInfinity;
             for (int i = 0; i < markers.Count; i++)
             {
                 var m = markers[i]; if (m == null) continue;
                 float d = (m.WorldPosition - pp).sqrMagnitude;
                 if (d < dAny) { dAny = d; bestAny = m; }
+                bool visible = true;
+                if (cam != null)
+                {
+                    var vp = cam.WorldToViewportPoint(m.WorldPosition);
+                    visible = vp.x >= 0f && vp.x <= 1f && vp.y >= 0f && vp.y <= 1f;
+                }
+                if (!visible) continue;
+                if (d < dVisible) { dVisible = d; bestVisible = m; }
                 if (LocationRegistry.IsDiscovered(m.Id) && d < dDiscovered) { dDiscovered = d; bestDiscovered = m; }
             }
-            SetFocus(bestDiscovered ?? bestAny);
+            SetFocus(bestDiscovered ?? bestVisible ?? bestAny);
         }
 
         public void Close()
@@ -129,6 +142,7 @@ namespace Hollowfen.Map
             _isOpen = false;
             SetActiveSilent(false);
             if (_miniMapRoot != null) _miniMapRoot.SetActive(true);
+            SetHudVisible(true);
             // Return camera to follow-player so the mini-map / next-open are correct.
             if (_mapCamera != null) _mapCamera.CenterOnPlayer();
             _mouseDragging = false;
@@ -330,6 +344,11 @@ namespace Hollowfen.Map
         {
             if (_zoomLabel == null || _mapCamera == null) return;
             _zoomLabel.text = _mapCamera.IsZoomedClose ? "VILLAGE" : "REGIONAL";
+            if (_regionLabel != null)
+            {
+                string region = LocalizeRegion(LocationRegistry.CurrentRegion);
+                _regionLabel.text = region == "—" ? "HOLLOWFEN" : region.ToUpperInvariant();
+            }
         }
 
         // ---------- Phase 2: focus + side panel ----------
@@ -411,8 +430,8 @@ namespace Hollowfen.Map
             if (_sideTitle == null) return;
 
             bool hasFocus = _focusedMarker != null && _focusedMarker.Data != null;
-            float targetAlpha = hasFocus ? 1f : 0.55f;
-            if (_sidePanelCG != null) _sidePanelCG.alpha = targetAlpha;
+            // The card stays opaque-readable either way; unfocused just dims slightly.
+            if (_sidePanelCG != null) _sidePanelCG.alpha = hasFocus ? 1f : 0.92f;
 
             if (!hasFocus)
             {
@@ -460,9 +479,10 @@ namespace Hollowfen.Map
             if (_sideWaypointBtnLabel != null) _sideWaypointBtnLabel.text = label;
             if (_sideWaypointBtnBg != null)
             {
+                // Disabled reads as a quiet ink ghost on the parchment card, not washed-out gold.
                 _sideWaypointBtnBg.color = enabled
                     ? HollowfenPalette.Gold
-                    : new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0.25f);
+                    : new Color(HollowfenPalette.InkDeep.r, HollowfenPalette.InkDeep.g, HollowfenPalette.InkDeep.b, 0.10f);
             }
             if (_sideWaypointBtnLabel != null)
                 _sideWaypointBtnLabel.color = enabled ? HollowfenPalette.InkDeep : HollowfenPalette.Moss;
@@ -515,6 +535,17 @@ namespace Hollowfen.Map
                 _root.SetActive(active);
         }
 
+        // The gameplay HUD (quest tracker, clock, compass, coins) steps aside while the map is up —
+        // it bleeds through the translucent chrome bars otherwise. Same recipe as DialogueScreen.
+        private static void SetHudVisible(bool visible)
+        {
+            var go = GameObject.Find("_HUDCanvas");
+            if (go == null) return;
+            var cg = go.GetComponent<CanvasGroup>();
+            if (cg == null) cg = go.AddComponent<CanvasGroup>();
+            cg.alpha = visible ? 1f : 0f;
+        }
+
         // ----------------- UI BUILDER -----------------
 
         private void BuildIfNeeded()
@@ -553,97 +584,18 @@ namespace Hollowfen.Map
         {
             var canvasRT = (RectTransform)_root.transform;
 
-            // 1) Full-screen scrim — heavier so the unused margins around the page feel deliberate
-            // (the page sits on a dark surface) rather than reading as accidental black bars.
-            var scrim = UICanvasUtil.NewImage("Scrim", canvasRT, new Color(0.04f, 0.03f, 0.02f, 0.96f), true);
-            UICanvasUtil.Stretch((RectTransform)scrim.transform);
-
-            // 2) Center panel with parchment background
-            var panel = new GameObject("Panel", typeof(RectTransform));
-            panel.transform.SetParent(canvasRT, false);
-            var panelImg = panel.AddComponent<Image>();
-            panelImg.raycastTarget = true;
-            if (_parchmentSprite != null)
-            {
-                panelImg.sprite = _parchmentSprite;
-                panelImg.color = Color.white;
-                panelImg.preserveAspect = false;
-                panelImg.type = Image.Type.Simple;
-            }
-            else
-            {
-                panelImg.color = HollowfenPalette.Parchment;
-            }
-            var panelRT = (RectTransform)panel.transform;
-            panelRT.anchorMin = new Vector2(0.5f, 0.5f);
-            panelRT.anchorMax = new Vector2(0.5f, 0.5f);
-            panelRT.pivot = new Vector2(0.5f, 0.5f);
-            panelRT.sizeDelta = _panelSize;
-            panelRT.anchoredPosition = Vector2.zero;
-
-            // 3) Vignette overlay (top + bottom darker)
-            var vignette = UICanvasUtil.NewImage("Vignette", panelRT, Color.white, false);
-            UICanvasUtil.Stretch((RectTransform)vignette.transform);
-            vignette.GetComponent<Image>().sprite = UICanvasUtil.MakeVerticalGradient(new[]
-            {
-                new UICanvasUtil.GradientStop(0.00f, new Color(0f, 0f, 0f, 0.32f)),
-                new UICanvasUtil.GradientStop(0.18f, new Color(0f, 0f, 0f, 0.00f)),
-                new UICanvasUtil.GradientStop(0.82f, new Color(0f, 0f, 0f, 0.00f)),
-                new UICanvasUtil.GradientStop(1.00f, new Color(0f, 0f, 0f, 0.28f)),
-            }, 256);
-
-            // 4) Double-rule frame
-            BuildFrame(panelRT, 14f, HollowfenPalette.GoldFaint, 1.5f);
-            BuildFrame(panelRT, 22f, new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0.22f), 1f);
-
-            // 5) Header band: eyebrow + title + gold rule, anchored to panel TOP so we never overlap the map.
-            float panelHalfH = _panelSize.y * 0.5f;
-
-            var topEyebrow = UICanvasUtil.NewEyebrow("TopEyebrow", panelRT,
-                "FIELD JOURNAL  ·  CARTOGRAPHY", 13f, HollowfenPalette.Gold, TMPro.TextAlignmentOptions.Center);
-            var teRT = topEyebrow.rectTransform;
-            teRT.anchorMin = new Vector2(0f, 1f); teRT.anchorMax = new Vector2(1f, 1f);
-            teRT.pivot = new Vector2(0.5f, 1f);
-            teRT.sizeDelta = new Vector2(0f, 18f);
-            teRT.anchoredPosition = new Vector2(0f, -28f);
-
-            var title = UICanvasUtil.NewHeading("Title", panelRT, "Hollowfen", 56f,
-                HollowfenPalette.InkDeep, TMPro.FontStyles.Normal, TMPro.TextAlignmentOptions.Center);
-            var tRT = title.rectTransform;
-            tRT.anchorMin = new Vector2(0f, 1f); tRT.anchorMax = new Vector2(1f, 1f);
-            tRT.pivot = new Vector2(0.5f, 1f);
-            tRT.sizeDelta = new Vector2(0f, 64f);
-            tRT.anchoredPosition = new Vector2(0f, -50f);
-
-            var underline = UICanvasUtil.NewImage("TitleRule", panelRT, HollowfenPalette.Gold, false);
-            var urRT = (RectTransform)underline.transform;
-            urRT.anchorMin = new Vector2(0.5f, 1f); urRT.anchorMax = new Vector2(0.5f, 1f);
-            urRT.pivot = new Vector2(0.5f, 1f);
-            urRT.sizeDelta = new Vector2(140f, 2f);
-            urRT.anchoredPosition = new Vector2(0f, -120f);
-
-            // 6) Map zone — landscape RawImage centered horizontally, offset down so it clears the
-            // header band above and leaves room for the hint band below.
-            float mapYOffset = -((_headerHeight - _hintHeight) * 0.5f);
+            // 1) Full-bleed map zone. With a 64px top bar and 56px bottom bar the zone is
+            // 1920×960 — exactly the RT's 2:1 aspect, so the world renders pixel-true.
             var mapZone = new GameObject("MapZone", typeof(RectTransform));
-            mapZone.transform.SetParent(panelRT, false);
+            mapZone.transform.SetParent(canvasRT, false);
             var mapZoneRT = (RectTransform)mapZone.transform;
             _mapZoneRT = mapZoneRT;
-            mapZoneRT.anchorMin = new Vector2(0.5f, 0.5f);
-            mapZoneRT.anchorMax = new Vector2(0.5f, 0.5f);
+            mapZoneRT.anchorMin = new Vector2(0f, 0f);
+            mapZoneRT.anchorMax = new Vector2(1f, 1f);
             mapZoneRT.pivot = new Vector2(0.5f, 0.5f);
-            mapZoneRT.sizeDelta = _mapZoneSize;
-            mapZoneRT.anchoredPosition = new Vector2(0f, mapYOffset);
+            mapZoneRT.offsetMin = new Vector2(0f, _bottomBarHeight);
+            mapZoneRT.offsetMax = new Vector2(0f, -_topBarHeight);
 
-            // Subtle gold inset frame around the map (separates map from parchment)
-            var mapFrame = UICanvasUtil.NewImage("MapFrame", mapZoneRT, HollowfenPalette.GoldFaint, false);
-            var mfRT = (RectTransform)mapFrame.transform;
-            mfRT.anchorMin = new Vector2(0f, 0f); mfRT.anchorMax = new Vector2(1f, 1f);
-            mfRT.pivot = new Vector2(0.5f, 0.5f);
-            mfRT.offsetMin = new Vector2(-3f, -3f);
-            mfRT.offsetMax = new Vector2(3f, 3f);
-
-            // The actual map image
             var mapGO = new GameObject("MapImage", typeof(RectTransform));
             mapGO.transform.SetParent(mapZoneRT, false);
             _mapImage = mapGO.AddComponent<RawImage>();
@@ -651,93 +603,258 @@ namespace Hollowfen.Map
             _mapImage.texture = _mapTexture;
             UICanvasUtil.Stretch((RectTransform)mapGO.transform);
 
-            // POI overlay — gold dots + italic labels for every registered LocationMarker.
+            // Soft edge vignette inside the map so the chrome bars feel seated on it.
+            var vigV = UICanvasUtil.NewImage("Vignette.V", mapZoneRT, Color.white, false);
+            UICanvasUtil.Stretch((RectTransform)vigV.transform);
+            vigV.GetComponent<Image>().sprite = UICanvasUtil.MakeVerticalGradient(new[]
+            {
+                new UICanvasUtil.GradientStop(0.00f, new Color(0f, 0f, 0f, 0.30f)),
+                new UICanvasUtil.GradientStop(0.10f, new Color(0f, 0f, 0f, 0.00f)),
+                new UICanvasUtil.GradientStop(0.90f, new Color(0f, 0f, 0f, 0.00f)),
+                new UICanvasUtil.GradientStop(1.00f, new Color(0f, 0f, 0f, 0.30f)),
+            }, 256);
+            var vigH = UICanvasUtil.NewImage("Vignette.H", mapZoneRT, Color.white, false);
+            UICanvasUtil.Stretch((RectTransform)vigH.transform);
+            vigH.GetComponent<Image>().sprite = UICanvasUtil.MakeHorizontalGradient(new[]
+            {
+                new UICanvasUtil.GradientStop(0.00f, new Color(0f, 0f, 0f, 0.24f)),
+                new UICanvasUtil.GradientStop(0.07f, new Color(0f, 0f, 0f, 0.00f)),
+                new UICanvasUtil.GradientStop(0.93f, new Color(0f, 0f, 0f, 0.00f)),
+                new UICanvasUtil.GradientStop(1.00f, new Color(0f, 0f, 0f, 0.24f)),
+            }, 256);
+
+            // 2) POI overlay + player arrow. Markers pool into their own container created BEFORE
+            // the arrow so the "you are here" arrow always draws on top of pins.
+            var poiRoot = new GameObject("POIRoot", typeof(RectTransform));
+            poiRoot.transform.SetParent(mapGO.transform, false);
+            UICanvasUtil.Stretch((RectTransform)poiRoot.transform);
             _markerOverlay = mapGO.AddComponent<LocationMarkerOverlay>();
             var mapCam = _mapCamera != null ? _mapCamera.GetComponent<Camera>() : null;
-            _markerOverlay.Configure(mapCam, (RectTransform)mapGO.transform, 16f, showLabels: true, includeUndiscovered: true);
+            _markerOverlay.Configure(mapCam, (RectTransform)poiRoot.transform, 18f, showLabels: true, includeUndiscovered: true);
 
-            // Player heading triangle — tracks Wren's projected position on the map AND rotates
-            // with her facing direction. Parented to MapImage so it sits above the rendered terrain
-            // but below any future overlay UI.
             var arrowGO = new GameObject("HeadingArrow", typeof(RectTransform));
             arrowGO.transform.SetParent(mapGO.transform, false);
-            var tri = arrowGO.AddComponent<UITriangle>();
-            tri.color = HollowfenPalette.GoldGlow;
-            tri.raycastTarget = false;
-            var heading = arrowGO.AddComponent<PlayerHeadingArrow>();
-            heading.Configure(mapCam, (RectTransform)mapGO.transform);
             var arRT = (RectTransform)arrowGO.transform;
             arRT.anchorMin = new Vector2(0.5f, 0.5f); arRT.anchorMax = new Vector2(0.5f, 0.5f);
             arRT.pivot = new Vector2(0.5f, 0.5f);
-            arRT.sizeDelta = new Vector2(24f, 30f);
+            arRT.sizeDelta = new Vector2(30f, 36f);
             arRT.anchoredPosition = Vector2.zero;
+            var backTri = new GameObject("Back", typeof(RectTransform)).AddComponent<UITriangle>();
+            backTri.transform.SetParent(arRT, false);
+            backTri.color = new Color(0.04f, 0.03f, 0.02f, 0.9f);
+            backTri.raycastTarget = false;
+            var btRT = (RectTransform)backTri.transform;
+            btRT.anchorMin = Vector2.zero; btRT.anchorMax = Vector2.one;
+            btRT.offsetMin = new Vector2(-4f, -4f); btRT.offsetMax = new Vector2(4f, 4f);
+            var frontTri = new GameObject("Front", typeof(RectTransform)).AddComponent<UITriangle>();
+            frontTri.transform.SetParent(arRT, false);
+            frontTri.color = HollowfenPalette.GoldGlow;
+            frontTri.raycastTarget = false;
+            UICanvasUtil.Stretch((RectTransform)frontTri.transform);
+            arrowGO.AddComponent<PlayerHeadingArrow>().Configure(mapCam, (RectTransform)mapGO.transform);
 
-            // 7) North label — single, minimal orientation cue. The map is always rendered
-            // with world +Z up (no camera rotation), so a single "N" pill at the top of the
-            // map rect is enough. The full perimeter cardinal markers were removed because
-            // they collided with the title and added clutter.
             BuildNorthMarker(mapZoneRT);
 
-            // 8) Hint band at panel bottom — pan/zoom/recenter/close controls.
-            _hintText = UICanvasUtil.NewBody("Hint", panelRT,
-                "Stick · WASD — pan     Arrows · D-pad — select     A · Enter — waypoint     R1 · Tab — zoom     R3 · Home — recenter     M · B · Esc — close",
-                11f,
-                HollowfenPalette.Moss, TMPro.FontStyles.Italic, TMPro.TextAlignmentOptions.Center);
-            var hintRT = _hintText.rectTransform;
-            hintRT.anchorMin = new Vector2(0f, 0f); hintRT.anchorMax = new Vector2(1f, 0f);
-            hintRT.pivot = new Vector2(0.5f, 0f);
-            hintRT.sizeDelta = new Vector2(0f, 22f);
-            hintRT.anchoredPosition = new Vector2(0f, 38f);
+            // 3) Top chrome bar — ink glass, serif title left, region + zoom chips right.
+            var topBar = UICanvasUtil.NewImage("TopBar", canvasRT, new Color(0.07f, 0.06f, 0.045f, 0.94f), true);
+            var tbRT = (RectTransform)topBar.transform;
+            tbRT.anchorMin = new Vector2(0f, 1f); tbRT.anchorMax = new Vector2(1f, 1f);
+            tbRT.pivot = new Vector2(0.5f, 1f);
+            tbRT.sizeDelta = new Vector2(0f, _topBarHeight);
+            tbRT.anchoredPosition = Vector2.zero;
+            BuildBarHairline(tbRT, bottomEdge: true);
 
-            // 9) Zoom indicator — small pill in the upper-right of the map zone showing current preset.
-            var zoomPill = UICanvasUtil.NewImage("ZoomPill", mapZoneRT,
-                new Color(0.05f, 0.04f, 0.02f, 0.7f), false);
-            var zpRT = (RectTransform)zoomPill.transform;
-            zpRT.anchorMin = new Vector2(1f, 1f); zpRT.anchorMax = new Vector2(1f, 1f);
-            zpRT.pivot = new Vector2(1f, 1f);
-            zpRT.sizeDelta = new Vector2(120f, 28f);
-            zpRT.anchoredPosition = new Vector2(-12f, -12f);
+            // Fixed offsets — TMP preferred-size queries are unreliable during the same frame the
+            // text is created, so don't measure here.
+            var title = UICanvasUtil.NewHeading("Title", tbRT, "Hollowfen", 32f,
+                HollowfenPalette.Parchment, TMPro.FontStyles.Normal, TMPro.TextAlignmentOptions.Left);
+            var tRT = title.rectTransform;
+            tRT.anchorMin = new Vector2(0f, 0.5f); tRT.anchorMax = new Vector2(0f, 0.5f);
+            tRT.pivot = new Vector2(0f, 0.5f);
+            tRT.sizeDelta = new Vector2(230f, 44f);
+            tRT.anchoredPosition = new Vector2(28f, -2f);
+            title.raycastTarget = false;
 
-            _zoomLabel = UICanvasUtil.NewEyebrow("ZoomLabel", zpRT, "REGIONAL", 12f,
-                HollowfenPalette.GoldGlow, TMPro.TextAlignmentOptions.Center);
-            _zoomLabel.fontStyle = TMPro.FontStyles.Bold;
-            _zoomLabel.raycastTarget = false;
-            UICanvasUtil.Stretch(_zoomLabel.rectTransform);
+            var sep = UICanvasUtil.NewImage("TitleSep", tbRT, new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0.5f), false);
+            var sepRT = (RectTransform)sep.transform;
+            sepRT.anchorMin = new Vector2(0f, 0.5f); sepRT.anchorMax = new Vector2(0f, 0.5f);
+            sepRT.pivot = new Vector2(0f, 0.5f);
+            sepRT.sizeDelta = new Vector2(1.4f, 26f);
+            sepRT.anchoredPosition = new Vector2(268f, 0f);
 
-            // 10) Side panel — focused POI info, overlays the right ~320px of the map.
+            var eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", tbRT, "FIELD JOURNAL  ·  CARTOGRAPHY", 11f,
+                HollowfenPalette.Gold, TMPro.TextAlignmentOptions.Left);
+            var eyRT = eyebrow.rectTransform;
+            eyRT.anchorMin = new Vector2(0f, 0.5f); eyRT.anchorMax = new Vector2(0f, 0.5f);
+            eyRT.pivot = new Vector2(0f, 0.5f);
+            eyRT.sizeDelta = new Vector2(420f, 16f);
+            eyRT.anchoredPosition = new Vector2(288f, 0f);
+            eyebrow.raycastTarget = false;
+
+            _regionLabel = BuildTopChip(tbRT, "RegionChip", "HOLLOWFEN", HollowfenPalette.Cream, -176f, 210f, false);
+            _zoomLabel = BuildTopChip(tbRT, "ZoomChip", "REGIONAL", HollowfenPalette.GoldGlow, -28f, 132f, true);
+
+            // 4) Bottom control bar — keycap pills + labels, readable at Steam Deck distance.
+            var botBar = UICanvasUtil.NewImage("BottomBar", canvasRT, new Color(0.07f, 0.06f, 0.045f, 0.94f), true);
+            var bbRT = (RectTransform)botBar.transform;
+            bbRT.anchorMin = new Vector2(0f, 0f); bbRT.anchorMax = new Vector2(1f, 0f);
+            bbRT.pivot = new Vector2(0.5f, 0f);
+            bbRT.sizeDelta = new Vector2(0f, _bottomBarHeight);
+            bbRT.anchoredPosition = Vector2.zero;
+            BuildBarHairline(bbRT, bottomEdge: false);
+            BuildControlHints(bbRT);
+
+            // 5) Side info card — opaque parchment, rounded, shadowed. Sits over the map's right edge.
             BuildSidePanel(mapZoneRT);
             RefreshSidePanel();
         }
 
+        // Thin gold hairline along one edge of a chrome bar.
+        private static void BuildBarHairline(RectTransform barRT, bool bottomEdge)
+        {
+            var line = UICanvasUtil.NewImage("Hairline", barRT,
+                new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0.35f), false);
+            var lRT = (RectTransform)line.transform;
+            float y = bottomEdge ? 0f : 1f;
+            lRT.anchorMin = new Vector2(0f, y); lRT.anchorMax = new Vector2(1f, y);
+            lRT.pivot = new Vector2(0.5f, y);
+            lRT.sizeDelta = new Vector2(0f, 1.2f);
+            lRT.anchoredPosition = Vector2.zero;
+        }
+
+        // Small status chip on the right of the top bar. Returns its label for live updates.
+        private static TMP_Text BuildTopChip(RectTransform barRT, string name, string text, Color textColor, float xFromRight, float width, bool goldStroke)
+        {
+            var chip = new GameObject(name, typeof(RectTransform));
+            chip.transform.SetParent(barRT, false);
+            var cRT = (RectTransform)chip.transform;
+            cRT.anchorMin = new Vector2(1f, 0.5f); cRT.anchorMax = new Vector2(1f, 0.5f);
+            cRT.pivot = new Vector2(1f, 0.5f);
+            cRT.sizeDelta = new Vector2(width, 32f);
+            cRT.anchoredPosition = new Vector2(xFromRight, 0f);
+            var fill = chip.AddComponent<Image>();
+            fill.sprite = UICanvasUtil.RoundedRect(10);
+            fill.type = Image.Type.Sliced;
+            fill.color = new Color(0f, 0f, 0f, 0.38f);
+            fill.raycastTarget = false;
+            var stroke = UICanvasUtil.NewImage("Stroke", cRT, goldStroke
+                ? new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0.55f)
+                : new Color(1f, 1f, 1f, 0.14f), false);
+            var stImg = stroke.GetComponent<Image>();
+            stImg.sprite = UICanvasUtil.RoundedOutline(10, 1.3f);
+            stImg.type = Image.Type.Sliced;
+            UICanvasUtil.Stretch((RectTransform)stroke.transform);
+            var label = UICanvasUtil.NewEyebrow("Label", cRT, text, 12f, textColor, TMPro.TextAlignmentOptions.Center);
+            label.fontStyle = TMPro.FontStyles.Bold;
+            label.raycastTarget = false;
+            UICanvasUtil.Stretch(label.rectTransform);
+            return label;
+        }
+
+        // Keycap + action label groups. Sizing is driven by Unity's layout system (TMP reports
+        // preferred width through ILayoutElement once layout runs) — manual measuring at build
+        // time bakes in garbage because TMP preferred sizes are unreliable on the creation frame.
+        private void BuildControlHints(RectTransform barRT)
+        {
+            string[][] hints = new string[][]
+            {
+                new[] { "WASD · L-Stick", "Pan" },
+                new[] { "Arrows · D-Pad", "Select" },
+                new[] { "Enter · A", "Waypoint" },
+                new[] { "Tab · RB", "Zoom" },
+                new[] { "F · R3", "Recenter" },
+                new[] { "M · Esc · B", "Close" },
+            };
+
+            var row = new GameObject("HintRow", typeof(RectTransform));
+            row.transform.SetParent(barRT, false);
+            var rowRT = (RectTransform)row.transform;
+            UICanvasUtil.Stretch(rowRT);
+            var rowLG = row.AddComponent<HorizontalLayoutGroup>();
+            rowLG.childAlignment = TextAnchor.MiddleCenter;
+            rowLG.spacing = 34f;
+            rowLG.childControlWidth = true;
+            rowLG.childControlHeight = false;
+            rowLG.childForceExpandWidth = false;
+            rowLG.childForceExpandHeight = false;
+
+            for (int i = 0; i < hints.Length; i++)
+            {
+                var group = new GameObject("Hint_" + hints[i][1], typeof(RectTransform));
+                group.transform.SetParent(rowRT, false);
+                var gLG = group.AddComponent<HorizontalLayoutGroup>();
+                gLG.childAlignment = TextAnchor.MiddleLeft;
+                gLG.spacing = 8f;
+                gLG.childControlWidth = true;
+                gLG.childControlHeight = false;
+                gLG.childForceExpandWidth = false;
+                gLG.childForceExpandHeight = false;
+                group.AddComponent<ContentSizeFitter>().horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+                ((RectTransform)group.transform).sizeDelta = new Vector2(100f, 26f);
+
+                var key = new GameObject("Key", typeof(RectTransform));
+                key.transform.SetParent(group.transform, false);
+                var kStroke = key.AddComponent<Image>();
+                kStroke.sprite = UICanvasUtil.RoundedOutline(8, 1.2f);
+                kStroke.type = Image.Type.Sliced;
+                kStroke.color = new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0.5f);
+                kStroke.raycastTarget = false;
+                var kLG = key.AddComponent<HorizontalLayoutGroup>();
+                kLG.padding = new RectOffset(9, 9, 4, 4);
+                kLG.childAlignment = TextAnchor.MiddleCenter;
+                kLG.childControlWidth = true;
+                kLG.childControlHeight = true;
+                kLG.childForceExpandWidth = false;
+                kLG.childForceExpandHeight = false;
+                key.AddComponent<ContentSizeFitter>().horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+                ((RectTransform)key.transform).sizeDelta = new Vector2(60f, 26f);
+                var kTxt = UICanvasUtil.NewEyebrow("Txt", key.transform, hints[i][0], 11f, HollowfenPalette.Gold, TMPro.TextAlignmentOptions.Center);
+                kTxt.fontStyle = TMPro.FontStyles.Bold;
+                kTxt.textWrappingMode = TextWrappingModes.NoWrap;
+                kTxt.raycastTarget = false;
+
+                var lbl = UICanvasUtil.NewBody("Lbl", group.transform, hints[i][1], 13f,
+                    HollowfenPalette.Cream, TMPro.FontStyles.Normal, TMPro.TextAlignmentOptions.Left);
+                lbl.textWrappingMode = TextWrappingModes.NoWrap;
+                lbl.raycastTarget = false;
+            }
+        }
+
         private void BuildSidePanel(RectTransform mapZoneRT)
         {
-            // Container
-            var panel = new GameObject("SidePanel", typeof(RectTransform));
+            // Opaque parchment card with rounded corners + drop shadow — the focused-POI reader.
+            var panel = new GameObject("SideCard", typeof(RectTransform));
             panel.transform.SetParent(mapZoneRT, false);
             var spRT = (RectTransform)panel.transform;
             spRT.anchorMin = new Vector2(1f, 0.5f);
             spRT.anchorMax = new Vector2(1f, 0.5f);
             spRT.pivot = new Vector2(1f, 0.5f);
-            spRT.sizeDelta = new Vector2(340f, 720f);
-            spRT.anchoredPosition = new Vector2(-16f, 0f);
+            spRT.sizeDelta = _sideCardSize;
+            spRT.anchoredPosition = new Vector2(-28f, 0f);
 
             _sidePanelCG = panel.AddComponent<CanvasGroup>();
-            _sidePanelCG.alpha = 0.55f;
+            _sidePanelCG.alpha = 1f;
             _sidePanelCG.interactable = true;
-            _sidePanelCG.blocksRaycasts = false;
+            _sidePanelCG.blocksRaycasts = true;
 
-            // Background: deep ink with subtle gradient
-            var bg = panel.AddComponent<Image>();
-            bg.color = new Color(0.05f, 0.04f, 0.02f, 0.86f);
-            bg.raycastTarget = false;
+            UICanvasUtil.AddShadow(spRT, 18, 30, 0.5f, -6f);
+            var cardImg = UICanvasUtil.MakeRoundedPanel(spRT, HollowfenPalette.Parchment, 18, 0.45f);
+            cardImg.raycastTarget = true;
+            if (_parchmentSprite != null)
+            {
+                var wash = UICanvasUtil.NewImage("ParchmentWash", spRT, new Color(1f, 1f, 1f, 0.45f), false);
+                var washImg = wash.GetComponent<Image>();
+                washImg.sprite = _parchmentSprite;
+                washImg.type = Image.Type.Simple;
+                UICanvasUtil.Stretch((RectTransform)wash.transform);
+                wash.transform.SetSiblingIndex(1);
+            }
 
-            // Thin gold border (4 rules)
-            BuildFrame(spRT, 6f, HollowfenPalette.GoldFaint, 1.2f);
+            float padX = 28f;
+            float topY = -30f;
+            Color ink = HollowfenPalette.InkDeep;
+            Color inkSoft = new Color(0.27f, 0.22f, 0.15f, 1f);
 
-            float padX = 22f;
-            float topY = -28f;
-
-            // Eyebrow
             _sideEyebrow = UICanvasUtil.NewEyebrow("Eyebrow", spRT,
                 "LANDMARK", 11f, HollowfenPalette.Gold, TMPro.TextAlignmentOptions.TopLeft);
             var eRT = _sideEyebrow.rectTransform;
@@ -746,89 +863,65 @@ namespace Hollowfen.Map
             eRT.sizeDelta = new Vector2(-padX * 2f, 14f);
             eRT.anchoredPosition = new Vector2(0f, topY);
             _sideEyebrow.fontStyle = TMPro.FontStyles.Bold;
+            _sideEyebrow.raycastTarget = false;
 
-            // Title (serif, large)
-            _sideTitle = UICanvasUtil.NewHeading("Title", spRT, "Hollowfen", 28f,
-                HollowfenPalette.GoldGlow, TMPro.FontStyles.Normal, TMPro.TextAlignmentOptions.TopLeft);
+            _sideTitle = UICanvasUtil.NewHeading("Title", spRT, "Hollowfen", 30f,
+                ink, TMPro.FontStyles.Normal, TMPro.TextAlignmentOptions.TopLeft);
             var tRT = _sideTitle.rectTransform;
             tRT.anchorMin = new Vector2(0f, 1f); tRT.anchorMax = new Vector2(1f, 1f);
             tRT.pivot = new Vector2(0.5f, 1f);
-            tRT.sizeDelta = new Vector2(-padX * 2f, 72f);
-            tRT.anchoredPosition = new Vector2(0f, topY - 22f);
+            tRT.sizeDelta = new Vector2(-padX * 2f, 76f);
+            tRT.anchoredPosition = new Vector2(0f, topY - 20f);
             _sideTitle.textWrappingMode = TextWrappingModes.Normal;
+            _sideTitle.raycastTarget = false;
 
-            // Gold underline rule
             var rule = UICanvasUtil.NewImage("Rule", spRT, HollowfenPalette.Gold, false);
             var rRT = (RectTransform)rule.transform;
             rRT.anchorMin = new Vector2(0f, 1f); rRT.anchorMax = new Vector2(0f, 1f);
             rRT.pivot = new Vector2(0f, 1f);
             rRT.sizeDelta = new Vector2(72f, 2f);
-            rRT.anchoredPosition = new Vector2(padX, topY - 96f);
+            rRT.anchoredPosition = new Vector2(padX, topY - 98f);
 
-            // Body (italic)
-            _sideBody = UICanvasUtil.NewBody("Body", spRT,
-                "", 14f,
-                HollowfenPalette.Parchment, TMPro.FontStyles.Italic, TMPro.TextAlignmentOptions.TopLeft);
+            _sideBody = UICanvasUtil.NewBody("Body", spRT, "", 15f,
+                inkSoft, TMPro.FontStyles.Italic, TMPro.TextAlignmentOptions.TopLeft);
             var bRT = _sideBody.rectTransform;
             bRT.anchorMin = new Vector2(0f, 1f); bRT.anchorMax = new Vector2(1f, 1f);
             bRT.pivot = new Vector2(0.5f, 1f);
-            bRT.sizeDelta = new Vector2(-padX * 2f, 220f);
-            bRT.anchoredPosition = new Vector2(0f, topY - 112f);
+            bRT.sizeDelta = new Vector2(-padX * 2f, 200f);
+            bRT.anchoredPosition = new Vector2(0f, topY - 116f);
             _sideBody.textWrappingMode = TextWrappingModes.Normal;
+            _sideBody.lineSpacing = 4f;
+            _sideBody.raycastTarget = false;
 
-            // Separator
-            var sep = UICanvasUtil.NewImage("Sep", spRT, new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0.18f), false);
+            var sep = UICanvasUtil.NewImage("Sep", spRT, new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0.3f), false);
             var sepRT = (RectTransform)sep.transform;
             sepRT.anchorMin = new Vector2(0f, 1f); sepRT.anchorMax = new Vector2(1f, 1f);
             sepRT.pivot = new Vector2(0.5f, 1f);
             sepRT.sizeDelta = new Vector2(-padX * 2f, 1f);
-            sepRT.anchoredPosition = new Vector2(0f, topY - 342f);
+            sepRT.anchoredPosition = new Vector2(0f, topY - 330f);
 
-            // Distance row
-            _sideDistanceLabel = UICanvasUtil.NewEyebrow("DistLabel", spRT,
-                Hollowfen.Localization.Get("map.label.distance"), 10f, HollowfenPalette.Moss, TMPro.TextAlignmentOptions.TopLeft);
-            var dlRT = _sideDistanceLabel.rectTransform;
-            dlRT.anchorMin = new Vector2(0f, 1f); dlRT.anchorMax = new Vector2(0f, 1f);
-            dlRT.pivot = new Vector2(0f, 1f);
-            dlRT.sizeDelta = new Vector2(120f, 14f);
-            dlRT.anchoredPosition = new Vector2(padX, topY - 358f);
+            // Stat rows: DISTANCE and REGION side by side.
+            _sideDistanceLabel = BuildStatLabel(spRT, "DistLabel", Hollowfen.Localization.Get("map.label.distance"), padX, topY - 350f);
+            _sideDistanceValue = BuildStatValue(spRT, "DistVal", padX, topY - 366f, ink);
+            BuildStatLabel(spRT, "RegLabel", Hollowfen.Localization.Get("map.label.region"), padX + 170f, topY - 350f);
+            _sideRegionValue = BuildStatValue(spRT, "RegVal", padX + 170f, topY - 366f, ink);
 
-            _sideDistanceValue = UICanvasUtil.NewBody("DistVal", spRT, "—", 15f,
-                HollowfenPalette.Cream, TMPro.FontStyles.Normal, TMPro.TextAlignmentOptions.TopLeft);
-            var dvRT = _sideDistanceValue.rectTransform;
-            dvRT.anchorMin = new Vector2(0f, 1f); dvRT.anchorMax = new Vector2(0f, 1f);
-            dvRT.pivot = new Vector2(0f, 1f);
-            dvRT.sizeDelta = new Vector2(220f, 22f);
-            dvRT.anchoredPosition = new Vector2(padX, topY - 374f);
-
-            // Region row
-            var regionLabel = UICanvasUtil.NewEyebrow("RegLabel", spRT,
-                Hollowfen.Localization.Get("map.label.region"), 10f, HollowfenPalette.Moss, TMPro.TextAlignmentOptions.TopLeft);
-            var rlRT = regionLabel.rectTransform;
-            rlRT.anchorMin = new Vector2(0f, 1f); rlRT.anchorMax = new Vector2(0f, 1f);
-            rlRT.pivot = new Vector2(0f, 1f);
-            rlRT.sizeDelta = new Vector2(120f, 14f);
-            rlRT.anchoredPosition = new Vector2(padX, topY - 410f);
-
-            _sideRegionValue = UICanvasUtil.NewBody("RegVal", spRT, "—", 15f,
-                HollowfenPalette.Cream, TMPro.FontStyles.Normal, TMPro.TextAlignmentOptions.TopLeft);
-            var rvRT = _sideRegionValue.rectTransform;
-            rvRT.anchorMin = new Vector2(0f, 1f); rvRT.anchorMax = new Vector2(0f, 1f);
-            rvRT.pivot = new Vector2(0f, 1f);
-            rvRT.sizeDelta = new Vector2(280f, 22f);
-            rvRT.anchoredPosition = new Vector2(padX, topY - 426f);
-
-            // Waypoint button (placeholder for Phase 3)
+            // Waypoint button — solid gold rounded, clickable, Enter/A also triggers it.
             var btnGO = new GameObject("WaypointBtn", typeof(RectTransform));
             btnGO.transform.SetParent(spRT, false);
             _sideWaypointBtnBg = btnGO.AddComponent<Image>();
+            _sideWaypointBtnBg.sprite = UICanvasUtil.RoundedRect(12);
+            _sideWaypointBtnBg.type = Image.Type.Sliced;
             _sideWaypointBtnBg.color = HollowfenPalette.Gold;
-            _sideWaypointBtnBg.raycastTarget = false;
+            _sideWaypointBtnBg.raycastTarget = true;
             var btnRT = (RectTransform)btnGO.transform;
             btnRT.anchorMin = new Vector2(0.5f, 0f); btnRT.anchorMax = new Vector2(0.5f, 0f);
             btnRT.pivot = new Vector2(0.5f, 0f);
-            btnRT.sizeDelta = new Vector2(260f, 44f);
-            btnRT.anchoredPosition = new Vector2(0f, 24f);
+            btnRT.sizeDelta = new Vector2(_sideCardSize.x - padX * 2f, 48f);
+            btnRT.anchoredPosition = new Vector2(0f, 26f);
+            var btn = btnGO.AddComponent<Button>();
+            btn.transition = Selectable.Transition.None;
+            btn.onClick.AddListener(ToggleWaypointOnFocused);
 
             _sideWaypointBtnLabel = UICanvasUtil.NewEyebrow("Label", btnRT,
                 Hollowfen.Localization.Get("map.btn.waypoint"), 13f,
@@ -838,44 +931,61 @@ namespace Hollowfen.Map
             UICanvasUtil.Stretch(_sideWaypointBtnLabel.rectTransform);
         }
 
+        private static TMP_Text BuildStatLabel(RectTransform parent, string name, string text, float x, float y)
+        {
+            var t = UICanvasUtil.NewEyebrow(name, parent, text, 10f, HollowfenPalette.Moss, TMPro.TextAlignmentOptions.TopLeft);
+            var rt = t.rectTransform;
+            rt.anchorMin = new Vector2(0f, 1f); rt.anchorMax = new Vector2(0f, 1f);
+            rt.pivot = new Vector2(0f, 1f);
+            rt.sizeDelta = new Vector2(160f, 14f);
+            rt.anchoredPosition = new Vector2(x, y);
+            t.fontStyle = TMPro.FontStyles.Bold;
+            t.raycastTarget = false;
+            return t;
+        }
+
+        private static TMP_Text BuildStatValue(RectTransform parent, string name, float x, float y, Color color)
+        {
+            var t = UICanvasUtil.NewBody(name, parent, "—", 16f, color, TMPro.FontStyles.Normal, TMPro.TextAlignmentOptions.TopLeft);
+            var rt = t.rectTransform;
+            rt.anchorMin = new Vector2(0f, 1f); rt.anchorMax = new Vector2(0f, 1f);
+            rt.pivot = new Vector2(0f, 1f);
+            rt.sizeDelta = new Vector2(160f, 24f);
+            rt.anchoredPosition = new Vector2(x, y);
+            t.raycastTarget = false;
+            return t;
+        }
+
         private static void BuildNorthMarker(RectTransform mapZoneRT)
         {
-            // Small gold "N" pill anchored INSIDE the top edge of the map zone (not outside, so it
-            // never collides with the title). Sits ~12px below the gold frame.
-            var pill = UICanvasUtil.NewImage("North", mapZoneRT, new Color(0.05f, 0.04f, 0.02f, 0.78f), false);
+            // Compact "N" chip with an up-notch, top-center inside the map. The map always renders
+            // +Z up, so one cue is enough.
+            var pill = new GameObject("North", typeof(RectTransform));
+            pill.transform.SetParent(mapZoneRT, false);
             var pRT = (RectTransform)pill.transform;
             pRT.anchorMin = new Vector2(0.5f, 1f);
             pRT.anchorMax = new Vector2(0.5f, 1f);
             pRT.pivot = new Vector2(0.5f, 1f);
-            pRT.sizeDelta = new Vector2(38f, 28f);
-            pRT.anchoredPosition = new Vector2(0f, -12f);
+            pRT.sizeDelta = new Vector2(40f, 32f);
+            pRT.anchoredPosition = new Vector2(0f, -14f);
+            var fill = pill.AddComponent<Image>();
+            fill.sprite = UICanvasUtil.RoundedRect(10);
+            fill.type = Image.Type.Sliced;
+            fill.color = new Color(0.05f, 0.04f, 0.02f, 0.8f);
+            fill.raycastTarget = false;
 
-            var txt = UICanvasUtil.NewEyebrow("Txt", pRT, "N", 14f,
+            var notch = new GameObject("Notch", typeof(RectTransform)).AddComponent<UITriangle>();
+            notch.transform.SetParent(pRT, false);
+            notch.color = HollowfenPalette.Gold;
+            notch.raycastTarget = false;
+            var nRT = (RectTransform)notch.transform;
+            nRT.anchorMin = new Vector2(0.5f, 1f); nRT.anchorMax = new Vector2(0.5f, 1f);
+            nRT.pivot = new Vector2(0.5f, 0f);
+            nRT.sizeDelta = new Vector2(10f, 6f);
+            nRT.anchoredPosition = new Vector2(0f, 1f);
+
+            var txt = UICanvasUtil.NewEyebrow("Txt", pRT, "N", 15f,
                 HollowfenPalette.GoldGlow, TMPro.TextAlignmentOptions.Center);
-            UICanvasUtil.Stretch(txt.rectTransform);
-            txt.fontStyle = TMPro.FontStyles.Bold;
-            txt.raycastTarget = false;
-        }
-
-        private static void BuildCompassMarker(RectTransform mapZoneRT, string label, Vector2 mapAnchor, Vector2 outwardOffset, bool isCardinal)
-        {
-            // Pill background + uppercase gold/cream label. Anchored to a point on the map perimeter,
-            // pushed outward by `outwardOffset`. Pivot mirrors the anchor so the pill sits cleanly
-            // outside the map rect (e.g. anchored at top-center → pivot bottom-center → grows upward).
-            var pill = UICanvasUtil.NewImage("Compass_" + label, mapZoneRT, new Color(0f, 0f, 0f, 0.55f), false);
-            var pRT = (RectTransform)pill.transform;
-            pRT.anchorMin = mapAnchor;
-            pRT.anchorMax = mapAnchor;
-            pRT.pivot = new Vector2(
-                outwardOffset.x > 0.01f ? 0f : (outwardOffset.x < -0.01f ? 1f : 0.5f),
-                outwardOffset.y > 0.01f ? 0f : (outwardOffset.y < -0.01f ? 1f : 0.5f));
-            pRT.sizeDelta = isCardinal ? new Vector2(36f, 30f) : new Vector2(40f, 30f);
-            pRT.anchoredPosition = outwardOffset;
-
-            var txt = UICanvasUtil.NewEyebrow("Txt", pRT, label,
-                isCardinal ? 16f : 13f,
-                isCardinal ? HollowfenPalette.GoldGlow : HollowfenPalette.Gold,
-                TMPro.TextAlignmentOptions.Center);
             UICanvasUtil.Stretch(txt.rectTransform);
             txt.fontStyle = TMPro.FontStyles.Bold;
             txt.raycastTarget = false;

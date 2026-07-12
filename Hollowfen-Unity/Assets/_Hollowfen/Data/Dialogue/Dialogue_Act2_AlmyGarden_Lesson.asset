@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00c9c9bb92b3b44fb84ca335c48467d8, type: 3}
+  m_Name: Dialogue_Act2_AlmyGarden_Lesson
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Dialogue.DialogueData
+  _id: act2.almy_lessons.lesson
+  _lines:
+  - speaker: Almy
+    text: Your grandmother taught me three things. How to read rot. How to feed it.
+      How to leave enough behind.
+    isCloseup: 0
+  - speaker: Wren
+    text: That sounds less like a lesson and more like a warning.
+    isCloseup: 0
+  - speaker: Almy
+    text: Most useful lessons are.
+    isCloseup: 0
+  - speaker: Wren
+    text: Why teach me now?
+    isCloseup: 0
+  - speaker: Almy
+    text: Because you came back. Nobody else has, in twenty-six years.
+    isCloseup: 1
+  - speaker: Wren
+    text: Then teach me properly. Start to finish.
+    isCloseup: 0
+  - speaker: Almy
+    text: 'Do not rush growth. Rushed mushrooms teach regret.
+
+
+      The beds wait by your mill wall. Two plugs of Wood Ear spawn — show me you
+      listened.'
+    isCloseup: 0
+  _unlockStoryCard: {fileID: 0}
+  _completeQuest: {fileID: 0}
+  _giveItemId:
+  _grantCoinsCopper: 0
+  _spendsCoinsCopper: 0
+  _sellsForageBasket: 0
+  _basketCopperPerItem: 0
+  _grantForage: {fileID: 11400000, guid: bb5c7d5872a0d4901b7219b2011d04e0, type: 2}
+  _grantForageCount: 2
+  _setFlagIds:
+  - act2_started
+  _villageHopeDelta: 0
+  _knowledgeDelta: 1
+  _relationshipNpcIds:
+  - almy
+  _relationshipDeltas:
+  - 12
+  _nextDialog: {fileID: 0}

@@ -51,6 +51,18 @@ namespace Hollowfen
             { "quest.meetAlmy.name",      "A Knock at the Door" },
             { "quest.meetAlmy.objective", "Someone is waiting at the mill door." },
 
+            // Quest objective + display strings (Act II)
+            { "quest.almyTeach.name",       "The Vine-Tender's Lessons" },
+            { "quest.almyTeach.objective",  "Learn cultivation from Sister Almy, then plant Wood Ear spawn in a mill-yard grow bed." },
+            { "quest.forgeKnife.name",      "Joren's Forge" },
+            { "quest.forgeKnife.objective", "Commission a proper foraging knife from Joren in the walled town — and come back for it tomorrow." },
+            { "quest.firstTax.name",        "Twelve Silver by Yule" },
+            { "quest.firstTax.objective",   "Earn twelve silver and pay Master Voss at the market square before sundown." },
+
+            // Cultivation
+            { "prompt.plant.verb", "Plant" },
+            { "growbed.name",      "Grow Bed" },
+
             // Interaction verbs (doors, props)
             { "prompt.door.unlock",  "Unlock" },
             { "prompt.examine.verb", "Examine" },
@@ -73,6 +85,7 @@ namespace Hollowfen
             { "item.mill_key.name",         "Mill Key" },
             { "item.fathers_journal.name",  "Father's Journal" },
             { "item.sealed_letter.name",    "Sealed Letter" },
+            { "item.forage_knife.name",     "Horn-Handled Foraging Knife" },
 
             // Map locations (POIs)
             { "loc.fathers_mill.name",   "Father's Mill" },

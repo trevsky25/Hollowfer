@@ -30,6 +30,9 @@ namespace Hollowfen.Save
         // Field-guide discovery (migrated out of PlayerPrefs).
         public string[] DiscoveredMushroomIds;
 
+        // Map locations Wren has named by visiting them.
+        public string[] DiscoveredLocationIds;
+
         // Last saved player transform in Scene_Hollowfen.
         public bool HasPlayerTransform;
         public float PlayerPosX;
@@ -47,6 +50,22 @@ namespace Hollowfen.Save
         // Game clock (0 GameDay = legacy save, treated as day 1).
         public int GameDay;
         public float GameHour;
+
+        // Cultivation — one row per grow bed that has ever been planted.
+        public GrowBedSnapshot GrowBeds;
+    }
+
+    // Parallel arrays, JsonUtility-friendly (same recipe as InventorySnapshot).
+    // Remaining = harvestable nodes left once mature; growth progress derives from
+    // planted day/hour vs the game clock, so saves carry no timer state.
+    [Serializable]
+    public class GrowBedSnapshot
+    {
+        public string[] Ids;
+        public string[] SpeciesIds;
+        public int[] PlantedDays;
+        public float[] PlantedHours;
+        public int[] Remaining;
     }
 
     [Serializable]

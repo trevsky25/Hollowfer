@@ -23,6 +23,8 @@ namespace Hollowfen.Save
             CoinPurse.HydrateFrom(0);
             MushroomDiscovery.HydrateFrom(null);
             GameScores.HydrateFrom(null);
+            Cultivation.GrowBeds.HydrateFrom(null);
+            Map.LocationRegistry.HydrateFromSave(null);
 
             // Fresh meta so the slot row shows up immediately.
             SaveManager.WritePlaceholderToSlot(slot);
@@ -40,6 +42,8 @@ namespace Hollowfen.Save
             CoinPurse.HydrateFrom(meta?.CoinsCopper ?? 0);
             MushroomDiscovery.HydrateFrom(meta?.DiscoveredMushroomIds);
             GameScores.HydrateFrom(meta);
+            Cultivation.GrowBeds.HydrateFrom(meta?.GrowBeds);
+            Map.LocationRegistry.HydrateFromSave(meta?.DiscoveredLocationIds);
         }
 
         // Most recently written slot, or -1 when no saves exist.
@@ -66,6 +70,8 @@ namespace Hollowfen.Save
             meta.KeyItemIds = KeyItems.ToArray();
             meta.CoinsCopper = CoinPurse.TotalCopper;
             meta.DiscoveredMushroomIds = MushroomDiscovery.ToArray();
+            meta.GrowBeds = Cultivation.GrowBeds.ToSnapshot();
+            meta.DiscoveredLocationIds = Map.LocationRegistry.DiscoveredToArray();
 
             var quests = new string[QuestManager.CompletedQuestIds.Count];
             int qi = 0;

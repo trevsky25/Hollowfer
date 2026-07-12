@@ -20,8 +20,8 @@ namespace Hollowfen.Map
         private Vector2Int _renderTextureSize = new Vector2Int(2048, 1024);
 
         [Header("Pan / Zoom")]
-        [SerializeField, Tooltip("World-space rect the camera xz position is clamped to. Wider than the visible village so the player can drift the view a bit before hitting the edge.")]
-        private Rect _panBounds = new Rect(50f, 150f, 350f, 350f);
+        [SerializeField, Tooltip("World-space xz rect the VISIBLE FRAME is kept inside (not just the camera center). Auto-tightened to the active Terrain at Awake when one exists.")]
+        private Rect _worldBounds = new Rect(0f, 0f, 500f, 500f);
         [SerializeField, Tooltip("Animated ortho size — the actual _orthoSize lerps toward this each frame.")]
         private float _targetOrthoSize = 150f;
         [SerializeField] private float _zoomLerpSpeed = 8f;
@@ -49,11 +49,31 @@ namespace Hollowfen.Map
         {
             _cam = GetComponent<Camera>();
             _cam.orthographic = true;
+            _cam.clearFlags = CameraClearFlags.SolidColor;
+            // Backstop tone if a sliver of out-of-world ever shows: muted moss, reads as unmapped land.
+            _cam.backgroundColor = new Color(0.16f, 0.18f, 0.12f, 1f);
+            transform.rotation = Quaternion.Euler(90f, 0f, 0f);
+
+            // The player's own layer renders as a corrupt magenta blob from top-down — exclude it.
+            int foraging = LayerMask.NameToLayer("Foraging");
+            if (foraging >= 0) _cam.cullingMask &= ~(1 << foraging);
+
+            // Tighten the clamp rect to the real terrain, and cap the zoom presets so the visible
+            // frame (ortho × aspect wide) can never exceed the world — that's what produced the
+            // giant black void on the old map.
+            var terrain = Terrain.activeTerrain;
+            if (terrain != null)
+            {
+                var tp = terrain.GetPosition();
+                var ts = terrain.terrainData.size;
+                _worldBounds = new Rect(tp.x, tp.z, ts.x, ts.z);
+            }
+            float maxOrtho = Mathf.Min(_worldBounds.width / (2f * Aspect), _worldBounds.height / 2f);
+            _zoomRegional = Mathf.Min(_zoomRegional, maxOrtho);
+            _zoomClose = Mathf.Min(_zoomClose, _zoomRegional);
+            _orthoSize = Mathf.Min(_orthoSize, maxOrtho);
             _targetOrthoSize = _orthoSize;
             _cam.orthographicSize = _orthoSize;
-            _cam.clearFlags = CameraClearFlags.SolidColor;
-            _cam.backgroundColor = new Color(0.05f, 0.05f, 0.06f, 1f);
-            transform.rotation = Quaternion.Euler(90f, 0f, 0f);
 
             // Create a runtime RT at the configured landscape aspect. Overrides any project RT asset
             // assigned in the inspector — that asset can stay orphaned (no longer referenced).
@@ -91,10 +111,22 @@ namespace Hollowfen.Map
             SetCameraXZ(anchor.x, anchor.z, anchor.y + _height);
         }
 
+        private float Aspect => _renderTextureSize.y > 0
+            ? (float)_renderTextureSize.x / _renderTextureSize.y
+            : 2f;
+
         private void SetCameraXZ(float x, float z, float? worldY = null)
         {
-            float cx = Mathf.Clamp(x, _panBounds.xMin, _panBounds.xMax);
-            float cz = Mathf.Clamp(z, _panBounds.yMin, _panBounds.yMax);
+            // Clamp the FRAME, not the center: keep [center ± half-extents] inside the world rect.
+            // If the frame is wider/taller than the world on an axis, pin to the world's middle.
+            float halfW = _orthoSize * Aspect;
+            float halfH = _orthoSize;
+            float cx = halfW * 2f >= _worldBounds.width
+                ? _worldBounds.center.x
+                : Mathf.Clamp(x, _worldBounds.xMin + halfW, _worldBounds.xMax - halfW);
+            float cz = halfH * 2f >= _worldBounds.height
+                ? _worldBounds.center.y
+                : Mathf.Clamp(z, _worldBounds.yMin + halfH, _worldBounds.yMax - halfH);
             float cy = worldY.HasValue ? worldY.Value : transform.position.y;
             transform.position = new Vector3(cx, cy, cz);
         }
@@ -143,7 +175,12 @@ namespace Hollowfen.Map
                     if (Mathf.Abs(_orthoSize - _targetOrthoSize) < 0.05f) _orthoSize = _targetOrthoSize;
                 }
                 if (!Mathf.Approximately(_cam.orthographicSize, _orthoSize))
+                {
                     _cam.orthographicSize = _orthoSize;
+                    // Zooming out grows the frame — re-clamp so the edge never slides off-world.
+                    var p = transform.position;
+                    SetCameraXZ(p.x, p.z);
+                }
             }
         }
 

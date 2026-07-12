@@ -19,6 +19,10 @@ namespace Hollowfen.Quests
             { "firstForage", new[] { "first_safe_harvest_complete", "goldfoot_sample_harvested" } },
             { "firstSale",   new[] { "first_sale_complete", "basic_selling_unlocked", "basic_cooking_unlocked" } },
             { "meetAlmy",    new[] { "almy_met", "act1_complete" } },
+            // Act II (act2_started / joren_met / voss_first_visit_seen are set by the dialogues themselves)
+            { "almyTeach",   new[] { "cultivation_unlocked", "wood_ear_log_planted" } },
+            { "forgeKnife",  new[] { "foraging_knife_unlocked" } },
+            { "firstTax",    new[] { "wenmar_tax_paid", "voss_notices_wren" } },
         };
 
         // species id -> known-flag (bible names diverge from camelCase ids)
