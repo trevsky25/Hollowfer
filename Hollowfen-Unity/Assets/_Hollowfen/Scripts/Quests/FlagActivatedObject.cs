@@ -12,6 +12,8 @@ namespace Hollowfen.Quests
     {
         [SerializeField, Tooltip("GameScores flag to mirror (e.g. theo_wagon_arrived).")]
         private string _flagId;
+        [SerializeField, Tooltip("Optional second flag that OVERRIDES to inactive when set (inn-Hollin yields to mill-Hollin on hollin_at_mill). Empty = ignore.")]
+        private string _offFlagId;
         [SerializeField, Tooltip("Object toggled to match the flag. Must NOT be this object or an ancestor of it.")]
         private GameObject _target;
         [SerializeField, Tooltip("Off: target is ACTIVE while the flag is set. On: target is INACTIVE while set (boarded-up planks coming down).")]
@@ -32,6 +34,7 @@ namespace Hollowfen.Quests
         {
             if (_target == null || string.IsNullOrEmpty(_flagId)) return;
             bool active = GameScores.HasFlag(_flagId) != _deactivateWhenSet;
+            if (!string.IsNullOrEmpty(_offFlagId) && GameScores.HasFlag(_offFlagId)) active = false;
             if (_target.activeSelf != active) _target.SetActive(active);
         }
     }

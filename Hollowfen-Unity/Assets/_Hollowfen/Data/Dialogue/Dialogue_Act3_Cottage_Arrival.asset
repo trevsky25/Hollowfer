@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00c9c9bb92b3b44fb84ca335c48467d8, type: 3}
+  m_Name: Dialogue_Act3_Cottage_Arrival
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Dialogue.DialogueData
+  _id: act3.cottage.arrival
+  _lines:
+  - speaker: Hollin
+    text: 'I think the path remembers feet better than names.'
+    isCloseup: 0
+  - speaker: Wren
+    text: 'That is either comforting or not.'
+    isCloseup: 0
+  - speaker: Almy
+    text: 'Both. Usually both.'
+    isCloseup: 0
+  - speaker: Wren
+    text: 'Is this it?'
+    isCloseup: 0
+  - speaker: Almy
+    text: 'This is where I was young.'
+    isCloseup: 1
+  - speaker: Hollin
+    text: 'Then we should enter kindly.'
+    isCloseup: 0
+  - speaker: Wren
+    text: 'The open page shows a spring basin, and a mushroom in pale ink. Witchwell.
+
+
+      And three names in another hand: Moonring. Hollowheart. Wendlight.'
+    isCloseup: 1
+  _unlockStoryCard: {fileID: 0}
+  _completeQuest: {fileID: 11400000, guid: 8e2a42f4ab104161ad2bb1d2b62ad7c3, type: 2}
+  _giveItemId:
+  _grantCoinsCopper: 0
+  _spendsCoinsCopper: 0
+  _sellsForageBasket: 0
+  _basketCopperPerItem: 0
+  _grantForage: {fileID: 0}
+  _grantForageCount: 1
+  _consumeForage: {fileID: 0}
+  _consumeForageCount: 1
+  _setFlagIds: []
+  _villageHopeDelta: 0
+  _knowledgeDelta: 0
+  _relationshipNpcIds: []
+  _relationshipDeltas: []
+  _nextDialog: {fileID: 0}
+  _choices: []

@@ -4,7 +4,10 @@ The decision inbox. Agents append questions ONLY Trevor can answer (design taste
 
 ## Open
 
-*(inbox zero)*
+### Q4 — T4 species presentation: Latin names + field-guide photos (asked 2026-07-12 · batch-18)
+The bible names Moonring, Hollowheart, and Wendlight but gives no Latin binomials (they're fictional species, unlike the real-world 16) and no photos exist. **What I applied (veto-able):** latin field reads "Unrecorded" (canon-flavored — suppressed knowledge, unclassified by scholarship), edibility "Unknown — old knowledge", descriptions derived strictly from bible text. Photos are null — their field-guide cells render without images until art exists (added to the asset-dropoff wants list).
+**Options if you want different:** (a) keep "Unrecorded" (my pick); (b) invent folk-Latin binomials (e.g. *Lunaria sabelae*) — reads scholarly but fabricates canon; (c) italic folk descriptor ("Sable's book only").
+**Also:** want me to generate placeholder journal-sketch images for the three (pale ink drawings, matching the seedbook fiction), or wait for real art?
 
 ## Answered
 

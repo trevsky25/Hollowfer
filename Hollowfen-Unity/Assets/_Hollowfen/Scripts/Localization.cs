@@ -70,6 +70,14 @@ namespace Hollowfen
             { "quest.caldenWarning.name",       "Father Calden's Doubt" },
             { "quest.caldenWarning.objective",  "Father Calden has come to the mill and refused tea. Hear him out, then see what he has done to the chapel garden gate." },
 
+            // Quest objective + display strings (Act III)
+            { "quest.hollinReveals.name",       "Hollin's Inheritance" },
+            { "quest.hollinReveals.objective",  "Hollin waits at the mill with a page folded into oilcloth. Hear the name her grandmother left her." },
+            { "quest.findWitchCottage.name",       "The Witch's Cottage" },
+            { "quest.findWitchCottage.objective",  "Follow the old path into the Deep Wood and find Sable's cottage. Read what she left on the table." },
+            { "quest.wendlightFound.name",       "The Wend's True Course" },
+            { "quest.wendlightFound.objective",  "Wendlight grows where water was betrayed. Walk the dry riverbed, follow the pale shine, and find what waits at the bend." },
+
             // Mushroom tier display names (locked draft 2026-07-11 — QUESTIONS.md Q1; not yet rendered anywhere)
             { "tier.t1.name", "Basket Common" },
             { "tier.t2.name", "Knifework" },
@@ -105,6 +113,7 @@ namespace Hollowfen
             { "item.sealed_letter.name",    "Sealed Letter" },
             { "item.forage_knife.name",     "Horn-Handled Foraging Knife" },
             { "item.brightspore_tonic.name", "Brightspore Tonic" },
+            { "item.seedbook.name",          "Sable's Seedbook" },
 
             // Map locations (POIs)
             { "loc.fathers_mill.name",   "Father's Mill" },
@@ -117,6 +126,8 @@ namespace Hollowfen
             { "loc.old_wood_edge.name",  "Old Wood Edge" },
             { "loc.theos_wagon.name",    "Theo's Wagon" },
             { "loc.eddas_cottage.name",  "Edda's Cottage" },
+            { "loc.witchs_cottage.name", "The Witch's Cottage" },
+            { "loc.old_wend.name",       "The Old Wend" },
 
             // Map location short descriptions (side panel copy)
             { "loc.fathers_mill.desc",   "The old water mill where Wren grew up. The wheel still turns; the stones lie idle." },
@@ -129,6 +140,8 @@ namespace Hollowfen
             { "loc.old_wood_edge.desc",  "Where the village footpath ends and the Old Wood begins." },
             { "loc.theos_wagon.desc",    "Theo's board and ledger. He pays more than Bram could, less than the Capital would, and says both plainly." },
             { "loc.eddas_cottage.desc",  "A low cottage near the mill. Edda's grandfather keeps to his bed by the window." },
+            { "loc.witchs_cottage.desc", "One room where the Deep Wood gathers around a spring. Sable's door opens for those who enter kindly." },
+            { "loc.old_wend.desc",       "The river's abandoned course — rounded stones, grass fingers, and a thin watery shine at dawn." },
 
             // Map side panel labels
             { "map.eyebrow.landmark",     "LANDMARK" },

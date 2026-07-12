@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fbeeb9dfd308426da67b82545b339a0, type: 3}
+  m_Name: Mushroom_18_Moonring
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.MushroomFieldGuideData
+  _id: moonring
+  _commonName: Moonring
+  _latinName: Unrecorded
+  _edibility: 4
+  _edibilityLabel: "Unknown \u2014 old knowledge"
+  _description: 'A ring-forming mushroom from Sable''s seedbook, drawn as a broken circle of pale caps in a Deep Wood clearing. The old hand claims the rings widen under a full moon; the newer hand does not argue.'
+  _idFeatures:
+  - Pale caps growing in wide rings or arcs
+  - Found in Deep Wood clearings, never open pasture
+  - Ring persists year to year, widening
+  _habitat: Deep Wood clearings
+  _season: Unknown — the seedbook says autumn moons
+  _lookalikes: Fairy-ring species of open grass — but nothing honest grows in rings this deep in the wood.
+  _notes: 'Known only from Sable''s seedbook. Collection is a matter for someone who understands what the rings are for.'
+  _photo: {fileID: 0}
+  _photoCredit: 
+  _worldPrefab: {fileID: 0}
+  _displayNameId: mushroom.moonring.name
+  _descriptionId: mushroom.moonring.description

@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fbeeb9dfd308426da67b82545b339a0, type: 3}
+  m_Name: Mushroom_19_Hollowheart
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.MushroomFieldGuideData
+  _id: hollowheart
+  _commonName: Hollowheart
+  _latinName: Unrecorded
+  _edibility: 4
+  _edibilityLabel: "Unknown \u2014 old knowledge"
+  _description: 'A rare fungus of the oldest stumps, named for where it grows: the hollowed heart of a tree that died before the village had its name. Sable''s drawing shows it half in shadow, as if the page itself were being careful.'
+  _idFeatures:
+  - Grows only inside hollow ancient stumps
+  - Flesh darkens quickly when cut
+  - Never more than a few to a stump
+  _habitat: Hollow hearts of ancient stumps, Deep Wood
+  _season: Unknown — the seedbook is silent
+  _lookalikes: Any dark stump fungus, in bad light. The habitat is the identifier; nothing else lives where it lives.
+  _notes: 'The seedbook pairs it with a warning in Sable''s hand that the damp has taken all but two words: ''… only once.'''
+  _photo: {fileID: 0}
+  _photoCredit: 
+  _worldPrefab: {fileID: 0}
+  _displayNameId: mushroom.hollowheart.name
+  _descriptionId: mushroom.hollowheart.description

@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fbeeb9dfd308426da67b82545b339a0, type: 3}
+  m_Name: Mushroom_20_Wendlight
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.MushroomFieldGuideData
+  _id: wendlight
+  _commonName: Wendlight
+  _latinName: Unrecorded
+  _edibility: 4
+  _edibilityLabel: "Unknown \u2014 old knowledge"
+  _description: "Small pale mushrooms with a thin watery shine, like moonlight caught
+    under skin. Not bright. Not magical. Wendlight grows where water has been betrayed
+    \u2014 along courses a river was made to abandon."
+  _idFeatures:
+  - Faint watery sheen, strongest at dawn and dusk
+  - Small pale caps among rounded stones
+  - Grows in lines that follow old watercourses
+  - Never beside living water
+  _habitat: Abandoned riverbeds and drained channels
+  _season: Autumn dawns, after mist
+  _lookalikes: Any small pale grassland cap by daylight. The shine and the line it
+    draws are the identifiers.
+  _notes: "'Wendlight grew where water had been betrayed.' \u2014 Sable's hand, underlined
+    once."
+  _photo: {fileID: 0}
+  _photoCredit: 
+  _worldPrefab: {fileID: 5716283212947672387, guid: cadc54d2a332f4134876f80e70efbdcf, type: 3}
+  _displayNameId: mushroom.wendlight.name
+  _descriptionId: mushroom.wendlight.description

@@ -15,16 +15,30 @@ MonoBehaviour:
   _id: hollin
   _displayNameId: npc.hollin.name
   _dialogueEntries:
+  - activeQuest: {fileID: 11400000, guid: c8b623b595564fc4a01f2c3648cf865e, type: 2}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId:
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 2c967da844cf41c3b13415848a585c2a, type: 2}
   - activeQuest: {fileID: 11400000, guid: 0a89ad7b8f66425ebf9661c6ad668b81, type: 2}
     requiresQuestCompleted: {fileID: 0}
-    requiresFlagId: 
+    requiresFlagId:
     requiresCoinsCopper: 0
     requiresBasketNonEmpty: 0
     requiresForage: {fileID: 0}
     dialog: {fileID: 11400000, guid: e690fc52648b4d8db34bfcbb23512d5b, type: 2}
   - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 11400000, guid: c8b623b595564fc4a01f2c3648cf865e, type: 2}
+    requiresFlagId:
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 46fa7039cef6468e9405095e6a621762, type: 2}
+  - activeQuest: {fileID: 0}
     requiresQuestCompleted: {fileID: 11400000, guid: 0a89ad7b8f66425ebf9661c6ad668b81, type: 2}
-    requiresFlagId: 
+    requiresFlagId:
     requiresCoinsCopper: 0
     requiresBasketNonEmpty: 0
     requiresForage: {fileID: 0}

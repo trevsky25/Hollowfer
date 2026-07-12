@@ -30,7 +30,12 @@ namespace Hollowfen.Quests
             // calden_visiting stages Calden at the mill; chapel_garden_locked from the gate.
             { "meetHollin",      new[] { "hollin_met" } },
             { "cottagesReopen",  new[] { "calden_visiting" } },
-            { "caldenWarning",   new[] { "act2_complete" } },
+            // hollin_at_mill stages her at the mill for Act III's opening scene.
+            { "caldenWarning",   new[] { "act2_complete", "hollin_at_mill" } },
+            // Act III (wendlight_known comes from discovery via SpeciesFlags below)
+            { "hollinReveals",     new[] { "act3_started", "hollin_lineage_revealed", "sable_named" } },
+            { "findWitchCottage",  new[] { "witch_cottage_found", "sable_seedbook_recovered", "tier4_mushrooms_unlocked" } },
+            { "wendlightFound",    new[] { "wend_old_course_mapped", "aldric_logging_evidence_found" } },
         };
 
         // species id -> known-flag (bible names diverge from camelCase ids)
@@ -41,6 +46,7 @@ namespace Hollowfen.Quests
             { "pinecrest",   "pinecrest_known" },
             { "goldfoot",    "goldfoot_partial_known" },
             { "brightspore", "brightspore_known" },
+            { "wendlight",   "wendlight_known" },
         };
 
         private void OnEnable()

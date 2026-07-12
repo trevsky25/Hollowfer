@@ -1,10 +1,10 @@
 # Quest System
 Linear quest chain: static `QuestManager` holds ONE active quest + completed-id set (no state enum, no fail state); quests auto-chain via `QuestData.NextQuest`; scene components (triggers/interactables/forage objectives) call `CompleteQuest` when conditions met. `GameScores` (static) holds the ending meters (VillageHope, Knowledge, per-NPC relationships, named flags).
 Key scripts: `Assets/_Hollowfen/Scripts/Quests/` — QuestManager, QuestData, QuestBootstrap, QuestHUD, QuestTrigger, QuestInteractable, QuestForageObjective, KeyLockedDoor, StoryBeats, TaxDeadline, GameScores, ScoreHooks, ScoreDebugHUD.
-Data: `Data/Quests/Quest_ActN_NN_Name.asset` (15: Act1 01–07, Act2 08–15 — **Act II complete**); quest `_id`s are camelCase story.md ids (`arrive`, `caldenWarning`).
+Data: `Data/Quests/Quest_ActN_NN_Name.asset` (18: Act1 01–07, Act2 08–15, Act3 16–18); quest `_id`s are camelCase story.md ids (`arrive`, `wendlightFound`).
 Persistence: `CompletedQuestIds`/`UnlockedStoryCardIds` + all scores/flags in the save slot (no PlayerPrefs); active quest is NOT saved — `QuestBootstrap` re-derives it by walking the chain past completed entries.
 Biggest gotchas: achievement hook fires ONLY on story-card unlock (`ACH_STORY_<cardId>`), not quest completion — gap vs our non-negotiable; magic quest-id strings synced by hand across TaxDeadline/StoryBeats/ScoreHooks; `QuestCompleted` fires before `_activeQuest` clears.
-Status: verified against code 2026-07-11. Quests 1–15 play-verified — both Act II B and C flows driven end-to-end via bridge; `act2_complete` fires at the chapel gate.
+Status: quests 1–18 play-verified via bridge (Acts I+II complete; Act III A shipped 2026-07-12). QuestInteractable can now play a DIALOGUE on use (`_playsDialogue` — quest completion moves into the dialogue's outcome) and unlock field-guide entries (`_discoversSpecies` — the seedbook teaches the T4 trio).
 
 > Self-healing doc: if you change this system, update this doc (including the 7-line header) in the same batch, and note the change in the batch worksheet.
 
@@ -30,7 +30,7 @@ Three implicit states: **Active** (`QuestManager.ActiveQuest`, single slot), **C
 | `QuestTrigger` | Collider trigger + `"Player"` tag. `_autoStartIfNoneActive` (starts quest — how Act I begins at the village square) and/or `_completesQuestIfActive`. ⚠️ `_fireOnce` only latches on the complete path. |
 | `QuestInteractable` | `IInteractable` examine prop (journal, letters, tonic delivery). Foraging-layer SphereCollider convention. `_requiresActiveQuest`, `_requiresItemId` (KeyItems gate — tonic delivery needs the tonic), `_completesQuestIfActive`, `_grantsItemId` (→`KeyItems.Grant`), `_setsFlagId` (→`GameScores.SetFlag` — lets DayFlagScheduler stage next-day beats), `_deactivateOnUse`. Session-local `_used`. |
 | `KeyLockedDoor` | `CanInteract = !_opened && KeyItems.Has(_requiredItemId)` (default `item.mill_key`). Opens via Magic Pig `DemoDoor.Open()` or 110° Y-rotate fallback; disables collider; completes quest. ⚠️ `_opened` not persisted — door re-closes on reload (benign; quest stays complete). |
-| `FlagActivatedObject` | Declarative world-state switch: mirrors a GameScores flag onto a target object's active state (`_flagId`, `_target`, `_deactivateWhenSet`). Host must stay ACTIVE (toggles a child, never itself). Uses: Theo's wagon on `theo_wagon_arrived`, Edda on `theo_trade_unlocked`; Act II C cottage boards will use the inverted mode. |
+| `FlagActivatedObject` | Declarative world-state switch: mirrors a GameScores flag onto a target's active state (`_flagId`, `_target`, `_deactivateWhenSet`, `_offFlagId` = override-off flag). Host must stay ACTIVE. Uses: Theo's wagon, Edda, Calden, cottage boards (inverted), chapel gate lock, and Hollin's inn→mill move (`_offFlagId=hollin_at_mill` on the inn host). |
 | `QuestForageObjective` | Subscribes `MushroomNode.OnAnyHarvested`; completes when every `_requiredSpecies` is harvested this session OR already in inventory (pre-quest stock counts). Empty list = any harvest. Progress not persisted/displayed. |
 
 ## QuestManager / QuestBootstrap / QuestHUD

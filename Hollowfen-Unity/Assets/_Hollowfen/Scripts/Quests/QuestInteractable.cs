@@ -23,6 +23,10 @@ namespace Hollowfen.Quests
         private string _requiresItemId;
         [SerializeField, Tooltip("Game flag set on use (e.g. tonic_delivered — lets DayFlagScheduler stage a next-day beat). Empty = none.")]
         private string _setsFlagId;
+        [SerializeField, Tooltip("Field-guide entries unlocked on use (Sable's seedbook teaches Moonring/Hollowheart/Wendlight). Fires OnDiscovered → ScoreHooks Knowledge/flags.")]
+        private Data.MushroomFieldGuideData[] _discoversSpecies;
+        [SerializeField, Tooltip("Dialogue opened on use (the seedbook scene, Wren's riverbed lines). Play quest completion via the DIALOGUE's outcome when this is set.")]
+        private Dialogue.DialogueData _playsDialogue;
         [SerializeField] private bool _deactivateOnUse = true;
 
         private bool _used;
@@ -49,8 +53,15 @@ namespace Hollowfen.Quests
             if (!string.IsNullOrEmpty(_setsFlagId))
                 GameScores.SetFlag(_setsFlagId);
 
+            if (_discoversSpecies != null)
+                foreach (var species in _discoversSpecies)
+                    if (species != null) MushroomDiscovery.MarkDiscovered(species.Id);
+
             if (_completesQuestIfActive != null && QuestManager.IsActive(_completesQuestIfActive.Id))
                 QuestManager.CompleteQuest(_completesQuestIfActive.Id);
+
+            if (_playsDialogue != null && Dialogue.DialogueScreen.Instance != null)
+                Dialogue.DialogueScreen.Instance.Open(_playsDialogue);
 
             if (_deactivateOnUse) gameObject.SetActive(false);
         }

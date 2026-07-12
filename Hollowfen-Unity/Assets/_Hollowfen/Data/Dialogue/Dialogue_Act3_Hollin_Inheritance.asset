@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00c9c9bb92b3b44fb84ca335c48467d8, type: 3}
+  m_Name: Dialogue_Act3_Hollin_Inheritance
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Dialogue.DialogueData
+  _id: act3.hollin.inheritance
+  _lines:
+  - speaker: Hollin
+    text: 'My grandmother was named Sable.'
+    isCloseup: 1
+  - speaker: Almy
+    text: 'Do not say that name carelessly.'
+    isCloseup: 0
+  - speaker: Wren
+    text: 'You knew her.'
+    isCloseup: 0
+  - speaker: Almy
+    text: 'I failed her. That is not the same thing.'
+    isCloseup: 1
+  - speaker: Hollin
+    text: 'She left me half a story.'
+    isCloseup: 0
+  - speaker: Wren
+    text: 'Then we find the other half.'
+    isCloseup: 0
+  _unlockStoryCard: {fileID: 0}
+  _completeQuest: {fileID: 11400000, guid: c8b623b595564fc4a01f2c3648cf865e, type: 2}
+  _giveItemId:
+  _grantCoinsCopper: 0
+  _spendsCoinsCopper: 0
+  _sellsForageBasket: 0
+  _basketCopperPerItem: 0
+  _grantForage: {fileID: 0}
+  _grantForageCount: 1
+  _consumeForage: {fileID: 0}
+  _consumeForageCount: 1
+  _setFlagIds: []
+  _villageHopeDelta: 0
+  _knowledgeDelta: 0
+  _relationshipNpcIds: []
+  _relationshipDeltas: []
+  _nextDialog: {fileID: 0}
+  _choices: []

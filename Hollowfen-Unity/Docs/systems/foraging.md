@@ -1,7 +1,7 @@
 # Foraging System
 Walk-up mushroom interaction: HUD prompt → cinematic focus cam → Inspect journal screen (rotating 3D preview) → Forage/Leave, with per-species discovery gating, harvest cinematic, and persisted inventory.
 Key scripts: `Assets/_Hollowfen/Scripts/Foraging/` — MushroomNode, PlayerInteractor, InspectScreen, InventoryScreen, MushroomPreviewer, InventoryRuntime, MushroomDiscovery, MushroomFocusCamera, IInteractable.
-Data: `MushroomFieldGuideData` SOs at `Assets/_Hollowfen/Data/Mushrooms/` (17 species; 3 modeled: Field Mushroom, Fly Agaric, Oyster).
+Data: `MushroomFieldGuideData` SOs at `Assets/_Hollowfen/Data/Mushrooms/` (20 species; 3 Meshy-modeled + tinted variants; 18–20 are the T4 trio from Sable's seedbook — Moonring/Hollowheart entry-only, Wendlight forageable in the Old Wend, no photos yet).
 Entry points: `Player/Interact` (E / Triangle) opens Inspect; `Player/OpenInventory` (I / Square) opens Provisions.
 Biggest gotchas: disable Wren's PlayerInput while screens are open (buffered-Jump bug); silhouette material for undiscovered species; Meshy prefab pivot/scale recipe.
 Status: shipped + play-mode verified (Act I). Node respawn field exists but is disabled.
