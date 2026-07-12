@@ -2,7 +2,7 @@
 
 **How agents use this file:** pull the top item from **Next up** unless Trevor directs otherwise. One item ≈ one batch (one worksheet, one tagged commit). An item is DONE only when: play-mode verified via the Unity MCP bridge, system docs updated, worksheet written, committed + tagged. Reorder/add items as reality changes — this is a living queue. If an item turns out to be >1 batch, split it here before starting.
 
-**Status snapshot (2026-07-12):** 21 of ~23 quests live and bridge-verified. Act III A (batch-18) + Act III B scenes 4–6 (batch-19 `caldenReconcile`/`eddaApprentice`; batch-21 `theoCapitalOffer` — choice-UI debut, fable-reviewed) shipped; batch-20 made all mushrooms real. Next: Act III B 9b `theoCapitalOffer` — the choice UI's first canon use (FABLE-REVIEW GATE). Q4 RESOLVED (batch-20): all 20 field-guide species now real — the T4 trio are Sable's folk-names for real killers (Moonring=Destroying Angel, Hollowheart=Death Cap, Wendlight=Liberty Cap).
+**Status snapshot (2026-07-12):** 21 of ~23 quests live and bridge-verified. Act III A (batch-18) + Act III B scenes 4–6 (batch-19 `caldenReconcile`/`eddaApprentice`; batch-21 `theoCapitalOffer` — choice-UI debut, fable-reviewed) shipped; batch-20 made all 20 field-guide species real (T4 trio = Sable's folk-names for real killers). **Next: Act III B 9c `festivalHosted`** (4-dish festival), then 9d `aldricLetter` → `act3_complete`. Open: Q5 (Wren journal-entry mechanic).
 
 ---
 
