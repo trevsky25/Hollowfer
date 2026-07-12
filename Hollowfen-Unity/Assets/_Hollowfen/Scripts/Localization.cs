@@ -87,6 +87,9 @@ namespace Hollowfen
             { "quest.festivalHosted.objective",  "The village is ready to celebrate. Find Marra to set the festival in motion." },
             { "quest.aldricLetter.name",         "A Sealed Letter" },
             { "quest.aldricLetter.objective",    "Voss is waiting with something he was told to deliver in person. Hear him out." },
+            { "quest.aldricOfferRead.name",      "The Lord's Offer" },
+            { "quest.aldricOfferRead.objective", "Lord Aldric's letter is still sealed on the mill table. Read it by candlelight." },
+            { "item.aldric_letter.name",         "Lord Aldric's Letter" },
 
             // Mushroom tier display names (locked draft 2026-07-11 — QUESTIONS.md Q1; not yet rendered anywhere)
             { "tier.t1.name", "Basket Common" },

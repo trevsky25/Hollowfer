@@ -38,6 +38,8 @@ namespace Hollowfen.Quests
             { "wendlightFound",    new[] { "wend_old_course_mapped", "aldric_logging_evidence_found" } },
             // Act III B close: Voss delivers Aldric's sealed letter; act3_complete gates Act IV.
             { "aldricLetter",      new[] { "aldric_letter_received", "voss_humanized", "act3_complete" } },
+            // Act IV opens: Wren reads the offer at the mill table.
+            { "aldricOfferRead",   new[] { "act4_started", "aldric_offer_read", "aldric_monopoly_clause_seen", "npc_consultations_unlocked" } },
         };
 
         // species id -> known-flag (bible names diverge from camelCase ids)
