@@ -41,10 +41,17 @@ namespace Hollowfen.Quests
             // Homecoming intro: once per save, only before the arrive beat.
             if (QuestManager.IsCompleted("arrive")) return;
             var meta = SaveManager.GetSlotMeta(SaveManager.ActiveSlot);
-            if (meta != null && meta.HomecomingIntroSeen) return;
+            if (meta != null && meta.HomecomingIntroSeen)
+            {
+                // Player quit between the intro and the guide — the guide still owes them
+                // its one showing (ShowOnce self-gates on its own flag + arrive completion).
+                if (IntroGuide.Instance != null) IntroGuide.Instance.ShowOnce();
+                return;
+            }
             SaveManager.AutoSaveIntroSeen();
             if (NarrationOverlay.Instance != null)
-                NarrationOverlay.Instance.Show(IntroCaptions, _introVoiceClips);
+                NarrationOverlay.Instance.Show(IntroCaptions, _introVoiceClips,
+                    () => { if (IntroGuide.Instance != null) IntroGuide.Instance.ShowOnce(); });
         }
 
         private void HandleQuestCompleted(QuestData quest)

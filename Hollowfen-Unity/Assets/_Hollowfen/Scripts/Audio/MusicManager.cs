@@ -28,6 +28,7 @@ namespace Hollowfen.Audio
             _source.loop = true;
             _source.playOnAwake = false;
             _source.spatialBlend = 0f;
+            _source.priority = 16;   // the bed yields only to speech (priority 0), never to ambience
             _source.outputAudioMixerGroup = _output;
             _source.volume = 0f;
             _source.Play();

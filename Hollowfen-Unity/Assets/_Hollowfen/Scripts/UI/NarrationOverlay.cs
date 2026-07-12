@@ -31,6 +31,7 @@ namespace Hollowfen.UI
         private bool _built;
         private Coroutine _running;
         private AudioSource _voiceSource;
+        private Action _pendingOnDone;   // so SkipAll doesn't swallow the completion callback (batch-30)
 
         public bool IsShowing => _running != null;
 
@@ -59,6 +60,7 @@ namespace Hollowfen.UI
             BuildIfNeeded();
             if (_running != null) StopCoroutine(_running);
             if (_voiceSource != null) _voiceSource.Stop();   // a superseded run's clip must not bleed into this one
+            _pendingOnDone = onDone;
             _running = StartCoroutine(Run(captions, clips, onDone));
         }
 
@@ -72,6 +74,8 @@ namespace Hollowfen.UI
             if (_canvas != null) _canvas.gameObject.SetActive(false);
             PlayerInteractor.Suspended = false;
             PlayerInteractor.SetPlayerInputEnabled(true);
+            var done = _pendingOnDone; _pendingOnDone = null;
+            done?.Invoke();   // a skipped intro still owes its follow-up (the first-steps guide)
         }
 
         private void PlayVoice(AudioClip clip)
@@ -82,6 +86,7 @@ namespace Hollowfen.UI
                 _voiceSource = gameObject.AddComponent<AudioSource>();
                 _voiceSource.playOnAwake = false;
                 _voiceSource.spatialBlend = 0f;
+                _voiceSource.priority = 0;   // speech: never virtualized (batch-30 catch)
                 _voiceSource.outputAudioMixerGroup = _voiceOutput;
             }
             _voiceSource.Stop();
@@ -144,6 +149,7 @@ namespace Hollowfen.UI
             PlayerInteractor.Suspended = false;
             PlayerInteractor.SetPlayerInputEnabled(true);
             _running = null;
+            _pendingOnDone = null;
             onDone?.Invoke();
         }
 

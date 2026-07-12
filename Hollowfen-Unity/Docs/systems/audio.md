@@ -4,7 +4,7 @@ dialogue VO (`DialogueLine.voiceClip`, played by DialogueScreen) + caption-synce
 (`NarrationOverlay.Show(captions, clips)`); clips generated locally by `tools/agent/generate_vo.py`
 (Kokoro-82M TTS, Apache) into `Assets/_Hollowfen/Audio/VO/<Dialogue>/<idx>_<Speaker>.wav`.
 Key scripts: `Scripts/Audio/MusicManager.cs` (on `_Music`), playback in DialogueScreen/NarrationOverlay (both `_voiceOutput`→SFX group for now); StoryBeats `_introVoiceClips`.
-Biggest gotchas: AudioSources report `isPlaying=false` while the editor is PAUSED (Step()-driving) and the player loop freezes unfocused (`Application.runInBackground=true` in test code); the espeakng-loader wheel hard-exits on macOS — `brew install espeak-ng` is the generator's one system prerequisite.
+Biggest gotchas: audio state is UNMEASURABLE ACROSS bridge calls — editor pauses between execute_code calls hard-stop AudioSources (they read stopped/`isVirtual` with time 0), so assert playback IN THE SAME CALL immediately after Play(), never across calls (batch-30: a whole phantom-bug hunt); VO/narration sources use priority 0 and music 16 (the vendored world carries ~50 ambient sources — default-priority speech can be virtualized); the espeakng-loader wheel hard-exits on macOS — `brew install espeak-ng` is the generator's one system prerequisite.
 Status: entrance scene verified end-to-end 2026-07-12 (intro narration voiced + hold-extended, Bram chain voiced per speaker, clean cut on advance/close, Misty Forest bed via Music slider). AI-VO shipping decision + Steam AI disclosure = QUESTIONS Q10.
 
 > Self-healing doc: if you change this system, update this doc (including the 7-line header) in the same batch, and note the change in the batch worksheet.
@@ -22,7 +22,7 @@ Status: entrance scene verified end-to-end 2026-07-12 (intro narration voiced + 
 
 ## Coverage (test scope)
 
-Voiced: HomecomingIntro (2 captions) + Bram Act I chain (Homecoming 5, CrookedPintle key 12, Repeat 3).
+Voiced: HomecomingIntro (2 captions) + Bram Act I chain (Homecoming 5, CrookedPintle key 12, Repeat 3) + the IntroGuide journal passage (18.5s narrator read, batch-30).
 Everything else is silent by design until the VO direction is decided (Q10).
 
 ## Design intents (don't "fix" these)

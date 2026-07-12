@@ -170,6 +170,7 @@ namespace Hollowfen.Dialogue
                 _voiceSource = gameObject.AddComponent<AudioSource>();
                 _voiceSource.playOnAwake = false;
                 _voiceSource.spatialBlend = 0f;   // UI-space, not positional
+                _voiceSource.priority = 0;        // speech: never virtualized (batch-30 catch — ~50 ambient sources contend)
                 _voiceSource.outputAudioMixerGroup = _voiceOutput;
             }
             _voiceSource.Stop();

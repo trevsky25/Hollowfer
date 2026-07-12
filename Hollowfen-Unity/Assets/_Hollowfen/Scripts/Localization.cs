@@ -152,13 +152,13 @@ namespace Hollowfen
             { "settings.bind.look.pad",     "Right Stick" },
             { "settings.bind.look.kb",      "Mouse" },
             { "settings.bind.interact",     "Interact" },
-            { "settings.bind.interact.pad", "X / Square" },
+            { "settings.bind.interact.pad", "Y / Triangle" },
             { "settings.bind.interact.kb",  "E" },
             { "settings.bind.jump",         "Jump" },
             { "settings.bind.jump.pad",     "A / Cross" },
             { "settings.bind.jump.kb",      "Space" },
-            { "settings.bind.journal",      "Journal" },
-            { "settings.bind.journal.pad",  "Y / Triangle" },
+            { "settings.bind.journal",      "Satchel" },
+            { "settings.bind.journal.pad",  "X / Square" },
             { "settings.bind.journal.kb",   "J" },
             { "settings.bind.pause",        "Pause" },
             { "settings.bind.pause.pad",    "Start / Options" },
@@ -172,6 +172,20 @@ namespace Hollowfen
             { "settings.bind.choices",      "Choices 1-4" },
             { "settings.bind.choices.pad",  "D-Pad up/right/down/left" },
             { "settings.bind.choices.kb",   "1 / 2 / 3 / 4" },
+
+            // First-steps intro guide (batch-30). Passage = bible Act I Scene 1 transposed to
+            // Wren's first-person journal present (no invented facts); hints verified against
+            // the shipped HUD/compass/bindings.
+            { "guide.eyebrow",      "Act I · Homecoming" },
+            { "guide.title",        "The Road into Hollowfen" },
+            { "guide.passage",      "From the ridge, the valley looks as it always did — low roofs tucked into the hollow, the dark shoulder of the Old Wood behind them, the pale line of the Wend cutting through the fields. Then the road dips, and the old picture comes apart. I shift the pack on my shoulder and keep walking." },
+            { "guide.task_label",   "Your task" },
+            { "guide.hint.compass", "The compass ribbon above points the way — follow the east road down to the village well." },
+            { "guide.hint.ribbon",  "Your task keeps to the top-left. It will change as Hollowfen asks more of you." },
+            { "guide.hint.journal", "Esc opens your journal — the story so far, and a field guide of everything you learn." },
+            { "guide.controls",     "Move — W A S D / Left Stick        Look — Mouse / Right Stick        Interact — E / Y\nSatchel — J / X        Map — M / Select        Journal & Pause — Esc / Start" },
+            { "guide.button",       "Set out →" },
+            { "guide.dismiss_hint", "Enter / A — set out" },
 
             // Credits (shipped copy verbatim — final credits copy is Trevor's open backlog item)
             { "credits.heading",   "HOLLOWFEN — THE FAILING VILLAGE" },

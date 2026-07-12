@@ -298,6 +298,11 @@ namespace Hollowfen.UI
             if (TopScreen != null && TopScreen.ScreenId == "pause") return;
             // Don't open over a confirm modal — let the user resolve it first.
             if (TopScreen != null && TopScreen.IsModal) return;
+            // Don't open UNDER the narrative overlays (their canvases sort above the screen
+            // stack — pause would render invisible while freezing time and stealing focus,
+            // and quitting from a hidden pause leaks PlayerInteractor.Suspended). Batch-30.
+            if (IntroGuide.Instance != null && IntroGuide.Instance.IsShowing) return;
+            if (NarrationOverlay.Instance != null && NarrationOverlay.Instance.IsShowing) return;
             EnsurePauseInstance();
             OpenScreen("pause");
         }

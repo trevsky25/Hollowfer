@@ -35,6 +35,14 @@ INTRO_CAPTIONS = [
     "The village did not greet her.",
 ]
 
+# Non-dialogue utterances (copy duplicated from Localization.cs — the parked staleness-manifest
+# follow-up in Docs/systems/audio.md covers keeping these honest).
+EXTRAS = {
+    "IntroGuide": [
+        ("Narrator", "From the ridge, the valley looks as it always did — low roofs tucked into the hollow, the dark shoulder of the Old Wood behind them, the pale line of the Wend cutting through the fields. Then the road dips, and the old picture comes apart. I shift the pack on my shoulder and keep walking."),
+    ],
+}
+
 DEFAULT_SET = [
     "Dialogue_Act1_Homecoming_Bram",
     "Dialogue_Act1_CrookedPintle_BramKey",
@@ -144,11 +152,15 @@ def main():
 
     targets = sys.argv[1:] or DEFAULT_SET
 
-    # Intro narration (only in the default set).
+    # Intro narration + extras (only in the default set).
     if not sys.argv[1:]:
         print("HomecomingIntro:")
         for i, caption in enumerate(INTRO_CAPTIONS):
             emit(os.path.join(OUT_ROOT, "HomecomingIntro"), i, "Narrator", caption)
+        for group, utterances in EXTRAS.items():
+            print(f"{group}:")
+            for i, (speaker, text) in enumerate(utterances):
+                emit(os.path.join(OUT_ROOT, group), i, speaker, text)
 
     for name in targets:
         asset = os.path.join(DIALOGUE_DIR, name + ".asset")
