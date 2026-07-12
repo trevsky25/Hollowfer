@@ -15,6 +15,13 @@ MonoBehaviour:
   _id: hollin
   _displayNameId: npc.hollin.name
   _dialogueEntries:
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: npc_consultations_unlocked
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: c2263964b44745be8e9a046ef1e18b0f, type: 2}
   - activeQuest: {fileID: 11400000, guid: c8b623b595564fc4a01f2c3648cf865e, type: 2}
     requiresQuestCompleted: {fileID: 0}
     requiresFlagId:

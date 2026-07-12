@@ -15,6 +15,13 @@ MonoBehaviour:
   _id: almy
   _displayNameId: npc.almy.name
   _dialogueEntries:
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: npc_consultations_unlocked
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: e637b4ca89674111ba6bb6e03614b42f, type: 2}
   - activeQuest: {fileID: 11400000, guid: bb25aa206b764410b9eb5925b6101dc8, type: 2}
     requiresQuestCompleted: {fileID: 0}
     requiresFlagId:

@@ -15,6 +15,13 @@ MonoBehaviour:
   _id: bram
   _displayNameId: npc.bram.name
   _dialogueEntries:
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: npc_consultations_unlocked
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 5ef51ecb59c64bf4b591551c04882842, type: 2}
   - activeQuest: {fileID: 11400000, guid: 0a89ad7b8f66425ebf9661c6ad668b81, type: 2}
     requiresQuestCompleted: {fileID: 0}
     requiresFlagId:
