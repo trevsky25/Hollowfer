@@ -15,6 +15,20 @@ MonoBehaviour:
   _id: edda
   _displayNameId: npc.edda.name
   _dialogueEntries:
+  - activeQuest: {fileID: 11400000, guid: d650824881984f5aa9e48285054bb846, type: 2}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId:
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 1a509d9c90e74986986e00c86a073c50, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 11400000, guid: d650824881984f5aa9e48285054bb846, type: 2}
+    requiresFlagId:
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: f083f2470eed450597c4433751907d05, type: 2}
   - activeQuest: {fileID: 11400000, guid: bd86d1b8a0dd4755902c72775da664d8, type: 2}
     requiresQuestCompleted: {fileID: 0}
     requiresFlagId: edda_check_due

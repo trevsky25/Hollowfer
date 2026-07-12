@@ -77,6 +77,10 @@ namespace Hollowfen
             { "quest.findWitchCottage.objective",  "Follow the old path into the Deep Wood and find Sable's cottage. Read what she left on the table." },
             { "quest.wendlightFound.name",       "The Wend's True Course" },
             { "quest.wendlightFound.objective",  "Wendlight grows where water was betrayed. Walk the dry riverbed, follow the pale shine, and find what waits at the bend." },
+            { "quest.caldenReconcile.name",      "The Chapel Garden Opens" },
+            { "quest.caldenReconcile.objective", "Bring the Wendlight truth to Father Calden. Give him a day with the old registers, then meet him at the chapel garden gate." },
+            { "quest.eddaApprentice.name",       "Edda Asks" },
+            { "quest.eddaApprentice.objective",  "Edda is waiting at the mill door with a speech she has practiced. Hear her out." },
 
             // Mushroom tier display names (locked draft 2026-07-11 — QUESTIONS.md Q1; not yet rendered anywhere)
             { "tier.t1.name", "Basket Common" },
