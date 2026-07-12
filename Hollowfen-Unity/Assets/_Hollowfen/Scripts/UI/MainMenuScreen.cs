@@ -52,6 +52,9 @@ namespace Hollowfen.UI
         public override void OnOpen()
         {
             if (_continueButton != null) _continueButton.interactable = HasAnySave();
+            // A queued Credits handoff that never consumed (e.g. OpenScreen dropped during
+            // a transition) must not redirect the NEXT plain Settings open.
+            SettingsScreen.NextOpenTab = null;
         }
 
         private const string GameplaySceneName = "Scene_Hollowfen";
@@ -82,7 +85,8 @@ namespace Hollowfen.UI
         private void OnCredits()
         {
             Debug.Log("[MainMenu] Credits");
-            // TODO: open credits screen
+            SettingsScreen.NextOpenTab = SettingsScreen.Tab.Credits;
+            if (UIManager.Instance != null) UIManager.Instance.OpenScreen("settings");
         }
 
         private void OnQuit()

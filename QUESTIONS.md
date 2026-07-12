@@ -4,6 +4,17 @@ The decision inbox. Agents append questions ONLY Trevor can answer (design taste
 
 ## Open
 
+### Q9 — Credits copy: ship the current 7 lines, or expand for launch? (asked 2026-07-12 · batch-28, low stakes but has a legal edge)
+The settings-screen rebuild (batch-28) kept the shipped credits copy verbatim, now with editorial
+hierarchy. For a production launch the copy may want: exact asset-pack legal names (per license
+terms — some packs require specific attribution wording), font attributions (**Georgia is a
+licensed Microsoft font — redistribution rights need verifying before EA**, now on the pre-EA
+checklist), a music credit slot (composer TBD), and whether/how to credit AI tooling in
+production. **Recommendation:** keep current copy until the pre-EA checklist pass, then do one
+"credits + licenses" audit batch against every third-party license file in the project — write
+the final copy once, from the audit. **What you decide:** (a) recommendation, or (b) draft the
+final copy now and I'll wire it (keys `credits.*` in Localization.cs, 5-minute change).
+
 ### Q8 — Aldermark attributed to Sable's seedbook — veto? (asked 2026-07-12 · batch-26, low stakes)
 Aldermark's field-guide entry uses the established folk-name formula "**Sable's seedbook name for** the Hen of the Woods." But the shipped cottage-arrival dialogue lists the seedbook's contents as only "Witchwell. And three names in another hand: Moonring. Hollowheart. Wendlight." — Aldermark isn't among them. Attributing it to the seedbook is the most plausible source for Wren knowing the folk name (and helpfully implies "Aldermark" is an old alder-derived name predating Lord Aldric, defusing any pun-timeline worry). **What I applied (veto-able):** kept the seedbook attribution. **Alt:** drop "seedbook" and make it a plain folk/regional name ("Aldermark, the old name for the Hen of the Woods…"). Trivial one-line change either way.
 

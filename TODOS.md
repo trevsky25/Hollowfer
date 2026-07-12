@@ -2,7 +2,7 @@
 
 **How agents use this file:** pull the top item from **Next up** unless Trevor directs otherwise. One item ≈ one batch (one worksheet, one tagged commit). An item is DONE only when: play-mode verified via the Unity MCP bridge, system docs updated, worksheet written, committed + tagged. Reorder/add items as reality changes — this is a living queue. If an item turns out to be >1 batch, split it here before starting.
 
-**Status snapshot (2026-07-12):** Acts I–III complete; **Act IV scenes 1–3 shipped** — 26 quests live and bridge-verified. Act III B (batches 19/21/22/23) + batch-20 (all species real) + Act IV: batch-24 `aldricOfferRead` (`act4_started`), batch-25 consult-the-village, batch-26 `wendSource` (clear-cut, Aldermark = real Grifola frondosa, Knowledge +15), **batch-27 `meetAldric`** (NPC_Aldric flag-gated at the new `manor` location; bible-verbatim negotiation ends at the fork; sets `aldric_meeting_started` + `final_choice_available` — fable-reviewed). **STOP POINT reached: next is the ending engine (item 13)** — 4-ending fork, canon-critical + FABLE-GATED, **Trevor's authorship**. Growing: an "Act III–IV staging + world-dressing pass" (Theo/festival/Voss/Hollin placements, clear-cut dressing, Aldermark node+photo, **Aldric capsule→Meshy + manor building/props**). Open: Q8 (Aldermark seedbook attribution — low-stakes veto).
+**Status snapshot (2026-07-12):** Acts I–III complete; **Act IV scenes 1–3 shipped** — 26 quests live and bridge-verified. Act III B (batches 19/21/22/23) + batch-20 (all species real) + Act IV: batch-24 `aldricOfferRead` (`act4_started`), batch-25 consult-the-village, batch-26 `wendSource` (clear-cut, Aldermark = real Grifola frondosa, Knowledge +15), **batch-27 `meetAldric`** (NPC_Aldric flag-gated at the new `manor` location; bible-verbatim negotiation ends at the fork; sets `aldric_meeting_started` + `final_choice_available` — fable-reviewed). **STOP POINT: the ending engine (item 13) is next in the story track** — 4-ending fork, canon-critical + FABLE-GATED, **Trevor's authorship**. **batch-28 (production UX track): settings screen rebuilt** to the code-built house style — fable-reviewed, all findings fixed; menu UX polish continues per Trevor's direction. Growing: an "Act III–IV staging + world-dressing pass" (Theo/festival/Voss/Hollin placements, clear-cut dressing, Aldermark node+photo, **Aldric capsule→Meshy + manor building/props**). Open: Q8 (Aldermark seedbook attribution), Q9 (credits copy for launch).
 
 ---
 
@@ -61,8 +61,8 @@
 - **Cinematic dialogue camera** — two-shot dolly per `Docs/dialog-system.md`; finally consumes `DialogueLine.isCloseup` (authored in assets, currently unread — do NOT delete it in the dead-code sweep).
 - **Cast models pass** — replace placeholder capsules (Joren, Voss, Marra, Almy…) via the Meshy pipeline; key/book models don't exist in kitbash packs (mill key, Almy's seedbook). See graphics-pipeline memory wants list.
 - **Audio pass** — author RegionTrigger ambience volumes first, then AmbienceManager, SFX on existing events, mixer routing.
-- **Build cleanup sweep** — leftover `Save 1`/`Steam 1` folders, retire `UITestDriver`, legacy Input usage in `LocationDebugHUD`, TMP migration in ConfirmModal/SaveSlot/Loading screens, 31 canon locations pass, content-vs-bible sweep.
-- **Credits real copy** — Settings → Credits tab has placeholder text.
+- **Build cleanup sweep** — leftover `Save 1`/`Steam 1` folders, retire `UITestDriver`, legacy Input usage in `LocationDebugHUD`, TMP migration in ConfirmModal/SaveSlot/Loading screens (+ MainMenu — SettingsScreen DONE in batch-28, use it as the template), 31 canon locations pass, content-vs-bible sweep.
+- **Credits real copy** — presentation rebuilt in batch-28 (editorial hierarchy in the settings Credits tab, shipped 7-line copy kept verbatim); final launch copy = QUESTIONS Q9 (recommend a credits+licenses audit batch during pre-EA).
 
 ## Pre-EA production checklist (month ~10–12)
 
@@ -74,6 +74,7 @@
 - [ ] Full-game playthrough (Acts I–II minimum for EA) with zero blockers
 - [ ] Store page assets (capsule art, trailer, screenshots)
 - [ ] False-confidence test audit (do tests actually assert what they claim?)
+- [ ] **Font + asset licensing audit** — Georgia is a licensed Microsoft font: verify redistribution rights (or swap to an OFL serif) before any public build; check every asset pack's attribution requirements against the credits copy (feeds QUESTIONS Q9)
 
 ## Done
 

@@ -3,8 +3,8 @@ Screen-stack UI system: `UIManager` singleton (DDOL) owns a push/pop stack of `U
 Key scripts: `Assets/_Hollowfen/Scripts/UI/` — UIManager, UIScreen, MainMenuScreen, SettingsScreen, SaveSlotScreen, ConfirmModal, LoadingScreen, FocusHighlight, UICanvasUtil, HollowfenPalette.
 Scene flow: `Scene_MainMenu` (boot, DDOL menu screens) ⇄ `Scene_Hollowfen` (gameplay) via `UIManager.LoadSceneAndOpen`.
 Entry points: any screen change goes through `UIManager.Push/Pop`; scene changes through `LoadSceneAndOpen(sceneName, nextScreenId)`.
-Biggest gotchas: FocusHighlight `_baseColor` caches at Awake (reflection reassignment trap); use `RectMask2D` not `Mask` for scroll viewports; Georgia SDF loads editor-only via AssetDatabase (ship blocker until moved to Resources or serialized).
-Status: shipped + verified. Pause prefab root is a plain Transform — build UI into a Canvas child.
+Biggest gotchas: FocusHighlight `_baseColor` caches at Awake (reflection reassignment trap); use `RectMask2D` not `Mask` for scroll viewports; Georgia SDF loads editor-only via AssetDatabase (ship blocker until moved to Resources or serialized); UIManager's PUSH deactivates the covered screen WITHOUT calling OnClose — a covered screen's InputActions stay enabled, so screen-level handlers must gate on `UIManager.Instance.TopScreen == this` (batch-28 review catch).
+Status: shipped + verified. Pause prefab root is a plain Transform — build UI into a Canvas child. SettingsScreen rebuilt code-built in batch-28 (menu chrome still on legacy scene-UI: MainMenu, SaveSlot, Loading, ConfirmModal — the TMP-migration backlog).
 
 > Self-healing doc: if you change this system, update this doc (including the 7-line header) in the same batch, and note the change in the batch worksheet.
 
