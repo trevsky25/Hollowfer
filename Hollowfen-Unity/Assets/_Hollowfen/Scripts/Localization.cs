@@ -89,6 +89,8 @@ namespace Hollowfen
             { "quest.aldricLetter.objective",    "Voss is waiting with something he was told to deliver in person. Hear him out." },
             { "quest.aldricOfferRead.name",      "The Lord's Offer" },
             { "quest.aldricOfferRead.objective", "Lord Aldric's letter is still sealed on the mill table. Read it by candlelight." },
+            { "quest.wendSource.name",           "The Source of the Wend" },
+            { "quest.wendSource.objective",      "The Wendlight traced a line upstream. Follow it past the Old Wend to whatever broke the river." },
             { "item.aldric_letter.name",         "Lord Aldric's Letter" },
 
             // Mushroom tier display names (locked draft 2026-07-11 — QUESTIONS.md Q1; not yet rendered anywhere)
@@ -141,9 +143,11 @@ namespace Hollowfen
             { "loc.eddas_cottage.name",  "Edda's Cottage" },
             { "loc.witchs_cottage.name", "The Witch's Cottage" },
             { "loc.old_wend.name",       "The Old Wend" },
+            { "loc.clear_cut.name",      "The Clear-Cut" },
 
             // Map location short descriptions (side panel copy)
             { "loc.fathers_mill.desc",   "The old water mill where Wren grew up. The wheel still turns; the stones lie idle." },
+            { "loc.clear_cut.desc",      "Upstream of the Old Wend: stumps, drag-trails, a cold camp, and the throttled spring. This is what broke the river." },
             { "loc.village_well.desc",   "The heart of the village. Buckets at dawn, gossip at dusk." },
             { "loc.crooked_pintle.desc", "Hollowfen's only tavern. Cheap ale, warmer fires." },
             { "loc.marra_kitchen.desc",  "Marra cooks for everyone. The smell of broth never quite leaves the air." },

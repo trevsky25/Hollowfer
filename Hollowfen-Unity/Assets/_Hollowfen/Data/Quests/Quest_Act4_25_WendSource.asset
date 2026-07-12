@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ee8ab872fb8546dc970108625d8ee2d, type: 3}
+  m_Name: Quest_Act4_25_WendSource
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Quests.QuestData
+  _id: wendSource
+  _displayNameId: quest.wendSource.name
+  _objectiveTextId: quest.wendSource.objective
+  _act: 4
+  _order: 25
+  _unlockStoryCardOnComplete: {fileID: 11400000, guid: a81c288f0188144b5a5d4617749d35fd, type: 2}
+  _nextQuest: {fileID: 0}
+  _waypointLocation: {fileID: 11400000, guid: 28b798019ce545c99088d8ef85cc591f, type: 2}
+  _villageHopeDelta: 0
+  _knowledgeDelta: 15
+  _relationshipNpcIds: []
+  _relationshipDeltas: []

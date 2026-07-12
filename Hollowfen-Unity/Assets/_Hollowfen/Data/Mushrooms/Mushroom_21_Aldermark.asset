@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fbeeb9dfd308426da67b82545b339a0, type: 3}
+  m_Name: Mushroom_21_Aldermark
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.MushroomFieldGuideData
+  _id: aldermark
+  _commonName: Aldermark
+  _latinName: Grifola frondosa
+  _edibility: 0
+  _edibilityLabel: Edible — prized
+  _description: "Sable's seedbook name for the Hen of the Woods (Grifola frondosa). It grows in great grey rosettes at the base of stressed and cut hardwoods — pale and stubborn in the shade, thriving exactly where a wood has been wounded. Prized in the pot and the medicine chest alike: the useful thing that comes after the harm."
+  _idFeatures:
+  - Large overlapping grey-brown fronds in a rosette, like ruffled feathers
+  - Grows from the base of oaks and hardwood stumps, often the same spot year after year
+  - Pale pored underside (no gills), spores white
+  - Firm fibrous flesh with a mealy, earthy scent
+  _habitat: Base of stressed, dying, or freshly-cut hardwoods — especially oak — and their stumps.
+  _season: Late summer through autumn
+  _lookalikes: "Berkeley's Polypore and the black-staining polypore share the base-of-oak habit but grow tougher and single-capped, not ruffled — none dangerous. Confirm the grey ruffled fronds over a pale pored underside."
+  _notes: 'A genuine prize, culinary and medicinal both. That it grows thickest where the wood was cut is not irony to a lord — to Wren it is evidence and leverage in one hand.'
+  _photo: {fileID: 0}
+  _photoCredit:
+  _worldPrefab: {fileID: 0}
+  _displayNameId: mushroom.aldermark.name
+  _descriptionId: mushroom.aldermark.description

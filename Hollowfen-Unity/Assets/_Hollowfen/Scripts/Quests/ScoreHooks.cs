@@ -40,6 +40,8 @@ namespace Hollowfen.Quests
             { "aldricLetter",      new[] { "aldric_letter_received", "voss_humanized", "act3_complete" } },
             // Act IV opens: Wren reads the offer at the mill table.
             { "aldricOfferRead",   new[] { "act4_started", "aldric_offer_read", "aldric_monopoly_clause_seen", "npc_consultations_unlocked" } },
+            // Act IV scene 2: the upstream clear-cut proves Aldric loosed the Wend.
+            { "wendSource",        new[] { "wend_source_visited", "clearcut_evidence_found", "aldermark_sample_collected" } },
         };
 
         // species id -> known-flag (bible names diverge from camelCase ids)

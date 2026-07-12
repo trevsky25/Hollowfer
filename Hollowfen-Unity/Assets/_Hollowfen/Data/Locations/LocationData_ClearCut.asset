@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 381a33fc936344b6d8da539cc132756b, type: 3}
+  m_Name: LocationData_ClearCut
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Map.LocationData
+  _id: clear_cut
+  _displayNameId: loc.clear_cut.name
+  _shortDescriptionId: loc.clear_cut.desc
+  _mapIcon: {fileID: 0}
+  _discoveredByDefault: 0
+  _regionId: wend
