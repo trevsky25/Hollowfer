@@ -23,15 +23,19 @@ namespace Hollowfen.Quests
             { "almyTeach",   new[] { "cultivation_unlocked", "wood_ear_log_planted" } },
             { "forgeKnife",  new[] { "foraging_knife_unlocked" } },
             { "firstTax",    new[] { "wenmar_tax_paid", "voss_notices_wren" } },
+            // theo_met is set by Theo's first-sale dialogue; brightspore_tonic_made by Marra's.
+            { "theoTrade",       new[] { "theo_trade_unlocked" } },
+            { "edsGrandfather",  new[] { "edda_grandfather_recovering" } },
         };
 
         // species id -> known-flag (bible names diverge from camelCase ids)
         private static readonly Dictionary<string, string> SpeciesFlags = new Dictionary<string, string>
         {
-            { "fieldCap",  "field_cap_known" },
-            { "woodEar",   "wood_ear_known" },
-            { "pinecrest", "pinecrest_known" },
-            { "goldfoot",  "goldfoot_partial_known" },
+            { "fieldCap",    "field_cap_known" },
+            { "woodEar",     "wood_ear_known" },
+            { "pinecrest",   "pinecrest_known" },
+            { "goldfoot",    "goldfoot_partial_known" },
+            { "brightspore", "brightspore_known" },
         };
 
         private void OnEnable()

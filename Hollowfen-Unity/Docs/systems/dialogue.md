@@ -1,8 +1,8 @@
 # Dialogue System
 Strictly LINEAR dialogue: `DialogueData` = ordered `DialogueLine[]` + a one-shot outcome block + optional `_nextDialog` chain link — no choices, no branching (branching happens upstream in `NPCData.PickDialog` selection). `DialogueScreen` renders it cinematic-letterbox style with a typewriter, frozen timeScale, and fires all outcomes on finish via direct static calls.
 Key scripts: `Assets/_Hollowfen/Scripts/Dialogue/` — DialogueData, DialogueScreen (namespace `Hollowfen.Dialogue`). Design reference: `Docs/dialog-system.md` (web-era).
-Data: `Data/Dialogue/Dialogue_ActN_<Context>_<Variant>.asset` (19 across Acts I–II); `_id` fields are decorative — asset GUID refs drive everything.
-Outcomes on finish (in order): grant key item → grant forage → basket-sale coin math → spend coins → add coins → set flags → score/relationship deltas → unlock story card → complete quest → chain next dialog.
+Data: `Data/Dialogue/Dialogue_ActN_<Context>_<Variant>.asset` (29 across Acts I–II); `_id` fields are decorative — asset GUID refs drive everything.
+Outcomes on finish (in order): grant key item → grant forage → CONSUME forage (`_consumeForage`+count — Marra's tonic ingredient; runs before the basket sale so it isn't also sold) → basket-sale coin math → spend coins → add coins → set flags → score/relationship deltas → unlock story card → complete quest → chain next dialog.
 Biggest gotchas: line text + speaker names are RAW STRINGS (localization violation, and speaker doubles as the SpeakerColors dictionary key); screen polls input devices directly (the Dialogue action map is UNUSED); outcomes re-fire on every replay — one-shot semantics must be authored via picker conditions (flags/quest completion), or a coin-granting dialog becomes a money faucet.
 Status: verified against code 2026-07-11.
 
@@ -29,7 +29,7 @@ Scene-local singleton (`Instance` in Awake, NOT a UIScreen — same pattern as I
 - **Input**: `Update()` polls devices directly — Space/Enter/E, gamepad South/North, mouse left. One "advance" signal: typing → `SkipTypewriter()` (instant complete); shown → `AdvanceLine()`. ⚠️ Ignores the InputActions asset entirely; rebinding won't affect it; hint text always claims "Space".
 - **Typewriter**: coroutine on `WaitForSecondsRealtime` (timeScale is 0), `_typewriterCps` default 32 (matches web prototype).
 - **Layout**: 110px letterbox bars · rounded parchment panel 1240×230 bottom-anchored (UICanvasUtil rounded panel + shadow, optional parchment sprite wash) · speaker name plate = ink tab riding the panel's top-left, auto-fit width, fill lerped toward the speaker accent color, gold hairline · body 27pt serif italic InkDeep · hint `"Space · continue"` (⚠️ hardcoded).
-- **SpeakerColors** (static dict, hardcoded): Bram `#7a4a1a`, Wren `#5b3a6a`, Marra `#8a3a2a`, Almy `#4a6b3a`, Joren `#4d4338`, Voss `#3e4e63`; unknown speakers fall back silently to default ink. New NPC → add an entry.
+- **SpeakerColors** (static dict, hardcoded): Bram `#7a4a1a`, Wren `#5b3a6a`, Marra `#8a3a2a`, Almy `#4a6b3a`, Joren `#4d4338`, Voss `#3e4e63`, Theo `#1f6f62`, Edda `#77704f`; unknown speakers fall back silently to default ink. New NPC → add an entry.
 - **`FinishDialog()`** fires outcomes in the order listed in the header, then chains or closes. Quest advance = `QuestManager.CompleteQuest` direct call.
 
 ## Persistence

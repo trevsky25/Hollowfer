@@ -35,6 +35,8 @@ namespace Hollowfen.Dialogue
             { "Almy",  ParseColor("#4a6b3a") },
             { "Joren", ParseColor("#4d4338") },
             { "Voss",  ParseColor("#3e4e63") },
+            { "Theo",  ParseColor("#1f6f62") },
+            { "Edda",  ParseColor("#77704f") },
         };
         private static readonly Color DefaultSpeakerColor = ParseColor("#3a2810");
 
@@ -176,6 +178,10 @@ namespace Hollowfen.Dialogue
 
             if (done.GrantForage != null && done.GrantForageCount > 0)
                 InventoryRuntime.Add(done.GrantForage, done.GrantForageCount);
+
+            // Consume BEFORE any basket sale so the tonic ingredient isn't also sold.
+            if (done.ConsumeForage != null && done.ConsumeForageCount > 0)
+                InventoryRuntime.Remove(done.ConsumeForage, done.ConsumeForageCount);
 
             // Basket sale pays per item (repeatable Marra loop) on top of any fixed grant,
             // and the count must be read BEFORE the basket empties.

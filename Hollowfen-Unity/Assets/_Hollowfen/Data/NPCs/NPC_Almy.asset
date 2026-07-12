@@ -33,6 +33,13 @@ MonoBehaviour:
     requiresCoinsCopper: 0
     requiresBasketNonEmpty: 0
     dialog: {fileID: 11400000, guid: d8d0d0ec1bd645f094e85b850eb2343e, type: 2}
+  - activeQuest: {fileID: 11400000, guid: bd86d1b8a0dd4755902c72775da664d8, type: 2}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: edda_ask_heard
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: c11f63b65e0148b99244df1046717a91, type: 2}
   - activeQuest: {fileID: 0}
     requiresQuestCompleted: {fileID: 11400000, guid: bb25aa206b764410b9eb5925b6101dc8, type: 2}
     requiresFlagId:

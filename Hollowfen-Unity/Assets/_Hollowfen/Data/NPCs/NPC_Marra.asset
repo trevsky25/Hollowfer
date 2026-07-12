@@ -15,6 +15,13 @@ MonoBehaviour:
   _id: marra
   _displayNameId: npc.marra.name
   _dialogueEntries:
+  - activeQuest: {fileID: 11400000, guid: bd86d1b8a0dd4755902c72775da664d8, type: 2}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId:
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 11400000, guid: 60b9b87ae9cc149b2aaca2adedec80ba, type: 2}
+    dialog: {fileID: 11400000, guid: 4545c4fb68904aa488a0f4cd1546d254, type: 2}
   - activeQuest: {fileID: 11400000, guid: 8af58c6703004c4392bc2c30a4a102c1, type: 2}
     requiresQuestCompleted: {fileID: 0}
     requiresFlagId:

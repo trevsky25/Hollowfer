@@ -19,6 +19,10 @@ namespace Hollowfen.Quests
         [SerializeField] private QuestData _completesQuestIfActive;
         [SerializeField, Tooltip("Key item granted on use (e.g. item.fathers_journal). Empty = none.")]
         private string _grantsItemId;
+        [SerializeField, Tooltip("Only interactable while holding this key item (the tonic delivery needs the tonic). Empty = ignore.")]
+        private string _requiresItemId;
+        [SerializeField, Tooltip("Game flag set on use (e.g. tonic_delivered — lets DayFlagScheduler stage a next-day beat). Empty = none.")]
+        private string _setsFlagId;
         [SerializeField] private bool _deactivateOnUse = true;
 
         private bool _used;
@@ -30,6 +34,7 @@ namespace Hollowfen.Quests
         {
             if (_used) return false;
             if (_requiresActiveQuest != null && !QuestManager.IsActive(_requiresActiveQuest.Id)) return false;
+            if (!string.IsNullOrEmpty(_requiresItemId) && !KeyItems.Has(_requiresItemId)) return false;
             return true;
         }
 
@@ -40,6 +45,9 @@ namespace Hollowfen.Quests
 
             if (!string.IsNullOrEmpty(_grantsItemId))
                 KeyItems.Grant(_grantsItemId);
+
+            if (!string.IsNullOrEmpty(_setsFlagId))
+                GameScores.SetFlag(_setsFlagId);
 
             if (_completesQuestIfActive != null && QuestManager.IsActive(_completesQuestIfActive.Id))
                 QuestManager.CompleteQuest(_completesQuestIfActive.Id);

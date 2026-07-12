@@ -22,6 +22,8 @@ namespace Hollowfen.NPCs
         public int requiresCoinsCopper;
         [Tooltip("Dialog fires only while the forage basket is non-empty (Marra's sale loop).")]
         public bool requiresBasketNonEmpty;
+        [Tooltip("Dialog fires only while the basket holds at least one of this species (Marra's Brightspore tonic). Null = ignore.")]
+        public Data.MushroomFieldGuideData requiresForage;
         public DialogueData dialog;
     }
 
@@ -52,6 +54,7 @@ namespace Hollowfen.NPCs
                     if (!string.IsNullOrEmpty(e.requiresFlagId) && !GameScores.HasFlag(e.requiresFlagId)) continue;
                     if (e.requiresCoinsCopper > 0 && Items.CoinPurse.TotalCopper < e.requiresCoinsCopper) continue;
                     if (e.requiresBasketNonEmpty && Foraging.InventoryRuntime.TotalCount <= 0) continue;
+                    if (e.requiresForage != null && Foraging.InventoryRuntime.GetCount(e.requiresForage) <= 0) continue;
                     return e.dialog;
                 }
             }

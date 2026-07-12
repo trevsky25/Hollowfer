@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c5c5fc2839eb4f6c9631b7dfdb7b2ff, type: 3}
+  m_Name: NPC_Theo
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.NPCs.NPCData
+  _id: theo
+  _displayNameId: npc.theo.name
+  _dialogueEntries:
+  - activeQuest: {fileID: 11400000, guid: c3190d940d184eceb4888868528538db, type: 2}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId:
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 1
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: ac9c2a264b104ffb80e30127bfb885e5, type: 2}
+  - activeQuest: {fileID: 11400000, guid: c3190d940d184eceb4888868528538db, type: 2}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId:
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 5d25b7d04a144172b195f91b885332fb, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 11400000, guid: c3190d940d184eceb4888868528538db, type: 2}
+    requiresFlagId:
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 1
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 540e952abecd4cb290131ba3252639cf, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 11400000, guid: c3190d940d184eceb4888868528538db, type: 2}
+    requiresFlagId:
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: ae568bb8c20a4fd0b352ba862bcc79c5, type: 2}
+  _repeatDialog: {fileID: 0}

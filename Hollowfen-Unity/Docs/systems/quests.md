@@ -1,10 +1,10 @@
 # Quest System
 Linear quest chain: static `QuestManager` holds ONE active quest + completed-id set (no state enum, no fail state); quests auto-chain via `QuestData.NextQuest`; scene components (triggers/interactables/forage objectives) call `CompleteQuest` when conditions met. `GameScores` (static) holds the ending meters (VillageHope, Knowledge, per-NPC relationships, named flags).
 Key scripts: `Assets/_Hollowfen/Scripts/Quests/` — QuestManager, QuestData, QuestBootstrap, QuestHUD, QuestTrigger, QuestInteractable, QuestForageObjective, KeyLockedDoor, StoryBeats, TaxDeadline, GameScores, ScoreHooks, ScoreDebugHUD.
-Data: `Data/Quests/Quest_ActN_NN_Name.asset` (10: Act1 01–07, Act2 08–10); quest `_id`s are camelCase story.md ids (`arrive`, `firstTax`).
+Data: `Data/Quests/Quest_ActN_NN_Name.asset` (12: Act1 01–07, Act2 08–12); quest `_id`s are camelCase story.md ids (`arrive`, `theoTrade`).
 Persistence: `CompletedQuestIds`/`UnlockedStoryCardIds` + all scores/flags in the save slot (no PlayerPrefs); active quest is NOT saved — `QuestBootstrap` re-derives it by walking the chain past completed entries.
 Biggest gotchas: achievement hook fires ONLY on story-card unlock (`ACH_STORY_<cardId>`), not quest completion — gap vs our non-negotiable; magic quest-id strings synced by hand across TaxDeadline/StoryBeats/ScoreHooks; `QuestCompleted` fires before `_activeQuest` clears.
-Status: verified against code 2026-07-11. Quests 1–10 play-verified.
+Status: verified against code 2026-07-11. Quests 1–12 play-verified (Act II B flow driven end-to-end via bridge).
 
 > Self-healing doc: if you change this system, update this doc (including the 7-line header) in the same batch, and note the change in the batch worksheet.
 
@@ -28,8 +28,9 @@ Three implicit states: **Active** (`QuestManager.ActiveQuest`, single slot), **C
 | Component | Mechanism |
 |---|---|
 | `QuestTrigger` | Collider trigger + `"Player"` tag. `_autoStartIfNoneActive` (starts quest — how Act I begins at the village square) and/or `_completesQuestIfActive`. ⚠️ `_fireOnce` only latches on the complete path. |
-| `QuestInteractable` | `IInteractable` examine prop (journal, letters). Foraging-layer SphereCollider convention. `_requiresActiveQuest`, `_completesQuestIfActive`, `_grantsItemId` (→`KeyItems.Grant`), `_deactivateOnUse`. Session-local `_used`. |
+| `QuestInteractable` | `IInteractable` examine prop (journal, letters, tonic delivery). Foraging-layer SphereCollider convention. `_requiresActiveQuest`, `_requiresItemId` (KeyItems gate — tonic delivery needs the tonic), `_completesQuestIfActive`, `_grantsItemId` (→`KeyItems.Grant`), `_setsFlagId` (→`GameScores.SetFlag` — lets DayFlagScheduler stage next-day beats), `_deactivateOnUse`. Session-local `_used`. |
 | `KeyLockedDoor` | `CanInteract = !_opened && KeyItems.Has(_requiredItemId)` (default `item.mill_key`). Opens via Magic Pig `DemoDoor.Open()` or 110° Y-rotate fallback; disables collider; completes quest. ⚠️ `_opened` not persisted — door re-closes on reload (benign; quest stays complete). |
+| `FlagActivatedObject` | Declarative world-state switch: mirrors a GameScores flag onto a target object's active state (`_flagId`, `_target`, `_deactivateWhenSet`). Host must stay ACTIVE (toggles a child, never itself). Uses: Theo's wagon on `theo_wagon_arrived`, Edda on `theo_trade_unlocked`; Act II C cottage boards will use the inverted mode. |
 | `QuestForageObjective` | Subscribes `MushroomNode.OnAnyHarvested`; completes when every `_requiredSpecies` is harvested this session OR already in inventory (pre-quest stock counts). Empty list = any harvest. Progress not persisted/displayed. |
 
 ## QuestManager / QuestBootstrap / QuestHUD

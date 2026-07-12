@@ -58,6 +58,10 @@ namespace Hollowfen
             { "quest.forgeKnife.objective", "Commission a proper foraging knife from Joren in the walled town — and come back for it tomorrow." },
             { "quest.firstTax.name",        "Twelve Silver by Yule" },
             { "quest.firstTax.objective",   "Earn twelve silver and pay Master Voss at the market square before sundown." },
+            { "quest.theoTrade.name",       "The Trader's Ledger" },
+            { "quest.theoTrade.objective",  "Theo's wagon comes with the dawn. Bring him a basket worth a ledger line." },
+            { "quest.edsGrandfather.name",      "Brightspore at the Bedside" },
+            { "quest.edsGrandfather.objective", "Edda waits by the mill. Find Brightspore at the old birch, have Marra make the tonic, and carry it to her grandfather." },
 
             // Cultivation
             { "prompt.plant.verb", "Plant" },
@@ -67,6 +71,7 @@ namespace Hollowfen
             { "prompt.door.unlock",  "Unlock" },
             { "prompt.examine.verb", "Examine" },
             { "prompt.journal.read", "Read" },
+            { "prompt.deliver.verb", "Deliver tonic to" },
 
             // Inspect screen
             { "inspect.unknown.eyebrow", "UNKNOWN" },
@@ -86,6 +91,7 @@ namespace Hollowfen
             { "item.fathers_journal.name",  "Father's Journal" },
             { "item.sealed_letter.name",    "Sealed Letter" },
             { "item.forage_knife.name",     "Horn-Handled Foraging Knife" },
+            { "item.brightspore_tonic.name", "Brightspore Tonic" },
 
             // Map locations (POIs)
             { "loc.fathers_mill.name",   "Father's Mill" },
@@ -96,6 +102,8 @@ namespace Hollowfen
             { "loc.jorens_forge.name",   "Joren's Forge" },
             { "loc.chapel.name",         "Chapel" },
             { "loc.old_wood_edge.name",  "Old Wood Edge" },
+            { "loc.theos_wagon.name",    "Theo's Wagon" },
+            { "loc.eddas_cottage.name",  "Edda's Cottage" },
 
             // Map location short descriptions (side panel copy)
             { "loc.fathers_mill.desc",   "The old water mill where Wren grew up. The wheel still turns; the stones lie idle." },
@@ -106,6 +114,8 @@ namespace Hollowfen
             { "loc.jorens_forge.desc",   "Joren's hammer rings before dawn. He shapes more than iron." },
             { "loc.chapel.desc",         "Father Calden tends the chapel. Quiet, mostly empty, always open." },
             { "loc.old_wood_edge.desc",  "Where the village footpath ends and the Old Wood begins." },
+            { "loc.theos_wagon.desc",    "Theo's board and ledger. He pays more than Bram could, less than the Capital would, and says both plainly." },
+            { "loc.eddas_cottage.desc",  "A low cottage near the mill. Edda's grandfather keeps to his bed by the window." },
 
             // Map side panel labels
             { "map.eyebrow.landmark",     "LANDMARK" },

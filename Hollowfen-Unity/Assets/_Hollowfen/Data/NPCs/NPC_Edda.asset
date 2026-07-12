@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c5c5fc2839eb4f6c9631b7dfdb7b2ff, type: 3}
+  m_Name: NPC_Edda
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.NPCs.NPCData
+  _id: edda
+  _displayNameId: npc.edda.name
+  _dialogueEntries:
+  - activeQuest: {fileID: 11400000, guid: bd86d1b8a0dd4755902c72775da664d8, type: 2}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: edda_check_due
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 575cb49f29ae4b72b79e5451f8e9398a, type: 2}
+  - activeQuest: {fileID: 11400000, guid: bd86d1b8a0dd4755902c72775da664d8, type: 2}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: tonic_delivered
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 07008791a2244d78af2aa87fc0423852, type: 2}
+  - activeQuest: {fileID: 11400000, guid: bd86d1b8a0dd4755902c72775da664d8, type: 2}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId:
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 280b47f4aa1745b6af38725a7620a3d9, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 11400000, guid: bd86d1b8a0dd4755902c72775da664d8, type: 2}
+    requiresFlagId:
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: fe652cef929c4cf794a6d3c048ae49f8, type: 2}
+  _repeatDialog: {fileID: 0}

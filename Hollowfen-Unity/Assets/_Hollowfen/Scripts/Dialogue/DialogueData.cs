@@ -38,6 +38,9 @@ namespace Hollowfen.Dialogue
         [SerializeField, Tooltip("Forage granted on finish (Almy's Wood Ear spawn plugs). Null = none.")]
         private MushroomFieldGuideData _grantForage;
         [SerializeField] private int _grantForageCount = 1;
+        [SerializeField, Tooltip("Forage CONSUMED from the basket on finish (Marra's Brightspore tonic). Best-effort remove; gate availability with the NPC entry's Requires Forage.")]
+        private MushroomFieldGuideData _consumeForage;
+        [SerializeField] private int _consumeForageCount = 1;
         [SerializeField, Tooltip("Game flags set on finish (story.md flag tables, e.g. voss_first_visit_seen).")]
         private string[] _setFlagIds;
 
@@ -61,6 +64,8 @@ namespace Hollowfen.Dialogue
         public int BasketCopperPerItem => _basketCopperPerItem;
         public MushroomFieldGuideData GrantForage => _grantForage;
         public int GrantForageCount => _grantForageCount;
+        public MushroomFieldGuideData ConsumeForage => _consumeForage;
+        public int ConsumeForageCount => _consumeForageCount;
         public string[] SetFlagIds => _setFlagIds;
         public int VillageHopeDelta => _villageHopeDelta;
         public int KnowledgeDelta => _knowledgeDelta;
