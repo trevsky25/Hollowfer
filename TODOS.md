@@ -2,7 +2,7 @@
 
 **How agents use this file:** pull the top item from **Next up** unless Trevor directs otherwise. One item ≈ one batch (one worksheet, one tagged commit). An item is DONE only when: play-mode verified via the Unity MCP bridge, system docs updated, worksheet written, committed + tagged. Reorder/add items as reality changes — this is a living queue. If an item turns out to be >1 batch, split it here before starting.
 
-**Status snapshot (2026-07-11):** Acts I + II A committed — quests 1–10 playable and verified (Act I @ c2b9405; Act II A @ c6d7e70, tag batch-11). Agentic infra Phase 1 + full doc backfill shipped (tag batch-12). Next milestone: Phase 2 safety rails, then Act II B content.
+**Status snapshot (2026-07-11):** Quests 1–10 committed and verified (batch-11). Infra batches 12–14 shipped: doc router + system docs, dashboard + questions inbox, and the Phase 2 safety rails (integrity checks + linter + pre-commit gate, all negative-tested). Next: Act II B content — the first batch that runs entirely on the new rails.
 
 ---
 
