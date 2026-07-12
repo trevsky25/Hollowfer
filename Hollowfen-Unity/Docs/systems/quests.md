@@ -4,7 +4,7 @@ Key scripts: `Assets/_Hollowfen/Scripts/Quests/` — QuestManager, QuestData, Qu
 Data: `Data/Quests/Quest_ActN_NN_Name.asset` (18: Act1 01–07, Act2 08–15, Act3 16–18); quest `_id`s are camelCase story.md ids (`arrive`, `wendlightFound`).
 Persistence: `CompletedQuestIds`/`UnlockedStoryCardIds` + all scores/flags in the save slot (no PlayerPrefs); active quest is NOT saved — `QuestBootstrap` re-derives it by walking the chain past completed entries.
 Biggest gotchas: achievement hook fires ONLY on story-card unlock (`ACH_STORY_<cardId>`), not quest completion — gap vs our non-negotiable; magic quest-id strings synced by hand across TaxDeadline/StoryBeats/ScoreHooks; `QuestCompleted` fires before `_activeQuest` clears.
-Status: quests 1–18 play-verified via bridge (Acts I+II complete; Act III A shipped 2026-07-12). QuestInteractable can now play a DIALOGUE on use (`_playsDialogue` — quest completion moves into the dialogue's outcome) and unlock field-guide entries (`_discoversSpecies` — the seedbook teaches the T4 trio).
+Status: quests 1–20 play-verified via bridge (Acts I+II complete; Act III A + Act III B scenes 4–5 shipped 2026-07-12). QuestInteractable can play a DIALOGUE on use (`_playsDialogue`) and unlock field-guide entries (`_discoversSpecies`). Act III B `caldenReconcile` uses a two-step NPC dialogue gated by a DayFlagScheduler "wait one day" pair (`calden_records_requested→calden_records_read`) and reopens the chapel garden via an inverted `_offFlagId` (`calden_garden_unlocked`) on the existing `_ChapelGateLock` FlagActivatedObject.
 
 > Self-healing doc: if you change this system, update this doc (including the 7-line header) in the same batch, and note the change in the batch worksheet.
 

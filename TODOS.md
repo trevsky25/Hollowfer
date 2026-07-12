@@ -2,7 +2,7 @@
 
 **How agents use this file:** pull the top item from **Next up** unless Trevor directs otherwise. One item ≈ one batch (one worksheet, one tagged commit). An item is DONE only when: play-mode verified via the Unity MCP bridge, system docs updated, worksheet written, committed + tagged. Reorder/add items as reality changes — this is a living queue. If an item turns out to be >1 batch, split it here before starting.
 
-**Status snapshot (2026-07-12):** 18 of ~23 quests live and bridge-verified. Act III A shipped (batch-18): the Sable reveal, the Witch's Cottage + seedbook (field guide now 20 species incl. the T4 trio), and the Old Wend riverbed proving Aldric's damage. Night shift is a supported mode. Next: Act III B (chapel reconciliation → the sealed letter), featuring the choice UI's first canon use. Q4 open (T4 species presentation).
+**Status snapshot (2026-07-12):** 20 of ~23 quests live and bridge-verified. Act III A (batch-18) + Act III B scenes 4–5 (batch-19: `caldenReconcile` chapel-garden reopen + `eddaApprentice`) shipped. Next: Act III B 9b `theoCapitalOffer` — the choice UI's first canon use (FABLE-REVIEW GATE). Q4 (T4 species) being resolved: Trevor wants all mushrooms tied to real species / real photos — map the T4 trio onto the 16 photographed reals with real Latin binomials.
 
 ---
 
@@ -17,7 +17,7 @@
 7. ~~**Dialogue choice UI**~~ **DONE in Batch 17** — `DialogueChoice[]` (text/branch/flag, max 4), numbered-pill UI in the journal style, keyboard/pad/mouse + public `SelectChoice(int)`; integrity checks extended (choice count/text, branch-graph cycles); verified with in-memory dialogues + screenshot. **Act III is unblocked.**
 8. ~~**Act III A (scenes 1–3)**~~ **DONE in Batch 18** — quests 16–18, 7-step bridge-verified, 0 errors. T4 trio in the field guide, Wendlight forageable, Deep Wood + Old Wend staged. (Note: scenes were linear per bible — choices debut with `theoCapitalOffer`.) Deferred: Witchwell rare-source system, seedbook collection-gating for psychoactive/deadly species.
 9. **Act III B (scenes 4–8, quests 19–23)** — split into batch-sized slices (2026-07-12, night shift):
-   - **9a. `caldenReconcile` + `eddaApprentice` (scenes 4–5)** — chapel garden reopen (inverted `_offFlagId` swap on the existing `_ChapelGateLock`), Calden two-step reconciliation w/ one-day records gate (DayFlagScheduler pair), Edda apprentice acceptance; both chained from `wendlightFound`. Apprentice-delivery + chapel grow-beds deferred to their system passes.
+   - ~~**9a. `caldenReconcile` + `eddaApprentice` (scenes 4–5)**~~ **DONE 2026-07-12, tag `batch-19`** — quests 19–20 bridge-verified (full flow: auto-chain, flag-gated Calden routing, chapel-planks world swap, relationships/cards, post-arc repeats; 0 errors). Apprentice-delivery + chapel grow-beds deferred to their system passes.
    - **9b. `theoCapitalOffer` (scene 6)** — FIRST CHOICE-UI CONSUMER. Optional-question branches (cost/Hollowfen/timing) then "leave without choosing" per bible; unlocks Ending-C candidate path flag. FABLE-REVIEW GATE (first branching-dialogue authoring).
    - **9c. `festivalHosted` (scene 7)** — 4-dish prep (Goldfoot stew, Lacewig broth, Field Cap cakes, Brightspore tonic), Marra/Bram/Edda/Pell coordination, festival world state, Village Hope +20.
    - **9d. `aldricLetter` (scene 8 → act3_complete)** — Voss delivers Aldric's sealed letter at the mill; sets `act3_complete`, unlocks Act IV.
