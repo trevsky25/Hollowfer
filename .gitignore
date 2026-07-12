@@ -5,6 +5,7 @@ dist/
 .vite/
 
 # OS / editor
+__pycache__/
 .DS_Store
 .idea/
 .vscode/
@@ -23,6 +24,7 @@ yarn-error.log*
 
 # Massive raw asset backups (GitHub file-size limit + repo bloat)
 public/world/prefabs_raw/
+Medieval Environment - Demo 1-Final.glb
 
 # Full uncompressed Unity export — kept locally, never pushed
 public/world/demo3/demo3_village_pbr_full.glb
