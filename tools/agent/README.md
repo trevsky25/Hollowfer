@@ -10,7 +10,8 @@ Status: seeded 2026-07-11 (Batch 12).
 
 | Script | Purpose | Usage |
 |---|---|---|
-| `unitymcp.py` | Drive the Unity editor over MCP streamable-HTTP when session `mcp__UnityMCP__*` tools aren't registered (session started before Unity). | `python3 tools/agent/unitymcp.py list` · `python3 tools/agent/unitymcp.py call <tool> '<json>'` ⚠️ Recreated from protocol knowledge after the /tmp wipe — verify against the live bridge on next Unity session. |
+| `unitymcp.py` | Drive the Unity editor over MCP streamable-HTTP when session `mcp__UnityMCP__*` tools aren't registered (session started before Unity). Also importable as a library (`import unitymcp; unitymcp.rpc(...)`) — the smoke-test scripts do this. | `python3 tools/agent/unitymcp.py list` · `python3 tools/agent/unitymcp.py call <tool> '<json>'` (verified against the live bridge 2026-07-11) |
+| `dashboard.py` | Generate Trevor's production board (static HTML) from TODOS.md + QUESTIONS.md + worksheets + git. Every wrap-up: regenerate, then republish the Artifact (stable URL) so the morning board is current. | `python3 tools/agent/dashboard.py [--output path]` |
 
 ## Wanted (build when first needed)
 

@@ -1,6 +1,6 @@
 # Batch 11 — Act II A: Quests 8–10, Cultivation, Day Scheduler, Tax Deadline
 
-**Date:** 2026-06-11 (worksheet written retroactively 2026-07-11) · **Status:** verified 2026-06-11; committing now
+**Date:** 2026-06-11 (worksheet written retroactively 2026-07-11) · **Status:** committed (`c6d7e70`, tag `batch-11`)
 
 ## Goal
 First slice of Act II per the bible: Scene 1 (The Vine-Tender's Lessons → `Quest_Act2_08_AlmyTeach`), Scene 2 (Joren's Forge → `Quest_Act2_09_ForgeKnife`), Scene 3 (Twelve Silver by Yule → `Quest_Act2_10_FirstTax`), plus the systems they need: cultivation grow beds, day-flag scheduler, and the tax deadline.

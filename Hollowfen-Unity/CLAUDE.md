@@ -34,7 +34,8 @@ Every doc's first 7 lines are a summary — survey them all with:
 2. **Start a worksheet**: `Docs/worksheets/batch-NN-<topic>.md` from the TEMPLATE. Update it as you go, not at the end.
 3. **Small, verifiable batches** — never bundle disjoint tasks. Build → run in Play mode via the Unity MCP bridge → verify → fix → verify.
 4. **Self-healing docs**: any system you changed → update its `Docs/systems/*.md` (including the 7-line header) in the same batch. New gotcha → the doc's gotcha list (or `Docs/conventions.md` if general).
-5. **Finish**: verification evidence in the worksheet, test script for Trevor (template in conventions.md), commit work + worksheet + docs together, tag `batch-NN`.
+5. **Park decisions, don't guess**: anything only Trevor can decide (canon, taste, product scope) goes in `../QUESTIONS.md` with options + a recommendation; keep building what isn't blocked.
+6. **Finish**: verification evidence in the worksheet, test script for Trevor (template in conventions.md), commit work + worksheet + docs together, tag `batch-NN`, regenerate the dashboard (`python3 tools/agent/dashboard.py`) and republish the Artifact.
 
 **Unity MCP**: bridge auto-starts with the editor (`McpBridgeBootstrap.cs`). If session tools aren't registered, use `tools/agent/unitymcp.py` (repo root) over HTTP. Unity must be running for compile/play verification — if it isn't, say so rather than shipping unverified work.
 
