@@ -15,6 +15,20 @@ MonoBehaviour:
   _id: theo
   _displayNameId: npc.theo.name
   _dialogueEntries:
+  - activeQuest: {fileID: 11400000, guid: fb180177b287462394b3f2cded48acf9, type: 2}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: theo_offer_heard
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 44837ba1cf6e48b2884487fefa6a2c49, type: 2}
+  - activeQuest: {fileID: 11400000, guid: fb180177b287462394b3f2cded48acf9, type: 2}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId:
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: fd5d69162c054eeba84c080a43a216f6, type: 2}
   - activeQuest: {fileID: 11400000, guid: c3190d940d184eceb4888868528538db, type: 2}
     requiresQuestCompleted: {fileID: 0}
     requiresFlagId:
@@ -36,6 +50,13 @@ MonoBehaviour:
     requiresBasketNonEmpty: 1
     requiresForage: {fileID: 0}
     dialog: {fileID: 11400000, guid: 540e952abecd4cb290131ba3252639cf, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 11400000, guid: fb180177b287462394b3f2cded48acf9, type: 2}
+    requiresFlagId:
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: b00959b0465b44658959dc3ecc5d2baa, type: 2}
   - activeQuest: {fileID: 0}
     requiresQuestCompleted: {fileID: 11400000, guid: c3190d940d184eceb4888868528538db, type: 2}
     requiresFlagId:

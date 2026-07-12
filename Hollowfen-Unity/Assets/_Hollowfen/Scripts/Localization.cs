@@ -81,6 +81,8 @@ namespace Hollowfen
             { "quest.caldenReconcile.objective", "Bring the Wendlight truth to Father Calden. Give him a day with the old registers, then meet him at the chapel garden gate." },
             { "quest.eddaApprentice.name",       "Edda Asks" },
             { "quest.eddaApprentice.objective",  "Edda is waiting at the mill door with a speech she has practiced. Hear her out." },
+            { "quest.theoCapitalOffer.name",     "Theo's Capital" },
+            { "quest.theoCapitalOffer.objective","Theo has an offer to make. Find him at his wagon, hear him out, ask what you like, and leave when you are ready." },
 
             // Mushroom tier display names (locked draft 2026-07-11 — QUESTIONS.md Q1; not yet rendered anywhere)
             { "tier.t1.name", "Basket Common" },

@@ -4,7 +4,8 @@ The decision inbox. Agents append questions ONLY Trevor can answer (design taste
 
 ## Open
 
-_(none)_
+### Q5 — "Wren's internal conflict journal entry" — mechanism or narrator-voice only? (asked 2026-07-12 · batch-21)
+The bible's `theoCapitalOffer` unlock list includes "Wren internal conflict journal entry," but no Wren-journal mechanic exists (the Story page shows narrator-voice cards, not first-person Wren diary entries). **What I applied (veto-able):** the beat is carried by StoryCard_21's body copy — no new system. **Options:** (a) accept the story card as sufficient (my pick — no new system for one beat); (b) build a small Wren-journal entry type (first-person, unlocked by story flags) — larger, reusable for other introspective beats (the bible implies more of these in Act IV). Recommend (a) for now, revisit if Act IV wants a journal voice.
 
 ## Answered
 

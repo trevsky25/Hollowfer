@@ -19,7 +19,7 @@ Status: verified against code 2026-07-11.
 - **`_nextDialog`**: linked-list chain; each link fires its own full outcome block; screen stays open, timeScale stays 0 across the chain.
 - **`_choices` (`DialogueChoice[]`)**: `text` (Wren's option) + `next` (branch dialogue, null = close) + `setsFlagId`. Shown AFTER the last line's outcomes fire; non-empty choices make `_nextDialog` ignored (integrity warns). `IsChoosing` exposes the state; selection via number keys, D-pad/stick + confirm, or mouse click.
 
-**Two branching layers**: which dialog plays = `NPCData.PickDialog()` (npcs.md); within a dialog, `_choices` fork at the end. First consumer: Act III's `theoCapitalOffer`.
+**Two branching layers**: which dialog plays = `NPCData.PickDialog()` (npcs.md); within a dialog, `_choices` fork at the end. First on-disk consumer: Act III's `theoCapitalOffer` (batch-21). ⚠️ **`_choices` graphs must be ACYCLIC** — `DataIntegrity.HasDialogueCycle` errors on any `_nextDialog`/`_choices` loop ("traps the player at timeScale 0"). So a question→hub→question loop is illegal; batch-21 keeps the core+choices in an always-seen Intro, makes each question branch terminal, and lets the player re-ask by re-talking to the NPC (a flag routes re-talks to a lighter Hub). Post-completion, a Repeat dialogue re-offers the question branches as a hub (terminals have no outcomes, so re-entry is safe).
 
 ## DialogueScreen
 
