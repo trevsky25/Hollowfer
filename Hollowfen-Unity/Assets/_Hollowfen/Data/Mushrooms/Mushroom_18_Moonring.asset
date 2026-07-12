@@ -14,20 +14,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.MushroomFieldGuideData
   _id: moonring
   _commonName: Moonring
-  _latinName: Unrecorded
-  _edibility: 4
-  _edibilityLabel: "Unknown \u2014 old knowledge"
-  _description: 'A ring-forming mushroom from Sable''s seedbook, drawn as a broken circle of pale caps in a Deep Wood clearing. The old hand claims the rings widen under a full moon; the newer hand does not argue.'
+  _latinName: Amanita virosa
+  _edibility: 1
+  _edibilityLabel: Deadly
+  _description: 'Sable''s seedbook name for the Destroying Angel (Amanita virosa) — pure white, elegant, and among the deadliest mushrooms in the world. The old hand called it Moonring for the pale ring on its stem and the cap that seems to hold moonlight; the science is grimmer: the same liver-destroying amatoxins as the Death Cap.'
   _idFeatures:
-  - Pale caps growing in wide rings or arcs
-  - Found in Deep Wood clearings, never open pasture
-  - Ring persists year to year, widening
-  _habitat: Deep Wood clearings
-  _season: Unknown — the seedbook says autumn moons
-  _lookalikes: Fairy-ring species of open grass — but nothing honest grows in rings this deep in the wood.
-  _notes: 'Known only from Sable''s seedbook. Collection is a matter for someone who understands what the rings are for.'
-  _photo: {fileID: 0}
-  _photoCredit: 
+  - Entirely pure white — cap, gills, stem, all white
+  - White free gills, never pink, never brown
+  - A white ring (annulus) on the upper stem — the moonring itself
+  - Bulbous sac-like volva at the base, often hidden in soil or moss
+  - White spore print
+  _habitat: Mycorrhizal with broadleaf trees — birch, beech, oak; mixed woodland edges.
+  _season: Mid-summer through autumn
+  _lookalikes: Field Mushroom (Agaricus campestris) is EDIBLE but has pink or brown gills, never white, and no volva. The unchanging white gills are the universal warning.
+  _notes: 'With the Death Cap, this accounts for nearly all fatal mushroom poisonings in temperate regions. Delayed onset: six to twelve hours of nothing, then violent illness, a false recovery, then liver failure. Treat any all-white gilled mushroom with extreme suspicion. Sable''s seedbook does not teach picking it — it teaches knowing it.'
+  _photo: {fileID: 21300000, guid: a74608848eb6942deb4c8b7a8485083b, type: 3}
+  _photoCredit: Wikimedia Commons
   _worldPrefab: {fileID: 0}
   _displayNameId: mushroom.moonring.name
   _descriptionId: mushroom.moonring.description

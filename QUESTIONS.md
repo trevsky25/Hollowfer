@@ -4,12 +4,12 @@ The decision inbox. Agents append questions ONLY Trevor can answer (design taste
 
 ## Open
 
-### Q4 — T4 species presentation: Latin names + field-guide photos (asked 2026-07-12 · batch-18)
-The bible names Moonring, Hollowheart, and Wendlight but gives no Latin binomials (they're fictional species, unlike the real-world 16) and no photos exist. **What I applied (veto-able):** latin field reads "Unrecorded" (canon-flavored — suppressed knowledge, unclassified by scholarship), edibility "Unknown — old knowledge", descriptions derived strictly from bible text. Photos are null — their field-guide cells render without images until art exists (added to the asset-dropoff wants list).
-**Options if you want different:** (a) keep "Unrecorded" (my pick); (b) invent folk-Latin binomials (e.g. *Lunaria sabelae*) — reads scholarly but fabricates canon; (c) italic folk descriptor ("Sable's book only").
-**Also:** want me to generate placeholder journal-sketch images for the three (pale ink drawings, matching the seedbook fiction), or wait for real art?
+_(none)_
 
 ## Answered
+
+### Q4 — T4 species presentation: real species vs fictional (asked 2026-07-12 · answered 2026-07-12: "make all mushrooms real; tie the T4 to a real mushroom with one of the 16 photos, real Latin binomials")
+**Decision (batch-20):** Hollowfen is an educational mushroom game — every species must be real. The 3 fictional T4 names become Sable's seedbook folk-names for real deadly/psychoactive species, reusing existing photos + real Latin: **Moonring = Destroying Angel (Amanita virosa)**, **Hollowheart = Death Cap (Amanita phalloides)**, **Wendlight = Liberty Cap (Psilocybe semilanceata)**. Field-guide entries keep the folk name as title, lead the description with the real species reveal, and carry accurate real ID features / lookalikes / safety notes. Trevor accepted that those 3 species now appear under two names (common entry + witch's-name entry). Follow-up: Wendlight's glowing world prefab should be remodeled to read like a real Liberty Cap (Meshy pass).
 
 ### Q1 — Lock the mushroom tier display names? (asked 2026-07-11 · answered 2026-07-11: "implement your recommendation")
 **Decision:** internal ids stay T1–T5; display names drafted in the folk/trade-ledger register and locked as canon-pending: T1 "Basket Common" · T2 "Knifework" · T3 "Yard-Grown" · T4 "Deepwood" · T5 unnamed (bible-reserved). Recorded in `Docs/conventions.md`; localization ids `tier.tN.name` reserved in the LUT. **Trevor may veto/rename any of these before they first render in UI or dialogue** — none are player-visible yet.

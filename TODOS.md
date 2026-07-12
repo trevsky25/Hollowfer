@@ -2,7 +2,7 @@
 
 **How agents use this file:** pull the top item from **Next up** unless Trevor directs otherwise. One item ≈ one batch (one worksheet, one tagged commit). An item is DONE only when: play-mode verified via the Unity MCP bridge, system docs updated, worksheet written, committed + tagged. Reorder/add items as reality changes — this is a living queue. If an item turns out to be >1 batch, split it here before starting.
 
-**Status snapshot (2026-07-12):** 20 of ~23 quests live and bridge-verified. Act III A (batch-18) + Act III B scenes 4–5 (batch-19: `caldenReconcile` chapel-garden reopen + `eddaApprentice`) shipped. Next: Act III B 9b `theoCapitalOffer` — the choice UI's first canon use (FABLE-REVIEW GATE). Q4 (T4 species) being resolved: Trevor wants all mushrooms tied to real species / real photos — map the T4 trio onto the 16 photographed reals with real Latin binomials.
+**Status snapshot (2026-07-12):** 20 of ~23 quests live and bridge-verified. Act III A (batch-18) + Act III B scenes 4–5 (batch-19: `caldenReconcile` chapel-garden reopen + `eddaApprentice`) shipped. Next: Act III B 9b `theoCapitalOffer` — the choice UI's first canon use (FABLE-REVIEW GATE). Q4 RESOLVED (batch-20): all 20 field-guide species now real — the T4 trio are Sable's folk-names for real killers (Moonring=Destroying Angel, Hollowheart=Death Cap, Wendlight=Liberty Cap).
 
 ---
 
@@ -51,6 +51,7 @@
 - **Region-enter toasts** — LocationRegistry events exist, UI not built.
 - **Input asset consolidation** — merge StarterAssets map into project InputActions when a concrete need arises.
 - **Mushroom tier buildout** — T2 (Joren's tools unlock species), T3 cultivation species beyond intro, T4 rares. T5 stays unimplemented (bible-reserved).
+- **Wendlight world prefab remodel** — Wendlight is now the real Liberty Cap (Psilocybe semilanceata) but its Old Wend world node still uses a mystical glowing tinted-variant prefab. Retint/remodel to read like a real Liberty Cap (Meshy/model pass).
 - **Cinematic dialogue camera** — two-shot dolly per `Docs/dialog-system.md`; finally consumes `DialogueLine.isCloseup` (authored in assets, currently unread — do NOT delete it in the dead-code sweep).
 - **Cast models pass** — replace placeholder capsules (Joren, Voss, Marra, Almy…) via the Meshy pipeline; key/book models don't exist in kitbash packs (mill key, Almy's seedbook). See graphics-pipeline memory wants list.
 - **Audio pass** — author RegionTrigger ambience volumes first, then AmbienceManager, SFX on existing events, mixer routing.

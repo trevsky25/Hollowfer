@@ -14,20 +14,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.MushroomFieldGuideData
   _id: hollowheart
   _commonName: Hollowheart
-  _latinName: Unrecorded
-  _edibility: 4
-  _edibilityLabel: "Unknown \u2014 old knowledge"
-  _description: 'A rare fungus of the oldest stumps, named for where it grows: the hollowed heart of a tree that died before the village had its name. Sable''s drawing shows it half in shadow, as if the page itself were being careful.'
+  _latinName: Amanita phalloides
+  _edibility: 1
+  _edibilityLabel: Deadly
+  _description: 'Sable''s seedbook name for the Death Cap (Amanita phalloides) — the most lethal mushroom on Earth, blamed for roughly half of all mushroom-poisoning deaths worldwide. The old hand named it Hollowheart for how it kills: pleasant to eat, then quiet for a day while it hollows the liver from within.'
   _idFeatures:
-  - Grows only inside hollow ancient stumps
-  - Flesh darkens quickly when cut
-  - Never more than a few to a stump
-  _habitat: Hollow hearts of ancient stumps, Deep Wood
-  _season: Unknown — the seedbook is silent
-  _lookalikes: Any dark stump fungus, in bad light. The habitat is the identifier; nothing else lives where it lives.
-  _notes: 'The seedbook pairs it with a warning in Sable''s hand that the damp has taken all but two words: ''… only once.'''
-  _photo: {fileID: 0}
-  _photoCredit: 
+  - Cap olive-green to pale yellow, smooth and slightly sticky when moist
+  - White free gills, not attached to the stem
+  - White ring (annulus) on the upper stem
+  - Bulbous volva at the base, often hidden in litter — always brush down to check
+  - White spore print
+  _habitat: Mycorrhizal with broadleaf trees — oak, beech, hornbeam.
+  _season: Late summer through autumn
+  _lookalikes: Field Mushroom and Horse Mushroom are edible but have pink or brown gills, never white, and no volva. Caesar''s Mushroom has an orange cap with yellow gills. The volva at the base is the single most important check.
+  _notes: 'There is no antidote. Symptoms appear six to twelve hours after eating: severe illness, then a deceptive well period of a day or two, then liver and kidney failure. By the time you feel sick, the damage is done. Sable''s warning, half lost to damp, ends: only once.'
+  _photo: {fileID: 21300000, guid: ee5656c6536494ed185db05eb17c5016, type: 3}
+  _photoCredit: Wikimedia Commons
   _worldPrefab: {fileID: 0}
   _displayNameId: mushroom.hollowheart.name
   _descriptionId: mushroom.hollowheart.description
