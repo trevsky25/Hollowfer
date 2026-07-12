@@ -24,7 +24,8 @@ Every doc's first 7 lines are a summary — survey them all with:
 | Saves, persistence | `Docs/systems/save.md` |
 | Input actions, gamepad | `Docs/systems/input.md` |
 | Strings, translation | `Docs/systems/localization.md` |
-| Settings, audio | `Docs/systems/settings.md` |
+| Settings | `Docs/systems/settings.md` |
+| Music, voice-over, VO pipeline | `Docs/systems/audio.md` |
 | Code style, naming, folders, canon rules | `Docs/conventions.md` |
 | Anything shippable | `Docs/steam-constraints.md` |
 

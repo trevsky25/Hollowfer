@@ -9,6 +9,9 @@ namespace Hollowfen.Quests
     // Caption copy is verbatim from docs/story.md.
     public class StoryBeats : MonoBehaviour
     {
+        [SerializeField, Tooltip("Voice-over per intro caption, index-matched (batch-29 VO test). Missing/null entries are silent.")]
+        private AudioClip[] _introVoiceClips;
+
         private static readonly string[] IntroCaptions =
         {
             "It had been three years since Wren Tobin walked the east road into Hollowfen.",
@@ -41,7 +44,7 @@ namespace Hollowfen.Quests
             if (meta != null && meta.HomecomingIntroSeen) return;
             SaveManager.AutoSaveIntroSeen();
             if (NarrationOverlay.Instance != null)
-                NarrationOverlay.Instance.Show(IntroCaptions);
+                NarrationOverlay.Instance.Show(IntroCaptions, _introVoiceClips);
         }
 
         private void HandleQuestCompleted(QuestData quest)

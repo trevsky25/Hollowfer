@@ -26,6 +26,10 @@ namespace Hollowfen.Dialogue
         private float _typewriterCps = 32f;
         [SerializeField] private float _panelHeight = 320f;
         [SerializeField] private float _panelMargin = 60f;
+        [SerializeField, Tooltip("Mixer group for line voice-over (SFX for the batch-29 test; a dedicated Voice group is a follow-up). Null = unrouted.")]
+        private UnityEngine.Audio.AudioMixerGroup _voiceOutput;
+
+        private AudioSource _voiceSource;   // lazily created; AudioSource ignores timeScale, so VO plays through the dialogue freeze
 
         private static readonly Dictionary<string, Color> SpeakerColors = new Dictionary<string, Color>
         {
@@ -101,6 +105,7 @@ namespace Hollowfen.Dialogue
             if (!_isOpen) return;
             _isOpen = false;
             if (_typewriterCo != null) { StopCoroutine(_typewriterCo); _typewriterCo = null; }
+            if (_voiceSource != null) _voiceSource.Stop();
             EndChoices();
             SetActiveSilent(false);
             Time.timeScale = _previousTimeScale;
@@ -152,6 +157,25 @@ namespace Hollowfen.Dialogue
             _lineFullyShown = false;
             if (_typewriterCo != null) StopCoroutine(_typewriterCo);
             _typewriterCo = StartCoroutine(Typewriter(line.text ?? ""));
+            PlayVoice(line.voiceClip);
+        }
+
+        // Voice-over for the current line. Always stops the previous line's clip first, so
+        // advancing early cuts the read cleanly; a null clip just silences (pre-VO dialogues).
+        private void PlayVoice(AudioClip clip)
+        {
+            if (_voiceSource == null)
+            {
+                if (clip == null) return;
+                _voiceSource = gameObject.AddComponent<AudioSource>();
+                _voiceSource.playOnAwake = false;
+                _voiceSource.spatialBlend = 0f;   // UI-space, not positional
+                _voiceSource.outputAudioMixerGroup = _voiceOutput;
+            }
+            _voiceSource.Stop();
+            if (clip == null) return;
+            _voiceSource.clip = clip;
+            _voiceSource.Play();
         }
 
         private IEnumerator Typewriter(string text)

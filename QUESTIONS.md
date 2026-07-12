@@ -4,6 +4,17 @@ The decision inbox. Agents append questions ONLY Trevor can answer (design taste
 
 ## Open
 
+### Q10 — AI-generated voiceover: test-only, or a shipping direction? (asked 2026-07-12 · batch-29, product + disclosure stakes)
+Batch-29 proves the pipeline: local Kokoro TTS (free, Apache) voices the entrance scene — intro
+narration (Wren, warm/slowed) + Bram's chain (older British male) — with clean per-line playback
+and the Misty Forest bed underneath. **Decisions that are yours:** (a) is AI VO the direction for
+EA, or is this placeholder until human VO / no-VO? (b) if any AI VO ships, **Steam requires an
+AI-content disclosure** on the store page (pre-EA checklist item added); (c) voice casting taste —
+listen to the test and tell me which voices feel wrong (the cast map is one line per character in
+`tools/agent/generate_vo.py`). **Recommendation:** treat as placeholder-quality direction-finding;
+decide after hearing it in-game. No further VO generation until you call the direction — the
+pipeline makes full coverage a mechanical batch whenever you do.
+
 ### Q9 — Credits copy: ship the current 7 lines, or expand for launch? (asked 2026-07-12 · batch-28, low stakes but has a legal edge)
 The settings-screen rebuild (batch-28) kept the shipped credits copy verbatim, now with editorial
 hierarchy. For a production launch the copy may want: exact asset-pack legal names (per license

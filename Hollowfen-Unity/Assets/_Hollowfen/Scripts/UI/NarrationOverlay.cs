@@ -21,12 +21,16 @@ namespace Hollowfen.UI
         [SerializeField, Tooltip("Captions auto-advance after this long without input.")]
         private float _autoAdvanceSeconds = 6.0f;
 
+        [SerializeField, Tooltip("Mixer group for caption voice-over (SFX for the batch-29 test). Null = unrouted.")]
+        private UnityEngine.Audio.AudioMixerGroup _voiceOutput;
+
         private Canvas _canvas;
         private CanvasGroup _group;
         private TMP_Text _caption;
         private TMP_Text _hint;
         private bool _built;
         private Coroutine _running;
+        private AudioSource _voiceSource;
 
         public bool IsShowing => _running != null;
 
@@ -43,10 +47,19 @@ namespace Hollowfen.UI
 
         public void Show(string[] captions, Action onDone = null)
         {
+            Show(captions, null, onDone);
+        }
+
+        // Caption-synced voice-over variant (batch-29): clips[i] plays as captions[i] fades in;
+        // the caption holds for at least the clip's length. clips may be null or shorter than
+        // captions — missing entries are silent.
+        public void Show(string[] captions, AudioClip[] clips, Action onDone = null)
+        {
             if (captions == null || captions.Length == 0) { onDone?.Invoke(); return; }
             BuildIfNeeded();
             if (_running != null) StopCoroutine(_running);
-            _running = StartCoroutine(Run(captions, onDone));
+            if (_voiceSource != null) _voiceSource.Stop();   // a superseded run's clip must not bleed into this one
+            _running = StartCoroutine(Run(captions, clips, onDone));
         }
 
         // Immediate dismiss — used by automated verification and as a safety hatch.
@@ -55,12 +68,29 @@ namespace Hollowfen.UI
             if (_running == null) return;
             StopCoroutine(_running);
             _running = null;
+            if (_voiceSource != null) _voiceSource.Stop();
             if (_canvas != null) _canvas.gameObject.SetActive(false);
             PlayerInteractor.Suspended = false;
             PlayerInteractor.SetPlayerInputEnabled(true);
         }
 
-        private IEnumerator Run(string[] captions, Action onDone)
+        private void PlayVoice(AudioClip clip)
+        {
+            if (_voiceSource == null)
+            {
+                if (clip == null) return;
+                _voiceSource = gameObject.AddComponent<AudioSource>();
+                _voiceSource.playOnAwake = false;
+                _voiceSource.spatialBlend = 0f;
+                _voiceSource.outputAudioMixerGroup = _voiceOutput;
+            }
+            _voiceSource.Stop();
+            if (clip == null) return;
+            _voiceSource.clip = clip;
+            _voiceSource.Play();
+        }
+
+        private IEnumerator Run(string[] captions, AudioClip[] clips, Action onDone)
         {
             PlayerInteractor.Suspended = true;
             PlayerInteractor.SetPlayerInputEnabled(false);
@@ -71,10 +101,14 @@ namespace Hollowfen.UI
 
             yield return Fade(0f, 1f);
 
-            foreach (var line in captions)
+            for (int i = 0; i < captions.Length; i++)
             {
+                var line = captions[i];
+                var clip = clips != null && i < clips.Length ? clips[i] : null;
+
                 _caption.text = line;
                 _caption.alpha = 0f;
+                PlayVoice(clip);
                 float t0 = Time.unscaledTime;
                 while (Time.unscaledTime - t0 < 0.6f)
                 {
@@ -83,14 +117,18 @@ namespace Hollowfen.UI
                 }
                 _caption.alpha = 1f;
 
+                // A voiced caption holds until its read finishes (+ a breath); input can
+                // still advance early after the minimum hold — the clip cuts with it.
+                float autoAdvance = clip != null ? Mathf.Max(_autoAdvanceSeconds, clip.length + 0.8f) : _autoAdvanceSeconds;
                 float shown = Time.unscaledTime;
                 while (true)
                 {
                     float elapsed = Time.unscaledTime - shown;
-                    if (elapsed >= _autoAdvanceSeconds) break;
+                    if (elapsed >= autoAdvance) break;
                     if (elapsed >= _minHoldSeconds && AdvancePressed()) break;
                     yield return null;
                 }
+                if (_voiceSource != null) _voiceSource.Stop();
 
                 float f0 = Time.unscaledTime;
                 while (Time.unscaledTime - f0 < 0.35f)

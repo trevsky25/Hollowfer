@@ -1,0 +1,46 @@
+# Audio (music + voice-over)
+Batch-29 test pipeline: `MusicManager` (one looping bed, fade-in, Music mixer group) + per-line
+dialogue VO (`DialogueLine.voiceClip`, played by DialogueScreen) + caption-synced narration VO
+(`NarrationOverlay.Show(captions, clips)`); clips generated locally by `tools/agent/generate_vo.py`
+(Kokoro-82M TTS, Apache) into `Assets/_Hollowfen/Audio/VO/<Dialogue>/<idx>_<Speaker>.wav`.
+Key scripts: `Scripts/Audio/MusicManager.cs` (on `_Music`), playback in DialogueScreen/NarrationOverlay (both `_voiceOutput`→SFX group for now); StoryBeats `_introVoiceClips`.
+Biggest gotchas: AudioSources report `isPlaying=false` while the editor is PAUSED (Step()-driving) and the player loop freezes unfocused (`Application.runInBackground=true` in test code); the espeakng-loader wheel hard-exits on macOS — `brew install espeak-ng` is the generator's one system prerequisite.
+Status: entrance scene verified end-to-end 2026-07-12 (intro narration voiced + hold-extended, Bram chain voiced per speaker, clean cut on advance/close, Misty Forest bed via Music slider). AI-VO shipping decision + Steam AI disclosure = QUESTIONS Q10.
+
+> Self-healing doc: if you change this system, update this doc (including the 7-line header) in the same batch, and note the change in the batch worksheet.
+
+---
+
+## What exists (batch-29)
+
+| Piece | Where | Notes |
+|---|---|---|
+| Music bed | `_Music` GameObject → `MusicManager` | Loops the Magic Pig pack's `Misty Forest.wav` (licensed pack asset — ⚠️ lives in the pack's `_Demo Scenes/` folder; a pack update relocating demo content silently kills the bed); 5s fade-in on scene load; source-level ceiling 0.55 UNDER the mixer's Music volume; hard cut on scene exit (no fade-out — Audio pass). Deliberately dumb — region/state music is the Audio-pass backlog item. |
+| Dialogue VO | `DialogueLine.voiceClip` (nullable) | DialogueScreen plays on line show via a lazily-added AudioSource (`_voiceOutput` scene-serialized → SFX group); previous clip always stops first; Close() stops. All 70 pre-VO dialogues unaffected (null = silent). |
+| Narration VO | `NarrationOverlay.Show(captions, clips, onDone)` | Index-matched clips; caption hold = `max(autoAdvance, clip.length + 0.8s)`; advance/skip cuts audio. StoryBeats passes `_introVoiceClips` for the homecoming intro. |
+| Generator | `tools/agent/generate_vo.py` | Parses dialogue .asset YAML (multiline/quoted scalars) → Kokoro WAVs, 24kHz mono. Voice cast in `VOICES` (Wren `af_heart`, Bram `bm_george`, narrator = Wren slowed). Venv: scratchpad, uv + **cpython-3.12 aarch64** (3.14 has no spacy wheels; the default uv python resolved x86_64 → torch dead end). Needs `en_core_web_sm` wheel pre-installed (uv venvs lack pip, misaki's auto-install fails) and brew espeak-ng (wheel loader hard-exits). |
+
+## Coverage (test scope)
+
+Voiced: HomecomingIntro (2 captions) + Bram Act I chain (Homecoming 5, CrookedPintle key 12, Repeat 3).
+Everything else is silent by design until the VO direction is decided (Q10).
+
+## Design intents (don't "fix" these)
+
+- **Skip-typewriter does NOT cut the voice** — first press completes the text while the read
+  finishes (fully-voiced genre convention); the second press advances and cuts. Intentional.
+- **The last line's clip keeps reading under choice pills** — the question is still being asked.
+
+## Follow-ups (backlog)
+
+- Dedicated **Voice mixer group + settings slider** — VO currently rides the SFX slider; a player
+  who zeroes SFX silently mutes all speech. Acceptable for the test, MUST fix before broad VO.
+- **Staleness guard**: emit a per-index text-hash manifest next to the WAVs + a `--check` mode in
+  the generator, so edited dialogue text can't silently keep old audio. (Also: the intro captions
+  are duplicated verbatim in generate_vo.py vs StoryBeats — two sources of truth until then.)
+- If voiced narration ever fires from a quest-completion that chains a dialogue, the two
+  AudioSources can overlap — have `NarrationOverlay.Show` stop DialogueScreen's voice then.
+- If AI VO ships: full-cast voice map, regeneration sweep over all dialogues, pronunciation
+  overrides for names (Hollowfen/Wendlight read acceptably in the test; audit before shipping),
+  and the **Steam AI-content disclosure** on the store page.
+- `Application.runInBackground` as a real project setting (PC-game norm) instead of test-only.

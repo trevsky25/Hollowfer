@@ -15,6 +15,8 @@ namespace Hollowfen.Dialogue
         public string speaker;
         [TextArea(2, 6)] public string text;
         public bool isCloseup;
+        [Tooltip("Optional voice-over played when this line shows (batch-29 VO pipeline). Null = silent — pre-VO dialogues keep working unchanged.")]
+        public AudioClip voiceClip;
     }
 
     // A player choice offered after the dialog's last line (and after its outcomes fire).
