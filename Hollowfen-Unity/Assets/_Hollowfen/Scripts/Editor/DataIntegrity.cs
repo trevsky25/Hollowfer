@@ -165,20 +165,38 @@ namespace Hollowfen.EditorTools
                     issues.Add(New(Severity.Warn, "dialogue-quest", path,
                         $"CompleteQuest '{d.CompleteQuest.Id}' is outside {DataRoot}/Quests"));
 
-                // _nextDialog is a linked list; a cycle would trap the player at timeScale 0.
-                var seen = new HashSet<DialogueData>();
-                var cur = d;
-                var hops = 0;
-                while (cur != null && hops++ < 64)
+                if (d.Choices != null && d.Choices.Length > 0)
                 {
-                    if (!seen.Add(cur))
-                    {
-                        issues.Add(New(Severity.Error, "dialogue-chain", path, "NextDialog cycle"));
-                        break;
-                    }
-                    cur = cur.NextDialog;
+                    if (d.Choices.Length > 4)
+                        issues.Add(New(Severity.Error, "dialogue-choices", path, $"{d.Choices.Length} choices — the input scheme supports max 4"));
+                    for (int i = 0; i < d.Choices.Length; i++)
+                        if (string.IsNullOrWhiteSpace(d.Choices[i].text))
+                            issues.Add(New(Severity.Error, "dialogue-choices", path, $"choice {i} has empty text"));
+                    if (d.NextDialog != null)
+                        issues.Add(New(Severity.Warn, "dialogue-choices", path, "has both NextDialog and Choices — NextDialog is ignored at runtime"));
                 }
+
+                // Chains + choice branches form a graph; a cycle traps the player at timeScale 0.
+                if (HasDialogueCycle(d))
+                    issues.Add(New(Severity.Error, "dialogue-chain", path, "cycle via NextDialog/Choices"));
             }
+        }
+
+        private static bool HasDialogueCycle(DialogueData root)
+        {
+            return CycleDfs(root, new HashSet<DialogueData>(), 0);
+        }
+
+        private static bool CycleDfs(DialogueData node, HashSet<DialogueData> onPath, int depth)
+        {
+            if (node == null || depth > 64) return false;
+            if (!onPath.Add(node)) return true;
+            bool cycle = CycleDfs(node.NextDialog, onPath, depth + 1);
+            if (!cycle && node.Choices != null)
+                foreach (var c in node.Choices)
+                    if (CycleDfs(c.next, onPath, depth + 1)) { cycle = true; break; }
+            onPath.Remove(node);
+            return cycle;
         }
 
         private static void CheckNpcs(List<Issue> issues, List<NPCData> npcs, Dictionary<string, string> loc)

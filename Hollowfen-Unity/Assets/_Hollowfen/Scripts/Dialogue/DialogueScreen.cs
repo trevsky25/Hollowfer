@@ -51,12 +51,19 @@ namespace Hollowfen.Dialogue
         private Coroutine _typewriterCo;
         private bool _lineFullyShown;
 
+        // Choice state — active after the last line of a dialog that has _choices.
+        private bool _choosing;
+        private int _choiceIndex;
+        private DialogueChoice[] _activeChoices;
+        private bool _stickLatched;
+
         private GameObject _root;
         private TMP_Text _speakerLabel;
         private TMP_Text _bodyText;
         private TMP_Text _hintText;
 
         public bool IsOpen => _isOpen;
+        public bool IsChoosing => _choosing;
 
         private void Awake()
         {
@@ -92,6 +99,7 @@ namespace Hollowfen.Dialogue
             if (!_isOpen) return;
             _isOpen = false;
             if (_typewriterCo != null) { StopCoroutine(_typewriterCo); _typewriterCo = null; }
+            EndChoices();
             SetActiveSilent(false);
             Time.timeScale = _previousTimeScale;
             PlayerInteractor.Suspended = false;
@@ -103,6 +111,7 @@ namespace Hollowfen.Dialogue
         private void Update()
         {
             if (!_isOpen) return;
+            if (_choosing) { ReadChoiceInput(); return; }
             if (ReadAdvancePressed())
             {
                 if (!_lineFullyShown) SkipTypewriter();
@@ -221,6 +230,14 @@ namespace Hollowfen.Dialogue
             if (done.CompleteQuest != null)
                 QuestManager.CompleteQuest(done.CompleteQuest.Id);
 
+            // Choices take precedence over the linear chain: outcomes above have already
+            // fired ("this conversation happened"); each branch then owns its own outcomes.
+            if (done.Choices != null && done.Choices.Length > 0)
+            {
+                BeginChoices(done.Choices);
+                return;
+            }
+
             if (done.NextDialog != null)
             {
                 // Chain: hold the screen open, swap dialog seamlessly.
@@ -231,6 +248,119 @@ namespace Hollowfen.Dialogue
             else
             {
                 Close();
+            }
+        }
+
+        // ----------------- CHOICES -----------------
+
+        private void BeginChoices(DialogueChoice[] choices)
+        {
+            _choosing = true;
+            _activeChoices = choices;
+            _choiceIndex = 0;
+            _stickLatched = true; // require the stick to re-center before it moves the cursor
+            BuildChoicePillsIfNeeded();
+            int shown = Mathf.Min(choices.Length, _choicePills.Count);
+            for (int i = 0; i < _choicePills.Count; i++)
+            {
+                bool active = i < shown;
+                _choicePills[i].Root.SetActive(active);
+                if (active)
+                {
+                    _choicePills[i].Label.text = (i + 1) + "   " + (choices[i].text ?? "");
+                    // Choice 1 reads on TOP: stack downward from the highest slot.
+                    ((RectTransform)_choicePills[i].Root.transform).anchoredPosition =
+                        new Vector2(0f, (shown - 1 - i) * 54f);
+                }
+            }
+            _choiceRoot.SetActive(true);
+            if (_hintText != null) _hintText.text = "1–4 / stick  ·  choose      Space  ·  confirm";
+            RefreshChoiceHighlight();
+        }
+
+        private void EndChoices()
+        {
+            _choosing = false;
+            _activeChoices = null;
+            if (_choiceRoot != null) _choiceRoot.SetActive(false);
+            if (_hintText != null) _hintText.text = "Space  ·  continue";
+        }
+
+        // Public on purpose: mouse Buttons, future controllers, and the verification
+        // harness all drive selection through the same door.
+        public void SelectChoice(int index)
+        {
+            if (!_choosing || _activeChoices == null || index < 0 || index >= _activeChoices.Length) return;
+            var choice = _activeChoices[index];
+            EndChoices();
+
+            if (!string.IsNullOrEmpty(choice.setsFlagId))
+                GameScores.SetFlag(choice.setsFlagId);
+
+            if (choice.next != null)
+            {
+                _currentDialog = choice.next;
+                _currentLineIndex = 0;
+                ShowCurrentLine();
+            }
+            else
+            {
+                Close();
+            }
+        }
+
+        private void ReadChoiceInput()
+        {
+            int count = _activeChoices.Length;
+            var kb = Keyboard.current;
+            if (kb != null)
+            {
+                if (kb.digit1Key.wasPressedThisFrame && count > 0) { SelectChoice(0); return; }
+                if (kb.digit2Key.wasPressedThisFrame && count > 1) { SelectChoice(1); return; }
+                if (kb.digit3Key.wasPressedThisFrame && count > 2) { SelectChoice(2); return; }
+                if (kb.digit4Key.wasPressedThisFrame && count > 3) { SelectChoice(3); return; }
+            }
+
+            int move = 0;
+            if (kb != null)
+            {
+                if (kb.downArrowKey.wasPressedThisFrame || kb.sKey.wasPressedThisFrame) move = 1;
+                if (kb.upArrowKey.wasPressedThisFrame || kb.wKey.wasPressedThisFrame) move = -1;
+            }
+            var pad = Gamepad.current;
+            if (pad != null)
+            {
+                if (pad.dpad.down.wasPressedThisFrame) move = 1;
+                if (pad.dpad.up.wasPressedThisFrame) move = -1;
+                float y = pad.leftStick.ReadValue().y;
+                if (Mathf.Abs(y) < 0.3f) _stickLatched = false;
+                else if (!_stickLatched && Mathf.Abs(y) > 0.6f) { move = y < 0 ? 1 : -1; _stickLatched = true; }
+            }
+            if (move != 0)
+            {
+                _choiceIndex = (_choiceIndex + move + count) % count;
+                RefreshChoiceHighlight();
+                return;
+            }
+
+            bool confirm = (kb != null && (kb.spaceKey.wasPressedThisFrame || kb.enterKey.wasPressedThisFrame))
+                || (pad != null && pad.buttonSouth.wasPressedThisFrame);
+            if (confirm) SelectChoice(_choiceIndex);
+        }
+
+        private void RefreshChoiceHighlight()
+        {
+            for (int i = 0; i < _choicePills.Count; i++)
+            {
+                if (!_choicePills[i].Root.activeSelf) continue;
+                bool selected = i == _choiceIndex;
+                _choicePills[i].Fill.color = selected
+                    ? Color.Lerp(new Color(0.13f, 0.10f, 0.06f, 0.97f), HollowfenPalette.Gold, 0.42f)
+                    : new Color(0.13f, 0.10f, 0.06f, 0.94f);
+                _choicePills[i].Stroke.color = selected
+                    ? HollowfenPalette.Gold
+                    : new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0.35f);
+                _choicePills[i].Label.color = selected ? HollowfenPalette.GoldGlow : HollowfenPalette.Cream;
             }
         }
 
@@ -269,6 +399,73 @@ namespace Hollowfen.Dialogue
 
         private Image _namePlateFill;
         private RectTransform _namePlateRT;
+
+        private struct ChoicePill
+        {
+            public GameObject Root;
+            public Image Fill;
+            public Image Stroke;
+            public TMP_Text Label;
+        }
+
+        private GameObject _choiceRoot;
+        private readonly List<ChoicePill> _choicePills = new List<ChoicePill>();
+
+        // Four reusable choice pills stacked above the panel's right edge, in the
+        // journal register: ink pill, gold hairline, cream text; selection glows gold.
+        private void BuildChoicePillsIfNeeded()
+        {
+            if (_choiceRoot != null) return;
+            var canvasRT = (RectTransform)transform;
+
+            _choiceRoot = new GameObject("Choices", typeof(RectTransform));
+            _choiceRoot.transform.SetParent(canvasRT, false);
+            var cRT = (RectTransform)_choiceRoot.transform;
+            cRT.anchorMin = new Vector2(0.5f, 0f);
+            cRT.anchorMax = new Vector2(0.5f, 0f);
+            cRT.pivot = new Vector2(1f, 0f);
+            // Panel: 1240 wide, centred, bottom y=134, height 230 → stack starts just above it.
+            cRT.anchoredPosition = new Vector2(620f, 134f + 230f + 14f);
+            cRT.sizeDelta = new Vector2(620f, 4 * 54f);
+
+            for (int i = 0; i < 4; i++)
+            {
+                var pillGo = new GameObject("Choice" + (i + 1), typeof(RectTransform));
+                pillGo.transform.SetParent(cRT, false);
+                var pRT = (RectTransform)pillGo.transform;
+                pRT.anchorMin = new Vector2(1f, 0f);
+                pRT.anchorMax = new Vector2(1f, 0f);
+                pRT.pivot = new Vector2(1f, 0f);
+                pRT.sizeDelta = new Vector2(600f, 46f);
+                pRT.anchoredPosition = new Vector2(0f, i * 54f);
+
+                var fill = pillGo.AddComponent<Image>();
+                fill.sprite = UICanvasUtil.RoundedRect(12);
+                fill.type = Image.Type.Sliced;
+                fill.color = new Color(0.13f, 0.10f, 0.06f, 0.94f);
+
+                var strokeGo = UICanvasUtil.NewImage("Hairline", pRT, HollowfenPalette.Gold, false);
+                var stroke = strokeGo.GetComponent<Image>();
+                stroke.sprite = UICanvasUtil.RoundedOutline(12, 1.6f);
+                stroke.type = Image.Type.Sliced;
+                UICanvasUtil.Stretch((RectTransform)strokeGo.transform);
+
+                var label = UICanvasUtil.NewBody("Label", pRT, "", 20f, HollowfenPalette.Cream,
+                    FontStyles.Italic, TextAlignmentOptions.MidlineLeft);
+                var lRT = label.rectTransform;
+                lRT.anchorMin = Vector2.zero; lRT.anchorMax = Vector2.one;
+                lRT.offsetMin = new Vector2(24f, 0f); lRT.offsetMax = new Vector2(-18f, 0f);
+
+                int captured = i;
+                var btn = pillGo.AddComponent<Button>();
+                btn.transition = Selectable.Transition.None;
+                btn.onClick.AddListener(() => SelectChoice(captured));
+
+                _choicePills.Add(new ChoicePill { Root = pillGo, Fill = fill, Stroke = stroke, Label = label });
+                pillGo.SetActive(false);
+            }
+            _choiceRoot.SetActive(false);
+        }
 
         private void BuildIfNeeded()
         {

@@ -34,7 +34,8 @@ Runs inside the editor (menu / bridge / batchmode `-executeMethod …DataIntegri
 | `relationships` | ERROR | Parallel id/delta arrays same length; every id is a bible cast id (catches typos — extras are silently ignored at runtime). |
 | `dialogue-lines` | ERROR | Every dialogue has lines; no empty speaker/text. |
 | `dialogue-speaker` | WARN | Speaker exists in `DialogueScreen.SpeakerColors` (else silent default-ink fallback). |
-| `dialogue-chain` | ERROR | No `NextDialog` cycles (a cycle traps the player at timeScale 0). |
+| `dialogue-chain` | ERROR | No cycles through the NextDialog + choice-branch graph (a cycle traps the player at timeScale 0). |
+| `dialogue-choices` | ERROR/WARN | ≤4 choices (input limit); no empty choice text; WARN when both NextDialog and Choices set (NextDialog is ignored). |
 | `dialogue-flags/quest` | ERROR/WARN | No empty flag ids; CompleteQuest targets live under Data/Quests. |
 | `npc-id` / `npc-entries` | ERROR/WARN/INFO | Ids lowercase/unique/canon; no unconditional entry shadowing later entries (PickDialog is first-match-wins); null-dialog entries flagged; missing repeat dialog is INFO (intentional for quest-window NPCs). |
 | `scorehooks` | ERROR | `ScoreHooks.QuestFlags`/`SpeciesFlags` magic-string keys match real asset ids (hand-synced today). |

@@ -37,7 +37,9 @@ Every doc's first 7 lines are a summary — survey them all with:
 5. **Park decisions, don't guess**: anything only Trevor can decide (canon, taste, product scope) goes in `../QUESTIONS.md` with options + a recommendation; keep building what isn't blocked.
 6. **Finish**: verification evidence in the worksheet, test script for Trevor (template in conventions.md), commit work + worksheet + docs together, tag `batch-NN`, regenerate the dashboard (`python3 tools/agent/dashboard.py`) and republish the Artifact.
 
-**Unity MCP**: bridge auto-starts with the editor (`McpBridgeBootstrap.cs`). If session tools aren't registered, use `tools/agent/unitymcp.py` (repo root) over HTTP. Unity must be running for compile/play verification — if it isn't, say so rather than shipping unverified work.
+**Unity MCP**: bridge auto-starts with the editor (`McpBridgeBootstrap.cs`). If session tools aren't registered, use `tools/agent/unitymcp.py` (repo root) over HTTP. Unity must be running for compile/play verification — if it isn't, say so rather than shipping unverified work. Drive play-mode frames with `EditorApplication.Step()` (App-Nap-immune), never real-time polls.
+
+**Overnight/autonomous runs**: follow `Docs/night-shift.md` — it governs the loop around batches (budget, stop conditions, decision parking).
 
 ## Non-negotiables (full detail: steam-constraints.md + conventions.md)
 

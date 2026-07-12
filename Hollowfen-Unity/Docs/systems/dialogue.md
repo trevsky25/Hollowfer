@@ -1,5 +1,5 @@
 # Dialogue System
-Strictly LINEAR dialogue: `DialogueData` = ordered `DialogueLine[]` + a one-shot outcome block + optional `_nextDialog` chain link — no choices, no branching (branching happens upstream in `NPCData.PickDialog` selection). `DialogueScreen` renders it cinematic-letterbox style with a typewriter, frozen timeScale, and fires all outcomes on finish via direct static calls.
+Dialogue: `DialogueData` = ordered `DialogueLine[]` + a one-shot outcome block + EITHER a linear `_nextDialog` chain OR `_choices` (PLAYER CHOICES, max 4 — added Batch 17: text + branch + optional flag; outcomes fire before choices show; each branch owns its own outcomes). NPC-side branching still happens upstream in `NPCData.PickDialog`. `DialogueScreen` renders cinematic-letterbox with typewriter, frozen timeScale; choices render as numbered pills above the panel (1-4 keys / D-pad+stick / Submit / mouse; choice 1 on top; public `SelectChoice(int)` API).
 Key scripts: `Assets/_Hollowfen/Scripts/Dialogue/` — DialogueData, DialogueScreen (namespace `Hollowfen.Dialogue`). Design reference: `Docs/dialog-system.md` (web-era).
 Data: `Data/Dialogue/Dialogue_ActN_<Context>_<Variant>.asset` (42 across Acts I–II); `_id` fields are decorative — asset GUID refs drive everything.
 Outcomes on finish (in order): grant key item → grant forage → CONSUME forage (`_consumeForage`+count — Marra's tonic ingredient; runs before the basket sale so it isn't also sold) → basket-sale coin math → spend coins → add coins → set flags → score/relationship deltas → unlock story card → complete quest → chain next dialog.
@@ -17,8 +17,9 @@ Status: verified against code 2026-07-11.
 - **`DialogueLine`** struct: `speaker` (raw display name — keys into `DialogueScreen.SpeakerColors`), `text` (`[TextArea]`; consecutive same-speaker lines merged with `\n\n` per authoring convention), `isCloseup` (⚠️ authored but UNUSED — reserved for a future cinematic camera pass).
 - **Outcome fields**: `_unlockStoryCard` (StoryCardData) · `_completeQuest` (QuestData) · `_giveItemId` (→`KeyItems.Grant`) · `_grantCoinsCopper` / `_spendsCoinsCopper` (12c = 1s; spend is best-effort `CoinPurse.TrySpend`, result ignored) · `_sellsForageBasket` + `_basketCopperPerItem` (Marra's repeatable loop; count read BEFORE `InventoryRuntime.RemoveAll`) · `_grantForage` + `_grantForageCount` (MushroomFieldGuideData — Almy's spawn plugs) · `_setFlagIds[]` (→`GameScores.SetFlag`) · `_villageHopeDelta` / `_knowledgeDelta` · `_relationshipNpcIds[]`+`_relationshipDeltas[]` (parallel, min-length).
 - **`_nextDialog`**: linked-list chain; each link fires its own full outcome block; screen stays open, timeScale stays 0 across the chain.
+- **`_choices` (`DialogueChoice[]`)**: `text` (Wren's option) + `next` (branch dialogue, null = close) + `setsFlagId`. Shown AFTER the last line's outcomes fire; non-empty choices make `_nextDialog` ignored (integrity warns). `IsChoosing` exposes the state; selection via number keys, D-pad/stick + confirm, or mouse click.
 
-**No branching model exists.** Which dialog plays is decided by `NPCData.PickDialog()` (see npcs.md); once playing, it runs start-to-finish.
+**Two branching layers**: which dialog plays = `NPCData.PickDialog()` (npcs.md); within a dialog, `_choices` fork at the end. First consumer: Act III's `theoCapitalOffer`.
 
 ## DialogueScreen
 

@@ -2,7 +2,7 @@
 
 **How agents use this file:** pull the top item from **Next up** unless Trevor directs otherwise. One item ≈ one batch (one worksheet, one tagged commit). An item is DONE only when: play-mode verified via the Unity MCP bridge, system docs updated, worksheet written, committed + tagged. Reorder/add items as reality changes — this is a living queue. If an item turns out to be >1 batch, split it here before starting.
 
-**Status snapshot (2026-07-11):** **ACTS I + II COMPLETE** — all 15 quests committed and bridge-verified (batch-16 closed the act: Hollin, the cottages reopening, Calden's warning, chapel gate locked). Decision inbox at zero (tier names locked canon-pending, journal copy fixed, EA floor = Acts I–II). The EA content floor now EXISTS — remaining work is Act III+ content, the choice UI (next up, gates Act III), and the hardening/polish tail. Infra fully live.
+**Status snapshot (2026-07-11):** Acts I + II complete (15 quests, bridge-verified). Batch 17 shipped the **dialogue choice UI** (Act III's gate) and the **night-shift orchestration doc** — overnight autonomous runs are now a supported mode (see `Hollowfen-Unity/Docs/night-shift.md` for Trevor's 3-step setup). Next: Act III A opens the Deep Wood.
 
 ---
 
@@ -14,9 +14,10 @@
 4. ~~**Phase 2 infra: gotcha linter + pre-commit hook**~~ **DONE in Batch 14** — `tools/agent/lint_hollowfen.py` (5 rules + waivers file), `.githooks/pre-commit` (lint always, integrity when the bridge is up), `smoke_play.py` promoted from the Batch 11 harness. All negative-tested.
 5. ~~**Act II B (scenes 4–5)**~~ **DONE in Batch 15** — quests 11–12 end-to-end verified (14-step bridge-driven playthrough, 0 errors). Deferred to later milestones: weekly wagon schedule (5–7 day cycle), market-price journal notes, species-gated first sale, medicinal-recipes + Edda-delivery-tasks systems, Chanterelle/Lacewig world prefabs (fold into Act II C or T2 species pass).
 6. ~~**Act II C (scenes 6–8)**~~ **DONE in Batch 16 — ACT II COMPLETE** (quests 13–15, 9-step bridge-verified run, 0 errors). Hollin/Pell/Calden staged; cottage boards + chapel gate world-swaps live. Deferred: restoration project board, chimney smoke, Deep Wood rumor chain (Act III).
-7. **Dialogue choice UI** — `DialogueChoice[]` on DialogueData + Choice1-4 bindings (the Dialogue action map finally earns its keep). **MUST land before Act III** — `theoCapitalOffer` needs it. Current system is strictly linear (see systems/dialogue.md).
-8. **Phase 3 infra: review personas + wrap-up skill** — `Docs/review/` persona docs (Steam Deck cert, save integrity, localization, narrative/bible, performance), each owning its system docs; end-of-batch fan-out procedure; night-shift orchestration doc.
-9. **Phase 3 infra: visual regression + perf baseline** — scripted screenshot pass of the ~8 canonical screens at 1280×800 into `Docs/screenshots/batch-NN/`; fixed-path village frame-time capture appended to `Docs/benchmarks.md`.
+7. ~~**Dialogue choice UI**~~ **DONE in Batch 17** — `DialogueChoice[]` (text/branch/flag, max 4), numbered-pill UI in the journal style, keyboard/pad/mouse + public `SelectChoice(int)`; integrity checks extended (choice count/text, branch-graph cycles); verified with in-memory dialogues + screenshot. **Act III is unblocked.**
+8. **Act III A (scenes 1–3, quests 16–18): Hollin's Inheritance, The Witch's Cottage (ruined, T4 gate), The Wend's True Course** — Deep Wood / dry riverbed areas + Wendlight species; first real use of dialogue choices.
+9. **Phase 3 infra: review personas** — `Docs/review/` persona docs (Steam Deck cert, save integrity, localization, narrative/bible, performance), each owning its system docs; end-of-batch fan-out. (Night-shift orchestration doc DONE in Batch 17: `Docs/night-shift.md`.)
+10. **Phase 3 infra: visual regression + perf baseline** — scripted screenshot pass of the ~8 canonical screens at 1280×800 into `Docs/screenshots/batch-NN/`; fixed-path village frame-time capture appended to `Docs/benchmarks.md`.
 
 ## Act content roadmap (after Act II)
 

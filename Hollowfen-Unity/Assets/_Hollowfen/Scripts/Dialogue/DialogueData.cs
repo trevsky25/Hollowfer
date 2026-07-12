@@ -17,6 +17,18 @@ namespace Hollowfen.Dialogue
         public bool isCloseup;
     }
 
+    // A player choice offered after the dialog's last line (and after its outcomes fire).
+    // Picking one optionally sets a flag, then branches into `next` (null = just close).
+    // Max 4 — the input scheme is number keys 1-4 / D-pad + confirm.
+    [Serializable]
+    public struct DialogueChoice
+    {
+        [TextArea(1, 3)] public string text;
+        public DialogueData next;
+        [Tooltip("Game flag set when this choice is picked (e.g. theo_offer_accepted). Empty = none.")]
+        public string setsFlagId;
+    }
+
     [CreateAssetMenu(fileName = "Dialogue_New", menuName = "Hollowfen/Dialogue/Dialogue Data")]
     public class DialogueData : ScriptableObject
     {
@@ -52,6 +64,8 @@ namespace Hollowfen.Dialogue
         [SerializeField] private int[] _relationshipDeltas;
 
         [SerializeField] private DialogueData _nextDialog;
+        [SerializeField, Tooltip("Player choices shown after the last line (outcomes fire first). Non-empty = _nextDialog is ignored; each choice branches on its own. Max 4.")]
+        private DialogueChoice[] _choices;
 
         public string Id => _id;
         public DialogueLine[] Lines => _lines;
@@ -72,5 +86,6 @@ namespace Hollowfen.Dialogue
         public string[] RelationshipNpcIds => _relationshipNpcIds;
         public int[] RelationshipDeltas => _relationshipDeltas;
         public DialogueData NextDialog => _nextDialog;
+        public DialogueChoice[] Choices => _choices;
     }
 }
