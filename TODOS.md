@@ -2,7 +2,7 @@
 
 **How agents use this file:** pull the top item from **Next up** unless Trevor directs otherwise. One item ≈ one batch (one worksheet, one tagged commit). An item is DONE only when: play-mode verified via the Unity MCP bridge, system docs updated, worksheet written, committed + tagged. Reorder/add items as reality changes — this is a living queue. If an item turns out to be >1 batch, split it here before starting.
 
-**Status snapshot (2026-07-11):** Quests 1–10 committed and verified (batch-11). Infra batches 12–14 shipped: doc router + system docs, dashboard + questions inbox, and the Phase 2 safety rails (integrity checks + linter + pre-commit gate, all negative-tested). Next: Act II B content — the first batch that runs entirely on the new rails.
+**Status snapshot (2026-07-11):** Quests 1–12 committed and verified — Act II is 5 of 8 scenes done (batch-15 shipped Theo's trade + the Brightspore recovery, end-to-end bridge-verified on the Phase 2 rails). Infra: doc router + system docs, dashboard + questions inbox, integrity/lint/pre-commit gate all live. Next: Act II C (Hollin, cottages, Calden) closes the act; answering Q1 (tier names) helps its trade dialogue.
 
 ---
 
