@@ -12,15 +12,18 @@
 2. ~~**Backfill skeleton system docs**~~ **DONE in Batch 12** (2026-07-11, five parallel readers) — all `[BACKFILL]` markers replaced with code-verified content; audit findings moved to the hardening item below.
 3. **Phase 2 infra: EditMode data-integrity tests** — Unity Test Framework assembly under `Assets/_Hollowfen/Tests/`: every quest's dialogue refs resolve · every dialogue asset's speaker NPC exists · localization IDs referenced by SOs exist in the LUT · no null entries in database SOs · build-settings scene list correct · achievement IDs non-empty on quests. Plus `Docs/tests.md` manifest (what each test proves). 
 4. **Phase 2 infra: gotcha linter + pre-commit hook** — `tools/agent/lint_hollowfen.py` scanning `Assets/_Hollowfen/Scripts` for prohibited patterns (conventions.md list: hardcoded display strings, legacy Input, dataPath saves, public fields, emoji in dialogue assets, missing .meta) with `--fix` where mechanical; wire as git pre-commit.
-5. **Act II B (scenes 4–5): The Trader's Ledger + Brightspore at the Bedside** — Theo + Edda NPCs, market expansion + tonic beats per bible. 
-6. **Act II C (scenes 6–8): A Stranger at the Inn, Two Boards Come Down, Father Calden's Doubt** — Father Calden NPC, Act II completion state + flags.
-7. **Phase 3 infra: review personas + wrap-up skill** — `Docs/review/` persona docs (Steam Deck cert, save integrity, localization, narrative/bible, performance), each owning its system docs; end-of-batch fan-out procedure; night-shift orchestration doc.
-8. **Phase 3 infra: visual regression + perf baseline** — scripted screenshot pass of the ~8 canonical screens at 1280×800 into `Docs/screenshots/batch-NN/`; fixed-path village frame-time capture appended to `Docs/benchmarks.md`.
+5. **Act II B (scenes 4–5): The Trader's Ledger (`theoTrade`) + Brightspore at the Bedside (`edsGrandfather`)** — Theo + Edda NPCs, TradeScreen + OnDayChanged wagon arrival, Brightspore tonic beat; wire Chanterelle/Lacewig world prefabs.
+6. **Act II C (scenes 6–8): A Stranger at the Inn (`meetHollin`), Two Boards Come Down (`cottagesReopen`), Father Calden's Doubt (`caldenWarning`)** — Hollin + Father Calden NPCs, WorldStateSwap v1 (cottage boards, persisted in save), Act II completion state + flags.
+7. **Dialogue choice UI** — `DialogueChoice[]` on DialogueData + Choice1-4 bindings (the Dialogue action map finally earns its keep). **MUST land before Act III** — `theoCapitalOffer` needs it. Current system is strictly linear (see systems/dialogue.md).
+8. **Phase 3 infra: review personas + wrap-up skill** — `Docs/review/` persona docs (Steam Deck cert, save integrity, localization, narrative/bible, performance), each owning its system docs; end-of-batch fan-out procedure; night-shift orchestration doc.
+9. **Phase 3 infra: visual regression + perf baseline** — scripted screenshot pass of the ~8 canonical screens at 1280×800 into `Docs/screenshots/batch-NN/`; fixed-path village frame-time capture appended to `Docs/benchmarks.md`.
 
 ## Act content roadmap (after Act II)
 
-- **Act III — Discovery** (8 scenes): Hollin's Inheritance · The Witch's Cottage (T4 gate) · The Wend's True Course · The Chapel Garden Opens · Edda Asks · Theo's Capital · The First Festival in Three Years · A Sealed Letter. New NPC: Hollin. Likely new content: T4 rare-wild mushrooms, Witch's Cottage location, festival event staging.
-- **Act IV — The Choice** (3 scenes + endings): The Lord's Offer · The Source of the Wend · The Meeting. New NPC: Lord Aldric. Ending fork implementation (`ACH_END_INDEPENDENCE` et al.), Act IV completion state.
+- **Act III A — Discovery** (scenes 1–3, quests ~16–18): Hollin's Inheritance · The Witch's Cottage (ruined; T4 gate) · The Wend's True Course. New areas: Deep Wood, Witch's Cottage, dry Wend riverbed + Wendlight species.
+- **Act III B** (scenes 4–8): The Chapel Garden Opens (`caldenReconcile`, chapel garden world swap) · Edda Asks (`eddaApprentice`) · Theo's Capital (`theoCapitalOffer` — needs choice UI) · The First Festival in Three Years (`festivalHosted`) · A Sealed Letter (`aldricLetter`); cottage-repaired world swap.
+- **Act IV — The Choice** (3 scenes): The Lord's Offer (`aldricOfferRead`) · The Source of the Wend (`wendSource`) · The Meeting (`meetAldric`). New: NPC_Aldric, clear-cut location, Aldermark species.
+- **Ending engine** — 4 score thresholds per story.md; unlock ONLY the chosen ending card 27–30 (⚠️ fix shared `unlockAt: 26` on those cards); letterboxed ending sequences + credits; `game_complete` flag.
 - **The Old Wood** — `Scene_OldWood` doesn't exist yet; scope when Act III demands it (40fps floor allowed per steam-constraints.md).
 
 ## Systems backlog (schedule between act batches)
@@ -35,8 +38,10 @@
 - **Region-enter toasts** — LocationRegistry events exist, UI not built.
 - **Input asset consolidation** — merge StarterAssets map into project InputActions when a concrete need arises.
 - **Mushroom tier buildout** — T2 (Joren's tools unlock species), T3 cultivation species beyond intro, T4 rares. T5 stays unimplemented (bible-reserved).
-- **Meshy asset wants list** — see graphics-pipeline memory; key/book models don't exist in kitbash packs (needed for mill key, Almy's seedbook if shown in 3D).
-- **Audio pass** — music, ambient, SFX beyond current mixer scaffolding.
+- **Cinematic dialogue camera** — two-shot dolly per `Docs/dialog-system.md`; finally consumes `DialogueLine.isCloseup` (authored in assets, currently unread — do NOT delete it in the dead-code sweep).
+- **Cast models pass** — replace placeholder capsules (Joren, Voss, Marra, Almy…) via the Meshy pipeline; key/book models don't exist in kitbash packs (mill key, Almy's seedbook). See graphics-pipeline memory wants list.
+- **Audio pass** — author RegionTrigger ambience volumes first, then AmbienceManager, SFX on existing events, mixer routing.
+- **Build cleanup sweep** — leftover `Save 1`/`Steam 1` folders, retire `UITestDriver`, legacy Input usage in `LocationDebugHUD`, TMP migration in ConfirmModal/SaveSlot/Loading screens, 31 canon locations pass, content-vs-bible sweep.
 - **Credits real copy** — Settings → Credits tab has placeholder text.
 
 ## Pre-EA production checklist (month ~10–12)
