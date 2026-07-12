@@ -47,6 +47,22 @@ Status: adopted 2026-07-11 (Batch 17). Trevor's kickoff prompt is at the bottom.
 - Canon rules are absolute (conventions.md): no invented NPCs/species/locations, no romance, voice rules.
 - Saves hygiene: back up before every play-mode run that mutates state; restore after.
 
+## Model tiering (Trevor runs shifts on Opus 4.8)
+
+- **Main loop**: the session model (Opus 4.8). Do NOT try to change your own model — tiering happens through subagents.
+- **Mechanical fan-outs** (doc readers, code survey, search sweeps): spawn subagents with `model: "sonnet"` (or `"haiku"` for pure grep-and-summarize) — extraction work doesn't need the big model and it preserves rate-limit headroom.
+- **Critical-decision gate**: BEFORE committing a batch that involves any of the following, spawn a REVIEW subagent with `model: "fable"` and address its findings first:
+  - a new system or a change to an existing system's architecture (not just new content on existing rails)
+  - save-schema changes (`SaveSlotMeta` fields, hydrate/persist paths)
+  - canon-sensitive authoring beyond the bible's literal text (new mechanics implied by a scene, ending-engine logic)
+  - anything the integrity/lint gates can't validate (design judgment, not correctness)
+  Prompt the reviewer with: the worksheet-so-far, the diff summary, and the specific question. Its verdict goes in the worksheet's Decisions table.
+- **Trevor-only decisions** still go to QUESTIONS.md regardless of model — Fable review is for engineering/canon judgment, not product taste or scope.
+
+## The dashboard from a new session
+
+The board's stable Artifact URL is `https://claude.ai/code/artifact/cc6edb78-f4cd-4f44-a608-fc51635870c3` — a session that didn't originally publish it must pass this as the `url` parameter when republishing, or it will mint a new link and orphan Trevor's bookmark.
+
 ## End of shift
 
 1. Final `run_integrity.py` + `lint_hollowfen.py` + `smoke_play.py` — leave the project provably green.
@@ -60,6 +76,8 @@ Status: adopted 2026-07-11 (Batch 17). Trevor's kickoff prompt is at the bottom.
 - `Physics.Raycast` hits RegionTrigger volumes — always pass `QueryTriggerInteraction.Ignore` for ground snapping.
 - `execute_code` uses CodeDom C#6: no local functions, no string interpolation; >20s calls may time out client-side but complete — check `get_history`.
 
-## Trevor's kickoff prompt (copy-paste)
+## Trevor's kickoff prompt (copy-paste, continuous mode)
 
-> Run the night shift per Hollowfen-Unity/Docs/night-shift.md. Budget: 3 batches. Unity is open and the Mac is caffeinated. Work the TODOS queue top-down, park anything that needs me in QUESTIONS.md, and leave the dashboard current.
+> Run the night shift per Hollowfen-Unity/Docs/night-shift.md. Budget: 4 batches (stop earlier on rate-limit signs). Unity is open and the Mac is caffeinated. Work the TODOS queue top-down. Use sonnet/haiku subagents for mechanical reading and search; before committing anything architecture-, save-schema-, or canon-critical, get a fable-model review subagent's verdict per the Model Tiering section. Park anything only I can decide in QUESTIONS.md and keep building the next workable item. Republish the dashboard (URL in this doc) and end with a shift report: batches tagged, evidence, what's parked, what's next.
+
+Run this every night; the queue in TODOS.md runs all the way to the finished game, and each shift consumes it top-down. The finalized game is the queue reaching empty — many shifts, one loop.

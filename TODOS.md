@@ -19,6 +19,13 @@
 9. **Act III B (scenes 4–8, quests 19–23): The Chapel Garden Opens (`caldenReconcile`), Edda Asks (`eddaApprentice`), Theo's Capital (`theoCapitalOffer` — FIRST CHOICE-UI CONSUMER), The First Festival (`festivalHosted`, 4-dish prep), A Sealed Letter (`aldricLetter` → act3_complete)** — chapel garden reopen swap, apprentice hooks, festival staging, Voss delivers the letter.
 10. **Phase 3 infra: review personas** — `Docs/review/` persona docs (Steam Deck cert, save integrity, localization, narrative/bible, performance), each owning its system docs; end-of-batch fan-out. (Night-shift orchestration doc DONE in Batch 17: `Docs/night-shift.md`.)
 11. **Phase 3 infra: visual regression + perf baseline** — scripted screenshot pass of the ~8 canonical screens at 1280×800 into `Docs/screenshots/batch-NN/`; fixed-path village frame-time capture appended to `Docs/benchmarks.md`.
+12. **Act IV (scenes 1–3, quests 21–23 of the endgame): The Lord's Offer (`aldricOfferRead`), The Source of the Wend (`wendSource`), The Meeting (`meetAldric`)** — NPC_Aldric, clear-cut location, Aldermark + Death Cap/Destroying Angel world presence (Wren teaches, per the compendium's Tier-4 lessons).
+13. **Ending engine** — 4 score thresholds per story.md; unlock ONLY the chosen ending card 27–30 (fix the shared `unlockAt: 26`); letterboxed ending sequences + credits; `game_complete`. FABLE-REVIEW GATE (architecture + canon-critical).
+14. **Hardening pass** (from the systems backlog: atomic saves, per-quest achievement hooks, TimeManager event reset, CurrentQuest-as-ID, dead-code sweep, seedbook collection-gating decision). FABLE-REVIEW GATE (save schema).
+15. **Georgia SDF build fix + first Mac build boot test** — ship blocker; prove a real build boots.
+16. **Localization wiring pass** (dialogue restructure is the big piece — see systems/localization.md gap list). FABLE-REVIEW GATE (architecture).
+17. **Build cleanup sweep** + false-confidence test re-drill (tests.md audit item).
+18. **Pre-EA checklist execution** (see section below) — builds, Deck audit, Steamworks, store assets. Several items need Trevor (Steam account, store page, trailer) — park those in QUESTIONS.md as they surface.
 
 ## Act content roadmap (after Act II)
 
