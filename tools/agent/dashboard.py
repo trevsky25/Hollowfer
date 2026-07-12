@@ -137,6 +137,31 @@ def parse_worksheets():
     return sheets
 
 
+def parse_models():
+    """Read the Meshy wants list (asset-dropoff.md) into priority groups of
+    checklist items so Trevor can see which models still need making."""
+    text = read(os.path.join(ROOT, "Hollowfen-Unity", "Docs", "asset-dropoff.md"))
+    m = re.search(r"## Wants list.*?\n(.*)", text, re.S)
+    groups, todo, done = [], 0, 0
+    if not m:
+        return groups, todo, done
+    cur = None
+    for line in m.group(1).splitlines():
+        h = re.match(r"^### (.+)", line.strip())
+        if h:
+            cur = {"label": h.group(1).strip(), "items": []}
+            groups.append(cur)
+            continue
+        im = re.match(r"^- \[([ xX])\]\s+(.*)", line.strip())
+        if im and cur is not None:
+            is_done = im.group(1).lower() == "x"
+            cur["items"].append({"text": im.group(2).strip(), "done": is_done})
+            todo += 0 if is_done else 1
+            done += 1 if is_done else 0
+    groups = [g for g in groups if g["items"]]  # drop free-text sections
+    return groups, todo, done
+
+
 # ---------- render ----------
 
 CSS = """
@@ -207,6 +232,14 @@ ol.queue li.done{opacity:.5}ol.queue li.done .t{text-decoration:line-through}
 code{font:.92em ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--mono-bg);
   padding:1px 5px;border-radius:4px}
 footer{color:var(--ink-soft);font-size:12px;border-top:1px solid var(--rule);padding-top:14px}
+.mgroup{margin-bottom:14px}
+.mgroup:last-child{margin-bottom:0}
+.mghead{display:flex;align-items:baseline;gap:10px;font-weight:700;font-size:13px;
+  letter-spacing:.02em;color:var(--ink);margin-bottom:6px}
+.mlist{list-style:none;margin:0;padding:0}
+.mlist li{display:flex;gap:9px;align-items:baseline;padding:4px 0;font-size:13.5px}
+.mlist .box{font-size:14px;line-height:1;color:var(--gold)}
+.mlist li.done{opacity:.5}.mlist li.done .box{color:var(--moss)}.mlist li.done .t{text-decoration:line-through}
 @media (max-width:560px){h1{font-size:28px}.stat{min-width:44%}}
 """
 
@@ -215,6 +248,7 @@ def build_html():
     snapshot, queue = parse_todos()
     questions = parse_questions()
     sheets = parse_worksheets()
+    model_groups, models_todo, models_done = parse_models()
     commits = git("log", "--format=%h  %d %s", "-10")
     tags = [t for t in git("tag").splitlines() if t]
     dirty = git("status", "--porcelain")
@@ -266,6 +300,25 @@ def build_html():
         for i in queue
     )
 
+    mg_html = ""
+    for g in model_groups:
+        items = "".join(
+            f'<li class="mitem {"done" if it["done"] else "todo"}">'
+            f'<span class="box">{"&#9745;" if it["done"] else "&#9744;"}</span>'
+            f'<span class="t">{inline_md(it["text"])}</span></li>'
+            for it in g["items"]
+        )
+        n_todo = sum(1 for it in g["items"] if not it["done"])
+        mg_html += (
+            f'<div class="mgroup"><div class="mghead">{inline_md(g["label"])}'
+            f'<span class="count">{n_todo} to make</span></div>'
+            f'<ul class="mlist">{items}</ul></div>'
+        )
+    models_html = (
+        f'<div class="card">{mg_html}</div>' if mg_html
+        else '<div class="card"><em>All catalogued models delivered.</em></div>'
+    )
+
     tree = "clean" if not dirty else f"{len(dirty.splitlines())} uncommitted files"
 
     return f"""<meta charset="utf-8">
@@ -283,7 +336,7 @@ def build_html():
   <div class="stat"><b>{len(questions)}</b><span>open questions</span></div>
   <div class="stat"><b>{len(tags)}</b><span>tagged batches</span></div>
   <div class="stat"><b>{sum(1 for i in queue if not i["done"])}</b><span>items queued</span></div>
-  <div class="stat"><b>{len(sheets)}</b><span>worksheets</span></div>
+  <div class="stat"><b>{models_todo}</b><span>models to make</span></div>
 </div>
 <section>
   <div class="sec-head"><h2>Waiting on you</h2><span class="count">{len(questions)} open · QUESTIONS.md</span></div>
@@ -297,6 +350,10 @@ def build_html():
 <section>
   <div class="sec-head"><h2>Up next</h2><span class="count">TODOS.md · agents pull from the top</span></div>
   <div class="card"><ol class="queue">{queue_html}</ol></div>
+</section>
+<section>
+  <div class="sec-head"><h2>Models to make</h2><span class="count">{models_todo} open · Meshy · Docs/asset-dropoff.md</span></div>
+  {models_html}
 </section>
 <section>
   <div class="sec-head"><h2>Recent commits</h2></div>

@@ -34,7 +34,7 @@ Mushrooms: import → material recipe → prefab wrap (pivot/scale/colliders per
 ## Wants list (priority order)
 
 ### P1 — Core cast, on screen constantly (all currently capsules)
-- [ ] Char_Bram (innkeeper build, apron)
+- [x] Char_Bram (innkeeper build, apron) — mesh in-scene (`Bram-TPose.fbx`); ⚠️ T-pose, still needs a rig/idle pass to be truly done
 - [ ] Char_Marra (cook, flour-dusted)
 - [ ] Char_Almy (Sister Almy — older, habit/wimple, gardener's hands)
 - [ ] Char_Joren (smith, leather apron)
