@@ -1,0 +1,112 @@
+#!/usr/bin/env python3
+"""Play-mode smoke test via the Unity MCP bridge: activate Unity (macOS App Nap
+freezes the player loop when the app is backgrounded), enter Play mode, wait
+for real frames, assert zero console errors, sample game state, exit cleanly.
+
+Usage: python3 tools/agent/smoke_play.py [--min-frames 240] [--max-polls 40]
+Exit codes: 0 pass · 1 console errors while playing · 2 never reached stable
+play mode · 3 bridge unreachable.
+
+Promoted from the Batch 11 verification script (2026-07-11).
+"""
+
+import argparse
+import os
+import subprocess
+import sys
+import time
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import unitymcp
+
+
+def call(tool, args, retries=6):
+    last = None
+    for _ in range(retries):
+        try:
+            obj = unitymcp.rpc("tools/call", {"name": tool, "arguments": args})
+            if obj and "result" in obj:
+                sc = obj["result"].get("structuredContent", {})
+                return sc.get("data") or sc.get("result", {}).get("data") or sc
+            last = obj
+        except Exception as e:  # bridge blips during play-mode entry
+            last = str(e)
+        time.sleep(3)
+    print(f"smoke: bridge call {tool} failed: {last}", file=sys.stderr)
+    sys.exit(3)
+
+
+def execute(code):
+    data = call("execute_code", {"action": "execute", "code": code})
+    return data.get("result") if isinstance(data, dict) else None
+
+
+STATE = 'return UnityEditor.EditorApplication.isPlaying + "|" + UnityEngine.Time.frameCount;'
+
+CONSOLE = (
+    'var t = System.Type.GetType("UnityEditor.LogEntries,UnityEditor");'
+    'var m = t.GetMethod("GetCountsByType");'
+    "object[] a = new object[]{0,0,0};"
+    "m.Invoke(null, a);"
+    'return a[0] + "|" + a[1];'
+)
+
+GAMESTATE = (
+    "var q = Hollowfen.Quests.QuestManager.ActiveQuest;"
+    'string quest = q == null ? "(none)" : q.Id;'
+    "int done = Hollowfen.Quests.QuestManager.CompletedQuestIds.Count;"
+    "var tm = Hollowfen.GameTime.TimeManager.Instance;"
+    'string clock = tm == null ? "(no TimeManager)" : ("day " + tm.Day + " hour " + tm.Hour.ToString("F1"));'
+    'return "activeQuest=" + quest + " completed=" + done + " | " + clock;'
+)
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--min-frames", type=int, default=240)
+    ap.add_argument("--max-polls", type=int, default=40)
+    args = ap.parse_args()
+
+    # App Nap suspends EditorApplication.update entirely when Unity is hidden;
+    # the in-project PlayModeBackgroundTicker can't run if the app is napped.
+    subprocess.run(["osascript", "-e", 'tell application "Unity" to activate'],
+                   capture_output=True, timeout=10)
+
+    pre_errors = int(execute(CONSOLE).split("|")[0])
+    print(f"smoke: pre-play console errors={pre_errors}")
+
+    call("manage_editor", {"action": "play"})
+    playing = False
+    for i in range(args.max_polls):
+        time.sleep(3)
+        try:
+            s = execute(STATE)
+        except SystemExit:
+            raise
+        except Exception:
+            continue
+        if s and s.startswith("True|") and int(s.split("|")[1]) >= args.min_frames:
+            playing = True
+            print(f"smoke: stable play mode after poll {i} ({s.split('|')[1]} frames)")
+            break
+
+    if not playing:
+        print("smoke: FAIL — never reached stable play mode (is Unity visible/focused?)")
+        call("manage_editor", {"action": "stop"})
+        return 2
+
+    errors = int(execute(CONSOLE).split("|")[0])
+    state = execute(GAMESTATE)
+    call("manage_editor", {"action": "stop"})
+
+    print(f"smoke: in-play console errors={errors} (pre-play {pre_errors})")
+    print(f"smoke: game state — {state}")
+    if errors > pre_errors:
+        print("smoke: FAIL — new console errors during play")
+        return 1
+    print("smoke: PASS")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

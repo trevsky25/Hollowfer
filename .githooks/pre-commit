@@ -1,0 +1,30 @@
+#!/bin/bash
+# Hollowfen pre-commit gate (enable once per clone: git config core.hooksPath .githooks)
+#
+# 1. Gotcha linter — always runs, no Unity needed, fast.
+# 2. Data integrity — only when the Unity bridge is up (editor open); skipped
+#    with a warning otherwise so commits aren't blocked when Unity is closed.
+#    Night-shift/agent commits should always have Unity open, so they get both.
+
+set -u
+REPO="$(git rev-parse --show-toplevel)"
+
+echo "pre-commit: gotcha lint"
+if ! python3 "$REPO/tools/agent/lint_hollowfen.py"; then
+  echo "pre-commit: BLOCKED by lint errors. Fix them or add a justified waiver in tools/agent/lint_waivers.txt."
+  exit 1
+fi
+
+if curl -s -o /dev/null --max-time 2 -X POST http://127.0.0.1:8080/mcp \
+     -H "Content-Type: application/json" -H "Accept: application/json, text/event-stream" \
+     -d '{"jsonrpc":"2.0","id":0,"method":"initialize","params":{"protocolVersion":"2025-03-26","capabilities":{},"clientInfo":{"name":"pre-commit","version":"1"}}}'; then
+  echo "pre-commit: data integrity (via Unity bridge)"
+  if ! python3 "$REPO/tools/agent/run_integrity.py"; then
+    echo "pre-commit: BLOCKED by data integrity errors (see report above)."
+    exit 1
+  fi
+else
+  echo "pre-commit: Unity bridge not reachable — SKIPPING data integrity. Run tools/agent/run_integrity.py with Unity open before pushing."
+fi
+
+exit 0
