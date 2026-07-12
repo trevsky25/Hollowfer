@@ -36,6 +36,8 @@ namespace Hollowfen.Quests
             { "hollinReveals",     new[] { "act3_started", "hollin_lineage_revealed", "sable_named" } },
             { "findWitchCottage",  new[] { "witch_cottage_found", "sable_seedbook_recovered", "tier4_mushrooms_unlocked" } },
             { "wendlightFound",    new[] { "wend_old_course_mapped", "aldric_logging_evidence_found" } },
+            // Act III B close: Voss delivers Aldric's sealed letter; act3_complete gates Act IV.
+            { "aldricLetter",      new[] { "aldric_letter_received", "voss_humanized", "act3_complete" } },
         };
 
         // species id -> known-flag (bible names diverge from camelCase ids)

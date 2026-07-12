@@ -85,6 +85,8 @@ namespace Hollowfen
             { "quest.theoCapitalOffer.objective","Theo has an offer to make. Find him at his wagon, hear him out, ask what you like, and leave when you are ready." },
             { "quest.festivalHosted.name",       "The First Festival in Three Years" },
             { "quest.festivalHosted.objective",  "The village is ready to celebrate. Find Marra to set the festival in motion." },
+            { "quest.aldricLetter.name",         "A Sealed Letter" },
+            { "quest.aldricLetter.objective",    "Voss is waiting with something he was told to deliver in person. Hear him out." },
 
             // Mushroom tier display names (locked draft 2026-07-11 — QUESTIONS.md Q1; not yet rendered anywhere)
             { "tier.t1.name", "Basket Common" },

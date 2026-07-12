@@ -15,6 +15,20 @@ MonoBehaviour:
   _id: voss
   _displayNameId: npc.voss.name
   _dialogueEntries:
+  - activeQuest: {fileID: 11400000, guid: ae34386b755a4604806a6291d8b620a8, type: 2}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId:
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 9b8baee3da5b4f1a842c76128e9ad5e4, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 11400000, guid: ae34386b755a4604806a6291d8b620a8, type: 2}
+    requiresFlagId:
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: e557aa66c80d4d36b8b714458069659d, type: 2}
   - activeQuest: {fileID: 11400000, guid: 130b3a3e411e43e6b8a8810a5ca6431d, type: 2}
     requiresQuestCompleted: {fileID: 0}
     requiresFlagId: voss_first_visit_seen
