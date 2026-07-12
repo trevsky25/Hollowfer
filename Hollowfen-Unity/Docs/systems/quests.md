@@ -1,10 +1,10 @@
 # Quest System
 Linear quest chain: static `QuestManager` holds ONE active quest + completed-id set (no state enum, no fail state); quests auto-chain via `QuestData.NextQuest`; scene components (triggers/interactables/forage objectives) call `CompleteQuest` when conditions met. `GameScores` (static) holds the ending meters (VillageHope, Knowledge, per-NPC relationships, named flags).
 Key scripts: `Assets/_Hollowfen/Scripts/Quests/` — QuestManager, QuestData, QuestBootstrap, QuestHUD, QuestTrigger, QuestInteractable, QuestForageObjective, KeyLockedDoor, StoryBeats, TaxDeadline, GameScores, ScoreHooks, ScoreDebugHUD.
-Data: `Data/Quests/Quest_ActN_NN_Name.asset` (12: Act1 01–07, Act2 08–12); quest `_id`s are camelCase story.md ids (`arrive`, `theoTrade`).
+Data: `Data/Quests/Quest_ActN_NN_Name.asset` (15: Act1 01–07, Act2 08–15 — **Act II complete**); quest `_id`s are camelCase story.md ids (`arrive`, `caldenWarning`).
 Persistence: `CompletedQuestIds`/`UnlockedStoryCardIds` + all scores/flags in the save slot (no PlayerPrefs); active quest is NOT saved — `QuestBootstrap` re-derives it by walking the chain past completed entries.
 Biggest gotchas: achievement hook fires ONLY on story-card unlock (`ACH_STORY_<cardId>`), not quest completion — gap vs our non-negotiable; magic quest-id strings synced by hand across TaxDeadline/StoryBeats/ScoreHooks; `QuestCompleted` fires before `_activeQuest` clears.
-Status: verified against code 2026-07-11. Quests 1–12 play-verified (Act II B flow driven end-to-end via bridge).
+Status: verified against code 2026-07-11. Quests 1–15 play-verified — both Act II B and C flows driven end-to-end via bridge; `act2_complete` fires at the chapel gate.
 
 > Self-healing doc: if you change this system, update this doc (including the 7-line header) in the same batch, and note the change in the batch worksheet.
 

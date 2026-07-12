@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c5c5fc2839eb4f6c9631b7dfdb7b2ff, type: 3}
+  m_Name: NPC_Pell
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.NPCs.NPCData
+  _id: pell
+  _displayNameId: npc.pell.name
+  _dialogueEntries:
+  - activeQuest: {fileID: 11400000, guid: 526e25bd081e4e6a9029e8273760d303, type: 2}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: cottages_reopened_2
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: ceb800fd4d0f49c186d31b3d80a5e3e7, type: 2}
+  - activeQuest: {fileID: 11400000, guid: 526e25bd081e4e6a9029e8273760d303, type: 2}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: shutters_funded
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: d0c8607d885c441d8f06c83d9925d52e, type: 2}
+  - activeQuest: {fileID: 11400000, guid: 526e25bd081e4e6a9029e8273760d303, type: 2}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: 
+    requiresCoinsCopper: 24
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 108ffdd1b42b442cbb2606628802b74b, type: 2}
+  - activeQuest: {fileID: 11400000, guid: 526e25bd081e4e6a9029e8273760d303, type: 2}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: 
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 462eeff23a384dcb88b60997db9b938f, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 11400000, guid: 526e25bd081e4e6a9029e8273760d303, type: 2}
+    requiresFlagId: 
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 5c3a334784354ab7a7f426f7cc48aa59, type: 2}
+  _repeatDialog: {fileID: 0}

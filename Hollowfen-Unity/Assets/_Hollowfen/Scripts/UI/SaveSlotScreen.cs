@@ -73,8 +73,10 @@ namespace Hollowfen.UI
         {
             for (int i = 0; i < _slotButtons.Length; i++)
             {
+                // Autosaves follow the ACTIVE slot (see systems/save.md), so no slot is "the"
+                // autosave — neutral journal naming instead (decision: QUESTIONS.md Q2, 2026-07-11).
                 if (_slotLabels[i] != null)
-                    _slotLabels[i].text = i == SaveManager.AutosaveSlot ? "Autosave" : "Slot " + i;
+                    _slotLabels[i].text = "Journal " + (i + 1);
 
                 if (_slotMetas[i] == null) continue;
 
@@ -135,8 +137,7 @@ namespace Hollowfen.UI
             int slotCopy = slot;
             ConfirmModal.Show(
                 title: "Delete Save?",
-                message: (slot == SaveManager.AutosaveSlot ? "Autosave" : "Slot " + slot)
-                    + " will be permanently deleted.",
+                message: "Journal " + (slot + 1) + " will be permanently deleted.",
                 onConfirm: () =>
                 {
                     SaveManager.DeleteSlot(slotCopy);

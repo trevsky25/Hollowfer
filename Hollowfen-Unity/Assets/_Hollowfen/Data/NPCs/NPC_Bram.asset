@@ -15,9 +15,23 @@ MonoBehaviour:
   _id: bram
   _displayNameId: npc.bram.name
   _dialogueEntries:
+  - activeQuest: {fileID: 11400000, guid: 0a89ad7b8f66425ebf9661c6ad668b81, type: 2}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId:
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 0655ac2898054d41ab8e3a2baec25680, type: 2}
   - activeQuest: {fileID: 11400000, guid: 233a00ead1da24556a276c9f50260699, type: 2}
     requiresQuestCompleted: {fileID: 0}
     dialog: {fileID: 11400000, guid: 326edced24f414e5ea8d715c29d9859f, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 11400000, guid: 0a89ad7b8f66425ebf9661c6ad668b81, type: 2}
+    requiresFlagId:
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: d27f1ee121694df28ba8696e34145835, type: 2}
   - activeQuest: {fileID: 0}
     requiresQuestCompleted: {fileID: 11400000, guid: 233a00ead1da24556a276c9f50260699, type: 2}
     dialog: {fileID: 11400000, guid: c0cf675b41b64327adcdc005614923b6, type: 2}

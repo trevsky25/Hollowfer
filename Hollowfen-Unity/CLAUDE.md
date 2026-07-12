@@ -50,7 +50,7 @@ Every doc's first 7 lines are a summary — survey them all with:
 
 ## Cast (spell correctly, don't improvise)
 
-**Wren** (protagonist) · **Bram** (trade, mill key) · **Marra** (cook) · **Edda** (quiet observer) · **Sister Almy** (cultivation teacher) · **Joren** (smith, T2 tools) · **Voss** (tax collector — antagonist, not villain) · **Theo** (traveling trader) · **Hollin** (late companion, NOT romance) · **Father Calden** (priest) · **Lord Aldric** (Act IV fork) · **The Old Wood** (the 12th character).
+**Wren** (protagonist) · **Bram** (trade, mill key) · **Marra** (cook) · **Edda** (quiet observer) · **Sister Almy** (cultivation teacher) · **Joren** (smith, T2 tools) · **Voss** (tax collector — antagonist, not villain) · **Theo** (traveling trader) · **Hollin** (late companion, NOT romance) · **Father Calden** (priest) · **Elder Pell** (village recorder, keeps the ledger) · **Lord Aldric** (Act IV fork) · **The Old Wood** (the 12th character).
 
 ## Communication style
 

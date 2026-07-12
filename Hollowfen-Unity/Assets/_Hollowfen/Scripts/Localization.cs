@@ -33,6 +33,7 @@ namespace Hollowfen
             { "npc.theo.name",         "Theo" },
             { "npc.calden.name",       "Father Calden" },
             { "npc.hollin.name",       "Hollin" },
+            { "npc.pell.name",         "Elder Pell" },
             { "npc.aldric.name",       "Lord Aldric" },
 
             // Quest objective + display strings (Act I)
@@ -62,6 +63,18 @@ namespace Hollowfen
             { "quest.theoTrade.objective",  "Theo's wagon comes with the dawn. Bring him a basket worth a ledger line." },
             { "quest.edsGrandfather.name",      "Brightspore at the Bedside" },
             { "quest.edsGrandfather.objective", "Edda waits by the mill. Find Brightspore at the old birch, have Marra make the tonic, and carry it to her grandfather." },
+            { "quest.meetHollin.name",       "A Stranger at the Inn" },
+            { "quest.meetHollin.objective",  "A traveler at The Crooked Pintle asked for the goldfoot girl by name. Sit with her." },
+            { "quest.cottagesReopen.name",       "Two Boards Come Down" },
+            { "quest.cottagesReopen.objective",  "Elder Pell keeps the ledger at the village well. Fund the shutters and see two cold cottages open their windows." },
+            { "quest.caldenWarning.name",       "Father Calden's Doubt" },
+            { "quest.caldenWarning.objective",  "Father Calden has come to the mill and refused tea. Hear him out, then see what he has done to the chapel garden gate." },
+
+            // Mushroom tier display names (locked draft 2026-07-11 — QUESTIONS.md Q1; not yet rendered anywhere)
+            { "tier.t1.name", "Basket Common" },
+            { "tier.t2.name", "Knifework" },
+            { "tier.t3.name", "Yard-Grown" },
+            { "tier.t4.name", "Deepwood" },
 
             // Cultivation
             { "prompt.plant.verb", "Plant" },

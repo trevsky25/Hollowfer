@@ -24,7 +24,7 @@ Pure inspector config, no code API: parallel `_whenFlags[]`/`_thenFlags[]`. On `
 
 - ⚠️ **"Next rollover", not "after N days"**: a flag set at 23:50 fires 10 game-minutes later. Multi-day delays = chained flag pairs, and `SetTime` multi-day skips advance only ONE link per call.
 - Stateless — both flags persist via GameScores (save slot). Idempotent across days (`SetFlag` no-ops when already set).
-- Current pairs (one instance in `Scene_Hollowfen`): `knife_commissioned → knife_ready` (Joren's overnight forging) · `wenmar_tax_paid → theo_wagon_arrived` (Theo's wagon comes with the dawn after the tax is paid) · `tonic_delivered → edda_check_due` (return-next-day beat of the Brightspore quest).
+- Current pairs (one instance in `Scene_Hollowfen`): `knife_commissioned → knife_ready` (Joren's overnight forging) · `wenmar_tax_paid → theo_wagon_arrived` (Theo's wagon comes with the dawn) · `tonic_delivered → edda_check_due` (Brightspore return-next-day beat) · `shutters_funded → cottages_reopened_2` (the Veyrwick cousin arrives the dawn after Pell's shutters are funded).
 
 ## Dev affordances
 

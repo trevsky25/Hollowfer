@@ -4,19 +4,15 @@ The decision inbox. Agents append questions ONLY Trevor can answer (design taste
 
 ## Open
 
-### Q1 — Lock the mushroom tier display names? (asked 2026-07-11 · batch-12 audit)
-CLAUDE.md has always flagged tier names as "placeholder — confirm before locking." Internal ids (T1–T5) are fine forever; only player-facing names matter. Act II B's trade content (Theo's ledger) will start printing tier language into dialogue, so this gets more expensive to change after the next content batch.
-**Recommendation:** keep T1–T5 as internal ids, and lock display names before Act II B is written. If you give me a direction ("earthy trade-guild words", "folk names Wren would use"), I'll draft a set for you to approve.
-
-### Q2 — "Autosave" slot semantics vs UI copy (asked 2026-07-11 · save-system audit)
-Code reality: autosaves write to whichever slot is ACTIVE (load slot 2 → autosaves land in slot 2). Slot 0 is only the default for new games. The SaveSlot screen presents slot 0 as "the autosave slot," which no longer matches behavior.
-**Options:** (a) keep behavior, reword UI ("Journal 1–4," most-recent shown first — current behavior is genuinely better for players); (b) enforce slot 0 as a true dedicated autosave and add copy-to-slot semantics.
-**Recommendation:** (a) — behavior is right, copy is stale. One-line UI fix, folded into the hardening pass.
-
-### Q3 — Confirm EA content scope: Acts I–II? (asked 2026-07-11 · roadmap reconciliation)
-TODOS assumes Early Access ships with a polished Acts I–II playthrough (bible Act II completion state as the EA ending point), with Acts III–IV landing during EA. This drives when build/store-page milestones enter the queue — confirming it lets me sequence the hardening items honestly against the month-12 target.
-**Recommendation:** confirm Acts I–II as the EA floor; revisit only if Act III lands unusually fast.
+*(inbox zero)*
 
 ## Answered
 
-*(none yet — answers move here with the date + where the decision was applied)*
+### Q1 — Lock the mushroom tier display names? (asked 2026-07-11 · answered 2026-07-11: "implement your recommendation")
+**Decision:** internal ids stay T1–T5; display names drafted in the folk/trade-ledger register and locked as canon-pending: T1 "Basket Common" · T2 "Knifework" · T3 "Yard-Grown" · T4 "Deepwood" · T5 unnamed (bible-reserved). Recorded in `Docs/conventions.md`; localization ids `tier.tN.name` reserved in the LUT. **Trevor may veto/rename any of these before they first render in UI or dialogue** — none are player-visible yet.
+
+### Q2 — "Autosave" slot semantics vs UI copy (asked 2026-07-11 · answered 2026-07-11: option (a))
+**Decision:** keep the follow-the-active-slot behavior (better for players), fix the copy. `SaveSlotScreen` now labels all four slots "Journal 1–4" and the delete confirm matches; no slot claims to be "the autosave." Applied in Batch 16.
+
+### Q3 — Confirm EA content scope: Acts I–II? (asked 2026-07-11 · answered 2026-07-11: confirmed)
+**Decision:** EA ships with a polished Acts I–II playthrough (bible Act II completion state as the EA ending); Acts III–IV land during EA. Recorded in `Docs/steam-constraints.md`; the pre-EA checklist in TODOS.md sequences against this floor. Revisit only if Act III lands unusually fast.

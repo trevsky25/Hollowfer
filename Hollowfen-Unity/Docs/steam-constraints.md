@@ -1,6 +1,6 @@
 # Steam Release Constraints
 Requirements that determine Steam Deck Verified status and launch quality — applied to every build from day one, because retrofitting at month 12 is painful. The Steam Deck cert review persona owns this doc.
-Release target: Steam (Mac + Windows), Early Access ~month 12, 1.0 ~month 18–24. Steam Deck Verified is a tier-one goal.
+Release target: Steam (Mac + Windows), Early Access ~month 12, 1.0 ~month 18–24. Steam Deck Verified is a tier-one goal. **EA content floor: a polished Acts I–II playthrough** (bible Act II completion state as the EA ending point; Acts III–IV land during EA) — decided 2026-07-11, QUESTIONS.md Q3.
 Pillars: controller-first input · Deck display targets · Cloud-safe saves · achievement hooks from day one · localization discipline · 60fps perf floor.
 Verification: every UI batch is tested with a gamepad before being declared done; perf profiled via the profiler MCP tooling.
 Biggest risk items: hover-dependent UI, hardcoded strings, saves outside persistentDataPath, editor-only font loading.

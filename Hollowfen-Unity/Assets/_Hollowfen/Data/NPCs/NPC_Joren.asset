@@ -33,6 +33,13 @@ MonoBehaviour:
     requiresCoinsCopper: 0
     requiresBasketNonEmpty: 0
     dialog: {fileID: 11400000, guid: 52a4b596716f44658a907072b8d32b4e, type: 2}
+  - activeQuest: {fileID: 11400000, guid: 526e25bd081e4e6a9029e8273760d303, type: 2}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId:
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 804b116912a444b9950f14de394f6d77, type: 2}
   - activeQuest: {fileID: 0}
     requiresQuestCompleted: {fileID: 11400000, guid: 361dbfb41db8407590f092f68dd45ae9, type: 2}
     requiresFlagId:

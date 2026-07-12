@@ -37,6 +37,9 @@ namespace Hollowfen.Dialogue
             { "Voss",  ParseColor("#3e4e63") },
             { "Theo",  ParseColor("#1f6f62") },
             { "Edda",  ParseColor("#77704f") },
+            { "Hollin", ParseColor("#5a4a72") },
+            { "Pell",   ParseColor("#615a48") },
+            { "Calden", ParseColor("#3d3550") },
         };
         private static readonly Color DefaultSpeakerColor = ParseColor("#3a2810");
 

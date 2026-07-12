@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ee8ab872fb8546dc970108625d8ee2d, type: 3}
+  m_Name: Quest_Act2_14_CottagesReopen
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Quests.QuestData
+  _id: cottagesReopen
+  _displayNameId: quest.cottagesReopen.name
+  _objectiveTextId: quest.cottagesReopen.objective
+  _act: 2
+  _order: 14
+  _unlockStoryCardOnComplete: {fileID: 11400000, guid: 79ed1ed22a888496fa3bb929e95838aa, type: 2}
+  _nextQuest: {fileID: 11400000, guid: ac5196499e0a4a66bfc13cdeda6e081d, type: 2}
+  _waypointLocation: {fileID: 11400000, guid: 6173a887ceca347b686f8502e12abb90, type: 2}
+  _villageHopeDelta: 12
+  _knowledgeDelta: 0
+  _relationshipNpcIds:
+  - pell
+  _relationshipDeltas:
+  - 8

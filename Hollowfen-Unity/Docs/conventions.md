@@ -57,7 +57,7 @@ Never dump files in `Assets/` root.
 - The bible (`Docs/story.md`) is the source of truth — never invent NPCs, mushrooms, or locations not in it; ask instead.
 - No romance content (Hollin is a companion, not a love interest).
 - No emoji in dialogue or UI. No contemporary slang (slight archaism preferred). Nothing stronger than "Lord help me".
-- Mushroom tiers: T1 starter/common · T2 requires Joren's tools (Act II gate) · T3 Almy's-seedbook cultivation-only · T4 rare wild, gates Witch's Cottage · T5 bible-reserved late game — **do not implement T5 yet**. (Names are placeholder — confirm before locking.)
+- Mushroom tiers — internal ids stay T1–T5 forever; **player-facing display names locked 2026-07-11** (QUESTIONS.md Q1, folk/trade-ledger register; Trevor may veto before they first render): T1 **"Basket Common"** (everyday, no tools) · T2 **"Knifework"** (needs Joren's knife) · T3 **"Yard-Grown"** (cultivation-only) · T4 **"Deepwood"** (rare wild, gates Witch's Cottage) · T5 bible-reserved, unnamed — **do not implement T5 yet**. When tier names first appear in UI/dialogue, use these via localization ids `tier.t1.name` … `tier.t4.name`.
 
 ## Prohibited patterns (linter candidates)
 

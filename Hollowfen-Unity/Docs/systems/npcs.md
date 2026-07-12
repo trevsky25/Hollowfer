@@ -1,10 +1,10 @@
 # NPC System
 NPC = `NPCData` SO (id, localized display name, ordered condition→dialog table, repeat fallback) + `NPCInteractable` scene component riding the shared `IInteractable`/Foraging-layer convention. ALL dialogue "branching" lives here: `PickDialog()` walks the entry table in author order, first full match wins, else `_repeatDialog`.
 Key scripts: `Assets/_Hollowfen/Scripts/NPCs/` — NPCData, NPCInteractable (namespace `Hollowfen.NPCs`).
-Data: `Data/NPCs/NPC_<Name>.asset` — Bram, Marra, Almy, Joren, Voss, Theo, Edda. Ids lowercase (`voss`), matching relationship ids in dialogue/quest score deltas.
+Data: `Data/NPCs/NPC_<Name>.asset` — Bram, Marra, Almy, Joren, Voss, Theo, Edda, Hollin, Pell, Calden (10). Ids lowercase (`voss`), matching relationship ids in dialogue/quest score deltas.
 Entry conditions (ANDed, unset = skip): `activeQuest` (IsActive) · `requiresQuestCompleted` · `requiresFlagId` (GameScores) · `requiresCoinsCopper` (≥) · `requiresBasketNonEmpty` · `requiresForage` (species SO — basket holds ≥1 of it; Marra's tonic gate).
 Biggest gotchas: ENTRY ORDER IS THE PRIORITY SYSTEM (specific/gated entries must be authored above general ones — no validation); null `_repeatDialog` + no match = NPC shows NO prompt at all (intentional for Voss outside his quest window, easy to misread as a bug).
-Status: verified against code 2026-07-11; Theo + Edda staged with flag-gated presence (FlagActivatedObject). Remaining cast to build: Hollin, Father Calden, Lord Aldric.
+Status: verified against code 2026-07-11; Theo/Edda/Hollin/Calden staged with flag-gated presence (FlagActivatedObject), Pell always-on at the well. Remaining cast to build: Lord Aldric (Act IV).
 
 > Self-healing doc: if you change this system, update this doc (including the 7-line header) in the same batch, and note the change in the batch worksheet.
 

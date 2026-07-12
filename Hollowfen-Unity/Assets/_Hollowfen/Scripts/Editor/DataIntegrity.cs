@@ -29,7 +29,7 @@ namespace Hollowfen.EditorTools
         // Relationship-score keys are bible cast ids; an NPC asset is NOT required
         // (GameScores keys by string), but an id outside this set is a typo.
         private static readonly HashSet<string> CanonNpcIds = new HashSet<string>
-        { "bram", "marra", "edda", "almy", "joren", "voss", "theo", "hollin", "calden", "aldric" };
+        { "bram", "marra", "edda", "almy", "joren", "voss", "theo", "hollin", "calden", "aldric", "pell" };
 
         // Localization ids consumed by live code paths. Localization.Get returns the
         // raw id on a miss, so a missing entry never errors at runtime — only here.

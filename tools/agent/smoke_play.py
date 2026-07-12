@@ -89,6 +89,19 @@ def main():
             playing = True
             print(f"smoke: stable play mode after poll {i} ({s.split('|')[1]} frames)")
             break
+        # App Nap fallback: if play mode is on but frames are frozen, drive them
+        # synchronously — EditorApplication.Step() works regardless of focus.
+        if s and s.startswith("True|") and i >= 3:
+            try:
+                stepped = execute(
+                    "for (int i = 0; i < " + str(args.min_frames) + "; i++) UnityEditor.EditorApplication.Step();"
+                    'return "True|" + UnityEngine.Time.frameCount;')
+            except Exception:
+                continue
+            if stepped and int(stepped.split("|")[1]) >= args.min_frames:
+                playing = True
+                print(f"smoke: frames frozen (App Nap) — stepped synchronously to {stepped.split('|')[1]}")
+                break
 
     if not playing:
         print("smoke: FAIL — never reached stable play mode (is Unity visible/focused?)")

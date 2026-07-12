@@ -26,6 +26,11 @@ namespace Hollowfen.Quests
             // theo_met is set by Theo's first-sale dialogue; brightspore_tonic_made by Marra's.
             { "theoTrade",       new[] { "theo_trade_unlocked" } },
             { "edsGrandfather",  new[] { "edda_grandfather_recovering" } },
+            // cottages_reopened_1/2 come from Pell's funding dialogue + the dawn scheduler;
+            // calden_visiting stages Calden at the mill; chapel_garden_locked from the gate.
+            { "meetHollin",      new[] { "hollin_met" } },
+            { "cottagesReopen",  new[] { "calden_visiting" } },
+            { "caldenWarning",   new[] { "act2_complete" } },
         };
 
         // species id -> known-flag (bible names diverge from camelCase ids)
