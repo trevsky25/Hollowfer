@@ -91,6 +91,8 @@ namespace Hollowfen
             { "quest.aldricOfferRead.objective", "Lord Aldric's letter is still sealed on the mill table. Read it by candlelight." },
             { "quest.wendSource.name",           "The Source of the Wend" },
             { "quest.wendSource.objective",      "The Wendlight traced a line upstream. Follow it past the Old Wend to whatever broke the river." },
+            { "quest.meetAldric.name",           "The Meeting" },
+            { "quest.meetAldric.objective",      "Take the Aldermark and the truth east, to Lord Aldric's manor. Hear his offer, and answer it." },
             { "item.aldric_letter.name",         "Lord Aldric's Letter" },
 
             // Mushroom tier display names (locked draft 2026-07-11 — QUESTIONS.md Q1; not yet rendered anywhere)
@@ -144,6 +146,7 @@ namespace Hollowfen
             { "loc.witchs_cottage.name", "The Witch's Cottage" },
             { "loc.old_wend.name",       "The Old Wend" },
             { "loc.clear_cut.name",      "The Clear-Cut" },
+            { "loc.manor.name",          "Aldric's Manor" },
 
             // Map location short descriptions (side panel copy)
             { "loc.fathers_mill.desc",   "The old water mill where Wren grew up. The wheel still turns; the stones lie idle." },
@@ -159,6 +162,7 @@ namespace Hollowfen
             { "loc.eddas_cottage.desc",  "A low cottage near the mill. Edda's grandfather keeps to his bed by the window." },
             { "loc.witchs_cottage.desc", "One room where the Deep Wood gathers around a spring. Sable's door opens for those who enter kindly." },
             { "loc.old_wend.desc",       "The river's abandoned course — rounded stones, grass fingers, and a thin watery shine at dawn." },
+            { "loc.manor.desc",          "Lord Aldric's estate, east of the village: oak panelling, poured tea, and ledgers where other people keep guilt." },
 
             // Map side panel labels
             { "map.eyebrow.landmark",     "LANDMARK" },

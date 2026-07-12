@@ -42,6 +42,9 @@ namespace Hollowfen.Quests
             { "aldricOfferRead",   new[] { "act4_started", "aldric_offer_read", "aldric_monopoly_clause_seen", "npc_consultations_unlocked" } },
             // Act IV scene 2: the upstream clear-cut proves Aldric loosed the Wend.
             { "wendSource",        new[] { "wend_source_visited", "clearcut_evidence_found", "aldermark_sample_collected" } },
+            // Act IV scene 3: the meeting. Ends at the fork — the ending engine (TODOS item 13)
+            // consumes final_choice_available. NO ending is selected here.
+            { "meetAldric",        new[] { "aldric_meeting_started", "final_choice_available" } },
         };
 
         // species id -> known-flag (bible names diverge from camelCase ids)

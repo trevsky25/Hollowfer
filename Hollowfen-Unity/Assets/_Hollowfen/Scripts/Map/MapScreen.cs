@@ -525,6 +525,7 @@ namespace Hollowfen.Map
                 case "village":  return "Hollowfen Village";
                 case "old_wood": return "The Old Wood";
                 case "wend":     return "The Wend";
+                case "manor":    return "Aldric's Manor";
                 default:         return regionId;
             }
         }
