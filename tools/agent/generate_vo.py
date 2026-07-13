@@ -44,7 +44,7 @@ INTRO_CAPTIONS = [
 # follow-up in Docs/systems/audio.md covers keeping these honest).
 EXTRAS = {
     "IntroGuide": [
-        ("Narrator", "From the ridge, the valley looks as it always did — low roofs tucked into the hollow, the dark shoulder of the Old Wood behind them, the pale line of the Wend cutting through the fields. Then the road dips, and the old picture comes apart. I shift the pack on my shoulder and keep walking."),
+        ("Narrator", "The square is just down the road, the old well standing at the heart of it. I'll find Old Bram there — he keeps The Crooked Pintle, and he holds my father's mill key."),
     ],
 }
 
@@ -155,10 +155,21 @@ def main():
         sf.write(path, wav, 24000)
         print(f"  {os.path.relpath(path, REPO)}  ({len(wav)/24000:.1f}s)  «{text[:60]}»")
 
-    targets = sys.argv[1:] or DEFAULT_SET
+    args = sys.argv[1:]
+
+    # `--extras-only` regenerates just the non-dialogue utterances (IntroGuide etc.) without
+    # touching the intro narration or the dialogue sets — used when a card's copy changes.
+    if args and args[0] == "--extras-only":
+        for group, utterances in EXTRAS.items():
+            print(f"{group}:")
+            for i, (speaker, text) in enumerate(utterances):
+                emit(os.path.join(OUT_ROOT, group), i, speaker, text)
+        return
+
+    targets = args or DEFAULT_SET
 
     # Intro narration + extras (only in the default set).
-    if not sys.argv[1:]:
+    if not args:
         print("HomecomingIntro:")
         for i, caption in enumerate(INTRO_CAPTIONS):
             emit(os.path.join(OUT_ROOT, "HomecomingIntro"), i, "Narrator", caption)

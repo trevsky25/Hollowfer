@@ -107,16 +107,45 @@ namespace Hollowfen.UI
                 yield return new WaitForSecondsRealtime(0.05f);
             }
 
+            var loading = hasLoading ? _screens["loading"] as LoadingScreen : null;
+            // The loading screen resolves Cinematic in OnOpen, which runs only after the push fade —
+            // wait until it's actually open before branching, or we'd skip the interactive welcome
+            // AND the seamless handoff below.
+            if (loading != null)
+            {
+                float w = 0f;
+                while (w < 0.6f && !loading.gameObject.activeSelf) { w += Time.unscaledDeltaTime; yield return null; }
+            }
+            bool interactiveWelcome = cinematicHandoff && loading != null && loading.Cinematic;
+
             var op = SceneManager.LoadSceneAsync(sceneName);
+            if (interactiveWelcome && op != null)
+            {
+                // New-game welcome (batch-42): load the whole scene but HOLD activation behind a
+                // player "begin" press. The heavy Scene_Hollowfen integration stall then lands after
+                // intent (reads as "entering," not a freeze), and the welcome card is a live,
+                // interactive beat instead of a frozen frame.
+                op.allowSceneActivation = false;
+                while (op.progress < 0.89f) yield return null;
+                loading.ShowReadyPrompt();
+                float shown = 0f;
+                while (true)
+                {
+                    shown += Time.unscaledDeltaTime;
+                    if (shown >= 0.35f && AnyBeginPressed()) break;
+                    yield return null;
+                }
+                loading.BeginActivation();
+                op.allowSceneActivation = true;
+            }
             while (op != null && !op.isDone) yield return null;
 
             // Brief settle so the new scene has a frame to render before we hand off.
             yield return new WaitForSecondsRealtime(0.25f);
 
             // Seamless opening (batch-38): the cinematic welcome card holds until the in-scene
-            // narration is up (same homecoming image), then cross-fades out to reveal it.
-            var loading = _screens.ContainsKey("loading") ? _screens["loading"] as LoadingScreen : null;
-            if (cinematicHandoff && loading != null && loading.Cinematic)
+            // narration is up (same ridge image), then cross-fades out to reveal it.
+            if (interactiveWelcome)
             {
                 float t = 0f;
                 while (t < 4f && (NarrationOverlay.Instance == null || !NarrationOverlay.Instance.IsShowing))
@@ -139,6 +168,18 @@ namespace Hollowfen.UI
             {
                 Back();
             }
+        }
+
+        // Any-key/button/click gate for the interactive new-game welcome (batch-42).
+        private static bool AnyBeginPressed()
+        {
+            var kb = Keyboard.current;
+            if (kb != null && kb.anyKey.wasPressedThisFrame) return true;
+            var pad = Gamepad.current;
+            if (pad != null && (pad.buttonSouth.wasPressedThisFrame || pad.startButton.wasPressedThisFrame)) return true;
+            var mouse = Mouse.current;
+            if (mouse != null && mouse.leftButton.wasPressedThisFrame) return true;
+            return false;
         }
 
         public void RegisterScreen(UIScreen screen)

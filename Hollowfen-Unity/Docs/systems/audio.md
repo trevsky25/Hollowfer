@@ -19,11 +19,11 @@ Status: entrance scene verified end-to-end 2026-07-12 (intro narration voiced + 
 | Music bed | `_Music` GameObject → `MusicManager` | Loops the Magic Pig pack's `Misty Forest.wav` (licensed pack asset — ⚠️ lives in the pack's `_Demo Scenes/` folder; a pack update relocating demo content silently kills the bed); 5s fade-in on scene load; source-level ceiling 0.55 UNDER the mixer's Music volume; hard cut on scene exit (no fade-out — Audio pass). Deliberately dumb — region/state music is the Audio-pass backlog item. |
 | Dialogue VO | `DialogueLine.voiceClip` (nullable) | DialogueScreen plays on line show via a lazily-added AudioSource (`_voiceOutput` scene-serialized → SFX group); previous clip always stops first; Close() stops. All 70 pre-VO dialogues unaffected (null = silent). |
 | Narration VO | `NarrationOverlay.Show(captions, clips, onDone)` | Index-matched clips; caption hold = `max(autoAdvance, clip.length + 0.8s)`; advance/skip cuts audio. StoryBeats passes `_introVoiceClips` for the homecoming intro. |
-| Generator | `tools/agent/generate_vo.py` | Parses dialogue .asset YAML (multiline/quoted scalars) → Kokoro WAVs, 24kHz mono. Voice cast in `VOICES` (Wren `af_heart`, Bram `bm_george`, narrator = Wren slowed). Venv: scratchpad, uv + **cpython-3.12 aarch64** (3.14 has no spacy wheels; the default uv python resolved x86_64 → torch dead end). Needs `en_core_web_sm` wheel pre-installed (uv venvs lack pip, misaki's auto-install fails) and brew espeak-ng (wheel loader hard-exits). |
+| Generator | `tools/agent/generate_vo.py` | Parses dialogue .asset YAML (multiline/quoted scalars) → Kokoro WAVs, 24kHz mono. Voice cast in `VOICES` (Wren `af_heart`, Bram `bm_george`, narrator = Wren slowed). Venv: scratchpad, uv + **cpython-3.12 aarch64** (3.14 has no spacy wheels; the default uv python resolved x86_64 → torch dead end). Needs `en_core_web_sm` wheel pre-installed (uv venvs lack pip, misaki's auto-install fails) and brew espeak-ng (wheel loader hard-exits). **`--extras-only`** (batch-42) regenerates just the non-dialogue card utterances (`EXTRAS`, e.g. IntroGuide) without touching the intro narration or dialogue WAVs. |
 
 ## Coverage (test scope)
 
-Voiced: HomecomingIntro (2 captions) + Bram Act I chain (Homecoming 5, CrookedPintle key 12, Repeat 3) + the IntroGuide journal passage (18.5s narrator read, batch-30).
+Voiced: HomecomingIntro (2 captions) + Bram Act I chain (Homecoming 5, CrookedPintle key 12, Repeat 3) + the IntroGuide first-steps passage (batch-42: re-read to the new "…find Old Bram at the well" copy, ~11s narrator; regen via `generate_vo.py --extras-only`).
 Everything else is silent by design until the VO direction is decided (Q10).
 
 ## Design intents (don't "fix" these)

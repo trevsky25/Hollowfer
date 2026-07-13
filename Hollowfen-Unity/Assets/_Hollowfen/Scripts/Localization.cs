@@ -38,9 +38,9 @@ namespace Hollowfen
 
             // Quest objective + display strings (Act I)
             { "quest.arrive.name",       "Homecoming" },
-            { "quest.arrive.objective",  "Walk the road into Hollowfen." },
+            { "quest.arrive.objective",  "Follow the road to the well in the village square." },
             { "quest.speakBram.name",       "The Crooked Pintle" },
-            { "quest.speakBram.objective",  "Speak with Bram outside the inn." },
+            { "quest.speakBram.objective",  "Speak with Old Bram at the well." },
             { "quest.searchMill.name",      "Your Father's Mill" },
             { "quest.searchMill.objective", "Enter the mill and search the house." },
             { "quest.findJournal.name",      "The Hidden Journal" },
@@ -177,12 +177,12 @@ namespace Hollowfen
             // Wren's first-person journal present (no invented facts); hints verified against
             // the shipped HUD/compass/bindings.
             { "guide.eyebrow",      "Act I · Homecoming" },
-            { "guide.title",        "The Road into Hollowfen" },
-            { "guide.passage",      "From the ridge, the valley looks as it always did — low roofs tucked into the hollow, the dark shoulder of the Old Wood behind them, the pale line of the Wend cutting through the fields. Then the road dips, and the old picture comes apart. I shift the pack on my shoulder and keep walking." },
+            { "guide.title",        "Into the Village" },
+            { "guide.passage",      "The square is just down the road, the old well standing at the heart of it. I'll find Old Bram there — he keeps The Crooked Pintle, and he holds my father's mill key." },
             { "guide.task_label",   "Your task" },
-            { "guide.hint.compass", "The compass ribbon above points the way — follow the east road down to the village well." },
-            { "guide.hint.ribbon",  "Your task keeps to the top-left. It will change as Hollowfen asks more of you." },
-            { "guide.hint.journal", "Esc opens your journal — the story so far, and a field guide of everything you learn." },
+            { "guide.hint.compass", "Follow the road down into the square — the compass ribbon marks the well." },
+            { "guide.hint.ribbon",  "Old Bram is by the well — walk up and Interact to speak with him." },
+            { "guide.hint.journal", "Esc opens your journal — the story so far and a field guide of all you learn." },
             { "guide.ctl.move",     "Move" },
             { "guide.ctl.look",     "Look" },
             { "guide.ctl.interact", "Interact" },

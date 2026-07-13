@@ -37,6 +37,13 @@ namespace Hollowfen.UI
         private RectTransform _cineRoot, _welcomeGroup, _loadingLine;
         private CanvasGroup _welcomeCg;
 
+        // Interactive welcome (batch-42): once the scene is loaded-but-not-activated, the loading
+        // line becomes a "press any key" prompt; UIManager holds activation until the player presses.
+        private const string LoadingText = "gathering the last light";
+        private const string ReadyPromptText = "Press any key to begin";
+        private const string EnteringText = "entering Hollowfen";
+        private int _welcomeState; // 0 = loading, 1 = ready/prompt, 2 = activating
+
         private readonly List<RectTransform> _motes = new List<RectTransform>();
         private readonly List<CanvasGroup> _moteCg = new List<CanvasGroup>();
         private readonly List<Vector4> _moteData = new List<Vector4>(); // velX, velY, phase, baseAlpha
@@ -54,6 +61,7 @@ namespace Hollowfen.UI
 
             if (_isCinematic)
             {
+                _welcomeState = 0;
                 BuildCinematic();
                 if (_cineRoot != null) _cineRoot.gameObject.SetActive(true);
                 if (_label != null) _label.gameObject.SetActive(false);
@@ -77,6 +85,12 @@ namespace Hollowfen.UI
             if (_label != null) _label.text = _baseText;
             if (CanvasGroup != null) CanvasGroup.alpha = 1f;
         }
+
+        // Scene is loaded but not yet activated — invite the player to begin (batch-42).
+        public void ShowReadyPrompt() { _welcomeState = 1; }
+
+        // Player pressed to begin — acknowledge while the scene integrates.
+        public void BeginActivation() { _welcomeState = 2; }
 
         // Cross-fade the whole card out to reveal the (same-image) narration behind it.
         public void FadeOutAndClose(float seconds, Action onDone)
@@ -168,7 +182,7 @@ namespace Hollowfen.UI
             tRT.anchorMin = new Vector2(0f, 0f); tRT.anchorMax = new Vector2(1f, 0f); tRT.pivot = new Vector2(0.5f, 0f);
             tRT.sizeDelta = new Vector2(0f, 90f); tRT.anchoredPosition = new Vector2(0f, 0f);
 
-            var ll = UICanvasUtil.NewBody("LoadingLine", root, "gathering the last light", 15f,
+            var ll = UICanvasUtil.NewBody("LoadingLine", root, LoadingText, 15f,
                 new Color(0.90f, 0.88f, 0.80f, 0.4f), FontStyles.Italic, TextAlignmentOptions.Center);
             _loadingLine = ll.rectTransform;
             _loadingLine.anchorMin = new Vector2(0.5f, 0f); _loadingLine.anchorMax = new Vector2(0.5f, 0f);
@@ -240,15 +254,30 @@ namespace Hollowfen.UI
         {
             var tmp = _loadingLine != null ? _loadingLine.GetComponent<TMP_Text>() : null;
             if (tmp == null) yield break;
-            string baseTxt = tmp.text;
             var cg = _loadingLine.GetComponent<CanvasGroup>();
             if (cg == null) cg = _loadingLine.gameObject.AddComponent<CanvasGroup>();
             float t = 0f; int dots = 0; float nextDot = 0f;
             while (true)
             {
                 t += Time.unscaledDeltaTime;
-                cg.alpha = 0.5f + 0.5f * Mathf.Sin(t * 2.2f); // clear "loading" pulse
-                if (t >= nextDot) { tmp.text = baseTxt + new string('.', dots); dots = (dots + 1) % 4; nextDot = t + _dotInterval; }
+                if (_welcomeState == 1)
+                {
+                    // Ready: a steady, brighter breathing prompt inviting the player to begin.
+                    tmp.fontStyle = FontStyles.Italic;
+                    tmp.text = ReadyPromptText;
+                    cg.alpha = 0.72f + 0.28f * Mathf.Sin(t * 3.0f);
+                }
+                else if (_welcomeState == 2)
+                {
+                    tmp.text = EnteringText;
+                    cg.alpha = 0.9f;
+                }
+                else
+                {
+                    // Loading: the pulsing "gathering the last light" with cycling dots.
+                    cg.alpha = 0.5f + 0.5f * Mathf.Sin(t * 2.2f);
+                    if (t >= nextDot) { tmp.text = LoadingText + new string('.', dots); dots = (dots + 1) % 4; nextDot = t + _dotInterval; }
+                }
                 yield return null;
             }
         }
