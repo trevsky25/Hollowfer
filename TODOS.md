@@ -44,8 +44,14 @@ inheritance beat. Slices:
 - **51c — mill interior "search the house" inspect props** (coat/kettle/ledgers/window-wheel/drawer +
   `mill.*`/`act1.fathers_mill.wren.inspect` barks, cinematic-camera-anchored). Interior exists
   (`BasicBuilding3`). Needs meshes the kitbash packs lack (coat/kettle/book) → QUESTIONS.
-- **51d — cinematic key/journal pickups** (focus push-in + KeyItemToast). Needs a reusable prop-focus
-  cinematic (MushroomFocusCamera only auto-frames MushroomNode) + a key mesh.
+- **51d/52 — cinematic key/journal pickups** — Trevor dropped the Meshy key + journal models
+  (`Resources/Mill Key`, `Resources/Mushroom Journal`). Built the reusable `PropFocusCinematic` (HUD-hide +
+  letterbox + push-in on renderer-bounds centre).
+  - ~~**52a — mill-key handoff**~~ **DONE 2026-07-13, tag `batch-52`** — `MillKeyHandoff` presents the key
+    as a hero item-get on grant (face-on rock, toast). Play-verified.
+  - **52b — key-in-lock door unlock** — Wren turns the key in `MillDoor_Lock`, door opens (reuse
+    PropFocusCinematic + MillKey prefab). NEXT.
+  - **53 — journal discovery cinematic** — push-in into the book → the batch-51b painted-spread finale.
 
 ## Next up (ordered)
 
@@ -140,6 +146,7 @@ inheritance beat. Slices:
 
 ## Done
 
+- **Batch 52** (2026-07-13): cinematic mill-key handoff — imported the Meshy key (Mat_MillKey + MillKey.prefab), new reusable `PropFocusCinematic` (HUD-hide + letterbox + bounds-centre push-in) + `MillKeyHandoff` (hero item-get on grant). Play-verified. (52b key-in-lock door unlock + 53 journal pickup next.)
 - **Batch 51b** (2026-07-13): journal painted-spread finale — Trevor's 3 Codex journal PNGs wired into `NarrationOverlay.ShowCinematic` (crossfade + Ken Burns over the paintings, live Georgia captions). New `QuestInteractable._narrationHeroes`/`_narrationBeatImages`. Fresh-save bridge-verified all 3 painted beats. (51c interior props + 51d cinematic pickups still open — need meshes, QUESTIONS Q14.)
 - **Batch 51** (2026-07-13): Hidden Journal payload — journal teaches fieldCap/woodEar/pinecrest (Goldfoot stays a margin note) + Tobin's farewell note as live Georgia narration (new `QuestInteractable._playsNarrationId`). Fresh-save bridge-verified.
 - **Batch 50** (2026-07-13): Continue/Load gets the cinematic welcome card ("RETURNING TO / Hollowfen") — same treatment as New Game, faded to the game (no seamless handoff); nested Canvas so it covers the live HUD/minimap. Play-verified both paths.

@@ -22,6 +22,10 @@ namespace Hollowfen.Dialogue
     {
         public static DialogueCinematics Instance { get; private set; }
 
+        // True while the director owns Camera.main (incl. the End() restore glide). Other camera
+        // takeovers (PropFocusCinematic) wait on this so they don't fight the dialogue camera.
+        public bool IsActive => _active;
+
         private const float GlideSeconds = 1.1f;    // deliberate shot-change camera move (mode change only)
         private const float FavorGlideSeconds = 0.7f; // gentle favor pan within the two-shot
         private const float RestoreSeconds = 0.55f; // End() glide back to gameplay
