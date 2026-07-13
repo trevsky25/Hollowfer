@@ -170,20 +170,25 @@ namespace Hollowfen.UI
             var img = go.AddComponent<Image>();
             img.color = CardBgColor;
             img.raycastTarget = true;
+            // Rounded card face (batch-47 square sweep). The photo is inset below so the
+            // rounded corners frame it — no stencil Mask (URP UI + Mask rendered the fill
+            // cyan; gotcha logged).
+            UICanvasUtil.Roundify(img, 14);
 
             var btn = go.AddComponent<Button>();
             btn.transition = Selectable.Transition.None;
             btn.targetGraphic = img;
 
-            var outline = go.AddComponent<Outline>();
-            outline.effectColor = CardBorder;
-            outline.effectDistance = new Vector2(1f, -1f);
+            // Rounded hairline border (batch-47) — see StoryScreen note re: Outline + sliced sprites.
+            var borderGo = UICanvasUtil.NewImage("Hairline", go.transform, CardBorder, false);
+            UICanvasUtil.RoundifyOutline(borderGo.GetComponent<Image>(), 14, 1.5f);
+            UICanvasUtil.Stretch((RectTransform)borderGo.transform);
 
             var fh = go.AddComponent<FocusHighlight>();
 
-            // Photo (top 220 of 360)
+            // Photo (top 220 of 360), inset 8px so the card's rounded corners frame it (batch-47).
             var thumbRt = UICanvasUtil.NewRect("Thumb", go.transform);
-            UICanvasUtil.SetRect(thumbRt, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, 220f), Vector2.zero);
+            UICanvasUtil.SetRect(thumbRt, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(-16f, 212f), new Vector2(0f, -8f));
             var thumbImg = thumbRt.gameObject.AddComponent<Image>();
             thumbImg.sprite = entry.Photo;
             thumbImg.preserveAspect = false;
@@ -205,6 +210,7 @@ namespace Hollowfen.UI
             var dotRt = UICanvasUtil.NewRect("Dot", body);
             UICanvasUtil.SetRect(dotRt, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(10f, 10f), new Vector2(0f, -92f));
             var dot = dotRt.gameObject.AddComponent<Image>();
+            dot.sprite = UICanvasUtil.Circle();  // a dot, not a tiny square (batch-47)
             dot.color = chipColor;
             dot.raycastTarget = false;
 
@@ -217,6 +223,7 @@ namespace Hollowfen.UI
             var glowImg = glowRt.gameObject.AddComponent<Image>();
             glowImg.color = new Color(GoldColor.r, GoldColor.g, GoldColor.b, 0f);
             glowImg.raycastTarget = false;
+            UICanvasUtil.Roundify(glowImg, 14); // glow follows the card shape (batch-47)
 
             var fhT = typeof(FocusHighlight);
             System.Action<string,object> setF = (string n, object v) => {

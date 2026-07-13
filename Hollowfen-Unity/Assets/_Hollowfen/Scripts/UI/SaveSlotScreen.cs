@@ -43,6 +43,10 @@ namespace Hollowfen.UI
                 if (_slotButtons[i] == null) continue;
                 int slot = i;
                 _slotButtons[i].onClick.AddListener(() => OnSlotSelected(slot));
+                // The scene-authored slot rows are plain square Images — round them into the
+                // design system at init (batch-47 square sweep; legacy TMP-migration pending).
+                var rowImg = _slotButtons[i].GetComponent<UnityEngine.UI.Image>();
+                if (rowImg != null) UICanvasUtil.Roundify(rowImg, 16);
             }
         }
 

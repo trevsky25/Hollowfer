@@ -420,6 +420,22 @@ namespace Hollowfen.UI
             return img;
         }
 
+        // Give an existing Image the rounded design-system corners (batch-47 square sweep).
+        public static void Roundify(Image img, int radius)
+        {
+            if (img == null) return;
+            img.sprite = RoundedRect(radius);
+            img.type = Image.Type.Sliced;
+        }
+
+        // Give an existing Image a rounded hairline-outline sprite (batch-47 square sweep).
+        public static void RoundifyOutline(Image img, int radius, float thickness)
+        {
+            if (img == null) return;
+            img.sprite = RoundedOutline(radius, thickness);
+            img.type = Image.Type.Sliced;
+        }
+
         // Rounded parchment panel: fill + hairline gold stroke. Returns the fill image.
         public static Image MakeRoundedPanel(RectTransform rt, Color fill, int radius = 18, float strokeAlpha = 0.38f)
         {

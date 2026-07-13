@@ -51,6 +51,11 @@ namespace Hollowfen.UI
             if (_built) return;
             _built = true;
 
+            // Wipe any scene-serialized leftovers from older HUD iterations — a stale sprite-less
+            // "Bg" rectangle was rendering as a SQUARE box behind the rounded pill (batch-47 fix).
+            for (int i = transform.childCount - 1; i >= 0; i--)
+                Destroy(transform.GetChild(i).gameObject);
+
             var rt = (RectTransform)transform;
             rt.anchorMin = new Vector2(0.5f, 0f);
             rt.anchorMax = new Vector2(0.5f, 0f);

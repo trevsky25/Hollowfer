@@ -93,6 +93,7 @@ namespace Hollowfen.UI
             chipRt.sizeDelta = new Vector2(260f, 38f);
             _chipBg = chipRt.gameObject.AddComponent<Image>();
             _chipBg.raycastTarget = false;
+            UICanvasUtil.Roundify(_chipBg, 19); // full pill at 38px height (batch-47)
             var chipLE = chipRt.gameObject.AddComponent<LayoutElement>();
             chipLE.minHeight = 38f; chipLE.preferredHeight = 38f; chipLE.flexibleWidth = 0f; chipLE.preferredWidth = 260f;
             _chipLabel = UICanvasUtil.NewEyebrow("Label", chipRt, "", 13f, BgColor, TextAlignmentOptions.Center);
@@ -133,9 +134,10 @@ namespace Hollowfen.UI
             var fcImg = featuresCard.gameObject.AddComponent<Image>();
             fcImg.color = CardBg;
             fcImg.raycastTarget = false;
-            var fcOutline = featuresCard.gameObject.AddComponent<Outline>();
-            fcOutline.effectColor = GoldFaint;
-            fcOutline.effectDistance = new Vector2(2f, -2f);
+            UICanvasUtil.Roundify(fcImg, 14); // batch-47 square sweep
+            var fcBorder = UICanvasUtil.NewImage("Hairline", featuresCard, GoldFaint, false);
+            UICanvasUtil.RoundifyOutline(fcBorder.GetComponent<Image>(), 14, 1.5f);
+            UICanvasUtil.Stretch((RectTransform)fcBorder.transform);
 
             var featInner = UICanvasUtil.NewRect("Inner", featuresCard);
             featInner.anchorMin = Vector2.zero; featInner.anchorMax = Vector2.one;
@@ -162,9 +164,10 @@ namespace Hollowfen.UI
             var ncImg = notesCard.gameObject.AddComponent<Image>();
             ncImg.color = CardBg;
             ncImg.raycastTarget = false;
-            var ncOutline = notesCard.gameObject.AddComponent<Outline>();
-            ncOutline.effectColor = GoldFaint;
-            ncOutline.effectDistance = new Vector2(2f, -2f);
+            UICanvasUtil.Roundify(ncImg, 14); // batch-47 square sweep
+            var ncBorder = UICanvasUtil.NewImage("Hairline", notesCard, GoldFaint, false);
+            UICanvasUtil.RoundifyOutline(ncBorder.GetComponent<Image>(), 14, 1.5f);
+            UICanvasUtil.Stretch((RectTransform)ncBorder.transform);
 
             var notesInner = UICanvasUtil.NewRect("Inner", notesCard);
             notesInner.anchorMin = Vector2.zero; notesInner.anchorMax = Vector2.one;

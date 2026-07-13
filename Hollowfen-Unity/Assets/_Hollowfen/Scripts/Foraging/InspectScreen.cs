@@ -464,17 +464,10 @@ namespace Hollowfen.Foraging
             panel.transform.SetParent(transform, false);
             var panelImg = panel.AddComponent<Image>();
             panelImg.raycastTarget = true;
-            if (_parchmentSprite != null)
-            {
-                panelImg.sprite = _parchmentSprite;
-                panelImg.color = Color.white;
-                panelImg.preserveAspect = false;
-                panelImg.type = Image.Type.Simple;
-            }
-            else
-            {
-                panelImg.color = HollowfenPalette.Parchment;
-            }
+            // Rounded journal page (batch-47 square sweep) — the paper family established by
+            // pause/settings/ConfirmModal. The old square parchment texture read as a hard box.
+            panelImg.color = HollowfenPalette.Parchment;
+            UICanvasUtil.Roundify(panelImg, 24);
             var panelRT = (RectTransform)panel.transform;
             panelRT.anchorMin = new Vector2(0.5f, 0.5f);
             panelRT.anchorMax = new Vector2(0.5f, 0.5f);
@@ -486,6 +479,9 @@ namespace Hollowfen.Foraging
             var vignette = UICanvasUtil.NewImage("Vignette", panel.transform, new Color(0f, 0f, 0f, 0.18f), false);
             var vignetteImg = vignette.GetComponent<Image>();
             UICanvasUtil.Stretch((RectTransform)vignette.transform);
+            // Inset past the rounded corner so the gradient's dark edge doesn't overhang the curve.
+            ((RectTransform)vignette.transform).offsetMin = new Vector2(10f, 10f);
+            ((RectTransform)vignette.transform).offsetMax = new Vector2(-10f, -10f);
             // Replace flat with a vertical gradient (top + bottom darker, mid clear)
             vignetteImg.sprite = UICanvasUtil.MakeVerticalGradient(new[]
             {
@@ -515,6 +511,7 @@ namespace Hollowfen.Foraging
             const float previewSize = 700f;
             const float previewYOffset = 60f;
             var previewFrame = UICanvasUtil.NewImage("PreviewFrame", panel.transform, HollowfenPalette.GoldFaint, false);
+            UICanvasUtil.Roundify(previewFrame.GetComponent<Image>(), 16);
             var pfRT = (RectTransform)previewFrame.transform;
             pfRT.anchorMin = new Vector2(0f, 0.5f);
             pfRT.anchorMax = new Vector2(0f, 0.5f);
@@ -523,6 +520,7 @@ namespace Hollowfen.Foraging
             pfRT.anchoredPosition = new Vector2(pad - 2f, previewYOffset - 2f);
 
             var previewBg = UICanvasUtil.NewImage("PreviewBg", panel.transform, HollowfenPalette.Parchment, false);
+            UICanvasUtil.Roundify(previewBg.GetComponent<Image>(), 14);
             _previewBgRT = (RectTransform)previewBg.transform;
             _previewBgRT.anchorMin = new Vector2(0f, 0.5f);
             _previewBgRT.anchorMax = new Vector2(0f, 0.5f);
@@ -609,9 +607,11 @@ namespace Hollowfen.Foraging
             _edibilityChip.anchoredPosition = new Vector2(0f, y);
 
             var chipBg = UICanvasUtil.NewImage("ChipBg", _edibilityChip, new Color(0f, 0f, 0f, 0.06f), false);
+            UICanvasUtil.Roundify(chipBg.GetComponent<Image>(), 15);   // full pill at 30px height
             UICanvasUtil.Stretch((RectTransform)chipBg.transform);
 
             var dotGO = UICanvasUtil.NewImage("Dot", _edibilityChip, Color.white, false);
+            dotGO.GetComponent<Image>().sprite = UICanvasUtil.Circle(); // a dot, not a tiny square
             var dotRT = (RectTransform)dotGO.transform;
             dotRT.anchorMin = new Vector2(0f, 0.5f); dotRT.anchorMax = new Vector2(0f, 0.5f);
             dotRT.pivot = new Vector2(0f, 0.5f);
@@ -699,44 +699,21 @@ namespace Hollowfen.Foraging
         }
 
         // Inner-frame double-rule: outer thin gold + inner thinner gold, both at panel-edge inset.
+        // Rounded outlines (batch-47) — the old 4-strip rectangles read as hard square boxes.
         private static void BuildPanelFrame(RectTransform panelRT, float w, float h)
         {
-            const float outerInset = 14f;
-            const float innerInset = 22f;
-            BuildRect(panelRT, "FrameOuter", outerInset, HollowfenPalette.GoldFaint, 1.5f);
-            BuildRect(panelRT, "FrameInner", innerInset, new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0.22f), 1f);
+            MakeInsetOutline(panelRT, "FrameOuter", 14f, HollowfenPalette.GoldFaint, 1.5f, 16);
+            MakeInsetOutline(panelRT, "FrameInner", 22f, new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0.22f), 1f, 12);
         }
 
-        private static void BuildRect(RectTransform parent, string name, float inset, Color color, float thickness)
+        private static void MakeInsetOutline(RectTransform parent, string name, float inset, Color color, float thickness, int radius)
         {
-            // Top
-            var top = UICanvasUtil.NewImage(name + ".Top", parent, color, false);
-            var tr = (RectTransform)top.transform;
-            tr.anchorMin = new Vector2(0f, 1f); tr.anchorMax = new Vector2(1f, 1f);
-            tr.pivot = new Vector2(0.5f, 1f);
-            tr.sizeDelta = new Vector2(-inset * 2f, thickness);
-            tr.anchoredPosition = new Vector2(0f, -inset);
-            // Bottom
-            var bot = UICanvasUtil.NewImage(name + ".Bot", parent, color, false);
-            var br = (RectTransform)bot.transform;
-            br.anchorMin = new Vector2(0f, 0f); br.anchorMax = new Vector2(1f, 0f);
-            br.pivot = new Vector2(0.5f, 0f);
-            br.sizeDelta = new Vector2(-inset * 2f, thickness);
-            br.anchoredPosition = new Vector2(0f, inset);
-            // Left
-            var left = UICanvasUtil.NewImage(name + ".Left", parent, color, false);
-            var lr = (RectTransform)left.transform;
-            lr.anchorMin = new Vector2(0f, 0f); lr.anchorMax = new Vector2(0f, 1f);
-            lr.pivot = new Vector2(0f, 0.5f);
-            lr.sizeDelta = new Vector2(thickness, -inset * 2f);
-            lr.anchoredPosition = new Vector2(inset, 0f);
-            // Right
-            var right = UICanvasUtil.NewImage(name + ".Right", parent, color, false);
-            var rr = (RectTransform)right.transform;
-            rr.anchorMin = new Vector2(1f, 0f); rr.anchorMax = new Vector2(1f, 1f);
-            rr.pivot = new Vector2(1f, 0.5f);
-            rr.sizeDelta = new Vector2(thickness, -inset * 2f);
-            rr.anchoredPosition = new Vector2(-inset, 0f);
+            var go = UICanvasUtil.NewImage(name, parent, color, false);
+            UICanvasUtil.RoundifyOutline(go.GetComponent<Image>(), radius, thickness);
+            var rt = (RectTransform)go.transform;
+            rt.anchorMin = Vector2.zero; rt.anchorMax = Vector2.one;
+            rt.offsetMin = new Vector2(inset, inset);
+            rt.offsetMax = new Vector2(-inset, -inset);
         }
 
         private static TMP_Text MakeStatColumn(RectTransform parent, float anchorX)
@@ -770,12 +747,13 @@ namespace Hollowfen.Foraging
             var img = bgGO.AddComponent<Image>();
             img.color = isSolid ? bg : new Color(bg.r, bg.g, bg.b, 0.15f);
             img.raycastTarget = true;
+            UICanvasUtil.Roundify(img, 14);
 
-            // Outline ring for the non-solid (Leave) button
+            // Outline ring for the non-solid (Leave) button — rounded hairline (batch-47).
             if (!isSolid)
             {
-                var outline = UICanvasUtil.NewImage("Outline", bgRT, new Color(0f, 0f, 0f, 0f), false);
-                BuildRect((RectTransform)outline.transform, "Edge", 0f, HollowfenPalette.GoldFaint, 1.5f);
+                var outline = UICanvasUtil.NewImage("Outline", bgRT, HollowfenPalette.GoldFaint, false);
+                UICanvasUtil.RoundifyOutline(outline.GetComponent<Image>(), 14, 1.5f);
                 outline.transform.SetSiblingIndex(0);
                 UICanvasUtil.Stretch((RectTransform)outline.transform);
             }
@@ -796,6 +774,7 @@ namespace Hollowfen.Foraging
             // Glyph pill on the left
             var glyphGO = UICanvasUtil.NewImage("Glyph", bgRT,
                 new Color(0f, 0f, 0f, isSolid ? 0.18f : 0.10f), false);
+            UICanvasUtil.Roundify(glyphGO.GetComponent<Image>(), 10);
             var gRT = (RectTransform)glyphGO.transform;
             gRT.anchorMin = new Vector2(0f, 0.5f); gRT.anchorMax = new Vector2(0f, 0.5f);
             gRT.pivot = new Vector2(0f, 0.5f);

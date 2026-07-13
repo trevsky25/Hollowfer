@@ -179,9 +179,10 @@ namespace Hollowfen.UI
             var img = card.AddComponent<Image>();
             img.color = StatBg;
             img.raycastTarget = false;
-            var outline = card.AddComponent<Outline>();
-            outline.effectColor = StatBorder;
-            outline.effectDistance = new Vector2(1f, -1f);
+            UICanvasUtil.Roundify(img, 12); // batch-47 square sweep
+            var borderGo = UICanvasUtil.NewImage("Hairline", card.transform, StatBorder, false);
+            UICanvasUtil.RoundifyOutline(borderGo.GetComponent<Image>(), 12, 1.2f);
+            UICanvasUtil.Stretch((RectTransform)borderGo.transform);
 
             var inner = UICanvasUtil.NewRect("Inner", card.transform);
             inner.anchorMin = Vector2.zero; inner.anchorMax = Vector2.one;
@@ -219,9 +220,10 @@ namespace Hollowfen.UI
             var img = tile.AddComponent<Image>();
             img.color = KitTileBg;
             img.raycastTarget = false;
-            var outline = tile.AddComponent<Outline>();
-            outline.effectColor = KitTileBorder;
-            outline.effectDistance = new Vector2(1f, -1f);
+            UICanvasUtil.Roundify(img, 12); // batch-47 square sweep
+            var borderGo = UICanvasUtil.NewImage("Hairline", tile.transform, KitTileBorder, false);
+            UICanvasUtil.RoundifyOutline(borderGo.GetComponent<Image>(), 12, 1.2f);
+            UICanvasUtil.Stretch((RectTransform)borderGo.transform);
 
             var inner = UICanvasUtil.NewRect("Inner", tile.transform);
             inner.anchorMin = Vector2.zero; inner.anchorMax = Vector2.one;
@@ -258,9 +260,10 @@ namespace Hollowfen.UI
             var img = card.AddComponent<Image>();
             img.color = CardBg;
             img.raycastTarget = false;
-            var outline = card.AddComponent<Outline>();
-            outline.effectColor = new Color(1f, 1f, 1f, 0.06f);
-            outline.effectDistance = new Vector2(1f, -1f);
+            UICanvasUtil.Roundify(img, 14); // batch-47 square sweep
+            var borderGo = UICanvasUtil.NewImage("Hairline", card.transform, new Color(1f, 1f, 1f, 0.06f), false);
+            UICanvasUtil.RoundifyOutline(borderGo.GetComponent<Image>(), 14, 1.2f);
+            UICanvasUtil.Stretch((RectTransform)borderGo.transform);
 
             var inner = UICanvasUtil.NewRect("Inner", card.transform);
             inner.anchorMin = Vector2.zero; inner.anchorMax = Vector2.one;
@@ -284,6 +287,7 @@ namespace Hollowfen.UI
             var bg = card.AddComponent<Image>();
             bg.color = CardBg;
             bg.raycastTarget = false;
+            UICanvasUtil.Roundify(bg, 14); // batch-47 square sweep
 
             var border = UICanvasUtil.NewImage("LeftBorder", card.transform, GoldStrong, false);
             UICanvasUtil.SetRect(border.GetComponent<RectTransform>(), new Vector2(0f, 0f), new Vector2(0f, 1f), new Vector2(0f, 0.5f), new Vector2(3f, 0f), Vector2.zero);

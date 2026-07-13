@@ -578,14 +578,9 @@ namespace Hollowfen.Foraging
             panel.transform.SetParent(transform, false);
             var panelImg = panel.AddComponent<Image>();
             panelImg.raycastTarget = true;
-            if (_parchmentSprite != null)
-            {
-                panelImg.sprite = _parchmentSprite;
-                panelImg.color = Color.white;
-                panelImg.preserveAspect = false;
-                panelImg.type = Image.Type.Simple;
-            }
-            else panelImg.color = HollowfenPalette.Parchment;
+            // Rounded journal page (batch-47 square sweep — matches InspectScreen).
+            panelImg.color = HollowfenPalette.Parchment;
+            UICanvasUtil.Roundify(panelImg, 24);
 
             var panelRT = (RectTransform)panel.transform;
             panelRT.anchorMin = new Vector2(0.5f, 0.5f); panelRT.anchorMax = new Vector2(0.5f, 0.5f);
@@ -593,9 +588,11 @@ namespace Hollowfen.Foraging
             panelRT.sizeDelta = new Vector2(panelW, panelH);
             panelRT.anchoredPosition = Vector2.zero;
 
-            // Vignette
+            // Vignette — inset past the rounded corner so its dark edge doesn't overhang the curve.
             var vignette = UICanvasUtil.NewImage("Vignette", panel.transform, new Color(0f, 0f, 0f, 0.18f), false);
             UICanvasUtil.Stretch((RectTransform)vignette.transform);
+            ((RectTransform)vignette.transform).offsetMin = new Vector2(10f, 10f);
+            ((RectTransform)vignette.transform).offsetMax = new Vector2(-10f, -10f);
             vignette.GetComponent<Image>().sprite = UICanvasUtil.MakeVerticalGradient(new[]
             {
                 new UICanvasUtil.GradientStop(0.00f, new Color(0f, 0f, 0f, 0.32f)),
@@ -604,9 +601,9 @@ namespace Hollowfen.Foraging
                 new UICanvasUtil.GradientStop(1.00f, new Color(0f, 0f, 0f, 0.28f)),
             }, 256);
 
-            // Frame double-rule (same recipe as InspectScreen)
-            BuildFrame(panelRT, 14f, HollowfenPalette.GoldFaint, 1.5f);
-            BuildFrame(panelRT, 22f, new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0.22f), 1f);
+            // Frame double-rule (same recipe as InspectScreen) — rounded outlines (batch-47).
+            MakeInsetOutline(panelRT, "FrameOuter", 14f, HollowfenPalette.GoldFaint, 1.5f, 16);
+            MakeInsetOutline(panelRT, "FrameInner", 22f, new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0.22f), 1f, 12);
 
             // Top eyebrow
             var topEyebrow = UICanvasUtil.NewEyebrow("TopEyebrow", panel.transform,
@@ -708,6 +705,7 @@ namespace Hollowfen.Foraging
             const float previewLeft = gridLeft + gridW + 32f;
             var previewFrame = UICanvasUtil.NewImage("PreviewFrame", _populatedState.transform, HollowfenPalette.GoldFaint, false);
             _previewFrameImage = previewFrame.GetComponent<Image>();
+            UICanvasUtil.Roundify(_previewFrameImage, 16);
             var pfRT = (RectTransform)previewFrame.transform;
             pfRT.anchorMin = new Vector2(0f, 1f); pfRT.anchorMax = new Vector2(0f, 1f);
             pfRT.pivot = new Vector2(0f, 1f);
@@ -715,6 +713,7 @@ namespace Hollowfen.Foraging
             pfRT.anchoredPosition = new Vector2(previewLeft - 2f, -gridTop + 2f);
 
             var previewBg = UICanvasUtil.NewImage("PreviewBg", _populatedState.transform, HollowfenPalette.Parchment, false);
+            UICanvasUtil.Roundify(previewBg.GetComponent<Image>(), 14);
             _previewBgRT = (RectTransform)previewBg.transform;
             _previewBgRT.anchorMin = new Vector2(0f, 1f); _previewBgRT.anchorMax = new Vector2(0f, 1f);
             _previewBgRT.pivot = new Vector2(0f, 1f);
@@ -784,24 +783,15 @@ namespace Hollowfen.Foraging
             _closeBtn.onClick.AddListener(Close);
         }
 
-        private static void BuildFrame(RectTransform panelRT, float inset, Color color, float thickness)
+        // Rounded inset outline (batch-47) — replaces the old 4-strip square frame.
+        private static void MakeInsetOutline(RectTransform parent, string name, float inset, Color color, float thickness, int radius)
         {
-            var top = UICanvasUtil.NewImage("Frame.Top", panelRT, color, false);
-            var tr = (RectTransform)top.transform;
-            tr.anchorMin = new Vector2(0f, 1f); tr.anchorMax = new Vector2(1f, 1f); tr.pivot = new Vector2(0.5f, 1f);
-            tr.sizeDelta = new Vector2(-inset * 2f, thickness); tr.anchoredPosition = new Vector2(0f, -inset);
-            var bot = UICanvasUtil.NewImage("Frame.Bot", panelRT, color, false);
-            var br = (RectTransform)bot.transform;
-            br.anchorMin = new Vector2(0f, 0f); br.anchorMax = new Vector2(1f, 0f); br.pivot = new Vector2(0.5f, 0f);
-            br.sizeDelta = new Vector2(-inset * 2f, thickness); br.anchoredPosition = new Vector2(0f, inset);
-            var left = UICanvasUtil.NewImage("Frame.Left", panelRT, color, false);
-            var lr = (RectTransform)left.transform;
-            lr.anchorMin = new Vector2(0f, 0f); lr.anchorMax = new Vector2(0f, 1f); lr.pivot = new Vector2(0f, 0.5f);
-            lr.sizeDelta = new Vector2(thickness, -inset * 2f); lr.anchoredPosition = new Vector2(inset, 0f);
-            var right = UICanvasUtil.NewImage("Frame.Right", panelRT, color, false);
-            var rr = (RectTransform)right.transform;
-            rr.anchorMin = new Vector2(1f, 0f); rr.anchorMax = new Vector2(1f, 1f); rr.pivot = new Vector2(1f, 0.5f);
-            rr.sizeDelta = new Vector2(thickness, -inset * 2f); rr.anchoredPosition = new Vector2(-inset, 0f);
+            var go = UICanvasUtil.NewImage(name, parent, color, false);
+            UICanvasUtil.RoundifyOutline(go.GetComponent<Image>(), radius, thickness);
+            var rt = (RectTransform)go.transform;
+            rt.anchorMin = Vector2.zero; rt.anchorMax = Vector2.one;
+            rt.offsetMin = new Vector2(inset, inset);
+            rt.offsetMax = new Vector2(-inset, -inset);
         }
 
         private static Button MakeCloseButton(RectTransform parent, string label, out TMP_Text glyphOut)
@@ -815,10 +805,11 @@ namespace Hollowfen.Foraging
             bgRT.anchoredPosition = Vector2.zero;
             var img = bgGO.AddComponent<Image>();
             img.color = new Color(1f, 1f, 1f, 0.15f);
+            UICanvasUtil.Roundify(img, 14);
 
-            // Outline
-            var outline = UICanvasUtil.NewImage("Outline", bgRT, new Color(0f, 0f, 0f, 0f), false);
-            BuildEdges((RectTransform)outline.transform, HollowfenPalette.GoldFaint, 1.5f);
+            // Outline — rounded hairline (batch-47).
+            var outline = UICanvasUtil.NewImage("Outline", bgRT, HollowfenPalette.GoldFaint, false);
+            UICanvasUtil.RoundifyOutline(outline.GetComponent<Image>(), 14, 1.5f);
             UICanvasUtil.Stretch((RectTransform)outline.transform);
 
             var btn = bgGO.AddComponent<Button>();
@@ -834,6 +825,7 @@ namespace Hollowfen.Foraging
 
             // Glyph pill
             var glyphGO = UICanvasUtil.NewImage("Glyph", bgRT, new Color(0f, 0f, 0f, 0.10f), false);
+            UICanvasUtil.Roundify(glyphGO.GetComponent<Image>(), 10);
             var gRT = (RectTransform)glyphGO.transform;
             gRT.anchorMin = new Vector2(0f, 0.5f); gRT.anchorMax = new Vector2(0f, 0.5f);
             gRT.pivot = new Vector2(0f, 0.5f);
@@ -854,21 +846,6 @@ namespace Hollowfen.Foraging
             lbl.raycastTarget = false;
 
             return btn;
-        }
-
-        private static void BuildEdges(RectTransform parent, Color color, float thickness)
-        {
-            void Edge(string n, Vector2 amin, Vector2 amax, Vector2 piv, Vector2 size, Vector2 pos)
-            {
-                var go = UICanvasUtil.NewImage(n, parent, color, false);
-                var rt = (RectTransform)go.transform;
-                rt.anchorMin = amin; rt.anchorMax = amax; rt.pivot = piv;
-                rt.sizeDelta = size; rt.anchoredPosition = pos;
-            }
-            Edge("Top",    new Vector2(0,1), new Vector2(1,1), new Vector2(0.5f,1), new Vector2(0, thickness), Vector2.zero);
-            Edge("Bottom", new Vector2(0,0), new Vector2(1,0), new Vector2(0.5f,0), new Vector2(0, thickness), Vector2.zero);
-            Edge("Left",   new Vector2(0,0), new Vector2(0,1), new Vector2(0,0.5f), new Vector2(thickness, 0), Vector2.zero);
-            Edge("Right",  new Vector2(1,0), new Vector2(1,1), new Vector2(1,0.5f), new Vector2(thickness, 0), Vector2.zero);
         }
 
         private static void EnsureEventSystem()

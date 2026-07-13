@@ -226,20 +226,27 @@ namespace Hollowfen.UI
             var img = go.AddComponent<Image>();
             img.color = CardBgColor;
             img.raycastTarget = true;
+            // Rounded card face (batch-47 square sweep). The art thumb is inset below so the
+            // rounded corners frame it like a mounted journal photograph — no stencil Mask
+            // (URP UI + Mask rendered the fill cyan; gotcha logged).
+            UICanvasUtil.Roundify(img, 14);
 
             var btn = go.AddComponent<Button>();
             btn.transition = Selectable.Transition.None;
             btn.targetGraphic = img;
 
-            var outline = go.AddComponent<Outline>();
-            outline.effectColor = CardBorder;
-            outline.effectDistance = new Vector2(1f, -1f);
+            // Rounded hairline border (batch-47) — the uGUI Outline component washes a
+            // sliced sprite gray (it re-draws the whole 9-slice 4x offset).
+            var borderGo = UICanvasUtil.NewImage("Hairline", go.transform, CardBorder, false);
+            UICanvasUtil.RoundifyOutline(borderGo.GetComponent<Image>(), 14, 1.5f);
+            UICanvasUtil.Stretch((RectTransform)borderGo.transform);
 
             var fh = go.AddComponent<FocusHighlight>();
 
-            // Image fills the top portion (220 of 400)
+            // Image fills the top portion (220 of 400), inset 8px so the card's rounded
+            // corners frame it (batch-47).
             var thumbRt = UICanvasUtil.NewRect("Thumb", go.transform);
-            UICanvasUtil.SetRect(thumbRt, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, 220f), Vector2.zero);
+            UICanvasUtil.SetRect(thumbRt, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(-16f, 212f), new Vector2(0f, -8f));
             var thumbImg = thumbRt.gameObject.AddComponent<Image>();
             thumbImg.sprite = card.Image;
             thumbImg.preserveAspect = false;
@@ -268,6 +275,7 @@ namespace Hollowfen.UI
             var glowImg = glowRt.gameObject.AddComponent<Image>();
             glowImg.color = new Color(GoldColor.r, GoldColor.g, GoldColor.b, 0f);
             glowImg.raycastTarget = false;
+            UICanvasUtil.Roundify(glowImg, 14); // glow follows the card shape (batch-47)
 
             var fhT = typeof(FocusHighlight);
             System.Action<string,object> setF = (string n, object v) => {
