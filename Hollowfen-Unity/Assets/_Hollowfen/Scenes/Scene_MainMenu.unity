@@ -767,6 +767,7 @@ MonoBehaviour:
   _fadeDuration: 0.25
   _initialScreenId: main-menu
   _pauseMenuPrefab: {fileID: 2744666292273185680, guid: 98a1eee502b514603aad0bc1701741cf, type: 3}
+  _uiSfxOutput: {fileID: 230091688605422166, guid: a9e21221dfb3941e1916c2e907205b1a, type: 2}
 --- !u!4 &221548291
 Transform:
   m_ObjectHideFlags: 0
@@ -5024,10 +5025,6 @@ MonoBehaviour:
   _defaultSelected: {fileID: 964434962}
   _canvasGroup: {fileID: 0}
   _isModal: 1
-  _titleText: {fileID: 1838475707}
-  _messageText: {fileID: 1212674849}
-  _confirmButton: {fileID: 1151085918}
-  _cancelButton: {fileID: 964434965}
 --- !u!1 &1501945342
 GameObject:
   m_ObjectHideFlags: 0

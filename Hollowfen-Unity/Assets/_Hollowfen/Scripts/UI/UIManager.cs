@@ -19,6 +19,10 @@ namespace Hollowfen.UI
         [SerializeField] private float _fadeDuration = 0.2f;
         [SerializeField] private string _initialScreenId;
         [SerializeField] private GameObject _pauseMenuPrefab;
+        [SerializeField, Tooltip("Mixer group for UI sounds (page-transition click, batch-44). Null = unrouted.")]
+        private UnityEngine.Audio.AudioMixerGroup _uiSfxOutput;
+
+        private float _bootTime;
 
         private InputActions _input;
         private readonly Dictionary<string, UIScreen> _screens = new Dictionary<string, UIScreen>();
@@ -46,6 +50,9 @@ namespace Hollowfen.UI
             _input.UI.Cancel.performed += OnCancelInput;
             _input.Player.Pause.performed += OnPauseInput;
             _input.Player.Enable();
+
+            _bootTime = Time.unscaledTime;
+            UISfx.SetOutput(_uiSfxOutput);
 
             EnsureFadeOverlay();
             EnsureUIInputModule();
@@ -255,6 +262,14 @@ namespace Hollowfen.UI
         private IEnumerator TransitionRoutine(UIScreen next, bool push, bool replace)
         {
             _transitioning = true;
+
+            // Page-turn tick (batch-44). Quiet on: the boot-time initial open, and anything
+            // touching the loading screen — scene handoffs keep their own audio mood.
+            bool loadingInvolved =
+                (next != null && next.ScreenId == "loading") ||
+                (TopScreen != null && TopScreen.ScreenId == "loading");
+            if (!loadingInvolved && Time.unscaledTime - _bootTime > 1f)
+                UISfx.Click();
 
             // Skip global fade for modal push (next is modal) or modal pop (top of stack is modal).
             bool fade = true;

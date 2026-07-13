@@ -176,6 +176,11 @@ namespace Hollowfen
             // First-steps intro guide (batch-30). Passage = bible Act I Scene 1 transposed to
             // Wren's first-person journal present (no invented facts); hints verified against
             // the shipped HUD/compass/bindings.
+            // Confirm modal (batch-44 parchment restyle)
+            { "confirm.cancel",     "Cancel" },
+            { "confirm.confirm",    "Confirm" },
+            { "confirm.hint",       "Esc — cancel" },
+
             { "guide.eyebrow",      "Act I · Homecoming" },
             { "guide.title",        "Into the Village" },
             { "guide.passage",      "The square is just down the road, the old well standing at the heart of it. I'll find Old Bram there — he keeps The Crooked Pintle, and he holds my father's mill key." },
