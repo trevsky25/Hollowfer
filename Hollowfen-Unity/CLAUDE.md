@@ -27,6 +27,7 @@ Every doc's first 7 lines are a summary — survey them all with:
 | Settings | `Docs/systems/settings.md` |
 | Music, voice-over, VO pipeline | `Docs/systems/audio.md` |
 | Code style, naming, folders, canon rules | `Docs/conventions.md` |
+| Reviewing a batch before commit (which lens + checklist) | `Docs/review/README.md` (persona fan-out) |
 | Anything shippable | `Docs/steam-constraints.md` |
 
 ## Workflow (every batch)

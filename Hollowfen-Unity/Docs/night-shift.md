@@ -58,6 +58,10 @@ Status: adopted 2026-07-11 (Batch 17). Trevor's kickoff prompt is at the bottom.
   - canon-sensitive authoring beyond the bible's literal text (new mechanics implied by a scene, ending-engine logic)
   - anything the integrity/lint gates can't validate (design judgment, not correctness)
   Prompt the reviewer with: the worksheet-so-far, the diff summary, and the specific question. Its verdict goes in the worksheet's Decisions table.
+  - **Which lens + what to check:** `Docs/review/README.md` routes the batch's surface to the specialized
+    review personas (narrative-bible, steam-deck-cert, save-integrity, localization, performance), each with a
+    concrete checklist and its own model. Run the persona(s) the batch touches (often in parallel); apply their
+    required findings before commit. The tiering here is the WHEN; the personas are the WHAT.
 - **Trevor-only decisions** still go to QUESTIONS.md regardless of model — Fable review is for engineering/canon judgment, not product taste or scope.
 
 ## The dashboard from a new session
