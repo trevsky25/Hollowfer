@@ -42,13 +42,14 @@
       churn-immune (byte-identical hash across play/render/stop) — kills the recurring "git checkout the SDF
       churn" chore. Fable-reviewed (PASS WITH CHANGES; all required changes applied: Latin-1 baked, source
       nulled, build shrapnel reverted). Font rule + re-bake recipe in `conventions.md`.
-    - **15b. First Mac build boot test + build-scene-list cleanup** — the batch-32 dev build compiled all
-      scripts with **zero errors** and reached the BuildPlayer phase, but the backgrounded editor
-      App-Nap-stalled before writing the `.app` (needs the `NSAppSleepDisabled` precondition, or Unity kept
-      foreground during the build). Do a real `.app` boot to the main menu; **confirm `Georgia.ttf` is
-      absent from the build report** (source-null verification); and **drop the legacy `Assets/Scenes/
-      MainMenu.unity` + `Village.unity`** from `EditorBuildSettings` (currently shipped alongside the real
-      `Scene_MainMenu`/`Scene_Hollowfen`, inflating build size). Ship blocker for the first build milestone.
+    - ~~**15b. First Mac build boot test + build-scene-list cleanup**~~ **DONE 2026-07-12, tag `batch-34` —
+      FIRST MAC BUILD SHIPS.** Dropped the 2 dead legacy scenes (build list = `[Scene_MainMenu, Scene_Hollowfen]`);
+      fixed App Nap (relaunch with `NSAppSleepDisabled` set **while Unity is closed**); the first real player-compile
+      caught + fixed a build-only vendor bug (`Magic Pig/Equipment System/…/IPBR_CharacterEquip.cs:63`, recorded in
+      `Docs/vendored-build-fixes.md`). Build succeeded (4.49 GB dev `.app`, ~23 min first build), **`Georgia.ttf`
+      absent** (batch-32 source-null verified), boots clean (Player.log: Input System + Physics init, 0 errors).
+      Follow-ups: a **release build with stripping** (dev build is 4.49 GB — verify Deck size later), and the
+      visual screenshot needs screen-recording permission (Player.log was the evidence this run).
 16. **Localization wiring pass** (dialogue restructure is the big piece — see systems/localization.md gap list). FABLE-REVIEW GATE (architecture).
 17. **Build cleanup sweep** + false-confidence test re-drill (tests.md audit item).
 18. **Pre-EA checklist execution** (see section below) — builds, Deck audit, Steamworks, store assets. Several items need Trevor (Steam account, store page, trailer) — park those in QUESTIONS.md as they surface.

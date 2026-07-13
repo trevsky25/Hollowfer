@@ -14,7 +14,7 @@ Status: adopted 2026-07-11 (Batch 17). Trevor's kickoff prompt is at the bottom.
 
 1. **Unity open** with Hollowfen-Unity loaded — `McpBridgeBootstrap` starts the bridge automatically. Don't leave a modal dialog open.
 2. **Mac awake**: run `caffeinate -dims` in a terminal (or set Energy settings to never sleep). Display may sleep; the machine may not.
-   - **Disable App Nap on the editor** (one-time, critical — see the 2026-07-12 stall gotcha): `defaults write com.unity3d.UnityEditor5.x NSAppSleepDisabled -bool YES`, then relaunch Unity. Without this the editor can wedge its main thread after a background recompile and the bridge dies for the rest of the shift.
+   - **Disable App Nap on the editor** (one-time, critical — see the 2026-07-12 stall gotcha): `defaults write com.unity3d.UnityEditor5.x NSAppSleepDisabled -bool YES`, then relaunch Unity. Without this the editor can wedge its main thread after a background recompile and the bridge dies for the rest of the shift. **Set it while Unity is CLOSED** — writing the default for a *running* editor is clobbered when the editor flushes its prefs on exit (batch-34: read back `1`, then vanished after quit). If already running: quit Unity → `defaults write …` → `killall cfprefsd` → verify `defaults read … NSAppSleepDisabled` = 1 → relaunch. Long builds (~20+ min first build) especially need this — they stall in player packaging otherwise.
 3. **Start the session** with the kickoff prompt below. Nothing else needed — the queue, gates, and dashboard do the rest.
 
 ## The loop (per batch)
