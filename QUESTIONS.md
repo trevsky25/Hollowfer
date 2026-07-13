@@ -4,6 +4,20 @@ The decision inbox. Agents append questions ONLY Trevor can answer (design taste
 
 ## Open
 
+### Q11 — Four UI symbols have no font glyph (render as boxes) — substitute or icon-set? (asked 2026-07-12 · batch-32, low stakes, pre-existing)
+The batch-32 font audit found four literal Unicode symbols used in authored UI that **no project font
+can render** — not Georgia, not LiberationSans, not the fallback (their source .ttf lacks the glyph),
+so they render as missing-glyph boxes (□) in **both editor and build** (pre-existing, not caused by
+the font fix): **✓ U+2713** ("Saved ✓" toast) · **✕ U+2715** (a close-button label) · **△ U+25B3** and
+**◉ U+25C9** (controller-button glyph placeholders, e.g. `gamepadGlyph = "[△]"`). Note → ← ○ • and all
+prose/typographic marks now render correctly (baked into Georgia or the fallback this batch).
+**Options:** (a) interim ASCII substitutes now — "Saved" / "X" / plain letters — trivial and safe;
+(b) fold into the **Steam controller-glyph pass** (backlog): a proper TMP sprite sheet / icon font for
+✓✕ and the real Xbox/PS/Deck button glyphs, which is the correct long-term home for △◉ anyway;
+(c) leave as-is for now. **Recommendation:** (b) — these are exactly what the controller-glyph pass
+owns; do the ASCII interim (a) only if a box on the save toast bothers you before then. Either way it's
+a few one-line string edits, not a font change.
+
 ### Q10 — AI-generated voiceover: test-only, or a shipping direction? (asked 2026-07-12 · batch-29, product + disclosure stakes)
 Batch-29 proves the pipeline: local Kokoro TTS (free, Apache) voices the entrance scene — intro
 narration (Wren, warm/slowed) + Bram's chain (older British male) — with clean per-line playback

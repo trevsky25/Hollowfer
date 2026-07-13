@@ -3,7 +3,7 @@ Requirements that determine Steam Deck Verified status and launch quality — ap
 Release target: Steam (Mac + Windows), Early Access ~month 12, 1.0 ~month 18–24. Steam Deck Verified is a tier-one goal. **EA content floor: a polished Acts I–II playthrough** (bible Act II completion state as the EA ending point; Acts III–IV land during EA) — decided 2026-07-11, QUESTIONS.md Q3.
 Pillars: controller-first input · Deck display targets · Cloud-safe saves · achievement hooks from day one · localization discipline · 60fps perf floor.
 Verification: every UI batch is tested with a gamepad before being declared done; perf profiled via the profiler MCP tooling.
-Biggest risk items: hover-dependent UI, hardcoded strings, saves outside persistentDataPath, editor-only font loading.
+Biggest risk items: hover-dependent UI, hardcoded strings, saves outside persistentDataPath. (Font build-strip fixed batch-32 — fonts must stay Static/baked; see conventions.md.)
 Status: standing constraints — change only with an explicit product decision.
 
 > Self-healing doc: update when a constraint changes or a new cert requirement is discovered.
@@ -48,6 +48,17 @@ Status: standing constraints — change only with an explicit product decision.
 
 ## Known ship blockers (tracked in TODOS.md)
 
-- Georgia SDF font loads via editor-only `AssetDatabase` — broken in builds until moved to `Resources/` or serialized refs.
+- **Georgia SDF font stripped at build — font CONFIG fixed batch-32; player-boot verification pending (item 15b).**
+  Root cause was not `AssetDatabase` but `atlasPopulationMode: Dynamic` + `m_ClearDynamicDataOnBuild: 1` —
+  the build wiped the baked glyph table and relied on fragile runtime FreeType SDF generation (also the
+  source of the recurring play-mode git churn). Now **Static**, full Latin-1 + punctuation baked (Georgia
+  **201** glyphs / 2 atlas pages; `LiberationSans SDF - Fallback` **204**, incl. → ← ○ • that Georgia's
+  serif source lacks), both `ClearDynamicDataOnBuild: false`, and `m_SourceFontFile` nulled so the
+  Microsoft-licensed `Georgia.ttf` is NOT redistributed in the player (the baked SDF atlas ships instead).
+  Georgia carries the fallback in its own table. Proven churn-immune (byte-identical asset hash across a
+  play/render/stop cycle). All 3 project TMP fonts are now Static. A dev Mac build compiled all scripts
+  with **zero errors** and reached the BuildPlayer phase before the backgrounded editor App-Nap-stalled —
+  so the actual `.app` boot (and build-scene-list cleanup) is **item 15b**, which also confirms Georgia.ttf
+  is absent from the build report. **Font rule in conventions.md — keep these Static; re-bake there.**
 - Steamworks SDK not wired.
 - Localization LUT English-only and partially wired.

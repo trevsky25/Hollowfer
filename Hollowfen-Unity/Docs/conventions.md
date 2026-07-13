@@ -69,6 +69,37 @@ Never dump files in `Assets/` root.
 - Assuming Unity version features without checking the project version (Unity 6000.4.4f1).
 - Editing Asset Store content in place (changes lost on package update).
 
+## Fonts (TMP) — ship config (do not regress; fixed batch-32)
+
+- **All shipping TMP font assets stay `atlasPopulationMode: Static` with `m_ClearDynamicDataOnBuild: 0`.**
+  Dynamic mode strips the baked glyph table at build (empty text in the player) **and** re-serializes the
+  `.asset` on every play-mode run (the old "git checkout the Georgia SDF churn" chore). Static ships the
+  baked atlas and is churn-immune.
+- Ship fonts: **`Assets/UI/Fonts/Georgia SDF.asset`** (primary serif — prose/dialogue/titles, **201 glyphs
+  / 2 atlas pages**: ASCII + full Latin-1 Supplement + typographic punctuation) and **`Assets/TextMesh
+  Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset`** (fallback, **204 glyphs**, incl.
+  → ← ○ that Georgia's serif source lacks). Georgia lists the fallback in its own `fallbackFontAssetTable`
+  (TMP global fallback list is empty). All are multi-atlas-enabled so an over-1024 set spills to a new page.
+- **`m_SourceFontFile` is nulled (`{fileID: 0}`) on both** so the source `.ttf` (Georgia is Microsoft-licensed)
+  is NOT redistributed in the player — the baked SDF atlas ships instead. `m_SourceFontFileGUID` is kept for
+  re-bakes. Do not re-link the source in a shipping asset.
+- **Adding a new displayed glyph** (a localized string with a new character, a new UI symbol): re-bake,
+  don't switch back to Dynamic. Recipe (bridge `execute_code`): (1) reflection-set `m_SourceFontFile` back
+  to `AssetDatabase.LoadAssetAtPath<Font>(GUIDToAssetPath(m_SourceFontFileGUID))` (it's nulled for ship);
+  (2) reflection-set `m_AtlasPopulationMode = Dynamic` and `m_IsMultiAtlasTexturesEnabled = true`;
+  (3) `ClearFontAssetData(true)` → `TryAddCharacters(fullSet, out missing)`; (4) reflection-set
+  `m_AtlasPopulationMode = Static`, `m_ClearDynamicDataOnBuild = false`, `m_SourceFontFile = null` again;
+  (5) `SetDirty` asset + atlas textures + material → `SaveAssets`. `missing` tells you which glyphs the
+  source .ttf genuinely lacks (those need the fallback or an icon set). After any reflection mode-flip,
+  diff the asset against TMP's stock static `LiberationSans SDF.asset` for structural parity. Full worked
+  example in `Docs/worksheets/batch-32-georgia-sdf-ship-fix.md`.
+- Symbols no project font provides (✓ ✕ △ ◉) render as boxes — that's the controller-glyph/icon pass's job
+  (QUESTIONS Q11), not a font-mode fix.
+- Editor/build **parity** is the point: with Static, an unbaked glyph boxes during authoring instead of
+  working in-editor and failing on Deck. One watch-out — culture-sensitive numeric formats (`"N0"` etc. on
+  fr/ru locales) emit NBSP (U+00A0, baked) or NARROW NBSP (U+202F, **not** baked) as group separators; when
+  localization lands, either force `InvariantCulture` for displayed numbers or bake U+202F.
+
 ## Test output template
 
 End every implementation batch with:

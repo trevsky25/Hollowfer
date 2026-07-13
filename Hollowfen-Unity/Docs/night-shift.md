@@ -78,7 +78,11 @@ The board's stable Artifact URL is `https://claude.ai/code/artifact/cc6edb78-f4c
 - `execute_code` uses CodeDom C#6: no local functions, no string interpolation; >20s calls may time out client-side but complete — check `get_history`. Also: `Object` is ambiguous — use `UnityEngine.Object.FindObjectOfType`.
 - **App-Nap wedge after a background recompile (2026-07-12, cost the whole shift).** Symptom: after `refresh_unity` triggers a script recompile while the editor is backgrounded, the bridge returns `success:false` / "ping not answered" and NEVER recovers — retries, `open -a Unity`, and `osascript activate` all fail. Root cause: macOS App Nap throttles the editor's main thread to ~0% CPU; the MCP bridge pumps commands on that thread, so a napped main thread = permanently dead bridge (distinct from the benign transient drop during a normal domain reload). **Diagnose via out-of-band signals the stuck bridge can't touch:** `stat -f %Sm ~/Library/Logs/Unity/Editor.log` (mtime frozen = not progressing) and `ps -Ao pid,pcpu,state | grep MacOS/Unity` (0.x% CPU = napped/wedged, not compiling). **Fix:** the `NSAppSleepDisabled` precondition above; if already wedged, quit + relaunch the editor (it recovers on the machine waking, but don't count on it). Verified fixed same session — post-fix refreshes churn at 99%+ CPU with no stall. A `tools/agent/unity_health.py` that prints {log mtime, editor %CPU, ILPP.Runner present, bridge ping} in one shot would make this a 2-second triage.
 - Editing an OPEN scene's `.unity` file on disk works (Unity auto-reloads it from backup on refresh, no modal) — but the reload + a 19MB-scene reserialize is what triggers the recompile that can then App-Nap-wedge. Prefer bridge edits for scene components when the editor is unattended, or accept the reload cost.
-- Play/reload can leave `Assets/UI/Fonts/Georgia SDF.asset` re-serialized (glyph table stripped — the editor-only SDF ship-blocker). It shows up as an unrelated modified file; `git checkout --` it, don't commit it.
+- ~~Play/reload re-serializes `Georgia SDF.asset` / `LiberationSans SDF - Fallback.asset`~~ **FIXED
+  batch-32** — both fonts are now Static + baked, so play no longer churns them (no more
+  `git checkout --` chore). If you ever see one of them modified after a play run again, something
+  reverted them to Dynamic — check `m_AtlasPopulationMode`/`m_ClearDynamicDataOnBuild` (see the Fonts
+  rule in `conventions.md`), don't just discard the diff.
 
 ## Trevor's kickoff prompt (copy-paste, continuous mode)
 
