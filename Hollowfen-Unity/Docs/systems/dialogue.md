@@ -53,7 +53,7 @@ None owned by dialogue. No seen-bits on assets. Repeat-prevention is authored vi
 - **Dead code**: `BuildFrame(...)` unused. (`isCloseup` went live in batch-45.)
 - Chained dialogs stack outcome blocks — intentional, but audit when chaining.
 
-## DialogueCinematics (batch-45)
+## DialogueCinematics (batch-45; coverage tuned batch-49)
 
 Procedural camera director — `Scripts/Dialogue/DialogueCinematics.cs`, lazy scene-local singleton
 (`Ensure()`), owns Camera.main while a dialogue plays. All framing computed from the two speakers'
@@ -61,18 +61,24 @@ head positions (SMR bounds) — zero per-dialogue authoring.
 
 - **Entry**: `DialogueScreen.Open(dialog, Transform anchor)` — NPCInteractable and QuestInteractable
   pass `transform`. The anchorless `Open(dialog)` keeps the old static camera (no direction).
-- **Grammar**: CUT to an establishing side-on two-shot at open → the first line GLIDES (1.6× ease) into
-  its speaker's over-the-shoulder frame → speaker changes glide (~1.1s smoothstep of pos/rot/FOV — a
-  pan/dolly, never a hard cut) → same-speaker lines deepen the push instead of re-gliding →
-  `isCloseup` lines get a distance-scaled tight single (FOV 29) → choices settle back to the two-shot
-  → Close glides to the cached gameplay pose and re-enables the CinemachineBrain.
+- **Grammar (coverage mode, batch-49)**: CUT to an establishing side-on two-shot at open → each line
+  picks a shot by LENGTH, not by speaker. `wantSingle = isCloseup || estSeconds >= LongLineSeconds(4.2)`.
+  - **Short/rapid line → favor two-shot** (`FavorShot`): the wide frame held, LOOK panned ~34% toward
+    the talker, FOV 37. Both stay in frame. Within two-shot mode a speaker change is a gentle 0.7s favor
+    pan; the SAME speaker holds (push-drift only). This is what kills the batch-45 back-and-forth whip —
+    a rapid Bram↔Wren exchange no longer re-glides an over-the-shoulder single on every line.
+  - **Long line / `isCloseup` → tight single** (OTS FOV 34 / closeup FOV 29): the only committed camera
+    move, a ~1.1s smoothstep glide. Same-speaker singles deepen the push instead of re-gliding.
+  - `_shotMode` (Two/Single) tracks which we're in so a mode change is the trigger for a real glide.
+  - choices settle back to the two-shot → Close glides to the cached gameplay pose and re-enables the
+    CinemachineBrain.
 - **180° rule**: one side vector (`cross(up, A→B)`, flipped toward the camera's starting side) fixed at
   Begin; every shot stays on it, so reverse angles never cross the line.
 - **Body-aware framing**: OTS and closeup offsets scale with `ShoulderRadius` (SMR bounds) — Bram's bulk
   doesn't swallow the frame, Wren's doesn't leave it empty.
-- **Life**: per-line push-in paced by VO length (or a cps estimate), Perlin handheld sway (±12mm/±0.25°)
-  over everything; both speakers' Animators flipped to UnscaledTime for the scene (restored on end) so
-  idles keep breathing through the timeScale-0 freeze.
+- **Life**: per-line push-in paced by VO length (or a cps estimate), Perlin handheld sway (±8mm/±0.15°,
+  damped in batch-49) over everything; both speakers' Animators flipped to UnscaledTime for the scene
+  (restored on end) so idles keep breathing through the timeScale-0 freeze.
 - **Occlusion**: linecast subject→camera (QueryTriggerInteraction.Ignore, speakers' own colliders
   excluded) pulls the camera to 88% of any hit.
 - Gotcha: the director runs in LateUpdate on unscaled time; anything else that writes Camera.main during

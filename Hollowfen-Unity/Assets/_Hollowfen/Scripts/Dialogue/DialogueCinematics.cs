@@ -22,11 +22,19 @@ namespace Hollowfen.Dialogue
     {
         public static DialogueCinematics Instance { get; private set; }
 
-        private const float GlideSeconds = 1.1f;    // speaker-change camera move
+        private const float GlideSeconds = 1.1f;    // deliberate shot-change camera move (mode change only)
+        private const float FavorGlideSeconds = 0.7f; // gentle favor pan within the two-shot
         private const float RestoreSeconds = 0.55f; // End() glide back to gameplay
-        private const float PushInFraction = 0.045f; // per-line dolly toward the speaker
-        private const float SwayPos = 0.012f;       // handheld breath amplitude (m)
-        private const float SwayDeg = 0.25f;        // handheld breath amplitude (deg)
+        private const float LongLineSeconds = 4.2f; // a line this long earns a committed single
+        private const float PushInFraction = 0.028f; // per-line dolly toward the speaker (damped)
+        private const float SwayPos = 0.008f;       // handheld breath amplitude (m, damped)
+        private const float SwayDeg = 0.15f;        // handheld breath amplitude (deg, damped)
+
+        // Coverage mode — hold a wide/favor frame through rapid exchanges, commit to a single only
+        // for lines that earn it. Re-gliding on every speaker change is what made batch-45 whip.
+        private const int ModeTwo = 0;
+        private const int ModeSingle = 1;
+        private int _shotMode;
 
         private Camera _cam;
         private CinemachineBrain _brain;
@@ -112,6 +120,7 @@ namespace Hollowfen.Dialogue
             _restoring = false;
             _lastSpeaker = null;
             _samePeakerRuns = 0;
+            _shotMode = ModeTwo;
             _swaySeed = (_headA.x + _headB.z) * 10f; // stable per-scene, no RNG
 
             // CUT to the establishing two-shot — scene grammar: a conversation opens on a cut,
@@ -139,22 +148,41 @@ namespace Hollowfen.Dialogue
             _samePeakerRuns = sameSpeaker ? _samePeakerRuns + 1 : 0;
             _lastSpeaker = speaker;
 
-            Shot target = closeup ? Closeup(wren) : OverShoulder(wren);
-            if (sameSpeaker && !closeup)
-            {
-                // Same voice keeps the frame but creeps closer — deepen instead of re-gliding.
-                Vector3 toSubj = (subjHead - target.Pos).normalized;
-                target.Pos += toSubj * Mathf.Min(0.10f * _samePeakerRuns, 0.28f);
-                target.Fov = Mathf.Max(target.Fov - 1.5f * _samePeakerRuns, 28f);
-            }
+            // Short/rapid lines hold a loose two-shot; only long lines or closeup beats earn a single.
+            bool wantSingle = closeup || estSeconds >= LongLineSeconds;
 
-            _from = CurrentShot();
-            _to = target;
-            _glideT = 0f;
-            // The first line eases in from the establishing two-shot — a long, readable move.
-            _glideLen = _establishing ? GlideSeconds * 1.6f
-                      : sameSpeaker ? GlideSeconds * 0.7f
-                      : GlideSeconds;
+            if (!wantSingle)
+            {
+                // Favor two-shot: both stay in frame, the framing leans toward the talker. If we're
+                // already wide, this is a gentle favor pan (or a hold on the same speaker) — never a
+                // full over-the-shoulder whip. That's the fix for the back-and-forth seasickness.
+                Shot favor = FavorShot(wren);
+                _from = CurrentShot();
+                _to = favor;
+                _glideT = 0f;
+                if (_establishing) _glideLen = GlideSeconds * 1.6f;      // first line eases in, readable
+                else if (_shotMode == ModeTwo) _glideLen = sameSpeaker ? 0.001f : FavorGlideSeconds;
+                else _glideLen = GlideSeconds;                            // pulling back from a single
+                _shotMode = ModeTwo;
+            }
+            else
+            {
+                Shot target = closeup ? Closeup(wren) : OverShoulder(wren);
+                if (sameSpeaker && _shotMode == ModeSingle && !closeup)
+                {
+                    // Same voice, still a single — creep closer instead of re-gliding.
+                    Vector3 toSubj = (subjHead - target.Pos).normalized;
+                    target.Pos += toSubj * Mathf.Min(0.10f * _samePeakerRuns, 0.28f);
+                    target.Fov = Mathf.Max(target.Fov - 1.5f * _samePeakerRuns, 28f);
+                }
+                _from = CurrentShot();
+                _to = target;
+                _glideT = 0f;
+                _glideLen = _establishing ? GlideSeconds * 1.6f
+                          : (sameSpeaker && _shotMode == ModeSingle) ? GlideSeconds * 0.7f
+                          : GlideSeconds;
+                _shotMode = ModeSingle;
+            }
             _establishing = false;
             StartPush(subjHead, Mathf.Max(2.5f, estSeconds));
         }
@@ -167,6 +195,7 @@ namespace Hollowfen.Dialogue
             _from = CurrentShot();
             _to = TwoShot();
             _glideT = 0f; _glideLen = GlideSeconds;
+            _shotMode = ModeTwo;
             StartPush((_headA + _headB) * 0.5f, 30f); // barely-perceptible drift while idle in choices
         }
 
@@ -208,6 +237,19 @@ namespace Hollowfen.Dialogue
             Vector3 pos = mid + _side * (gap * 1.35f + 1.15f) + Vector3.up * 0.12f;
             Vector3 look = mid - Vector3.up * 0.18f;
             return Frame(pos, look, 40f, mid);
+        }
+
+        // Loose two-shot that FAVORS the speaker: same camera side as the two-shot but the look target
+        // pans toward the talker and the lens tightens a touch. Both characters stay in frame, so a
+        // rapid exchange reads as a held frame gently leaning back and forth — not a whipping single.
+        private Shot FavorShot(bool wrenSpeaks)
+        {
+            Vector3 speaker = wrenSpeaks ? _headA : _headB;
+            Vector3 mid = (_headA + _headB) * 0.5f;
+            float gap = Mathf.Max(1.2f, Vector3.Distance(_headA, _headB));
+            Vector3 pos = mid + _side * (gap * 1.25f + 1.05f) + Vector3.up * 0.11f;
+            Vector3 look = Vector3.Lerp(mid, speaker, 0.34f) - Vector3.up * 0.16f;
+            return Frame(pos, look, 37f, mid);
         }
 
         // Classic over-the-shoulder: camera just behind and beside the LISTENER, framing the speaker.
