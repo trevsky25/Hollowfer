@@ -2494,6 +2494,7 @@ GameObject:
   - component: {fileID: 620756396}
   - component: {fileID: 620756395}
   - component: {fileID: 620756394}
+  - component: {fileID: 620756397}
   m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
@@ -2588,6 +2589,18 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 90
   m_TargetDisplay: 0
+--- !u!225 &620756397
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 620756392}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &622789987
 GameObject:
   m_ObjectHideFlags: 0
@@ -4879,11 +4892,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.UI.LoadingScreen
   _screenId: loading
   _defaultSelected: {fileID: 0}
-  _canvasGroup: {fileID: 0}
+  _canvasGroup: {fileID: 620756397}
   _isModal: 1
   _label: {fileID: 152032361}
   _baseText: Traveling to Hollowfen
   _dotInterval: 0.4
+  _heroSprite: {fileID: 21300000, guid: a4206099756db4411b8b2b87edf300f4, type: 3}
+  _welcomeEyebrow: CHAPTER ONE
+  _welcomeTitle: Homecoming
 --- !u!1 &1416958265
 GameObject:
   m_ObjectHideFlags: 0

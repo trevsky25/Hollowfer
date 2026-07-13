@@ -12,10 +12,13 @@ the art carries the mood). Surfaces, in the chosen order:
 1. ~~**Main menu — living painting**~~ **DONE, tag `batch-35`** — `MenuCinematics.cs`: drifting golden spore
    motes + soft mist + painterly vignette/warm-grade + Ken Burns breathing on the hero + ink-bleed title
    reveal. UI-native (overlay canvas), procedural (no new art), works in builds. Play-verified.
-1b. ~~**Opening sequence — cinematic homecoming intro**~~ **DONE, tag `batch-36`** (Trevor-inserted) — the
-   flat "two black screens with text" became a letterboxed, Ken-Burned image sequence over `homecoming.png`
-   with the bible's **fuller** Scene-1 passage restored (6 verbatim beats, was 2), bottom scrim + lower-third
-   captions. `NarrationOverlay.ShowCinematic`. VO on the 2 anchor beats; full-passage VO pends Q10.
+1b. ~~**Opening sequence — cinematic homecoming intro**~~ **DONE, tags `batch-36/37/38`** (Trevor-inserted) —
+   (36) the flat "two black screens with text" became a letterboxed, Ken-Burned image sequence over
+   `homecoming.png` with the bible's **fuller** Scene-1 passage restored (6 verbatim beats, was 2);
+   (37) new-game **spawn** moved from the far SE (397,34) to the arrival lane (306,72), ~half the distance to
+   the first-mission trigger, story-aligned; (38) **seamless flow** — new game opens on a cinematic
+   **welcome** load card (homecoming image + "Chapter One / Homecoming") that loads behind it and cross-fades
+   image→image into the intro, then game. VO on the 2 anchor beats; full-passage VO pends Q10.
 2. **Menu focus glow + ambient audio bed** — the interactive + sound half of the menu (warm focus underline
    on nav; soft forest ambience via MusicManager).
 3. **Cinematic dialogue** — letterbox + camera push to a framed two-shot, DoF background, parchment settle,

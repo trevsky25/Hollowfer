@@ -89,12 +89,12 @@ namespace Hollowfen.UI
         // Async scene transition with the loading screen layered on top.
         // If nextScreenId is non-null and registered, the loading screen is replaced
         // by that screen after the scene finishes loading; otherwise it just closes.
-        public void LoadSceneAndOpen(string sceneName, string nextScreenId = null)
+        public void LoadSceneAndOpen(string sceneName, string nextScreenId = null, bool cinematicHandoff = false)
         {
-            StartCoroutine(LoadSceneRoutine(sceneName, nextScreenId));
+            StartCoroutine(LoadSceneRoutine(sceneName, nextScreenId, cinematicHandoff));
         }
 
-        private IEnumerator LoadSceneRoutine(string sceneName, string nextScreenId)
+        private IEnumerator LoadSceneRoutine(string sceneName, string nextScreenId, bool cinematicHandoff)
         {
             CloseAll();
 
@@ -112,6 +112,24 @@ namespace Hollowfen.UI
 
             // Brief settle so the new scene has a frame to render before we hand off.
             yield return new WaitForSecondsRealtime(0.25f);
+
+            // Seamless opening (batch-38): the cinematic welcome card holds until the in-scene
+            // narration is up (same homecoming image), then cross-fades out to reveal it.
+            var loading = _screens.ContainsKey("loading") ? _screens["loading"] as LoadingScreen : null;
+            if (cinematicHandoff && loading != null && loading.Cinematic)
+            {
+                float t = 0f;
+                while (t < 4f && (NarrationOverlay.Instance == null || !NarrationOverlay.Instance.IsShowing))
+                {
+                    t += Time.unscaledDeltaTime;
+                    yield return null;
+                }
+                bool faded = false;
+                loading.FadeOutAndClose(0.6f, () => faded = true);
+                while (!faded) yield return null;
+                if (TopScreen != null && TopScreen.ScreenId == "loading") Back();
+                yield break;
+            }
 
             if (!string.IsNullOrEmpty(nextScreenId) && _screens.ContainsKey(nextScreenId))
             {

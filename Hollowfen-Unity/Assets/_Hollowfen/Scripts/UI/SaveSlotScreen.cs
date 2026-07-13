@@ -104,18 +104,20 @@ namespace Hollowfen.UI
 
         private void OnSlotSelected(int slot)
         {
-            if (SaveManager.SlotHasData(slot))
-            {
-                Debug.Log($"[SaveSlot] Load slot {slot}");
-                SaveCoordinator.LoadSlot(slot);
-            }
-            else
+            bool newGame = !SaveManager.SlotHasData(slot);
+            if (newGame)
             {
                 Debug.Log($"[SaveSlot] Start new game in slot {slot}");
                 SaveCoordinator.StartNewGame(slot);
             }
+            else
+            {
+                Debug.Log($"[SaveSlot] Load slot {slot}");
+                SaveCoordinator.LoadSlot(slot);
+            }
+            // New game gets the cinematic welcome→intro handoff (batch-38); load/continue is plain.
             if (UIManager.Instance != null)
-                UIManager.Instance.LoadSceneAndOpen(GameplaySceneName);
+                UIManager.Instance.LoadSceneAndOpen(GameplaySceneName, null, newGame);
         }
 
         private void OnDeleteInput(InputAction.CallbackContext ctx)

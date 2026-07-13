@@ -128,12 +128,23 @@ namespace Hollowfen.UI
             ConfigureMode(cinematic, hero);
 
             _canvas.gameObject.SetActive(true);
-            _group.alpha = 0f;
             _caption.text = "";
 
-            yield return Fade(0f, 1f);
-
-            if (cinematic) _kenBurns = StartCoroutine(KenBurnsJourney());
+            if (cinematic)
+            {
+                // Appear opaque immediately at the Ken-Burns A-state + full letterbox, so a
+                // cinematic-welcome loading screen (same image, same letterbox) can cross-fade
+                // out to reveal us with zero flash (batch-38 seamless opening).
+                _group.alpha = 1f;
+                _letterTop.sizeDelta = new Vector2(0f, _letterboxHeight);
+                _letterBot.sizeDelta = new Vector2(0f, _letterboxHeight);
+                _kenBurns = StartCoroutine(KenBurnsJourney());
+            }
+            else
+            {
+                _group.alpha = 0f;
+                yield return Fade(0f, 1f);
+            }
 
             for (int i = 0; i < captions.Length; i++)
             {
