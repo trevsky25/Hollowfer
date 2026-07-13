@@ -35,6 +35,15 @@ namespace Hollowfen.UI
         private readonly Stack<UIScreen> _stack = new Stack<UIScreen>();
         private bool _transitioning;
 
+        // UI-audio state (batch-56): Move plays when focus changes by player nav; suppressed on the
+        // programmatic focus that follows a transition and for a short cooldown after.
+        private GameObject _lastSelected;
+        private float _navSfxReadyAt;
+        private bool _suppressNextTransitionSfx;
+
+        // One-shot: skip the sound of the next push/pop (a modal Confirm plays its own cue).
+        public void SuppressNextTransitionSfx() => _suppressNextTransitionSfx = true;
+
         public bool HasOpenScreen => _stack.Count > 0;
         public UIScreen TopScreen => _stack.Count > 0 ? _stack.Peek() : null;
 
@@ -59,6 +68,7 @@ namespace Hollowfen.UI
 
             _input = new InputActions();
             _input.UI.Cancel.performed += OnCancelInput;
+            _input.UI.Submit.performed += OnSubmitAudio;
             _input.Player.Pause.performed += OnPauseInput;
             _input.Player.Enable();
 
@@ -81,10 +91,36 @@ namespace Hollowfen.UI
             if (_input != null)
             {
                 _input.UI.Cancel.performed -= OnCancelInput;
+                _input.UI.Submit.performed -= OnSubmitAudio;
                 _input.Dispose();
                 _input = null;
             }
             Instance = null;
+        }
+
+        // Nav-move cue: play Move when the EventSystem's selection changes by player navigation.
+        // Skipped while transitioning and during the brief post-transition cooldown (SetFocusToTop
+        // seeds _lastSelected there so the programmatic focus is silent).
+        private void Update()
+        {
+            var es = EventSystem.current;
+            var cur = es != null ? es.currentSelectedGameObject : null;
+            if (cur == _lastSelected) return;
+            if (cur != null && _lastSelected != null && !_transitioning
+                && Time.unscaledTime >= _navSfxReadyAt)
+                UISfx.Move();
+            _lastSelected = cur;
+        }
+
+        // Error cue when Submit lands on a non-interactable control (a dead-end press).
+        private void OnSubmitAudio(InputAction.CallbackContext ctx)
+        {
+            if (_transitioning) return;
+            var es = EventSystem.current;
+            var cur = es != null ? es.currentSelectedGameObject : null;
+            if (cur == null) return;
+            var sel = cur.GetComponent<Selectable>();
+            if (sel != null && !sel.interactable) UISfx.Error();
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -273,13 +309,20 @@ namespace Hollowfen.UI
         {
             _transitioning = true;
 
-            // Page-turn tick (batch-44). Quiet on: the boot-time initial open, and anything
-            // touching the loading screen — scene handoffs keep their own audio mood.
+            // Transition cue (batch-44, differentiated batch-56): opening/advancing a screen plays
+            // Select, closing plays Back. Quiet on: the boot-time initial open, anything touching the
+            // loading screen (scene handoffs keep their own audio mood), and a one-shot suppression
+            // (e.g. a modal Confirm already played its own decisive cue).
             bool loadingInvolved =
                 (next != null && next.ScreenId == "loading") ||
                 (TopScreen != null && TopScreen.ScreenId == "loading");
-            if (!loadingInvolved && Time.unscaledTime - _bootTime > 1f)
-                UISfx.Click();
+            if (_suppressNextTransitionSfx)
+                _suppressNextTransitionSfx = false;
+            else if (!loadingInvolved && Time.unscaledTime - _bootTime > 1f)
+            {
+                if (push || replace) UISfx.Select();
+                else UISfx.Back();
+            }
 
             // Skip global fade for modal push (next is modal) or modal pop (top of stack is modal).
             bool fade = true;
@@ -425,6 +468,11 @@ namespace Hollowfen.UI
             es.SetSelectedGameObject(null);
             if (top.DefaultSelected != null)
                 es.SetSelectedGameObject(top.DefaultSelected);
+
+            // Seed the nav-move watcher so this programmatic focus doesn't play Move,
+            // and give a brief cooldown to swallow the settle frame after a transition.
+            _lastSelected = es.currentSelectedGameObject;
+            _navSfxReadyAt = Time.unscaledTime + 0.12f;
         }
 
         private void DiscoverAndRegisterScreens()

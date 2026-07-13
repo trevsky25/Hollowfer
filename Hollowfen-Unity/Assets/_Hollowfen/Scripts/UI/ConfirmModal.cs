@@ -107,6 +107,7 @@ namespace Hollowfen.UI
 
         private void HandleConfirm()
         {
+            UISfx.Confirm();   // decisive affirmative cue — distinct from a plain Back on cancel
             var cb = _onConfirm;
             _onConfirm = null;
             _onCancel = null;
@@ -114,7 +115,10 @@ namespace Hollowfen.UI
             // Only pop the modal if it's still on top — the callback may have already
             // navigated away (e.g., via UIManager.LoadSceneAndOpen).
             if (UIManager.Instance != null && UIManager.Instance.TopScreen == this)
+            {
+                UIManager.Instance.SuppressNextTransitionSfx();   // don't double Confirm with the pop's Back
                 UIManager.Instance.Back();
+            }
         }
 
         private void HandleCancel()

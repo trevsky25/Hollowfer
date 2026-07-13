@@ -69,7 +69,7 @@ namespace Hollowfen.UI
         private void OnContinue()
         {
             int slot = Hollowfen.Save.SaveCoordinator.MostRecentSlot();
-            if (slot < 0) return;
+            if (slot < 0) { UISfx.Error(); return; }   // Continue with no save — dead-end press
             Debug.Log($"[MainMenu] Continue → loading slot {slot}");
             Hollowfen.Save.SaveCoordinator.LoadSlot(slot);
             // The menu Continue button gets the cinematic welcome card too (batch-50), faded to the game.
