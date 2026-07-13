@@ -50,7 +50,11 @@ namespace Hollowfen.UI
         private AudioSource _voiceSource;
         private Action _pendingOnDone;
 
+        private Image _scrimTop;
         private static Sprite _scrimSprite;
+        private static Sprite _scrimTopSprite;
+        private Sprite _pendingHero2;
+        private int _pendingSwitchBeat = -1;
 
         public bool IsShowing => _running != null;
 
@@ -73,7 +77,15 @@ namespace Hollowfen.UI
         // Cinematic variant (batch-36): the same caption/VO flow, painted over a hero image with a
         // slow Ken Burns journey, letterbox bars, a bottom scrim, and lower-third captions.
         public void ShowCinematic(string[] captions, AudioClip[] clips, Sprite hero, Action onDone = null)
-            => ShowInternal(captions, clips, hero, onDone);
+            => ShowCinematic(captions, clips, hero, null, -1, onDone);
+
+        // Two-image variant (batch-40): swaps to hero2 when the caption reaches switchBeat, so a long
+        // narration isn't all one picture. Ken Burns continues on the new image.
+        public void ShowCinematic(string[] captions, AudioClip[] clips, Sprite hero, Sprite hero2, int switchBeat, Action onDone = null)
+        {
+            _pendingHero2 = hero2; _pendingSwitchBeat = switchBeat;
+            ShowInternal(captions, clips, hero, onDone);
+        }
 
         private void ShowInternal(string[] captions, AudioClip[] clips, Sprite hero, Action onDone)
         {
@@ -151,6 +163,8 @@ namespace Hollowfen.UI
                 var line = captions[i];
                 var clip = clips != null && i < clips.Length ? clips[i] : null;
 
+                if (cinematic && _pendingHero2 != null && i == _pendingSwitchBeat) _hero.sprite = _pendingHero2;
+
                 _caption.text = line;
                 _caption.alpha = 0f;
                 PlayVoice(clip);
@@ -207,6 +221,7 @@ namespace Hollowfen.UI
         {
             _hero.gameObject.SetActive(cinematic);
             _scrim.gameObject.SetActive(cinematic);
+            if (_scrimTop != null) _scrimTop.gameObject.SetActive(cinematic);
             _letterTop.gameObject.SetActive(cinematic);
             _letterBot.gameObject.SetActive(cinematic);
             // Full black stays visible under everything (also fills letterbox aspect gaps).
@@ -323,17 +338,14 @@ namespace Hollowfen.UI
             _hero.preserveAspect = false;
             _hero.gameObject.SetActive(false);
 
-            // Bottom scrim so lower-third captions read over the image.
+            // Full-screen vignette gradient (dark bottom for captions + dark top for the letterbox
+            // blend, clear middle). Full-screen → no mid-screen rect edge / cut-off band.
             EnsureScrimSprite();
             _scrim = UICanvasUtil.NewImage("Scrim", canvasGo.transform, Color.white, false).GetComponent<Image>();
             _scrim.sprite = _scrimSprite;
             _scrim.type = Image.Type.Simple;
-            var sRT = _scrim.rectTransform;
-            sRT.anchorMin = new Vector2(0f, 0f); sRT.anchorMax = new Vector2(1f, 0f);
-            sRT.pivot = new Vector2(0.5f, 0f);
-            sRT.sizeDelta = new Vector2(0f, 560f);
-            sRT.anchoredPosition = Vector2.zero;
-            _scrim.color = new Color(0f, 0f, 0f, 0.9f);
+            UICanvasUtil.Stretch(_scrim.rectTransform);
+            _scrim.color = Color.black;
             _scrim.gameObject.SetActive(false);
 
             // Letterbox bars.
@@ -373,17 +385,21 @@ namespace Hollowfen.UI
             return rt;
         }
 
+        // ONE full-screen vignette gradient — dark at the bottom (caption legibility) + a touch dark
+        // at the very top (letterbox blend), clear through the middle. Full-screen so there is no
+        // mid-screen rect edge that reads as a "cut-off" band (batch-40 streak fix).
         private static void EnsureScrimSprite()
         {
             if (_scrimSprite != null) return;
-            int h = 128;
-            var tex = new Texture2D(4, h, TextureFormat.RGBA32, false);
-            tex.wrapMode = TextureWrapMode.Clamp;
+            int h = 256;
+            var tex = new Texture2D(4, h, TextureFormat.RGBA32, false); tex.wrapMode = TextureWrapMode.Clamp;
             var px = new Color32[4 * h];
             for (int y = 0; y < h; y++)
             {
-                float a = 1f - (y / (float)(h - 1)); // bottom (y=0) opaque → top transparent
-                a = Mathf.Pow(a, 1.4f);
+                float fy = y / (float)(h - 1); // 0 bottom, 1 top
+                float tb = Mathf.Clamp01((0.42f - fy) / 0.42f); tb = tb * tb * (3f - 2f * tb);   // bottom fade
+                float tt = Mathf.Clamp01((fy - 0.84f) / 0.16f); tt = tt * tt * (3f - 2f * tt);   // top fade
+                float a = Mathf.Max(tb * 0.88f, tt * 0.70f);
                 byte b = (byte)(a * 255f);
                 for (int x = 0; x < 4; x++) px[y * 4 + x] = new Color32(255, 255, 255, b);
             }

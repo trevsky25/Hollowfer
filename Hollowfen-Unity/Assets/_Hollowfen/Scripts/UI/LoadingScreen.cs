@@ -42,6 +42,7 @@ namespace Hollowfen.UI
         private readonly List<Vector4> _moteData = new List<Vector4>(); // velX, velY, phase, baseAlpha
         private float _cw = 1920f, _ch = 1080f, _mt;
         private static Sprite _dotSprite;
+        private static Sprite _vignetteSprite;
 
         public bool Cinematic => _isCinematic;
 
@@ -130,10 +131,14 @@ namespace Hollowfen.UI
             hRT.anchoredPosition = KbPosA;
 
             // Bottom scrim.
-            var scrim = NewImage("Scrim", root, new Color(0f, 0f, 0f, 0.82f));
-            var sRT = scrim.rectTransform;
-            sRT.anchorMin = new Vector2(0f, 0f); sRT.anchorMax = new Vector2(1f, 0f); sRT.pivot = new Vector2(0.5f, 0f);
-            sRT.sizeDelta = new Vector2(0f, 620f);
+            // Full-screen vignette (dark bottom for the title + dark top for the letterbox blend,
+            // clear middle) — full-screen so there's no mid-screen rect edge / cut-off band, and it
+            // matches NarrationOverlay for the seamless handoff (batch-40 streak fix).
+            EnsureVignette();
+            var scrim = NewImage("Scrim", root, Color.black);
+            scrim.sprite = _vignetteSprite;
+            scrim.type = Image.Type.Simple;
+            Stretch(scrim.rectTransform);
 
             BuildMotes(root);
 
@@ -235,12 +240,16 @@ namespace Hollowfen.UI
         {
             var tmp = _loadingLine != null ? _loadingLine.GetComponent<TMP_Text>() : null;
             if (tmp == null) yield break;
-            string baseTxt = tmp.text; int dots = 0;
+            string baseTxt = tmp.text;
+            var cg = _loadingLine.GetComponent<CanvasGroup>();
+            if (cg == null) cg = _loadingLine.gameObject.AddComponent<CanvasGroup>();
+            float t = 0f; int dots = 0; float nextDot = 0f;
             while (true)
             {
-                tmp.text = baseTxt + new string('.', dots);
-                dots = (dots + 1) % 4;
-                yield return new WaitForSecondsRealtime(_dotInterval);
+                t += Time.unscaledDeltaTime;
+                cg.alpha = 0.5f + 0.5f * Mathf.Sin(t * 2.2f); // clear "loading" pulse
+                if (t >= nextDot) { tmp.text = baseTxt + new string('.', dots); dots = (dots + 1) % 4; nextDot = t + _dotInterval; }
+                yield return null;
             }
         }
 
@@ -292,6 +301,23 @@ namespace Hollowfen.UI
             }
             tex.SetPixels32(px); tex.Apply();
             _dotSprite = Sprite.Create(tex, new Rect(0, 0, s, s), new Vector2(0.5f, 0.5f), 100f);
+        }
+
+        private static void EnsureVignette()
+        {
+            if (_vignetteSprite != null) return;
+            int h = 256; var tex = new Texture2D(4, h, TextureFormat.RGBA32, false); tex.wrapMode = TextureWrapMode.Clamp;
+            var px = new Color32[4 * h];
+            for (int y = 0; y < h; y++)
+            {
+                float fy = y / (float)(h - 1);
+                float tb = Mathf.Clamp01((0.42f - fy) / 0.42f); tb = tb * tb * (3f - 2f * tb); // bottom
+                float tt = Mathf.Clamp01((fy - 0.84f) / 0.16f); tt = tt * tt * (3f - 2f * tt); // top
+                byte b = (byte)(Mathf.Max(tb * 0.88f, tt * 0.70f) * 255f);
+                for (int x = 0; x < 4; x++) px[y * 4 + x] = new Color32(255, 255, 255, b);
+            }
+            tex.SetPixels32(px); tex.Apply();
+            _vignetteSprite = Sprite.Create(tex, new Rect(0, 0, 4, h), new Vector2(0.5f, 0.5f), 100f);
         }
     }
 }
