@@ -14,9 +14,11 @@ namespace Hollowfen.Dialogue
     // not a UIScreen subclass (UIManager is DDOL from MainMenu), screen-local Canvas, builds UI
     // programmatically on first Open, sets Time.timeScale=0 + suspends PlayerInteractor while open.
     //
-    // Cinematic camera (closeup vs wide framing) from docs/dialog-system.md is deferred to a later
-    // polish pass — this screen just shows the line text with typewriter + speaker accent color
-    // and fires the dialog's outcome (unlock card / complete quest / chain to next dialog) on end.
+    // Cinematic camera: DialogueCinematics (batch-45) directs Camera.main while a dialogue plays —
+    // establishing two-shot, over-shoulder glides between speakers, per-line push-ins, isCloseup
+    // singles — driven from Open(dialog, anchor) / ShowCurrentLine / BeginChoices / Close below.
+    // This screen shows the line text with typewriter + speaker accent color and fires the
+    // dialog's outcome (unlock card / complete quest / chain to next dialog) on end.
     public class DialogueScreen : MonoBehaviour
     {
         public static DialogueScreen Instance { get; private set; }
@@ -84,7 +86,11 @@ namespace Hollowfen.Dialogue
             if (Instance == this) Instance = null;
         }
 
-        public void Open(DialogueData dialog)
+        public void Open(DialogueData dialog) => Open(dialog, null);
+
+        // Anchored variant (batch-45): `anchor` is the NPC/prop being spoken with — it gives the
+        // DialogueCinematics director its second framing subject. Null = no camera direction.
+        public void Open(DialogueData dialog, Transform anchor)
         {
             if (dialog == null || dialog.Lines == null || dialog.Lines.Length == 0) return;
             BuildIfNeeded();
@@ -97,6 +103,7 @@ namespace Hollowfen.Dialogue
             PlayerInteractor.Suspended = true;
             SetHudVisible(false);
             CursorVisible(true);
+            if (anchor != null) DialogueCinematics.Ensure().Begin(anchor);
             ShowCurrentLine();
         }
 
@@ -106,6 +113,7 @@ namespace Hollowfen.Dialogue
             _isOpen = false;
             if (_typewriterCo != null) { StopCoroutine(_typewriterCo); _typewriterCo = null; }
             if (_voiceSource != null) _voiceSource.Stop();
+            if (DialogueCinematics.Instance != null) DialogueCinematics.Instance.End();
             EndChoices();
             SetActiveSilent(false);
             Time.timeScale = _previousTimeScale;
@@ -158,6 +166,16 @@ namespace Hollowfen.Dialogue
             if (_typewriterCo != null) StopCoroutine(_typewriterCo);
             _typewriterCo = StartCoroutine(Typewriter(line.text ?? ""));
             PlayVoice(line.voiceClip);
+
+            // Direct the camera at this line's speaker (batch-45). Push-in paced by the VO
+            // read when voiced, else by a typewriter-speed estimate of the text.
+            if (DialogueCinematics.Instance != null)
+            {
+                float est = line.voiceClip != null
+                    ? line.voiceClip.length + 0.8f
+                    : (line.text != null ? line.text.Length : 0) / Mathf.Max(1f, _typewriterCps) + 1.6f;
+                DialogueCinematics.Instance.OnLine(line.speaker, line.isCloseup, est);
+            }
         }
 
         // Voice-over for the current line. Always stops the previous line's clip first, so
@@ -285,6 +303,8 @@ namespace Hollowfen.Dialogue
             _choosing = true;
             _activeChoices = choices;
             _choiceIndex = 0;
+            // Camera settles to the two-shot while the player weighs the choice (batch-45).
+            if (DialogueCinematics.Instance != null) DialogueCinematics.Instance.OnChoices();
             _stickLatched = true; // require the stick to re-center before it moves the cursor
             BuildChoicePillsIfNeeded();
             int shown = Mathf.Min(choices.Length, _choicePills.Count);

@@ -61,7 +61,8 @@ namespace Hollowfen.Quests
                 QuestManager.CompleteQuest(_completesQuestIfActive.Id);
 
             if (_playsDialogue != null && Dialogue.DialogueScreen.Instance != null)
-                Dialogue.DialogueScreen.Instance.Open(_playsDialogue);
+                // Anchor = this prop, so monologues get the cinematic frame too (batch-45).
+                Dialogue.DialogueScreen.Instance.Open(_playsDialogue, transform);
 
             if (_deactivateOnUse) gameObject.SetActive(false);
         }

@@ -32,7 +32,8 @@ namespace Hollowfen.NPCs
             var dlg = _data.PickDialog();
             if (dlg == null) return;
             if (DialogueScreen.Instance == null) { Debug.LogWarning("NPCInteractable: no DialogueScreen in scene."); return; }
-            DialogueScreen.Instance.Open(dlg);
+            // Anchor = this NPC, so the cinematic camera can frame speaker vs listener (batch-45).
+            DialogueScreen.Instance.Open(dlg, transform);
         }
 
         private void OnDrawGizmos()
