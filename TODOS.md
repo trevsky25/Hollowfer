@@ -36,9 +36,11 @@ inheritance beat. Slices:
   stays an unfinished margin note) and reads Tobin's farewell note as live Georgia narration captions (new
   generic `QuestInteractable._playsNarrationId` → `NarrationOverlay.Show`; `act1.hidden_journal.tobin_note`,
   7 caption beats). Fresh-save bridge-verified. Blockers below parked in QUESTIONS.
-- **51b — journal painted-spread finale + focus push-in** — BLOCKED on Trevor's Codex PNGs
-  (`journal-0N-*.png` not in `Assets/_Hollowfen/UI/StoryCards/` yet). Wrap the note in the multi-image
-  `NarrationOverlay.ShowCinematic(:392)` over the painted spreads + a camera push-in into the book.
+- ~~**51b — journal painted-spread finale**~~ **DONE 2026-07-13, tag `batch-51b`** — Trevor dropped the 3
+  Codex PNGs (`journal-01-sketches`/`02-spores`/`03-note`, 1672×940); the journal narration now plays via
+  the multi-image `NarrationOverlay.ShowCinematic` (crossfade + Ken Burns over the paintings, live Georgia
+  captions, beat map [0,0,1,2,2,2,2]). New generic `QuestInteractable._narrationHeroes`+`_narrationBeatImages`.
+  Fresh-save bridge-verified all 3 painted beats. (The 3D camera push-in into the book folds into 51d.)
 - **51c — mill interior "search the house" inspect props** (coat/kettle/ledgers/window-wheel/drawer +
   `mill.*`/`act1.fathers_mill.wren.inspect` barks, cinematic-camera-anchored). Interior exists
   (`BasicBuilding3`). Needs meshes the kitbash packs lack (coat/kettle/book) → QUESTIONS.
@@ -138,7 +140,8 @@ inheritance beat. Slices:
 
 ## Done
 
-- **Batch 51** (2026-07-13): Hidden Journal payload — journal teaches fieldCap/woodEar/pinecrest (Goldfoot stays a margin note) + Tobin's farewell note as live Georgia narration (new `QuestInteractable._playsNarrationId`). Fresh-save bridge-verified. (Painted-spread finale + interior props + cinematic pickups split out — 51b/c/d, blocked on Codex PNGs + meshes.)
+- **Batch 51b** (2026-07-13): journal painted-spread finale — Trevor's 3 Codex journal PNGs wired into `NarrationOverlay.ShowCinematic` (crossfade + Ken Burns over the paintings, live Georgia captions). New `QuestInteractable._narrationHeroes`/`_narrationBeatImages`. Fresh-save bridge-verified all 3 painted beats. (51c interior props + 51d cinematic pickups still open — need meshes, QUESTIONS Q14.)
+- **Batch 51** (2026-07-13): Hidden Journal payload — journal teaches fieldCap/woodEar/pinecrest (Goldfoot stays a margin note) + Tobin's farewell note as live Georgia narration (new `QuestInteractable._playsNarrationId`). Fresh-save bridge-verified.
 - **Batch 50** (2026-07-13): Continue/Load gets the cinematic welcome card ("RETURNING TO / Hollowfen") — same treatment as New Game, faded to the game (no seamless handoff); nested Canvas so it covers the live HUD/minimap. Play-verified both paths.
 - **Batch 49** (2026-07-13): calmed Bram's dialogue camera — coverage mode (favor two-shot held for short lines, single only on long/closeup beats), damped sway/push. Play-verified rapid exchange no longer whips.
 - **Batch 12** (2026-07-11, in progress): agentic infrastructure Phase 1 — doc router split, system docs, TODOS queue, worksheets, tools/agent.

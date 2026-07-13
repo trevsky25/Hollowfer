@@ -83,12 +83,12 @@ footer{color:var(--ink-soft);font-size:12px;border-top:1px solid var(--rule);pad
   <div class="eyebrow">Field Journal · Operations</div>
   <h1>Hollowfen — Production Board</h1>
   <div class="sub">Acts I–III complete; <strong>Act IV scenes 1–3 shipped</strong> — 26 quests live and bridge-verified. Act III B (batches 19/21/22/23) + batch-20 (all species real) + Act IV: batch-24 <code>aldricOfferRead</code> (<code>act4_started</code>), batch-25 consult-the-village, batch-26 <code>wendSource</code> (clear-cut, Aldermark = real Grifola frondosa, Knowledge +15), <strong>batch-27 <code>meetAldric</code></strong> (NPC_Aldric flag-gated at the new <code>manor</code> location; bible-verbatim negotiation ends at the fork; sets <code>aldric_meeting_started</code> + <code>final_choice_available</code> — fable-reviewed). <strong>STOP POINT: the ending engine (item 13) is next in the story track</strong> — 4-ending fork, canon-critical + FABLE-GATED, <strong>Trevor&#x27;s authorship</strong>. <strong>batch-28 (production UX track): settings screen rebuilt</strong> to the code-built house style — fable-reviewed, all findings fixed. <strong>batch-29: audio pipeline</strong> — local Kokoro TTS VO (entrance scene: intro narration + Bram chain voiced, two-voice cast) + Misty Forest music bed; <code>DialogueLine.voiceClip</code> + narration clips + MusicManager; full coverage awaits the Q10 direction call. <strong>batch-30: first-steps intro guide</strong> — voiced parchment journal page after the homecoming intro (bible-transposed passage, live quest block, controls reference, &quot;Set out →&quot;); once per save; fable-reviewed (canon PASS; fixed a pre-existing swapped-gamepad-buttons bug in the settings binding table + an invisible-pause-under-overlay hazard). Growing: an &quot;Act III–IV staging + world-dressing pass&quot; (Theo/festival/Voss/Hollin placements, clear-cut dressing, Aldermark node+photo, <strong>Aldric capsule→Meshy + manor building/props</strong>). <strong>batch-32 (production UX / ship-blocker): Georgia SDF font config fix</strong> — all 3 project TMP fonts Dynamic→Static with full Latin-1 baked + source <code>.ttf</code> nulled (licensing) + churn killed; fable-reviewed, all required changes applied; the actual Mac <code>.app</code> boot test is split out as item 15b. Open: Q8 (Aldermark seedbook attribution), Q9 (credits copy for launch), Q10 (AI-VO direction + Steam disclosure), <strong>Q11 (four UI symbols ✓✕△◉ have no font glyph — icon-set pass)</strong>.</div>
-  <div class="sub" style="font-size:12.5px;margin-top:4px">Generated Monday, July 13 2026 · 14:18 · working tree 14 uncommitted files</div>
+  <div class="sub" style="font-size:12.5px;margin-top:4px">Generated Monday, July 13 2026 · 14:48 · working tree 20 uncommitted files</div>
   <hr class="rule">
 </header>
 <div class="stats">
   <div class="stat"><b>3</b><span>open questions</span></div>
-  <div class="stat"><b>40</b><span>tagged batches</span></div>
+  <div class="stat"><b>41</b><span>tagged batches</span></div>
   <div class="stat"><b>8</b><span>items queued</span></div>
   <div class="stat"><b>20</b><span>models to make</span></div>
 </div>
@@ -97,11 +97,9 @@ footer{color:var(--ink-soft);font-size:12px;border-top:1px solid var(--rule);pad
   <div class="card q"><span class="chip needs">Needs Trevor</span><h3>Q14 — Mill mission: two assets block the cinematic finale + the interior (asked 2026-07-13 · batch-51)</h3><div class="body"><strong>Context:</strong> The mill mission spine (Bram→key→door→journal) works, and batch-51 added the journal&#x27;s teaching
 (Field Cap/Wood Ear/Pinecrest) + Tobin&#x27;s farewell note as live Georgia narration. Two remaining bible beats
 are blocked on <strong>assets only I can&#x27;t generate</strong>:
-1. <strong>Journal painted spreads</strong> (51b) — you said you&#x27;re generating <code>journal-01-sketches.png</code> /
-   <code>journal-02-spores.png</code> / opt <code>journal-03-note.png</code> in Codex. They&#x27;re <strong>not in
-   <code>Assets/_Hollowfen/UI/StoryCards/</code> yet</strong>. Drop them there and I&#x27;ll wrap the note in the multi-image
-   <code>NarrationOverlay.ShowCinematic</code> over the paintings + a camera push-in into the book (the current narration
-   is the placeholder-free interim).
+1. <s><strong>Journal painted spreads</strong> (51b)</s> <strong>RESOLVED 2026-07-13</strong> — you dropped <code>journal-01-sketches</code> /
+   <code>journal-02-spores</code> / <code>journal-03-note</code>; wired into <code>NarrationOverlay.ShowCinematic</code> (tag <code>batch-51b</code>,
+   fresh-save verified). The 3D camera push-in into the book folds into 51d below.
 2. <strong>Interior inspect props</strong> (51c) + <strong>cinematic key/journal pickups</strong> (51d) — the bible&#x27;s coat / kettle /
    ledgers / mill-wheel / drawer + the &quot;hand you the key&quot; and &quot;open the journal&quot; focus-pickups need <strong>meshes
    the kitbash packs don&#x27;t have</strong> (no coat/kettle/book/key models; graphics-pipeline memory). Options: (a) you
@@ -136,7 +134,8 @@ the square. <strong>Recommendation: (a).</strong> Say the word and I&#x27;ll gat
 </section>
 <section>
   <div class="sec-head"><h2>Recent commits</h2></div>
-  <div class="commits">99bacb6   (HEAD -&gt; main, tag: batch-50) Batch 50: cinematic welcome card for Continue/Load
+  <div class="commits">50dc774   (HEAD -&gt; main, tag: batch-51) Batch 51: The Hidden Journal — teach first mushrooms + Tobin&#x27;s note
+99bacb6   (tag: batch-50) Batch 50: cinematic welcome card for Continue/Load
 a9b2d80   (tag: batch-49) Batch 49: calm Bram&#x27;s dialogue camera — coverage mode
 1e7e254   Dashboard: batch-48 PS5 controller glyphs shipped
 a59d910   (tag: batch-48) Batch 48: PS5 controller button glyphs (closes Q11)
@@ -144,8 +143,7 @@ a59d910   (tag: batch-48) Batch 48: PS5 controller button glyphs (closes Q11)
 3325b5e   (tag: batch-47) Batch 47: square-corner sweep — rounded chrome throughout the UI
 34f2f9e   Dashboard: batch-46 bugfixes shipped
 fb67396   (tag: batch-46) Batch 46: dialogue jump fix, moving loading screen, Bram off Voss&#x27;s chair
-3ac52b8   Dashboard: batches 44-45 shipped (modal restyle, UI click, cinematic dialogue)
-bfcfc8d   (tag: batch-45) Batch 45: cinematic dialogue camera (Cinematic Pass #3)</div>
+3ac52b8   Dashboard: batches 44-45 shipped (modal restyle, UI click, cinematic dialogue)</div>
 </section>
 <footer>Regenerate: <code>python3 tools/agent/dashboard.py</code> → republish Artifact. Sources: TODOS.md · QUESTIONS.md · Docs/worksheets/ · git.</footer>
 </div>

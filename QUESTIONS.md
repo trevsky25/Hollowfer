@@ -8,11 +8,9 @@ The decision inbox. Agents append questions ONLY Trevor can answer (design taste
 **Context:** The mill mission spine (Bram→key→door→journal) works, and batch-51 added the journal's teaching
 (Field Cap/Wood Ear/Pinecrest) + Tobin's farewell note as live Georgia narration. Two remaining bible beats
 are blocked on **assets only I can't generate**:
-1. **Journal painted spreads** (51b) — you said you're generating `journal-01-sketches.png` /
-   `journal-02-spores.png` / opt `journal-03-note.png` in Codex. They're **not in
-   `Assets/_Hollowfen/UI/StoryCards/` yet**. Drop them there and I'll wrap the note in the multi-image
-   `NarrationOverlay.ShowCinematic` over the paintings + a camera push-in into the book (the current narration
-   is the placeholder-free interim).
+1. ~~**Journal painted spreads** (51b)~~ **RESOLVED 2026-07-13** — you dropped `journal-01-sketches` /
+   `journal-02-spores` / `journal-03-note`; wired into `NarrationOverlay.ShowCinematic` (tag `batch-51b`,
+   fresh-save verified). The 3D camera push-in into the book folds into 51d below.
 2. **Interior inspect props** (51c) + **cinematic key/journal pickups** (51d) — the bible's coat / kettle /
    ledgers / mill-wheel / drawer + the "hand you the key" and "open the journal" focus-pickups need **meshes
    the kitbash packs don't have** (no coat/kettle/book/key models; graphics-pipeline memory). Options: (a) you
