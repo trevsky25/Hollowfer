@@ -1590,6 +1590,7 @@ GameObject:
   - component: {fileID: 493801508}
   - component: {fileID: 493801507}
   - component: {fileID: 493801506}
+  - component: {fileID: 493801509}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1686,6 +1687,31 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &493801509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 493801504}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92a85678f19354173aec8177005a4699, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.UI.MenuCinematics
+  _moteCount: 34
+  _moteColor: {r: 1, g: 0.88, b: 0.6, a: 1}
+  _moteMinSize: 4
+  _moteMaxSize: 14
+  _moteDrift: 8
+  _mistCount: 5
+  _mistColor: {r: 0.74, g: 0.77, b: 0.7, a: 0.05}
+  _vignetteStrength: 0.55
+  _warmGrade: {r: 0.82, g: 0.62, b: 0.34, a: 0.06}
+  _kenBurnsScale: 1.06
+  _kenBurnsSeconds: 48
+  _kenBurnsDrift: 18
+  _playReveal: 1
 --- !u!1 &494022596
 GameObject:
   m_ObjectHideFlags: 0

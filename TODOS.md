@@ -6,6 +6,21 @@
 
 ---
 
+## Cinematic Pass (Trevor-directed, 2026-07-12 — "make the UI AMAZING and cinematic, wow the user")
+A polish arc elevating the painterly folk-tale identity with *subtle motion*, not flashy chrome (restraint —
+the art carries the mood). Surfaces, in the chosen order:
+1. ~~**Main menu — living painting**~~ **DONE, tag `batch-35`** — `MenuCinematics.cs`: drifting golden spore
+   motes + soft mist + painterly vignette/warm-grade + Ken Burns breathing on the hero + ink-bleed title
+   reveal. UI-native (overlay canvas), procedural (no new art), works in builds. Play-verified.
+2. **Menu focus glow + ambient audio bed** — the interactive + sound half of the menu (warm focus underline
+   on nav; soft forest ambience via MusicManager).
+3. **Cinematic dialogue** — letterbox + camera push to a framed two-shot, DoF background, parchment settle,
+   illuminated speaker capital, ink-cadence text (consumes the backlog `DialogueLine.isCloseup`).
+4. **Story-beat moments** — act-breaks / StoryCard unlocks as full-screen letterboxed illustrated cards
+   (Ken Burns pan + narration + music sting).
+5. **Discovery moment** — new-species find as a beat (dim, spotlight, rotate on a pedestal, guide plate
+   illuminates, chime).
+
 ## Next up (ordered)
 
 1. ~~**Commit Batch 11 (Act II A)**~~ **DONE 2026-07-11** — bridge smoke test (0 errors, save hydration correct), committed `c6d7e70`, tag `batch-11`.
