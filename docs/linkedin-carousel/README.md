@@ -1,11 +1,15 @@
-# Hollowfen — "How I Built This" LinkedIn Carousel
+# Hollowfen — LinkedIn Carousels
 
-A 9-slide landscape (16:9, 13.33″ × 7.5″) document PDF for a build-in-public LinkedIn
-post about the Hollowfen AI-enablement workflow.
+Two companion build-in-public carousels (landscape 16:9, 13.33″ × 7.5″ document PDFs):
+
+1. **"How I Built This"** — the AI-enablement workflow (9 slides).
+2. **"An Illustrated Story"** — Wren's story told through the project's story-card art (8 slides).
 
 ## Files
-- `Hollowfen-How-I-Built-This.pdf` — upload this directly as a LinkedIn document post.
-- `hollowfen-carousel.html` — the source. Edit this, then re-render (below).
+- `Hollowfen-How-I-Built-This.pdf` + `hollowfen-carousel.html` — the workflow deck.
+- `Hollowfen-The-Story.pdf` + `hollowfen-story-carousel.html` — the illustrated story deck
+  (image-forward; the HTML references `public/story/cards/*.png`, so keep it in this folder).
+- `LINKEDIN-POST-story.md` — the caption to paste above the story PDF.
 
 ## Slide flow
 1. Hook — building a game to learn to work alongside AI

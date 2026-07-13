@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Hollowfen — An Illustrated Story</title>
+<style>
+  @page { size: 1280px 720px; margin: 0; }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+  :root{
+    --ink:#f2ead6;
+    --ink-soft:#dcd3bd;
+    --gold:#e0c074;
+    --gold-deep:#d9a94a;
+    --fog:#b9c4c4;
+    --serif:'DejaVu Serif','Liberation Serif','Georgia',serif;
+    --sans:'DejaVu Sans','Liberation Sans','Helvetica Neue',Arial,sans-serif;
+  }
+  html,body{ background:#000; }
+
+  .slide{
+    position:relative; width:1280px; height:720px; overflow:hidden;
+    background:#0a0d06; color:var(--ink); font-family:var(--sans);
+    page-break-after:always;
+  }
+  .slide:last-child{ page-break-after:auto; }
+
+  .bg{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+
+  /* legibility scrims */
+  .scrim-bottom{ position:absolute; inset:0;
+    background:linear-gradient(to top, rgba(5,8,4,0.94) 0%, rgba(5,8,4,0.82) 16%, rgba(5,8,4,0.35) 42%, rgba(5,8,4,0) 60%); }
+  .scrim-top{ position:absolute; inset:0;
+    background:linear-gradient(to bottom, rgba(5,8,4,0.62) 0%, rgba(5,8,4,0.12) 22%, rgba(5,8,4,0) 34%); }
+  .scrim-left{ position:absolute; inset:0;
+    background:linear-gradient(to right, rgba(5,8,4,0.55) 0%, rgba(5,8,4,0) 46%); }
+
+  /* top meta */
+  .eyebrow{ position:absolute; left:70px; top:60px; z-index:5;
+    font-size:15px; letter-spacing:0.32em; text-transform:uppercase; color:var(--gold);
+    font-weight:700; display:flex; align-items:center; gap:14px; }
+  .eyebrow .cap{ width:26px; height:1px; background:var(--gold); opacity:0.85; }
+
+  /* bottom text block */
+  .caption{ position:absolute; left:70px; right:70px; bottom:64px; z-index:5; }
+  .title{ font-family:var(--serif); font-weight:700; color:var(--ink);
+    font-size:48px; line-height:1.02; letter-spacing:-0.01em;
+    text-shadow:0 2px 18px rgba(0,0,0,0.75); max-width:900px; }
+  .pull{ margin-top:16px; font-size:20px; line-height:1.5; color:var(--ink-soft);
+    max-width:760px; text-shadow:0 1px 12px rgba(0,0,0,0.85); }
+  .pull .em{ color:var(--gold); }
+  .quote{ margin-top:14px; font-family:var(--serif); font-style:italic;
+    font-size:19px; line-height:1.45; color:var(--fog); max-width:740px;
+    border-left:2px solid var(--gold); padding-left:16px;
+    text-shadow:0 1px 12px rgba(0,0,0,0.9); }
+
+  /* footer */
+  .foot{ position:absolute; left:70px; right:70px; bottom:30px; z-index:6;
+    display:flex; align-items:center; justify-content:space-between;
+    font-size:12px; letter-spacing:0.16em; text-transform:uppercase; }
+  .foot .mark{ color:var(--ink-soft); font-weight:700; opacity:0.85; }
+  .foot .mark .dot{ color:var(--gold); }
+  .foot .num{ color:var(--gold); font-weight:700; letter-spacing:0.1em; opacity:0.9; }
+
+  /* ---------- COVER ---------- */
+  .cover .eyebrow{ top:auto; }
+  .cover-wrap{ position:absolute; left:70px; bottom:150px; right:70px; z-index:5; }
+  .cover-kicker{ font-size:15px; letter-spacing:0.34em; text-transform:uppercase;
+    color:var(--gold); font-weight:700; margin-bottom:20px; display:flex; align-items:center; gap:14px; }
+  .cover-kicker .cap{ width:30px; height:1px; background:var(--gold); }
+  .cover-title{ font-family:var(--serif); font-weight:700; color:var(--ink);
+    font-size:96px; line-height:0.98; letter-spacing:0.005em; text-shadow:0 3px 26px rgba(0,0,0,0.8); }
+  .cover-sub{ margin-top:22px; font-size:23px; line-height:1.5; color:var(--ink-soft);
+    max-width:720px; text-shadow:0 1px 14px rgba(0,0,0,0.85); }
+  .cover-tag{ margin-top:26px; font-family:var(--serif); font-style:italic;
+    font-size:18px; color:var(--fog); text-shadow:0 1px 12px rgba(0,0,0,0.9); }
+
+  /* ---------- CLOSING (dark themed, no photo) ---------- */
+  .closing{ background:
+      radial-gradient(120% 90% at 82% 10%, rgba(224,192,116,0.10), rgba(224,192,116,0) 46%),
+      radial-gradient(130% 120% at 10% 110%, rgba(60,86,44,0.5), rgba(60,86,44,0) 55%),
+      linear-gradient(160deg,#16200e 0%,#0c1207 60%,#080b05 100%); }
+  .close-pad{ position:absolute; inset:0; z-index:3; display:flex; flex-direction:column;
+    justify-content:center; padding:0 92px; }
+  .corner{ position:absolute; width:14px; height:14px; border:1.5px solid var(--gold); opacity:0.7; }
+  .corner.tl{ left:48px; top:48px; border-right:none; border-bottom:none; }
+  .corner.tr{ right:48px; top:48px; border-left:none; border-bottom:none; }
+  .corner.bl{ left:48px; bottom:48px; border-right:none; border-top:none; }
+  .corner.br{ right:48px; bottom:48px; border-left:none; border-top:none; }
+</style>
+</head>
+<body>
+
+<!-- ===== SLIDE 1 — COVER ===== -->
+<section class="slide cover">
+  <img class="bg" src="../../public/story/cards/homecoming.png" alt="">
+  <div class="scrim-bottom"></div>
+  <div class="scrim-left"></div>
+  <div class="cover-wrap">
+    <div class="cover-kicker"><span class="cap"></span>The Failing Village</div>
+    <div class="cover-title">Hollowfen</div>
+    <div class="cover-sub">
+      A young forager comes home to a dying village — and learns to read the
+      forest that might save it.
+    </div>
+    <div class="cover-tag">An illustrated story from a game I'm building in public.</div>
+  </div>
+  <div class="foot">
+    <div class="mark"><span class="dot">◆</span> Hollowfen — an illustrated story</div>
+    <div class="num">01 / 08</div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 2 — THE MILL / JOURNAL ===== -->
+<section class="slide">
+  <img class="bg" src="../../public/story/cards/fathers-mill.png" alt="">
+  <div class="scrim-top"></div><div class="scrim-bottom"></div>
+  <div class="eyebrow"><span class="cap"></span>Act I · Her Father's Mill</div>
+  <div class="caption">
+    <div class="title">The Hidden Journal</div>
+    <div class="pull">
+      The wheel is still; flour dust lies in the corners like ash. In the bottom
+      drawer, wrapped in oilcloth — her father's foraging journal, three mushrooms
+      drawn in soft pencil.
+    </div>
+    <div class="quote">“If you're reading this, I never told you.” — Tobin's hand, careful at the start, hurried at the end.</div>
+  </div>
+  <div class="foot">
+    <div class="mark"><span class="dot">◆</span> Hollowfen — an illustrated story</div>
+    <div class="num">02 / 08</div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 3 — FIRST FORAGE ===== -->
+<section class="slide">
+  <img class="bg" src="../../public/story/cards/first-forage.png" alt="">
+  <div class="scrim-top"></div><div class="scrim-bottom"></div>
+  <div class="eyebrow"><span class="cap"></span>Act I · The Edge Woods</div>
+  <div class="caption">
+    <div class="title">The First Forage</div>
+    <div class="pull">
+      Field Cap in a fairy ring. Wood Ear soft on a fallen birch. A Pinecrest under
+      the third pine she touches — and a silent girl who watches the whole time and
+      never says her name.
+    </div>
+    <div class="quote">“I felt my father's hand on my shoulder twice this morning. He wasn't there. I don't mind that he wasn't there.”</div>
+  </div>
+  <div class="foot">
+    <div class="mark"><span class="dot">◆</span> Hollowfen — an illustrated story</div>
+    <div class="num">03 / 08</div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 4 — MARRA'S KITCHEN ===== -->
+<section class="slide">
+  <img class="bg" src="../../public/story/cards/marra-kitchen.png" alt="">
+  <div class="scrim-top"></div><div class="scrim-bottom"></div>
+  <div class="eyebrow"><span class="cap"></span>Act I · Marra's Kitchen</div>
+  <div class="caption">
+    <div class="title">The First Goldfoot in Twenty Years</div>
+    <div class="pull">
+      Wash them in cold water, not hot — Marra will say it twice and not three times.
+      The inn kitchen smells like Wren's mother again, and the first coin earned
+      <span class="em">weighs more than its silver</span>.
+    </div>
+  </div>
+  <div class="foot">
+    <div class="mark"><span class="dot">◆</span> Hollowfen — an illustrated story</div>
+    <div class="num">04 / 08</div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 5 — ALMY DOORWAY ===== -->
+<section class="slide">
+  <img class="bg" src="../../public/story/cards/almy-doorway.png" alt="">
+  <div class="scrim-top"></div><div class="scrim-bottom"></div>
+  <div class="eyebrow"><span class="cap"></span>Act I · The Vine-Tender</div>
+  <div class="caption">
+    <div class="title">A Knock at the Door</div>
+    <div class="pull">
+      Sister Almy watched her yesterday — picked the goldfoots, left the false ones
+      beside them. Her father couldn't have taught her that. He didn't know it.
+    </div>
+    <div class="quote">“She said my grandmother's name like a key turning. I don't remember my grandmother. Apparently my hands do.”</div>
+  </div>
+  <div class="foot">
+    <div class="mark"><span class="dot">◆</span> Hollowfen — an illustrated story</div>
+    <div class="num">05 / 08</div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 6 — THEO TRADE ===== -->
+<section class="slide">
+  <img class="bg" src="../../public/story/cards/theo-trade.png" alt="">
+  <div class="scrim-top"></div><div class="scrim-bottom"></div>
+  <div class="eyebrow"><span class="cap"></span>Act II · The Trader's Road</div>
+  <div class="caption">
+    <div class="title">The Trader's Ledger</div>
+    <div class="pull">
+      Theo buys the whole basket of goldfoots before she can name a price — and tells
+      her not to sell to peddlers. For the first time in years, the mushrooms
+      <span class="em">outearn the fields</span>.
+    </div>
+  </div>
+  <div class="foot">
+    <div class="mark"><span class="dot">◆</span> Hollowfen — an illustrated story</div>
+    <div class="num">06 / 08</div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 7 — WITCH COTTAGE ===== -->
+<section class="slide">
+  <img class="bg" src="../../public/story/cards/witch-cottage.png" alt="">
+  <div class="scrim-top"></div><div class="scrim-bottom"></div>
+  <div class="eyebrow"><span class="cap"></span>Act III · The Deep Wood</div>
+  <div class="caption">
+    <div class="title">The Witch's Cottage</div>
+    <div class="pull">
+      Deep in the Old Wood, a roof still holds. The path opens like a remembered
+      sentence — and the old hedge-witch's seedbook is still on the table, left open
+      to a page no one was meant to read.
+    </div>
+  </div>
+  <div class="foot">
+    <div class="mark"><span class="dot">◆</span> Hollowfen — an illustrated story</div>
+    <div class="num">07 / 08</div>
+  </div>
+</section>
+
+<!-- ===== SLIDE 8 — CLOSING / CTA ===== -->
+<section class="slide closing">
+  <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+  <div class="close-pad">
+    <div class="cover-kicker"><span class="cap"></span>Still being written</div>
+    <div class="title" style="font-size:58px; max-width:1000px;">Four acts. Four endings.<br>One village deciding what to become.</div>
+    <div class="pull" style="margin-top:24px; max-width:900px; text-shadow:none;">
+      Hollowfen is a foraging game about a young woman learning to read a forest —
+      and a village learning to save itself. The world, the story, and its 28 story
+      cards are all still taking shape, built in public with AI in the loop.
+    </div>
+    <div style="margin-top:34px; display:flex; align-items:center; gap:18px;">
+      <div style="border:1px solid var(--gold); color:var(--gold); padding:13px 26px; border-radius:999px; font-size:16px; letter-spacing:0.08em; font-weight:700;">
+        Follow the build →
+      </div>
+      <div style="color:var(--ink-soft); font-size:16px; font-family:var(--serif); font-style:italic;">
+        Concept art generated with AI · story &amp; design by hand.
+      </div>
+    </div>
+  </div>
+  <div class="foot">
+    <div class="mark"><span class="dot">◆</span> Hollowfen — The Failing Village</div>
+    <div class="num">08 / 08</div>
+  </div>
+</section>
+
+</body>
+</html>
