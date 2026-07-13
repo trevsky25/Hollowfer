@@ -28,6 +28,10 @@ the square. **Recommendation: (a).** Say the word and I'll gate their placeholde
 △ U+25B3 / ◉ U+25C9 have no glyph in any project font and box in editor+build; that pass gives them a
 proper TMP sprite sheet / icon set (the correct long-term home for the △◉ controller-button glyphs anyway).
 No interim ASCII swap. Tracked in the controller-glyph backlog item; not a font-mode change.
+**RESOLVED (batch-48, 2026-07-13):** Trevor requested PS5 icons directly — shipped the procedural
+`ControllerGlyphs` TMP sprite sheet (DualSense ✕○□△ chips + ui_x/ui_check/coin), registered as TMP's
+default sprite asset; brand-aware `ControllerGlyphs.For(Face)` resolver feeds prompt/inspect/inventory.
+All four boxed symbols eliminated.
 
 ### Q10 — AI-generated voiceover: test-only, or a shipping direction? (asked 2026-07-12 · batch-29 · answered 2026-07-12; UPDATED batch-39)
 **Decision (batch-29):** AI VO stays placeholder direction-finding; don't mass-generate yet.

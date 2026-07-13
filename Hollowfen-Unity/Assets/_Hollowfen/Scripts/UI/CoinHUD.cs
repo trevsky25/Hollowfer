@@ -72,7 +72,7 @@ namespace Hollowfen.UI
             rimImg.type = Image.Type.Sliced;
             UICanvasUtil.Stretch((RectTransform)rim.transform);
 
-            var glyph = UICanvasUtil.NewHeading("Glyph", rt, "◉", 20f, HollowfenPalette.Gold, FontStyles.Normal, TextAlignmentOptions.Center);
+            var glyph = UICanvasUtil.NewHeading("Glyph", rt, "<sprite name=\"coin\">", 20f, HollowfenPalette.Gold, FontStyles.Normal, TextAlignmentOptions.Center); // batch-48: ◉ had no font glyph
             var gRT = glyph.rectTransform;
             gRT.anchorMin = new Vector2(0f, 0f); gRT.anchorMax = new Vector2(0f, 1f);
             gRT.pivot = new Vector2(0f, 0.5f);

@@ -123,7 +123,7 @@ namespace Hollowfen.UI
             _closeButton.transition = Selectable.Transition.None;
             _closeButton.targetGraphic = closeImg;
             _closeButton.onClick.AddListener(() => { if (UIManager.Instance != null) UIManager.Instance.Back(); });
-            var closeText = UICanvasUtil.NewBody("X", closeRt, "✕", 32f, SubtleColor, FontStyles.Normal, TextAlignmentOptions.Center);
+            var closeText = UICanvasUtil.NewBody("X", closeRt, "<sprite name=\"ui_x\">", 32f, SubtleColor, FontStyles.Normal, TextAlignmentOptions.Center); // batch-48: ✕ had no font glyph
             UICanvasUtil.Stretch(closeText.rectTransform);
             var closeFh = closeRt.gameObject.AddComponent<FocusHighlight>();
             ConfigureFocusHighlight(closeFh, closeText, closeRt as RectTransform, GoldColor, 1.12f);

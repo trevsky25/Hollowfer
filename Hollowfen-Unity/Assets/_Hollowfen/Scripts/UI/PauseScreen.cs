@@ -72,7 +72,7 @@ namespace Hollowfen.UI
         {
             Hollowfen.Save.SaveCoordinator.SaveAllWithPlayer();
             Debug.Log($"[Pause] Saved to slot {Hollowfen.Save.SaveManager.ActiveSlot}");
-            if (_saveLabel != null) _saveLabel.text = "Saved ✓";
+            if (_saveLabel != null) _saveLabel.text = "Saved <sprite name=\"ui_check\">"; // batch-48: ✓ had no font glyph
         }
 
         private const string MainMenuSceneName = "Scene_MainMenu";

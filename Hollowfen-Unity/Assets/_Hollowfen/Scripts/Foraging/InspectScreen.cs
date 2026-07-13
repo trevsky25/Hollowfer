@@ -384,52 +384,20 @@ namespace Hollowfen.Foraging
             if (_leaveGlyph.text  != leave)  _leaveGlyph.text  = leave;
         }
 
-        // Detects the most recently used gamepad and picks the right brand glyphs.
+        // Brand glyphs via the shared resolver (batch-48): PlayStation pads get the real shape
+        // icons from the ControllerGlyphs TMP sprite sheet; Xbox/Switch get their letters.
         // Falls back to keyboard prompts when no pad is connected.
         private static void ResolveGlyphs(out string forage, out string leave)
         {
-            // Forage shortcut = Player/Interact (buttonNorth) → Triangle (PS) / Y (Xbox) / X (Switch).
-            // Leave shortcut  = UI/Cancel (buttonEast)       → Circle   (PS) / B (Xbox) / A (Switch).
-            var pad = UnityEngine.InputSystem.Gamepad.current;
-            if (pad == null)
+            // Forage shortcut = Player/Interact (buttonNorth). Leave = UI/Cancel (buttonEast).
+            if (UnityEngine.InputSystem.Gamepad.current == null)
             {
                 forage = "E";
                 leave = "Esc";
                 return;
             }
-            string n = pad.GetType().Name;
-            string product = pad.description.product != null ? pad.description.product.ToLowerInvariant() : "";
-
-            bool isPS = n.Contains("DualSense") || n.Contains("DualShock") || n.Contains("PS4") || n.Contains("PS5")
-                     || product.Contains("dualsense") || product.Contains("dualshock") || product.Contains("playstation")
-                     || product.Contains("wireless controller"); // Sony's marketing name on macOS HID
-            bool isXbox = n.Contains("XInput") || n.Contains("Xbox")
-                       || product.Contains("xbox");
-            bool isSwitch = n.Contains("Switch") || n.Contains("Joy")
-                         || product.Contains("nintendo") || product.Contains("pro controller");
-
-            if (isPS)
-            {
-                forage = "△";
-                leave = "○";
-            }
-            else if (isXbox)
-            {
-                forage = "Y";
-                leave = "B";
-            }
-            else if (isSwitch)
-            {
-                // Nintendo: top button is X, east button is A (note: SOUTH is B on Switch — face buttons swapped vs Xbox)
-                forage = "X";
-                leave = "A";
-            }
-            else
-            {
-                // Generic gamepad — default to PS since DualSense is what's commonly used here.
-                forage = "△";
-                leave = "○";
-            }
+            forage = Hollowfen.UI.ControllerGlyphs.For(Hollowfen.UI.ControllerGlyphs.Face.North);
+            leave = Hollowfen.UI.ControllerGlyphs.For(Hollowfen.UI.ControllerGlyphs.Face.East);
         }
 
         private static void SetStat(TMP_Text t, string label, string value)

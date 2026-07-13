@@ -305,18 +305,10 @@ namespace Hollowfen.Foraging
         private void RefreshCloseGlyph()
         {
             if (_closeGlyph == null) return;
-            var pad = Gamepad.current;
-            string g;
-            if (pad == null) g = "Esc";
-            else
-            {
-                string n = pad.GetType().Name;
-                string product = pad.description.product != null ? pad.description.product.ToLowerInvariant() : "";
-                if (n.Contains("DualSense") || n.Contains("DualShock") || product.Contains("dualsense") || product.Contains("dualshock") || product.Contains("playstation") || product.Contains("wireless controller")) g = "○";
-                else if (n.Contains("XInput") || n.Contains("Xbox") || product.Contains("xbox")) g = "B";
-                else if (n.Contains("Switch") || product.Contains("nintendo") || product.Contains("pro controller")) g = "A";
-                else g = "○";
-            }
+            // Close = UI/Cancel (buttonEast) — brand glyph via the shared resolver (batch-48).
+            string g = Gamepad.current == null
+                ? "Esc"
+                : Hollowfen.UI.ControllerGlyphs.For(Hollowfen.UI.ControllerGlyphs.Face.East);
             if (_closeGlyph.text != g) _closeGlyph.text = g;
         }
 

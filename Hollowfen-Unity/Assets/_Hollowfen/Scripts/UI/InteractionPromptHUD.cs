@@ -18,7 +18,9 @@ namespace Hollowfen.UI
         private float _fadeSeconds = 0.12f;
 
         [SerializeField] private string _keyboardGlyph = "[E]";
-        [SerializeField] private string _gamepadGlyph = "[△]"; // △
+        // The pad glyph is resolved per-device via ControllerGlyphs (batch-48) — PS pads get
+        // the real shape icon sprite, Xbox/Switch their letters. (The old serialized "[△]"
+        // rendered as a missing-glyph box.)
 
         private CanvasGroup _group;
         private TMP_Text _label;
@@ -103,7 +105,11 @@ namespace Hollowfen.UI
             string verb = Hollowfen.Localization.Get(focus.PromptVerb);
             string target = focus.PromptTarget;
             // Use rich-text color tag on the gold glyph cluster for a tiny lift over cream body.
-            string glyphs = $"<color=#{ColorUtility.ToHtmlStringRGB(HollowfenPalette.Gold)}>{_keyboardGlyph} / {_gamepadGlyph}</color>";
+            // Interact = Player/Interact (buttonNorth) → brand icon/letter when a pad is present.
+            string padGlyph = UnityEngine.InputSystem.Gamepad.current != null
+                ? " / " + ControllerGlyphs.For(ControllerGlyphs.Face.North)
+                : "";
+            string glyphs = $"<color=#{ColorUtility.ToHtmlStringRGB(HollowfenPalette.Gold)}>{_keyboardGlyph}{padGlyph}</color>";
             _label.text = $"{glyphs}  {verb} {target}";
             _targetAlpha = 1f;
         }
