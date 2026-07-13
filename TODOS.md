@@ -53,7 +53,10 @@ inheritance beat. Slices:
     key turns in the lock (straight-on via a new `PropFocusCinematic.frameDir` override), door swings open
     revealing the mill interior (threshold reveal). Play-verified. (Handoff is the hero shot; door is moodier
     — a bespoke lock plate + two-beat cut could polish it later.)
-  - **53 — journal discovery cinematic** — push-in into the book → the batch-51b painted-spread finale.
+  - ~~**53 — journal discovery cinematic**~~ **DONE 2026-07-13, tag `batch-53`** — imported Trevor's Meshy
+    journal (Mat + prefab), placed as the visible book; new `QuestInteractable._focusTarget` push-in →
+    hands to the batch-51b painted-spread finale. Play-verified. (Meshy key+journal want decimation
+    before EA — 429k/27k verts.)
 
 ## Next up (ordered)
 
@@ -148,6 +151,7 @@ inheritance beat. Slices:
 
 ## Done
 
+- **Batch 53** (2026-07-13): journal discovery cinematic — Trevor's Meshy journal (Mat + prefab, placed as the visible book) + new `QuestInteractable._focusTarget` push-in on the 3D book → hands to the batch-51b painted-spread finale. Play-verified.
 - **Batch 52b** (2026-07-13): key-in-lock door unlock — `KeyLockedDoor` cinematic (key turns straight-on via new `PropFocusCinematic.frameDir`, door swings open into the mill interior). Play-verified.
 - **Batch 52** (2026-07-13): cinematic mill-key handoff — imported the Meshy key (Mat_MillKey + MillKey.prefab), new reusable `PropFocusCinematic` (HUD-hide + letterbox + bounds-centre push-in) + `MillKeyHandoff` (hero item-get on grant). Play-verified. (52b key-in-lock door unlock + 53 journal pickup next.)
 - **Batch 51b** (2026-07-13): journal painted-spread finale — Trevor's 3 Codex journal PNGs wired into `NarrationOverlay.ShowCinematic` (crossfade + Ken Burns over the paintings, live Georgia captions). New `QuestInteractable._narrationHeroes`/`_narrationBeatImages`. Fresh-save bridge-verified all 3 painted beats. (51c interior props + 51d cinematic pickups still open — need meshes, QUESTIONS Q14.)

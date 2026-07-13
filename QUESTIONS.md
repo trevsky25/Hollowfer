@@ -11,13 +11,12 @@ are blocked on **assets only I can't generate**:
 1. ~~**Journal painted spreads** (51b)~~ **RESOLVED 2026-07-13** — you dropped `journal-01-sketches` /
    `journal-02-spores` / `journal-03-note`; wired into `NarrationOverlay.ShowCinematic` (tag `batch-51b`,
    fresh-save verified). The 3D camera push-in into the book folds into 51d below.
-2. **Interior inspect props** (51c) + **cinematic key/journal pickups** (51d) — the bible's coat / kettle /
-   ledgers / mill-wheel / drawer + the "hand you the key" and "open the journal" focus-pickups need **meshes
-   the kitbash packs don't have** (no coat/kettle/book/key models; graphics-pipeline memory). Options: (a) you
-   Meshy the hero props (coat-on-peg, black kettle, tied ledgers, iron mill key, leather journal) — recommend;
-   (b) I kitbash rough stand-ins from existing packs (barrels/crates) for the inspect beats and use an
-   abstract focus-glow for the pickups (lower fidelity); (c) defer the interior/pickups until the Meshy set
-   exists. **Recommendation: (a)** for the 5 hero props, then I build 51c/51d. Tell me which.
+2. **Cinematic key/journal pickups** (51d) — ✅ **RESOLVED 2026-07-13**: you Meshy'd the mill key + journal;
+   built the key handoff (`batch-52`), key-in-lock door unlock (`batch-52b`), and journal discovery push-in →
+   painted finale (`batch-53`). STILL OPEN: the **interior inspect props** (51c — coat/kettle/ledgers/
+   mill-wheel/drawer) need their own hero meshes. Options: (a) you Meshy the 5 props — recommend; (b) I
+   kitbash rough stand-ins; (c) defer. Also: the two Meshy hero meshes want **decimation** before EA
+   (key 27k, journal 429k verts).
 
 
 ### Q12 — Bram is missing his texture asset (blocker, needs your Meshy files) (asked 2026-07-13 · batch-43)

@@ -33,6 +33,17 @@ namespace Hollowfen.Quests
         private Sprite[] _narrationHeroes;
         [SerializeField, Tooltip("Per-caption painting index (which _narrationHeroes image each caption sits over). Same length as the caption count; missing/over-range entries clamp.")]
         private int[] _narrationBeatImages;
+
+        [Header("Focus push-in (optional, batch-53)")]
+        [SerializeField, Tooltip("Prop pushed in on before the reveal plays (the 3D journal book). Null = no push-in.")]
+        private Transform _focusTarget;
+        [SerializeField] private float _focusDistance = 0.4f;
+        [SerializeField] private float _focusHeight = 0.05f;
+        [SerializeField] private float _focusFov = 30f;
+        [SerializeField] private float _focusPush = 1.2f;
+        [SerializeField] private float _focusHold = 1.6f;
+        [SerializeField] private float _focusRestore = 0.2f;
+
         [SerializeField] private bool _deactivateOnUse = true;
 
         private bool _used;
@@ -66,6 +77,19 @@ namespace Hollowfen.Quests
             if (_completesQuestIfActive != null && QuestManager.IsActive(_completesQuestIfActive.Id))
                 QuestManager.CompleteQuest(_completesQuestIfActive.Id);
 
+            // Optional cinematic push-in on the 3D prop (the journal book) before the reveal — the camera
+            // moves close on the book, then hands to PlayReveal which fades to the painted-spread finale.
+            if (_focusTarget != null && Cinematics.PropFocusCinematic.Ensure() != null
+                && !Cinematics.PropFocusCinematic.Instance.IsPlaying)
+                Cinematics.PropFocusCinematic.Instance.Play(_focusTarget, _focusDistance, _focusHeight, _focusFov,
+                    _focusPush, _focusHold, _focusRestore, null, PlayReveal);
+            else
+                PlayReveal();
+        }
+
+        // Dialogue / narration payload + self-deactivate. Runs immediately, or after the focus push-in.
+        private void PlayReveal()
+        {
             if (_playsDialogue != null && Dialogue.DialogueScreen.Instance != null)
                 // Anchor = this prop, so monologues get the cinematic frame too (batch-45).
                 Dialogue.DialogueScreen.Instance.Open(_playsDialogue, transform);
