@@ -37,7 +37,7 @@ INTRO_CAPTIONS = [
     "Then the road dipped, and the old picture came apart.",
     "The river was wrong.",
     "Smoke rose from fewer chimneys than Wren remembered. Two cottages near the well had boards nailed over their windows.",
-    "The village did not greet her. No children ran the lane. No cart rattled down from the Slatemoor road.",
+    "The village did not greet her. No children ran the lane, no cart on the Slatemoor road. The only one who stood there was an old friend — Bram, the innkeeper of The Crooked Pintle.",
 ]
 
 # Non-dialogue utterances (copy duplicated from Localization.cs — the parked staleness-manifest
@@ -164,6 +164,16 @@ def main():
             print(f"{group}:")
             for i, (speaker, text) in enumerate(utterances):
                 emit(os.path.join(OUT_ROOT, group), i, speaker, text)
+        return
+
+    # `--intro-only [i ...]` regenerates the homecoming intro narration; with indices, only those
+    # captions (e.g. `--intro-only 5` after rewording the last beat) — no dialogue/extras churn.
+    if args and args[0] == "--intro-only":
+        want = {int(a) for a in args[1:]} if len(args) > 1 else set(range(len(INTRO_CAPTIONS)))
+        print("HomecomingIntro:")
+        for i, caption in enumerate(INTRO_CAPTIONS):
+            if i in want:
+                emit(os.path.join(OUT_ROOT, "HomecomingIntro"), i, "Narrator", caption)
         return
 
     targets = args or DEFAULT_SET

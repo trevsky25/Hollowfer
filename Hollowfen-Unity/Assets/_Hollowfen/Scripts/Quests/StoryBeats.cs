@@ -36,7 +36,7 @@ namespace Hollowfen.Quests
             "Then the road dipped, and the old picture came apart.",
             "The river was wrong.",
             "Smoke rose from fewer chimneys than Wren remembered. Two cottages near the well had boards nailed over their windows.",
-            "The village did not greet her. No children ran the lane. No cart rattled down from the Slatemoor road.",
+            "The village did not greet her. No children ran the lane, no cart on the Slatemoor road. The only one who stood there was an old friend — Bram, the innkeeper of The Crooked Pintle.",
         };
 
         private static readonly string[] Act1CompleteCaptions =

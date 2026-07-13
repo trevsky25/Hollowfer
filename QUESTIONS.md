@@ -4,7 +4,22 @@ The decision inbox. Agents append questions ONLY Trevor can answer (design taste
 
 ## Open
 
-_Inbox clear — Q8–Q11 answered 2026-07-12 (Trevor: "take all your recommendations")._
+### Q12 — Bram is missing his texture asset (blocker, needs your Meshy files) (asked 2026-07-13 · batch-43)
+**Context:** Bram renders now, but as a dark "statue" — his FBX material's `_BaseMap` resolves to
+**Wren's** `Assets/Characters/Wren/Image_0.jpg` (name collision) because the Bram FBX has **no embedded
+textures** and no Bram texture exists in the project (only `Bram-TPose.fbx` + the idle controller).
+**Need from you:** drop Bram's Meshy texture set (at least the albedo; ideally normal + metallic/roughness)
+into `Assets/Characters/Bram/`. **Then I'll:** extract the FBX materials (currently InPrefab), point
+`_BaseMap`/`_BumpMap`/`_MetallicGlossMap` at the Bram maps, and verify he's textured. No code needed — just
+the asset. (His 34MB mesh still wants decimation before EA — separate.)
+
+### Q13 — Pell & Voss placeholders stand in the opening square — clear them for the homecoming? (asked 2026-07-13 · batch-43)
+**Context:** `NPC_Pell` (288,161) and `NPC_Voss` (moved to 287,164.5 in batch-43) are gray placeholder
+capsules by the Village Well. The bible's opening is deliberately empty — "the village did not greet her…
+the only one who stood there was Bram." Two other figures loitering by the well undercut that.
+**Options:** (a) hide/disable Pell & Voss until after the homecoming beat (recommend — preserves the empty
+square; re-enable when their scenes arrive); (b) leave them (they read as villagers); (c) move them out of
+the square. **Recommendation: (a).** Say the word and I'll gate their placeholders on the arrive/post-intro flag.
 
 ## Answered
 
