@@ -379,6 +379,30 @@ namespace Hollowfen.UI
             return sp;
         }
 
+        // Subtle paper-grain speckle: per-pixel alpha noise, fixed seed (deterministic across
+        // sessions). Stretch over a parchment fill and tint via Image.color with a dark ink —
+        // the sprite's alpha carries the grain. First consumer: the IntroGuide journal page.
+        public static Sprite PaperGrain(int size = 256, float strength = 0.06f)
+        {
+            string key = "pg" + size + "_" + strength.ToString("F2");
+            if (_shapeCache.TryGetValue(key, out var cached) && cached != null) return cached;
+            var rng = new System.Random(7161221);   // fixed seed — same paper every boot
+            var tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
+            tex.wrapMode = TextureWrapMode.Repeat;
+            tex.filterMode = FilterMode.Bilinear;
+            for (int y = 0; y < size; y++)
+            for (int x = 0; x < size; x++)
+            {
+                // Two samples averaged → soft clumps rather than white noise.
+                float n = ((float)rng.NextDouble() + (float)rng.NextDouble()) * 0.5f;
+                tex.SetPixel(x, y, new Color(1f, 1f, 1f, n * strength));
+            }
+            tex.Apply(false, false);
+            var sp = Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f), 100f, 0u, SpriteMeshType.FullRect);
+            _shapeCache[key] = sp;
+            return sp;
+        }
+
         // ---------- High-level factories ----------
 
         // Soft shadow behind a RectTransform (slightly larger, offset down).
