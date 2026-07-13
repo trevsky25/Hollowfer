@@ -41,7 +41,27 @@ hand it off to Wren, Wren should use it to unlock the door… great visuals for 
 - Note: verified via the KeyItems.Grant path (identical to the dialogue's grant) + the explicit
   wait-for-`DialogueCinematics.IsActive`-false guard; the real dialogue→handoff hand-back rides that guard.
 
-## Next (this or a follow-up batch)
-- **Key-in-lock cinematic** on `MillDoor_Lock` unlock (key turns in the lock, door opens) — 52b.
+## 52b — Key-in-lock door unlock (DONE this session, tag `batch-52b`)
+`KeyLockedDoor` gains an optional cinematic unlock (falls back to the instant unlock when no key prefab is
+set). On unlock: the MillKey spawns at a fixed `KeyholeAnchor` (child of the lock, so it stays put while
+the door swings), PropFocusCinematic frames it **straight-on along the door's face normal** (new `frameDir`
+override — the studded mill door has no keyhole, so an angled shot read badly), the key turns 95° (the
+unlock twist), then the door swings open (key parented to the door leaf, swings away with it) revealing the
+dim mill interior — a "crossing the threshold" reveal that fits the bible's empty-mill scene. Then despawn
++ complete searchMill + restore.
+- PropFocusCinematic: added the optional `frameDir` framing-direction override + a `_keyScale` bump so the
+  key reads on a keyhole-less door.
+- Play-verified end-to-end: key turns, door opens (collider dropped → passable), searchMill completes, HUD
+  back, player resumed. Screenshot `b52b_lock2.png` (threshold reveal into the mill interior).
+- Honest note: the handoff (52) is the hero "great visual"; the door is a moodier threshold reveal — the
+  key-turn beat is brief and the keyhole-less studded door limits a tight lock closeup. A future polish
+  pass could add a bespoke lock plate + a two-beat (turn → threshold) cut.
+
+## Gotcha logged
+Saving `Scene_Hollowfen` re-serializes ~3 prefab-instance rotation quaternions by a few degrees each save
+(Unity re-normalization; grows slightly per save). Small + imperceptible but cumulative — worth a dedicated
+"scene-save churn" investigation (identify the 3 instances; likely a denormalized authored rotation).
+
+## Next
 - **Batch 53** — journal discovery cinematic (reuse PropFocusCinematic for the push-in into the book → the
   batch-51b painted-spread finale).

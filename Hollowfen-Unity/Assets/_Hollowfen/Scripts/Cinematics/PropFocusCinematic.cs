@@ -51,17 +51,19 @@ namespace Hollowfen.Cinematics
         // target; fov = the tight lens at the hold. onPeak fires when the push-in completes (grant/toast);
         // onDone fires after the restore glide (despawn the prop, resume). Suspends player input, hides the
         // HUD, and slides in letterbox bars for the shot.
+        // frameDir (optional): the horizontal direction FROM the target TOWARD the camera to frame from —
+        // e.g. a door's face normal for a straight-on shot. Zero = frame from the camera's current side.
         public void Play(Transform target, float distance, float heightOffset, float fov,
                          float pushSeconds, float holdSeconds, float restoreSeconds,
-                         Action onPeak = null, Action onDone = null)
+                         Action onPeak = null, Action onDone = null, Vector3 frameDir = default(Vector3))
         {
             if (IsPlaying || target == null || Camera.main == null) { onPeak?.Invoke(); onDone?.Invoke(); return; }
-            StartCoroutine(Run(target, distance, heightOffset, fov, pushSeconds, holdSeconds, restoreSeconds, onPeak, onDone));
+            StartCoroutine(Run(target, distance, heightOffset, fov, pushSeconds, holdSeconds, restoreSeconds, onPeak, onDone, frameDir));
         }
 
         private IEnumerator Run(Transform target, float distance, float heightOffset, float fov,
                                 float pushSeconds, float holdSeconds, float restoreSeconds,
-                                Action onPeak, Action onDone)
+                                Action onPeak, Action onDone, Vector3 frameDir)
         {
             var cam = Camera.main;
             IsPlaying = true;
@@ -77,10 +79,12 @@ namespace Hollowfen.Cinematics
             Quaternion startRot = cam.transform.rotation;
             float startFov = cam.fieldOfView;
 
-            // Frame the target from the side the camera is already on (never crosses to the far side).
-            // Aim at the VISUAL centre (renderer bounds), not the transform pivot — Meshy pivots sit at
-            // the origin, which would frame the prop off-centre.
-            Vector3 toCam = startPos - Center(target); toCam.y = 0f;
+            // Frame the target from the side the camera is already on (never crosses to the far side),
+            // unless a frameDir is given (e.g. a door's face normal → a straight-on shot). Aim at the
+            // VISUAL centre (renderer bounds), not the transform pivot — Meshy pivots sit at the origin.
+            Vector3 toCam;
+            if (frameDir.sqrMagnitude > 0.01f) { toCam = frameDir; toCam.y = 0f; }
+            else { toCam = startPos - Center(target); toCam.y = 0f; }
             if (toCam.sqrMagnitude < 0.0001f) toCam = -cam.transform.forward;
             toCam.Normalize();
 
