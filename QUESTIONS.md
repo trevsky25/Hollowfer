@@ -4,46 +4,34 @@ The decision inbox. Agents append questions ONLY Trevor can answer (design taste
 
 ## Open
 
-### Q11 — Four UI symbols have no font glyph (render as boxes) — substitute or icon-set? (asked 2026-07-12 · batch-32, low stakes, pre-existing)
-The batch-32 font audit found four literal Unicode symbols used in authored UI that **no project font
-can render** — not Georgia, not LiberationSans, not the fallback (their source .ttf lacks the glyph),
-so they render as missing-glyph boxes (□) in **both editor and build** (pre-existing, not caused by
-the font fix): **✓ U+2713** ("Saved ✓" toast) · **✕ U+2715** (a close-button label) · **△ U+25B3** and
-**◉ U+25C9** (controller-button glyph placeholders, e.g. `gamepadGlyph = "[△]"`). Note → ← ○ • and all
-prose/typographic marks now render correctly (baked into Georgia or the fallback this batch).
-**Options:** (a) interim ASCII substitutes now — "Saved" / "X" / plain letters — trivial and safe;
-(b) fold into the **Steam controller-glyph pass** (backlog): a proper TMP sprite sheet / icon font for
-✓✕ and the real Xbox/PS/Deck button glyphs, which is the correct long-term home for △◉ anyway;
-(c) leave as-is for now. **Recommendation:** (b) — these are exactly what the controller-glyph pass
-owns; do the ASCII interim (a) only if a box on the save toast bothers you before then. Either way it's
-a few one-line string edits, not a font change.
-
-### Q10 — AI-generated voiceover: test-only, or a shipping direction? (asked 2026-07-12 · batch-29, product + disclosure stakes)
-Batch-29 proves the pipeline: local Kokoro TTS (free, Apache) voices the entrance scene — intro
-narration (Wren, warm/slowed) + Bram's chain (older British male) — with clean per-line playback
-and the Misty Forest bed underneath. **Decisions that are yours:** (a) is AI VO the direction for
-EA, or is this placeholder until human VO / no-VO? (b) if any AI VO ships, **Steam requires an
-AI-content disclosure** on the store page (pre-EA checklist item added); (c) voice casting taste —
-listen to the test and tell me which voices feel wrong (the cast map is one line per character in
-`tools/agent/generate_vo.py`). **Recommendation:** treat as placeholder-quality direction-finding;
-decide after hearing it in-game. No further VO generation until you call the direction — the
-pipeline makes full coverage a mechanical batch whenever you do.
-
-### Q9 — Credits copy: ship the current 7 lines, or expand for launch? (asked 2026-07-12 · batch-28, low stakes but has a legal edge)
-The settings-screen rebuild (batch-28) kept the shipped credits copy verbatim, now with editorial
-hierarchy. For a production launch the copy may want: exact asset-pack legal names (per license
-terms — some packs require specific attribution wording), font attributions (**Georgia is a
-licensed Microsoft font — redistribution rights need verifying before EA**, now on the pre-EA
-checklist), a music credit slot (composer TBD), and whether/how to credit AI tooling in
-production. **Recommendation:** keep current copy until the pre-EA checklist pass, then do one
-"credits + licenses" audit batch against every third-party license file in the project — write
-the final copy once, from the audit. **What you decide:** (a) recommendation, or (b) draft the
-final copy now and I'll wire it (keys `credits.*` in Localization.cs, 5-minute change).
-
-### Q8 — Aldermark attributed to Sable's seedbook — veto? (asked 2026-07-12 · batch-26, low stakes)
-Aldermark's field-guide entry uses the established folk-name formula "**Sable's seedbook name for** the Hen of the Woods." But the shipped cottage-arrival dialogue lists the seedbook's contents as only "Witchwell. And three names in another hand: Moonring. Hollowheart. Wendlight." — Aldermark isn't among them. Attributing it to the seedbook is the most plausible source for Wren knowing the folk name (and helpfully implies "Aldermark" is an old alder-derived name predating Lord Aldric, defusing any pun-timeline worry). **What I applied (veto-able):** kept the seedbook attribution. **Alt:** drop "seedbook" and make it a plain folk/regional name ("Aldermark, the old name for the Hen of the Woods…"). Trivial one-line change either way.
+_Inbox clear — Q8–Q11 answered 2026-07-12 (Trevor: "take all your recommendations")._
 
 ## Answered
+
+### Q11 — Four UI symbols (✓ ✕ △ ◉) have no font glyph (asked 2026-07-12 · batch-32 · answered 2026-07-12: "recommendation")
+**Decision:** option (b) — fold into the **Steam controller-glyph pass** (backlog). ✓ U+2713 / ✕ U+2715 /
+△ U+25B3 / ◉ U+25C9 have no glyph in any project font and box in editor+build; that pass gives them a
+proper TMP sprite sheet / icon set (the correct long-term home for the △◉ controller-button glyphs anyway).
+No interim ASCII swap. Tracked in the controller-glyph backlog item; not a font-mode change.
+
+### Q10 — AI-generated voiceover: test-only, or a shipping direction? (asked 2026-07-12 · batch-29 · answered 2026-07-12: "recommendation")
+**Decision:** AI VO stays **placeholder-quality direction-finding, not a committed EA direction**. Keep the
+batch-29 entrance-scene test; **do NOT mass-generate VO yet** — revisit after Trevor evaluates it in-game and
+locks casting. If any AI VO ships to EA, the **Steam AI-content disclosure** is required (stays on the pre-EA
+checklist). The Voice-mixer-group + settings-slider plumbing is a prerequisite that proceeds regardless of
+this call (it's needed for AI-VO, human-VO, or no-VO alike).
+
+### Q9 — Credits copy: ship current 7 lines, or expand for launch? (asked 2026-07-12 · batch-28 · answered 2026-07-12: "recommendation")
+**Decision:** keep the current 7-line credits copy (batch-28 editorial hierarchy) as-is now; write the final
+launch copy in **one "credits + licenses" audit batch during pre-EA** — against every third-party license file
+in the project, so the copy is authored once from the audit. Feeds the pre-EA checklist's font+asset licensing
+item (Georgia licensing: batch-32 nulled the shipped .ttf, but the SDF glyphs still derive from it, so
+redistribution rights still need verifying — or swap to an OFL serif).
+
+### Q8 — Aldermark attributed to Sable's seedbook — veto? (asked 2026-07-12 · batch-26 · answered 2026-07-12: "recommendation, keep it")
+**Decision:** keep the **Sable's-seedbook attribution** for Aldermark's field-guide entry (as applied in
+batch-26). It's the most plausible source for Wren knowing the folk name and implies "Aldermark" is an old
+alder-derived name predating Lord Aldric (defusing the pun-timeline worry). No change.
 
 ### Q7 — Aldermark (Act IV leverage species): which REAL mushroom? (asked 2026-07-12 · answered 2026-07-12: "map to a real stump-colonizer, build wendSource")
 **Decision (batch-26):** Aldermark → **Hen of the Woods / Maitake (Grifola frondosa)** — a real fungus that colonizes the base of stressed and cut hardwoods (esp. oak), grey-brown and "pale and stubborn in the shade," and genuinely valuable (prized medicinal-edible) = the "something useful grows where harm stops" leverage. Folk name "Aldermark" kept as the entry title; real Latin + accurate ID/habitat/uses. Photo null for now → added to the Meshy/photo wants list; world model deferred (sampling represented by the clear-cut interaction, not a forage node yet).
