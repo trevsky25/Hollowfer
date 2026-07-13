@@ -4,6 +4,24 @@ The decision inbox. Agents append questions ONLY Trevor can answer (design taste
 
 ## Open
 
+### Q14 — Mill mission: two assets block the cinematic finale + the interior (asked 2026-07-13 · batch-51)
+**Context:** The mill mission spine (Bram→key→door→journal) works, and batch-51 added the journal's teaching
+(Field Cap/Wood Ear/Pinecrest) + Tobin's farewell note as live Georgia narration. Two remaining bible beats
+are blocked on **assets only I can't generate**:
+1. **Journal painted spreads** (51b) — you said you're generating `journal-01-sketches.png` /
+   `journal-02-spores.png` / opt `journal-03-note.png` in Codex. They're **not in
+   `Assets/_Hollowfen/UI/StoryCards/` yet**. Drop them there and I'll wrap the note in the multi-image
+   `NarrationOverlay.ShowCinematic` over the paintings + a camera push-in into the book (the current narration
+   is the placeholder-free interim).
+2. **Interior inspect props** (51c) + **cinematic key/journal pickups** (51d) — the bible's coat / kettle /
+   ledgers / mill-wheel / drawer + the "hand you the key" and "open the journal" focus-pickups need **meshes
+   the kitbash packs don't have** (no coat/kettle/book/key models; graphics-pipeline memory). Options: (a) you
+   Meshy the hero props (coat-on-peg, black kettle, tied ledgers, iron mill key, leather journal) — recommend;
+   (b) I kitbash rough stand-ins from existing packs (barrels/crates) for the inspect beats and use an
+   abstract focus-glow for the pickups (lower fidelity); (c) defer the interior/pickups until the Meshy set
+   exists. **Recommendation: (a)** for the 5 hero props, then I build 51c/51d. Tell me which.
+
+
 ### Q12 — Bram is missing his texture asset (blocker, needs your Meshy files) (asked 2026-07-13 · batch-43)
 **Context:** Bram renders now, but as a dark "statue" — his FBX material's `_BaseMap` resolves to
 **Wren's** `Assets/Characters/Wren/Image_0.jpg` (name collision) because the Bram FBX has **no embedded

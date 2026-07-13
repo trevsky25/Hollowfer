@@ -28,6 +28,23 @@ the art carries the mood). Surfaces, in the chosen order:
 5. **Discovery moment** — new-species find as a beat (dim, spotlight, rotate on a pedestal, guide plate
    illuminates, chime).
 
+## Mill mission — Act I Scenes 2–4 richness (Trevor-directed, 2026-07-13)
+The spine (Bram→key→door→journal) was already wired + working. Enriching it to the bible's slow-interior +
+inheritance beat. Slices:
+- ~~**51a — The Hidden Journal payload**~~ **DONE 2026-07-13, tag `batch-51`** — the journal now TEACHES the
+  first three mushrooms (`Journal_FathersJournal._discoversSpecies` = fieldCap/woodEar/pinecrest; Goldfoot
+  stays an unfinished margin note) and reads Tobin's farewell note as live Georgia narration captions (new
+  generic `QuestInteractable._playsNarrationId` → `NarrationOverlay.Show`; `act1.hidden_journal.tobin_note`,
+  7 caption beats). Fresh-save bridge-verified. Blockers below parked in QUESTIONS.
+- **51b — journal painted-spread finale + focus push-in** — BLOCKED on Trevor's Codex PNGs
+  (`journal-0N-*.png` not in `Assets/_Hollowfen/UI/StoryCards/` yet). Wrap the note in the multi-image
+  `NarrationOverlay.ShowCinematic(:392)` over the painted spreads + a camera push-in into the book.
+- **51c — mill interior "search the house" inspect props** (coat/kettle/ledgers/window-wheel/drawer +
+  `mill.*`/`act1.fathers_mill.wren.inspect` barks, cinematic-camera-anchored). Interior exists
+  (`BasicBuilding3`). Needs meshes the kitbash packs lack (coat/kettle/book) → QUESTIONS.
+- **51d — cinematic key/journal pickups** (focus push-in + KeyItemToast). Needs a reusable prop-focus
+  cinematic (MushroomFocusCamera only auto-frames MushroomNode) + a key mesh.
+
 ## Next up (ordered)
 
 1. ~~**Commit Batch 11 (Act II A)**~~ **DONE 2026-07-11** — bridge smoke test (0 errors, save hydration correct), committed `c6d7e70`, tag `batch-11`.
@@ -121,6 +138,9 @@ the art carries the mood). Surfaces, in the chosen order:
 
 ## Done
 
+- **Batch 51** (2026-07-13): Hidden Journal payload — journal teaches fieldCap/woodEar/pinecrest (Goldfoot stays a margin note) + Tobin's farewell note as live Georgia narration (new `QuestInteractable._playsNarrationId`). Fresh-save bridge-verified. (Painted-spread finale + interior props + cinematic pickups split out — 51b/c/d, blocked on Codex PNGs + meshes.)
+- **Batch 50** (2026-07-13): Continue/Load gets the cinematic welcome card ("RETURNING TO / Hollowfen") — same treatment as New Game, faded to the game (no seamless handoff); nested Canvas so it covers the live HUD/minimap. Play-verified both paths.
+- **Batch 49** (2026-07-13): calmed Bram's dialogue camera — coverage mode (favor two-shot held for short lines, single only on long/closeup beats), damped sway/push. Play-verified rapid exchange no longer whips.
 - **Batch 12** (2026-07-11, in progress): agentic infrastructure Phase 1 — doc router split, system docs, TODOS queue, worksheets, tools/agent.
 - **Batch 11** (2026-06-11, verified, uncommitted): Act II A — quests 8–10, cultivation grow beds, day-flag scheduler, tax deadline.
 - **Batches 1–10** (`c2b9405` and earlier): Act I complete (quests 1–7), saves/scores/clock, UI framework + menu pages, foraging vertical slice, map system + redesign, main-menu port.

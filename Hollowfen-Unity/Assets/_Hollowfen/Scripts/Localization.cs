@@ -45,6 +45,16 @@ namespace Hollowfen
             { "quest.searchMill.objective", "Enter the mill and search the house." },
             { "quest.findJournal.name",      "The Hidden Journal" },
             { "quest.findJournal.objective", "Find Tobin's mushroom journal." },
+            // The journal reveal + Tobin's farewell note (Scene 4), read as live Georgia narration captions.
+            // Blank lines split it into caption beats (QuestInteractable._playsNarrationId → NarrationOverlay).
+            { "act1.hidden_journal.tobin_note",
+              "The first pages were recipes, in her mother's hand.\n\n" +
+              "Then Tobin's writing began.\nField Cap. Wood Ear. Pinecrest.\n\n" +
+              "Each a careful sketch, and under one a line pressed so hard the pencil tore the paper: never eat what you cannot name twice.\n\n" +
+              "If you're reading this, I never told you.\n\n" +
+              "The forest was always our family's secret. Your grandmother knew. Your mother knew. I was waiting until you were old enough.\n\n" +
+              "I am sorry I waited too long.\n— Da\n\n" +
+              "Da." },
             { "quest.firstForage.name",      "The First Forage" },
             { "quest.firstForage.objective", "Gather the three safe basics and the gold-stemmed find at the Old Wood edge." },
             { "quest.firstSale.name",      "Marra's Kitchen" },

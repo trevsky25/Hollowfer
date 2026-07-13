@@ -27,6 +27,8 @@ namespace Hollowfen.Quests
         private Data.MushroomFieldGuideData[] _discoversSpecies;
         [SerializeField, Tooltip("Dialogue opened on use (the seedbook scene, Wren's riverbed lines). Play quest completion via the DIALOGUE's outcome when this is set.")]
         private Dialogue.DialogueData _playsDialogue;
+        [SerializeField, Tooltip("Narration passage read on use (Tobin's journal note). The localized text is split on blank lines into NarrationOverlay captions — live Georgia text, no painted art. Empty = none.")]
+        private string _playsNarrationId;
         [SerializeField] private bool _deactivateOnUse = true;
 
         private bool _used;
@@ -63,6 +65,18 @@ namespace Hollowfen.Quests
             if (_playsDialogue != null && Dialogue.DialogueScreen.Instance != null)
                 // Anchor = this prop, so monologues get the cinematic frame too (batch-45).
                 Dialogue.DialogueScreen.Instance.Open(_playsDialogue, transform);
+
+            // Read a passage as live Georgia narration captions (Tobin's journal note) — same overlay as
+            // the opening intro. The painted journal spreads are a later ShowCinematic wrapper (batch-51).
+            if (!string.IsNullOrEmpty(_playsNarrationId) && UI.NarrationOverlay.Instance != null)
+            {
+                string passage = Localization.Get(_playsNarrationId);
+                if (!string.IsNullOrEmpty(passage))
+                {
+                    var captions = passage.Split(new[] { "\n\n" }, System.StringSplitOptions.RemoveEmptyEntries);
+                    UI.NarrationOverlay.Instance.Show(captions);
+                }
+            }
 
             if (_deactivateOnUse) gameObject.SetActive(false);
         }
