@@ -45,7 +45,7 @@ namespace Hollowfen
             { "quest.searchMill.objective", "Enter the mill and search the house." },
             { "quest.findJournal.name",      "The Hidden Journal" },
             { "quest.findJournal.objective", "Find Tobin's mushroom journal." },
-            // The journal reveal + Tobin's farewell note (Scene 4), read as live Georgia narration captions.
+            // The journal reveal + Tobin's farewell note (Scene 4), read as live serif narration captions.
             // Blank lines split it into caption beats (QuestInteractable._playsNarrationId → NarrationOverlay).
             { "act1.hidden_journal.tobin_note",
               "The first pages were recipes, in her mother's hand.\n\n" +
@@ -227,6 +227,7 @@ namespace Hollowfen
             { "credits.photos",    "Mushroom photographs courtesy Wikimedia Commons under CC licenses." },
             { "credits.wren",      "Wren character art generated for production use." },
             { "credits.engine",    "Engine built on Unity Starter Assets, Magic Pig Games, NatureManufacture." },
+            { "credits.fonts",     "Typeset in IM Fell English and EB Garamond (SIL Open Font License)." },
             { "credits.thanks",    "Thanks for walking back into Hollowfen with Wren." },
 
             // Cultivation

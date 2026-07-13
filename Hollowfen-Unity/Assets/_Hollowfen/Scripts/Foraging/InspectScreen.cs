@@ -538,7 +538,7 @@ namespace Hollowfen.Foraging
             eRT.anchoredPosition = new Vector2(0f, y);
             y -= 30f;
 
-            // Title (Georgia serif, dark on parchment)
+            // Title (IM Fell serif, dark on parchment)
             _title = UICanvasUtil.NewHeading("Title", col, "", 68f, HollowfenPalette.InkDeep,
                 TMPro.FontStyles.Normal, TMPro.TextAlignmentOptions.TopLeft);
             var tRT = _title.rectTransform;

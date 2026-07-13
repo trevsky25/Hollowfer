@@ -19,8 +19,10 @@ namespace Hollowfen.UI
             get
             {
                 if (_heading != null) return _heading;
+                // Runtime: UIManager.Awake injects this via SetHeadingFont (build-safe).
+                // Editor fallback for screens built before that injection runs.
 #if UNITY_EDITOR
-                _heading = UnityEditor.AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/UI/Fonts/Georgia SDF.asset");
+                _heading = UnityEditor.AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/UI/Fonts/IMFellEnglish SDF.asset");
 #endif
                 if (_heading == null) _heading = BodyFont;
                 return _heading;
@@ -78,7 +80,7 @@ namespace Hollowfen.UI
             return text;
         }
 
-        // Heading: Georgia SDF, optical-style sizing for serif display copy.
+        // Heading: IM Fell English SDF, optical-style sizing for serif display copy.
         public static TMP_Text NewHeading(string name, Transform parent, string content, float fontSize, Color color, TMPro.FontStyles style, TMPro.TextAlignmentOptions align)
         {
             var rt = NewRect(name, parent);
@@ -92,8 +94,11 @@ namespace Hollowfen.UI
             t.enableWordWrapping = true;
             t.overflowMode = TextOverflowModes.Overflow;
             t.raycastTarget = false;
-            t.characterSpacing = -10f;     // tighten serif display
-            t.lineSpacing = -8f;           // tighter leading at large sizes
+            // IM Fell English is a narrow, calligraphic old-style face — it needs far less
+            // negative tracking than Georgia did (Georgia used -10). Leading tuned for its
+            // tall ascenders/descenders so large multi-line titles don't collide.
+            t.characterSpacing = -2f;
+            t.lineSpacing = -6f;
             return t;
         }
 

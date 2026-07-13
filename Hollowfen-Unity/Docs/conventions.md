@@ -69,30 +69,40 @@ Never dump files in `Assets/` root.
 - Assuming Unity version features without checking the project version (Unity 6000.4.4f1).
 - Editing Asset Store content in place (changes lost on package update).
 
-## Fonts (TMP) — ship config (do not regress; fixed batch-32)
+## Fonts (TMP) — ship config (do not regress; fixed batch-32, migrated to OFL fonts batch-55)
 
 - **All shipping TMP font assets stay `atlasPopulationMode: Static` with `m_ClearDynamicDataOnBuild: 0`.**
   Dynamic mode strips the baked glyph table at build (empty text in the player) **and** re-serializes the
-  `.asset` on every play-mode run (the old "git checkout the Georgia SDF churn" chore). Static ships the
-  baked atlas and is churn-immune.
-- Ship fonts: **`Assets/UI/Fonts/Georgia SDF.asset`** (primary serif — prose/dialogue/titles, **201 glyphs
-  / 2 atlas pages**: ASCII + full Latin-1 Supplement + typographic punctuation) and **`Assets/TextMesh
-  Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset`** (fallback, **204 glyphs**, incl.
-  → ← ○ that Georgia's serif source lacks). Georgia lists the fallback in its own `fallbackFontAssetTable`
-  (TMP global fallback list is empty). All are multi-atlas-enabled so an over-1024 set spills to a new page.
-- **`m_SourceFontFile` is nulled (`{fileID: 0}`) on both** so the source `.ttf` (Georgia is Microsoft-licensed)
-  is NOT redistributed in the player — the baked SDF atlas ships instead. `m_SourceFontFileGUID` is kept for
-  re-bakes. Do not re-link the source in a shipping asset.
+  `.asset` on every play-mode run (the old churn chore). Static ships the baked atlas and is churn-immune.
+- **Ship fonts (batch-55 — Georgia retired, was MS-licensed ship blocker):**
+  - **`Assets/UI/Fonts/IMFellEnglish SDF.asset`** — DISPLAY/title role (the "Hollowfen" wordmark, section/act
+    headers, StoryCard titles). **201 glyphs / 2 atlas pages** (ASCII + Latin-1 + typographic punctuation).
+  - **`Assets/UI/Fonts/EBGaramond SDF.asset`** — BODY + UI role (nav, buttons, paragraphs, labels, eyebrows,
+    tooltips). **212 glyphs / 2 atlas pages**. This is the **TMP default font asset** (`TMP Settings.asset`
+    `m_defaultFontAsset`), so any TMP text with no explicit font resolves to it.
+  - **`…/LiberationSans SDF - Fallback.asset`** — fallback wired on BOTH via each font's own
+    `fallbackFontAssetTable` (TMP global list stays empty). It carries → ← ○ and the few dash/prime glyphs
+    the old-style serifs lack (IM Fell misses 9, EBG misses only ○). All assets are multi-atlas-enabled.
+  - Both are **OFL (SIL Open Font License)** — source `.ttf` + each family's `OFL.txt` are KEPT in
+    `Assets/UI/Fonts/` and DO ship (OFL requires the license to travel with the font). **Unlike Georgia, do
+    NOT null `m_SourceFontFile`** — OFL permits redistributing the source, and keeping it linked simplifies
+    re-bakes. Credit line: `credits.fonts` in `Localization.cs`.
+- **Runtime font wiring (batch-55):** code-built screens get their fonts from `UICanvasUtil.HeadingFont`
+  (IM Fell) / `BodyFont` (EBG). `UIManager.Awake` injects both via `SetHeadingFont/SetBodyFont` from
+  `[SerializeField]` refs on the scene UIManager, so headings resolve **in a player build**, not just via the
+  editor-only `AssetDatabase` fallback (the pre-batch-55 latent bug where built headings silently fell back to
+  body). If you add a screen that builds before UIManager.Awake, keep the editor `AssetDatabase` fallback path.
 - **Adding a new displayed glyph** (a localized string with a new character, a new UI symbol): re-bake,
-  don't switch back to Dynamic. Recipe (bridge `execute_code`): (1) reflection-set `m_SourceFontFile` back
-  to `AssetDatabase.LoadAssetAtPath<Font>(GUIDToAssetPath(m_SourceFontFileGUID))` (it's nulled for ship);
-  (2) reflection-set `m_AtlasPopulationMode = Dynamic` and `m_IsMultiAtlasTexturesEnabled = true`;
-  (3) `ClearFontAssetData(true)` → `TryAddCharacters(fullSet, out missing)`; (4) reflection-set
-  `m_AtlasPopulationMode = Static`, `m_ClearDynamicDataOnBuild = false`, `m_SourceFontFile = null` again;
-  (5) `SetDirty` asset + atlas textures + material → `SaveAssets`. `missing` tells you which glyphs the
-  source .ttf genuinely lacks (those need the fallback or an icon set). After any reflection mode-flip,
-  diff the asset against TMP's stock static `LiberationSans SDF.asset` for structural parity. Full worked
-  example in `Docs/worksheets/batch-32-georgia-sdf-ship-fix.md`.
+  don't switch to Dynamic permanently. Fresh-asset recipe (bridge `execute_code`, CodeDom C#6 — no `using`,
+  fully-qualify types): `TMP_FontAsset.CreateFontAsset(srcFont, 90, 9, GlyphRenderMode.SDFAA, 1024, 1024,
+  AtlasPopulationMode.Dynamic, true)` → `AssetDatabase.CreateAsset` → `TryAddCharacters(fullSet, out string
+  missing)` → `AddObjectToAsset` each atlas texture + the material → wire `fallbackFontAssetTable` →
+  reflection-set `m_AtlasPopulationMode=Static`, `m_ClearDynamicDataOnBuild=false`,
+  `m_IsMultiAtlasTexturesEnabled=true` → `SetDirty` asset+atlas+material → `SaveAssets`. `missing` tells you
+  which glyphs the source genuinely lacks (those fall to the fallback). Full worked example in
+  `Docs/worksheets/batch-55-font-migration-imfell-ebgaramond.md` (batch-32's in-place reflection re-bake of an
+  existing asset still applies when you must preserve a GUID). `AssetDatabase.DeleteAsset` is blocked by the
+  bridge safety check — delete via the `manage_asset` tool instead.
 - Symbols no project font provides (✓ ✕ △ ◉) render as boxes — that's the controller-glyph/icon pass's job
   (QUESTIONS Q11), not a font-mode fix.
 - Editor/build **parity** is the point: with Static, an unbaked glyph boxes during authoring instead of

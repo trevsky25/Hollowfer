@@ -768,6 +768,8 @@ MonoBehaviour:
   _initialScreenId: main-menu
   _pauseMenuPrefab: {fileID: 2744666292273185680, guid: 98a1eee502b514603aad0bc1701741cf, type: 3}
   _uiSfxOutput: {fileID: 230091688605422166, guid: a9e21221dfb3941e1916c2e907205b1a, type: 2}
+  _headingFont: {fileID: 11400000, guid: a0e756a6c100f40c5b810e58b8cf4b44, type: 2}
+  _bodyFont: {fileID: 11400000, guid: 81d580102847a41c384812dfaae1f664, type: 2}
 --- !u!4 &221548291
 Transform:
   m_ObjectHideFlags: 0
@@ -1107,8 +1109,8 @@ MonoBehaviour:
   m_text: Forage the Edge Woods, learn what grows in the damp, and keep a hungry
     village alive.
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0506267eb35a74117b4a9d04a8552389, type: 2}
-  m_sharedMaterial: {fileID: 7035834199786628284, guid: 0506267eb35a74117b4a9d04a8552389, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 81d580102847a41c384812dfaae1f664, type: 2}
+  m_sharedMaterial: {fileID: 2301272535997657520, guid: 81d580102847a41c384812dfaae1f664, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1708,7 +1710,9 @@ MonoBehaviour:
   _mistCount: 5
   _mistColor: {r: 0.74, g: 0.77, b: 0.7, a: 0.05}
   _vignetteStrength: 0.55
-  _warmGrade: {r: 0.82, g: 0.62, b: 0.34, a: 0.06}
+  _leftWarmColor: {r: 0.32, g: 0.22, b: 0.09, a: 1}
+  _leftWarmStrength: 0.9
+  _leftWarmWidth: 0.56
   _kenBurnsScale: 1.06
   _kenBurnsSeconds: 48
   _kenBurnsDrift: 18
@@ -2110,8 +2114,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: SETTINGS
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 81d580102847a41c384812dfaae1f664, type: 2}
+  m_sharedMaterial: {fileID: 2301272535997657520, guid: 81d580102847a41c384812dfaae1f664, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2268,8 +2272,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Field Guide
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 81d580102847a41c384812dfaae1f664, type: 2}
+  m_sharedMaterial: {fileID: 2301272535997657520, guid: 81d580102847a41c384812dfaae1f664, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2405,8 +2409,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Traveling to Hollowfen...
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0506267eb35a74117b4a9d04a8552389, type: 2}
-  m_sharedMaterial: {fileID: 7035834199786628284, guid: 0506267eb35a74117b4a9d04a8552389, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 81d580102847a41c384812dfaae1f664, type: 2}
+  m_sharedMaterial: {fileID: 2301272535997657520, guid: 81d580102847a41c384812dfaae1f664, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3001,8 +3005,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Wren
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 81d580102847a41c384812dfaae1f664, type: 2}
+  m_sharedMaterial: {fileID: 2301272535997657520, guid: 81d580102847a41c384812dfaae1f664, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3973,8 +3977,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "New Game \u2192"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0506267eb35a74117b4a9d04a8552389, type: 2}
-  m_sharedMaterial: {fileID: 7035834199786628284, guid: 0506267eb35a74117b4a9d04a8552389, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 81d580102847a41c384812dfaae1f664, type: 2}
+  m_sharedMaterial: {fileID: 2301272535997657520, guid: 81d580102847a41c384812dfaae1f664, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3998,7 +4002,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 52.8
+  m_fontSize: 45.95
   m_fontSizeBase: 34
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4689,8 +4693,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: '|'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 81d580102847a41c384812dfaae1f664, type: 2}
+  m_sharedMaterial: {fileID: 2301272535997657520, guid: 81d580102847a41c384812dfaae1f664, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -4901,6 +4905,8 @@ MonoBehaviour:
   _heroSprite: {fileID: 21300000, guid: e36fe584bb0434297b89fc207ca1fa43, type: 3}
   _welcomeEyebrow: CHAPTER ONE
   _welcomeTitle: Homecoming
+  _returnEyebrow: RETURNING TO
+  _returnTitle: Hollowfen
 --- !u!1 &1416958265
 GameObject:
   m_ObjectHideFlags: 0
@@ -5163,8 +5169,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: THE FAILING VILLAGE
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0506267eb35a74117b4a9d04a8552389, type: 2}
-  m_sharedMaterial: {fileID: 7035834199786628284, guid: 0506267eb35a74117b4a9d04a8552389, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 81d580102847a41c384812dfaae1f664, type: 2}
+  m_sharedMaterial: {fileID: 2301272535997657520, guid: 81d580102847a41c384812dfaae1f664, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -5772,8 +5778,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: WREN TOBIN'S RETURN
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0506267eb35a74117b4a9d04a8552389, type: 2}
-  m_sharedMaterial: {fileID: 7035834199786628284, guid: 0506267eb35a74117b4a9d04a8552389, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 81d580102847a41c384812dfaae1f664, type: 2}
+  m_sharedMaterial: {fileID: 2301272535997657520, guid: 81d580102847a41c384812dfaae1f664, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -6022,8 +6028,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: CONTINUE
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 81d580102847a41c384812dfaae1f664, type: 2}
+  m_sharedMaterial: {fileID: 2301272535997657520, guid: 81d580102847a41c384812dfaae1f664, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -6479,8 +6485,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: '|'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 81d580102847a41c384812dfaae1f664, type: 2}
+  m_sharedMaterial: {fileID: 2301272535997657520, guid: 81d580102847a41c384812dfaae1f664, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -7160,8 +7166,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: '|'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 81d580102847a41c384812dfaae1f664, type: 2}
+  m_sharedMaterial: {fileID: 2301272535997657520, guid: 81d580102847a41c384812dfaae1f664, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -7699,8 +7705,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Hollowfen
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0506267eb35a74117b4a9d04a8552389, type: 2}
-  m_sharedMaterial: {fileID: 7035834199786628284, guid: 0506267eb35a74117b4a9d04a8552389, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: a0e756a6c100f40c5b810e58b8cf4b44, type: 2}
+  m_sharedMaterial: {fileID: -5470075242066296716, guid: a0e756a6c100f40c5b810e58b8cf4b44, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -7857,8 +7863,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Story
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 81d580102847a41c384812dfaae1f664, type: 2}
+  m_sharedMaterial: {fileID: 2301272535997657520, guid: 81d580102847a41c384812dfaae1f664, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -8094,8 +8100,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: '|'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 81d580102847a41c384812dfaae1f664, type: 2}
+  m_sharedMaterial: {fileID: 2301272535997657520, guid: 81d580102847a41c384812dfaae1f664, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

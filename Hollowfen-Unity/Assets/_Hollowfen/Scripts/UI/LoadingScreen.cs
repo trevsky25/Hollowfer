@@ -180,7 +180,7 @@ namespace Hollowfen.UI
             MakeBar(root, "LB_Top", 1f);
             MakeBar(root, "LB_Bot", 0f);
 
-            // Welcome title block (Georgia), lower third, pops up.
+            // Welcome title block (IM Fell), lower third, pops up.
             var wg = new GameObject("WelcomeGroup", typeof(RectTransform), typeof(CanvasGroup));
             _welcomeGroup = wg.GetComponent<RectTransform>();
             _welcomeGroup.SetParent(root, false);

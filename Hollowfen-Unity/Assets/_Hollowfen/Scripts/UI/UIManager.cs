@@ -22,6 +22,12 @@ namespace Hollowfen.UI
         [SerializeField, Tooltip("Mixer group for UI sounds (page-transition click, batch-44). Null = unrouted.")]
         private UnityEngine.Audio.AudioMixerGroup _uiSfxOutput;
 
+        [Header("Typography (batch-55)")]
+        [SerializeField, Tooltip("Display/title serif — IM Fell English SDF. Injected into UICanvasUtil at boot so code-built headings resolve at runtime (not just in-editor).")]
+        private TMPro.TMP_FontAsset _headingFont;
+        [SerializeField, Tooltip("Body/UI serif — EBGaramond SDF. Injected into UICanvasUtil at boot.")]
+        private TMPro.TMP_FontAsset _bodyFont;
+
         private float _bootTime;
 
         private InputActions _input;
@@ -41,6 +47,11 @@ namespace Hollowfen.UI
             }
             Instance = this;
             DontDestroyOnLoad(gameObject);
+
+            // Inject the migrated fonts before any screen builds (batch-55) so code-built
+            // headings/body resolve at runtime in a player build, not only via editor AssetDatabase.
+            UICanvasUtil.SetHeadingFont(_headingFont);
+            UICanvasUtil.SetBodyFont(_bodyFont);
 
             EnsureEventSystem();
 

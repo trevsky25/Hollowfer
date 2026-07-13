@@ -118,7 +118,7 @@ inheritance beat. Slices:
 
 - **Hardening pass (from the 2026-07-11 doc-backfill audit)** — (a) achievement hooks fire ONLY on story-card unlocks, not quest completions — violates our non-negotiable; add per-quest achievement firing. (b) Save writes aren't atomic (`File.WriteAllText` in place) — temp-file+rename to survive crash-mid-write. (c) `TimeManager` static events lack the `ResetOnLoad` delegate reset the other stores have. (d) `SaveSlotMeta.CurrentQuest` stores localized text, not an ID. (e) Dead code sweep: `MapScreen.BuildFrame` + stale header, `DialogueScreen.BuildFrame`, `QuestBootstrap._startDelaySeconds`, `QuestData._order`, `DialogueLine.isCloseup` (keep if cinematic pass is coming). One focused batch.
 - **Input consolidation onto action maps** — DialogueScreen/MapScreen/InspectScreen poll devices directly; the Dialogue action map is entirely unused. Blocks any future rebinding feature; fold into the settings/controls milestone.
-- **Georgia SDF build fix** — font loads editor-only via AssetDatabase; move to `Resources/` or serialized refs. **Ship blocker; do before any build milestone.**
+- ~~**Georgia SDF build fix** — font loads editor-only via AssetDatabase; move to `Resources/` or serialized refs. **Ship blocker.**~~ **DONE batch-55** — `UIManager.Awake` injects heading/body fonts into `UICanvasUtil` from serialized refs, so code-built headings resolve in a player build (not just editor AssetDatabase).
 - **Wren animation fix** — Mixamo rig vs StarterAssets mismatch (palms-up run, curled idle fingers). Own focused session: Mixamo-sourced anims, avatar reconfig, or hand mask.
 - **Mushroom mesh decimation** — Field Mushroom is 414k verts; decimate all Meshy exports before EA.
 - **Localization wiring pass** — the big one is dialogue: `DialogueLine.speaker`/`.text` are raw strings AND speaker doubles as the SpeakerColors dictionary key, so localizing means restructuring (IDs + speaker enum/id). Also: menu pages through `Localization.Get`, QuestHUD eyebrow, StoryBeats captions, map chrome strings, LUT completion; then Simplified Chinese translation (pre-EA). Full gap list in `Docs/systems/localization.md`.
@@ -147,7 +147,7 @@ inheritance beat. Slices:
 - [ ] Store page assets (capsule art, trailer, screenshots)
 - [ ] False-confidence test audit (do tests actually assert what they claim?)
 - [ ] **Steam AI-content disclosure** if any AI-generated VO/art ships (Q10) — required on the store page
-- [ ] **Font + asset licensing audit** — Georgia is a licensed Microsoft font: verify redistribution rights (or swap to an OFL serif) before any public build; check every asset pack's attribution requirements against the credits copy (feeds QUESTIONS Q9)
+- [x] **Font licensing** — ~~Georgia is a licensed Microsoft font~~ **RESOLVED batch-55**: Georgia retired; migrated to **IM Fell English** (titles) + **EB Garamond** (body), both **OFL** — free to embed/ship, source `.ttf` + `OFL.txt` shipped, credited via `credits.fonts`. Still open: **asset-pack attribution audit** — check every asset pack's attribution requirements against the credits copy (feeds QUESTIONS Q9).
 
 ## Done
 

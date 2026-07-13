@@ -15,7 +15,7 @@ namespace Hollowfen.UI
     // Batch-44: rebuilt programmatically in the journal-paper register (the batch-28
     // SettingsScreen template for legacy menu chrome) — the legacy scene-authored gray
     // panel is wiped at initialize and replaced with the parchment card: ink scrim,
-    // soft shadow, paper grain + sheen, inset gold hairline frame, Georgia serif title
+    // soft shadow, paper grain + sheen, inset gold hairline frame, IM Fell serif title
     // over a ledger double-rule, and Cancel (ink ghost) / Confirm (gold accent) buttons
     // with FocusHighlight. API unchanged.
     public class ConfirmModal : UIScreen
@@ -188,7 +188,7 @@ namespace Hollowfen.UI
             frameRt.anchorMin = Vector2.zero; frameRt.anchorMax = Vector2.one;
             frameRt.offsetMin = new Vector2(14f, 14f); frameRt.offsetMax = new Vector2(-14f, -14f);
 
-            // Title — Georgia serif, ink, centered.
+            // Title — IM Fell serif, ink, centered.
             _titleText = UICanvasUtil.NewHeading("Title", card, "", 34f, Ink, FontStyles.Normal, TextAlignmentOptions.Center);
             var tRT = _titleText.rectTransform;
             tRT.anchorMin = new Vector2(0f, 1f); tRT.anchorMax = new Vector2(1f, 1f);
@@ -238,7 +238,7 @@ namespace Hollowfen.UI
         }
 
         // One card button in the journal action grammar (IntroGuide's "Set out →"):
-        // rounded fill + hairline + Georgia italic label + gold FocusHighlight glow.
+        // rounded fill + hairline + EB Garamond italic label + gold FocusHighlight glow.
         private Button BuildButton(RectTransform card, string name, string label, Vector2 anchoredPos, bool accent)
         {
             var btnRt = UICanvasUtil.NewRect(name, card);

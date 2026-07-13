@@ -10,7 +10,7 @@ using UnityEngine.UI;
 namespace Hollowfen.UI
 {
     // Production settings screen, rebuilt to the code-built house idiom (batch-28).
-    // Echoes the main menu's editorial column: sage eyebrow, Georgia serif title, gold
+    // Echoes the main menu's editorial column: sage eyebrow, IM Fell serif title, gold
     // rule, text-nav tab row, content rows below — so settings reads as the same "page"
     // of the menu. Gamepad-first: styled sliders and ‹ value › cyclers (no dropdowns),
     // FocusHighlight on every selectable, LB/RB (Q/E) tab cycling preserved.
@@ -526,7 +526,7 @@ namespace Hollowfen.UI
             UICanvasUtil.SetRect(build.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(ColW, 24f), new Vector2(0f, y));
             y -= 56f;
 
-            string[] lineKeys = { "credits.copyright", "credits.photos", "credits.wren", "credits.engine" };
+            string[] lineKeys = { "credits.copyright", "credits.photos", "credits.wren", "credits.engine", "credits.fonts" };
             foreach (var key in lineKeys)
             {
                 var line = UICanvasUtil.NewBody("Line", parent, Localization.Get(key), 17f, HollowfenPalette.Parchment, FontStyles.Normal, TextAlignmentOptions.TopLeft);

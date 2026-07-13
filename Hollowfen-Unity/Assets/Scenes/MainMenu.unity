@@ -159,8 +159,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Traveling to Hollowfen...
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0506267eb35a74117b4a9d04a8552389, type: 2}
-  m_sharedMaterial: {fileID: 7035834199786628284, guid: 0506267eb35a74117b4a9d04a8552389, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 81d580102847a41c384812dfaae1f664, type: 2}
+  m_sharedMaterial: {fileID: 2301272535997657520, guid: 81d580102847a41c384812dfaae1f664, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1556,8 +1556,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: WREN TOBIN'S RETURN
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0506267eb35a74117b4a9d04a8552389, type: 2}
-  m_sharedMaterial: {fileID: 7035834199786628284, guid: 0506267eb35a74117b4a9d04a8552389, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 81d580102847a41c384812dfaae1f664, type: 2}
+  m_sharedMaterial: {fileID: 2301272535997657520, guid: 81d580102847a41c384812dfaae1f664, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1925,8 +1925,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: THE FAILING VILLAGE
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0506267eb35a74117b4a9d04a8552389, type: 2}
-  m_sharedMaterial: {fileID: 7035834199786628284, guid: 0506267eb35a74117b4a9d04a8552389, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 81d580102847a41c384812dfaae1f664, type: 2}
+  m_sharedMaterial: {fileID: 2301272535997657520, guid: 81d580102847a41c384812dfaae1f664, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2193,8 +2193,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Hollowfen
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0506267eb35a74117b4a9d04a8552389, type: 2}
-  m_sharedMaterial: {fileID: 7035834199786628284, guid: 0506267eb35a74117b4a9d04a8552389, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: a0e756a6c100f40c5b810e58b8cf4b44, type: 2}
+  m_sharedMaterial: {fileID: -5470075242066296716, guid: a0e756a6c100f40c5b810e58b8cf4b44, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2489,8 +2489,8 @@ MonoBehaviour:
   m_text: Forage the Edge Woods, learn what grows in the damp, and keep a hungry
     village alive.
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0506267eb35a74117b4a9d04a8552389, type: 2}
-  m_sharedMaterial: {fileID: 7035834199786628284, guid: 0506267eb35a74117b4a9d04a8552389, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 81d580102847a41c384812dfaae1f664, type: 2}
+  m_sharedMaterial: {fileID: 2301272535997657520, guid: 81d580102847a41c384812dfaae1f664, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2705,8 +2705,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "Continue \u2192"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0506267eb35a74117b4a9d04a8552389, type: 2}
-  m_sharedMaterial: {fileID: 7035834199786628284, guid: 0506267eb35a74117b4a9d04a8552389, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 81d580102847a41c384812dfaae1f664, type: 2}
+  m_sharedMaterial: {fileID: 2301272535997657520, guid: 81d580102847a41c384812dfaae1f664, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
