@@ -72,6 +72,8 @@ namespace Hollowfen.UI
             if (slot < 0) return;
             Debug.Log($"[MainMenu] Continue → loading slot {slot}");
             Hollowfen.Save.SaveCoordinator.LoadSlot(slot);
+            // The menu Continue button gets the cinematic welcome card too (batch-50), faded to the game.
+            LoadingScreen.NextIsContinue = true;
             if (UIManager.Instance != null)
                 UIManager.Instance.LoadSceneAndOpen(GameplaySceneName);
         }

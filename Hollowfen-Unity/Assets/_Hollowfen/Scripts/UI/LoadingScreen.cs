@@ -16,7 +16,11 @@ namespace Hollowfen.UI
     public class LoadingScreen : UIScreen
     {
         // Set true by SaveSlotScreen right before a NEW-GAME LoadSceneAndOpen; consumed in OnOpen.
+        // NEW GAME → the cinematic welcome + seamless image→narration handoff.
         public static bool NextIsCinematic;
+        // CONTINUE / LOAD (batch-50) → the SAME cinematic welcome card, but NO seamless handoff (there's
+        // no intro to dissolve into on a load); UIManager just fades the card out to the game.
+        public static bool NextIsContinue;
 
         [SerializeField] private Text _label;
         [SerializeField] private string _baseText = "Traveling to Hollowfen";
@@ -25,6 +29,8 @@ namespace Hollowfen.UI
         private Sprite _heroSprite;
         [SerializeField] private string _welcomeEyebrow = "CHAPTER ONE";
         [SerializeField] private string _welcomeTitle = "Homecoming";
+        [SerializeField] private string _returnEyebrow = "RETURNING TO";
+        [SerializeField] private string _returnTitle = "Hollowfen";
 
         // Must match NarrationOverlay's Ken-Burns A-state + letterbox for a seamless handoff.
         private const float KbScaleA = 1.20f;
@@ -36,6 +42,7 @@ namespace Hollowfen.UI
         private bool _isCinematic;
         private RectTransform _cineRoot, _welcomeGroup, _loadingLine;
         private CanvasGroup _welcomeCg;
+        private TMP_Text _eyebrowTmp, _titleTmp; // cached so per-open copy survives the build-once guard
         private RectTransform _marqueeStreak;
         private float _marqueeT;
 
@@ -59,13 +66,20 @@ namespace Hollowfen.UI
         public override void OnOpen()
         {
             base.OnOpen();
-            _isCinematic = _heroSprite != null && NextIsCinematic;
+            // New game OR continue/load both get the cinematic card (batch-50); only the seamless
+            // narration handoff downstream is new-game-only (UIManager keys that off cinematicHandoff).
+            bool returning = NextIsContinue && !NextIsCinematic;
+            _isCinematic = _heroSprite != null && (NextIsCinematic || NextIsContinue);
             NextIsCinematic = false;
+            NextIsContinue = false;
 
             if (_isCinematic)
             {
                 _welcomeState = 0;
                 BuildCinematic();
+                // Per-open copy (BuildCinematic is guarded build-once, so set the text every open).
+                if (_eyebrowTmp != null) _eyebrowTmp.text = returning ? _returnEyebrow : _welcomeEyebrow;
+                if (_titleTmp != null) _titleTmp.text = returning ? _returnTitle : _welcomeTitle;
                 if (_cineRoot != null) _cineRoot.gameObject.SetActive(true);
                 if (_label != null) _label.gameObject.SetActive(false);
                 if (CanvasGroup != null) CanvasGroup.alpha = 1f;
@@ -129,6 +143,13 @@ namespace Hollowfen.UI
             _cineRoot.SetParent(parent, false);
             _cineRoot.anchorMin = Vector2.zero; _cineRoot.anchorMax = Vector2.one;
             _cineRoot.offsetMin = Vector2.zero; _cineRoot.offsetMax = Vector2.zero;
+            // Own nested canvas so the welcome card always renders ABOVE the game HUD/minimap during a
+            // continue/load (batch-50): the loading screen shares UIManager's canvas at sortingOrder 10,
+            // which ties with _MiniMapCanvas — the minimap poked through the card's corner. A high
+            // overrideSorting order covers everything (still below the FadeOverlay at 32767).
+            var cineCanvas = rootGo.AddComponent<Canvas>();
+            cineCanvas.overrideSorting = true;
+            cineCanvas.sortingOrder = 200;
             Transform root = _cineRoot;
 
             // Black base (fills the letterbox gaps at other aspects).
@@ -171,6 +192,7 @@ namespace Hollowfen.UI
 
             var eyebrow = UICanvasUtil.NewEyebrow("WelcomeEyebrow", _welcomeGroup, _welcomeEyebrow, 24f,
                 new Color(0.78f, 0.66f, 0.42f, 1f));
+            _eyebrowTmp = eyebrow;
             eyebrow.alignment = TextAlignmentOptions.Center;
             var eRT = eyebrow.rectTransform;
             eRT.anchorMin = new Vector2(0f, 0f); eRT.anchorMax = new Vector2(1f, 0f); eRT.pivot = new Vector2(0.5f, 0f);
@@ -178,6 +200,7 @@ namespace Hollowfen.UI
 
             var title = UICanvasUtil.NewHeading("WelcomeTitle", _welcomeGroup, _welcomeTitle, 72f,
                 new Color(0.96f, 0.93f, 0.85f, 1f), FontStyles.Normal, TextAlignmentOptions.Center);
+            _titleTmp = title;
             var tRT = title.rectTransform;
             tRT.anchorMin = new Vector2(0f, 0f); tRT.anchorMax = new Vector2(1f, 0f); tRT.pivot = new Vector2(0.5f, 0f);
             tRT.sizeDelta = new Vector2(0f, 90f); tRT.anchoredPosition = new Vector2(0f, 0f);

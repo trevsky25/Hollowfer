@@ -123,16 +123,20 @@ namespace Hollowfen.UI
                 float w = 0f;
                 while (w < 0.6f && !loading.gameObject.activeSelf) { w += Time.unscaledDeltaTime; yield return null; }
             }
-            bool interactiveWelcome = cinematicHandoff && loading != null && loading.Cinematic;
+            // The cinematic welcome card shows for BOTH new-game and continue/load (batch-50). Only the
+            // seamless image→narration handoff is new-game-only — there's no intro to dissolve into on a
+            // load, so continue just fades the card out to the game.
+            bool showWelcome = loading != null && loading.Cinematic;
+            bool seamlessHandoff = cinematicHandoff && showWelcome;
 
             var op = SceneManager.LoadSceneAsync(sceneName);
-            if (interactiveWelcome && op != null)
+            if (showWelcome && op != null)
             {
-                // New-game welcome (batch-42, reworked batch-46): load the scene but hold activation
-                // until the async phase completes, keeping the welcome card visibly ALIVE (pulsing
-                // line + marquee + motes) the whole way. No press gate — a keypress that led straight
-                // into the heavy integration stall read as a freeze; a moving loading screen that
-                // hitches briefly at the end reads as loading.
+                // Welcome hold-activation (batch-42/46): load the scene but hold activation until the
+                // async phase completes, keeping the welcome card visibly ALIVE (pulsing line + marquee
+                // + motes) the whole way. No press gate — a keypress that led straight into the heavy
+                // integration stall read as a freeze; a moving loading screen that hitches briefly at
+                // the end reads as loading.
                 op.allowSceneActivation = false;
                 while (op.progress < 0.89f) yield return null;
                 // A short breath so the welcome is readable even on a fast SSD.
@@ -147,8 +151,8 @@ namespace Hollowfen.UI
             yield return new WaitForSecondsRealtime(0.25f);
 
             // Seamless opening (batch-38): the cinematic welcome card holds until the in-scene
-            // narration is up (same ridge image), then cross-fades out to reveal it.
-            if (interactiveWelcome)
+            // narration is up (same ridge image), then cross-fades out to reveal it. NEW GAME ONLY.
+            if (seamlessHandoff)
             {
                 float t = 0f;
                 while (t < 4f && (NarrationOverlay.Instance == null || !NarrationOverlay.Instance.IsShowing))
@@ -156,6 +160,17 @@ namespace Hollowfen.UI
                     t += Time.unscaledDeltaTime;
                     yield return null;
                 }
+                bool faded = false;
+                loading.FadeOutAndClose(0.6f, () => faded = true);
+                while (!faded) yield return null;
+                if (TopScreen != null && TopScreen.ScreenId == "loading") Back();
+                yield break;
+            }
+
+            // Continue/load with the cinematic card (batch-50): no narration to dissolve into — the card
+            // has masked the scene pop-in; now just fade it out to reveal the loaded game.
+            if (showWelcome)
+            {
                 bool faded = false;
                 loading.FadeOutAndClose(0.6f, () => faded = true);
                 while (!faded) yield return null;

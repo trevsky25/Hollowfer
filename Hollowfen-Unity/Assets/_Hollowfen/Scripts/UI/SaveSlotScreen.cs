@@ -119,8 +119,10 @@ namespace Hollowfen.UI
                 Debug.Log($"[SaveSlot] Load slot {slot}");
                 SaveCoordinator.LoadSlot(slot);
             }
-            // New game gets the cinematic welcome→intro handoff (batch-38); load/continue is plain.
+            // New game gets the cinematic welcome→intro handoff (batch-38); load/continue gets the SAME
+            // cinematic welcome card but fades to the game (no seamless handoff) — batch-50.
             LoadingScreen.NextIsCinematic = newGame;
+            LoadingScreen.NextIsContinue = !newGame;
             if (UIManager.Instance != null)
                 UIManager.Instance.LoadSceneAndOpen(GameplaySceneName, null, newGame);
         }
