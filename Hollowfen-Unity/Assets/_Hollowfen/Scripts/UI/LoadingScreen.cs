@@ -36,13 +36,16 @@ namespace Hollowfen.UI
         private bool _isCinematic;
         private RectTransform _cineRoot, _welcomeGroup, _loadingLine;
         private CanvasGroup _welcomeCg;
+        private RectTransform _marqueeStreak;
+        private float _marqueeT;
 
-        // Interactive welcome (batch-42): once the scene is loaded-but-not-activated, the loading
-        // line becomes a "press any key" prompt; UIManager holds activation until the player presses.
+        // Welcome loading states (batch-42, reworked batch-46: no press gate — the card stays a
+        // visibly MOVING loading screen: pulsing line + gold marquee + motes; the text flips to
+        // "entering Hollowfen" right before the scene-integration stall so the brief hitch reads
+        // as arrival, not a freeze).
         private const string LoadingText = "gathering the last light";
-        private const string ReadyPromptText = "Press any key to begin";
         private const string EnteringText = "entering Hollowfen";
-        private int _welcomeState; // 0 = loading, 1 = ready/prompt, 2 = activating
+        private int _welcomeState; // 0 = loading, 2 = activating/entering
 
         private readonly List<RectTransform> _motes = new List<RectTransform>();
         private readonly List<CanvasGroup> _moteCg = new List<CanvasGroup>();
@@ -86,10 +89,7 @@ namespace Hollowfen.UI
             if (CanvasGroup != null) CanvasGroup.alpha = 1f;
         }
 
-        // Scene is loaded but not yet activated — invite the player to begin (batch-42).
-        public void ShowReadyPrompt() { _welcomeState = 1; }
-
-        // Player pressed to begin — acknowledge while the scene integrates.
+        // Async load done, activation about to run — flip the line to "entering Hollowfen".
         public void BeginActivation() { _welcomeState = 2; }
 
         // Cross-fade the whole card out to reveal the (same-image) narration behind it.
@@ -189,6 +189,23 @@ namespace Hollowfen.UI
             _loadingLine.pivot = new Vector2(0.5f, 0f);
             _loadingLine.sizeDelta = new Vector2(700f, 24f);
             _loadingLine.anchoredPosition = new Vector2(0f, LetterboxHeight * 0.42f);
+
+            // Moving loading marquee (batch-46): a thin ink track with a gold streak sweeping
+            // across — an unambiguous "this is loading" motion cue above the loading line.
+            // RectMask2D (never Mask — scroll-viewport gotcha) clips the streak to the track.
+            var track = NewImage("MarqueeTrack", root, new Color(0.90f, 0.88f, 0.80f, 0.13f));
+            var trackRT = track.rectTransform;
+            trackRT.anchorMin = new Vector2(0.5f, 0f); trackRT.anchorMax = new Vector2(0.5f, 0f);
+            trackRT.pivot = new Vector2(0.5f, 0f);
+            trackRT.sizeDelta = new Vector2(320f, 3f);
+            trackRT.anchoredPosition = new Vector2(0f, LetterboxHeight * 0.42f + 32f);
+            track.gameObject.AddComponent<RectMask2D>();
+            var streak = NewImage("Streak", track.transform, new Color(0.965f, 0.812f, 0.475f, 0.9f));
+            _marqueeStreak = streak.rectTransform;
+            _marqueeStreak.anchorMin = new Vector2(0f, 0f); _marqueeStreak.anchorMax = new Vector2(0f, 1f);
+            _marqueeStreak.pivot = new Vector2(0.5f, 0.5f);
+            _marqueeStreak.sizeDelta = new Vector2(90f, 0f);
+            _marqueeStreak.anchoredPosition = new Vector2(-45f, 0f);
         }
 
         private void BuildMotes(Transform root)
@@ -218,6 +235,12 @@ namespace Hollowfen.UI
         private void Update()
         {
             if (_motes.Count == 0 || _cineRoot == null || !_cineRoot.gameObject.activeInHierarchy) return;
+            // Marquee streak sweeps the track continuously (unscaled — the load doesn't touch timeScale).
+            if (_marqueeStreak != null)
+            {
+                _marqueeT += Time.unscaledDeltaTime;
+                _marqueeStreak.anchoredPosition = new Vector2(Mathf.Repeat(_marqueeT * 170f, 410f) - 45f, 0f);
+            }
             _mt += Time.unscaledDeltaTime; float dt = Time.unscaledDeltaTime;
             float hw = _cw * 0.5f + 20f, hh = _ch * 0.5f + 20f;
             for (int i = 0; i < _motes.Count; i++)
@@ -260,14 +283,7 @@ namespace Hollowfen.UI
             while (true)
             {
                 t += Time.unscaledDeltaTime;
-                if (_welcomeState == 1)
-                {
-                    // Ready: a steady, brighter breathing prompt inviting the player to begin.
-                    tmp.fontStyle = FontStyles.Italic;
-                    tmp.text = ReadyPromptText;
-                    cg.alpha = 0.72f + 0.28f * Mathf.Sin(t * 3.0f);
-                }
-                else if (_welcomeState == 2)
+                if (_welcomeState == 2)
                 {
                     tmp.text = EnteringText;
                     cg.alpha = 0.9f;

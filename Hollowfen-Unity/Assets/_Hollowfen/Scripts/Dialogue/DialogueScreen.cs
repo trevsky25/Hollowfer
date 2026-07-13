@@ -101,6 +101,9 @@ namespace Hollowfen.Dialogue
             _previousTimeScale = Time.timeScale;
             Time.timeScale = 0f;
             PlayerInteractor.Suspended = true;
+            // Kill the player controller's input too — Space advances dialogue AND jumps, and with
+            // the batch-45 unscaled animators the jump visibly fires mid-conversation (batch-46 fix).
+            PlayerInteractor.SetPlayerInputEnabled(false);
             SetHudVisible(false);
             CursorVisible(true);
             if (anchor != null) DialogueCinematics.Ensure().Begin(anchor);
@@ -118,6 +121,7 @@ namespace Hollowfen.Dialogue
             SetActiveSilent(false);
             Time.timeScale = _previousTimeScale;
             PlayerInteractor.Suspended = false;
+            PlayerInteractor.SetPlayerInputEnabled(true);
             SetHudVisible(true);
             CursorVisible(false);
             _currentDialog = null;

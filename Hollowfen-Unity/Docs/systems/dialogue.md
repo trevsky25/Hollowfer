@@ -25,7 +25,7 @@ Status: verified against code 2026-07-11.
 
 Scene-local singleton (`Instance` in Awake, NOT a UIScreen — same pattern as InspectScreen/MapScreen). Procedural UI on first `Open`.
 
-- **Open**: `Time.timeScale = 0` (previous cached) · `PlayerInteractor.Suspended = true` (this IS the player-input gate — no action-map switch) · HUD hidden via `GameObject.Find("_HUDCanvas")`/`"_MiniMapCanvas"` + CanvasGroup alpha 0 · cursor shown.
+- **Open**: `Time.timeScale = 0` (previous cached) · `PlayerInteractor.Suspended = true` · `PlayerInteractor.SetPlayerInputEnabled(false)` (batch-46 — Space advances dialogue AND jumps; with the batch-45 unscaled animators Wren visibly hopped every advance until the PlayerInput component is disabled for the scene, restored on Close) · HUD hidden via `GameObject.Find("_HUDCanvas")`/`"_MiniMapCanvas"` + CanvasGroup alpha 0 · cursor shown.
 - **Close**: reverses everything; no events fired on close.
 - **Input**: `Update()` polls devices directly — Space/Enter/E, gamepad South/North, mouse left. One "advance" signal: typing → `SkipTypewriter()` (instant complete); shown → `AdvanceLine()`. ⚠️ Ignores the InputActions asset entirely; rebinding won't affect it; hint text always claims "Space".
 - **Typewriter**: coroutine on `WaitForSecondsRealtime` (timeScale is 0), `_typewriterCps` default 32 (matches web prototype).

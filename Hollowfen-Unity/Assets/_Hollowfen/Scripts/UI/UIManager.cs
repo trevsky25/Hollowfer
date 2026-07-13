@@ -128,21 +128,17 @@ namespace Hollowfen.UI
             var op = SceneManager.LoadSceneAsync(sceneName);
             if (interactiveWelcome && op != null)
             {
-                // New-game welcome (batch-42): load the whole scene but HOLD activation behind a
-                // player "begin" press. The heavy Scene_Hollowfen integration stall then lands after
-                // intent (reads as "entering," not a freeze), and the welcome card is a live,
-                // interactive beat instead of a frozen frame.
+                // New-game welcome (batch-42, reworked batch-46): load the scene but hold activation
+                // until the async phase completes, keeping the welcome card visibly ALIVE (pulsing
+                // line + marquee + motes) the whole way. No press gate — a keypress that led straight
+                // into the heavy integration stall read as a freeze; a moving loading screen that
+                // hitches briefly at the end reads as loading.
                 op.allowSceneActivation = false;
                 while (op.progress < 0.89f) yield return null;
-                loading.ShowReadyPrompt();
-                float shown = 0f;
-                while (true)
-                {
-                    shown += Time.unscaledDeltaTime;
-                    if (shown >= 0.35f && AnyBeginPressed()) break;
-                    yield return null;
-                }
+                // A short breath so the welcome is readable even on a fast SSD.
+                yield return new WaitForSecondsRealtime(0.8f);
                 loading.BeginActivation();
+                yield return null; // let "entering Hollowfen" render once before the stall
                 op.allowSceneActivation = true;
             }
             while (op != null && !op.isDone) yield return null;
@@ -175,18 +171,6 @@ namespace Hollowfen.UI
             {
                 Back();
             }
-        }
-
-        // Any-key/button/click gate for the interactive new-game welcome (batch-42).
-        private static bool AnyBeginPressed()
-        {
-            var kb = Keyboard.current;
-            if (kb != null && kb.anyKey.wasPressedThisFrame) return true;
-            var pad = Gamepad.current;
-            if (pad != null && (pad.buttonSouth.wasPressedThisFrame || pad.startButton.wasPressedThisFrame)) return true;
-            var mouse = Mouse.current;
-            if (mouse != null && mouse.leftButton.wasPressedThisFrame) return true;
-            return false;
         }
 
         public void RegisterScreen(UIScreen screen)
