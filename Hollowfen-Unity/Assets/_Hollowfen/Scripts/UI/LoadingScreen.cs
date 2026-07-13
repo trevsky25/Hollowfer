@@ -1,22 +1,27 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Hollowfen.UI
 {
-    // Cinematic "welcome" load screen (batch-38). For a new game it shows the homecoming hero
-    // image at the narration's Ken-Burns start-state with a "Chapter One / Homecoming" welcome
-    // title that pops up, letterbox bars, and a discreet loading line — while Scene_Hollowfen loads
-    // behind it. When the in-scene cinematic narration is up (same image), UIManager fades this out
-    // (FadeOutAndClose) so the handoff is image→image seamless. Continue/Load keep the plain text.
+    // Cinematic "welcome" load screen (batch-38/39). For a NEW GAME (SaveSlotScreen sets
+    // NextIsCinematic) it shows the homecoming hero image at the narration's Ken-Burns start-state
+    // with a "Chapter One / Homecoming" title, letterbox bars, drifting spore motes, and a discreet
+    // loading line — while Scene_Hollowfen loads behind it. UIManager fades it out (FadeOutAndClose)
+    // once the in-scene narration is up (same image), so the handoff is image→image seamless.
+    // Continue/Load keep the plain rolling-dots text (cinematic root stays hidden).
     public class LoadingScreen : UIScreen
     {
+        // Set true by SaveSlotScreen right before a NEW-GAME LoadSceneAndOpen; consumed in OnOpen.
+        public static bool NextIsCinematic;
+
         [SerializeField] private Text _label;
         [SerializeField] private string _baseText = "Traveling to Hollowfen";
         [SerializeField] private float _dotInterval = 0.4f;
-        [SerializeField, Tooltip("Homecoming hero image for the cinematic welcome. Null → plain text load.")]
+        [SerializeField, Tooltip("Homecoming hero image for the cinematic welcome.")]
         private Sprite _heroSprite;
         [SerializeField] private string _welcomeEyebrow = "CHAPTER ONE";
         [SerializeField] private string _welcomeTitle = "Homecoming";
@@ -28,17 +33,28 @@ namespace Hollowfen.UI
 
         private Coroutine _dotAnim;
         private bool _cineBuilt;
-        private RectTransform _hero, _welcomeGroup, _loadingLine;
+        private bool _isCinematic;
+        private RectTransform _cineRoot, _welcomeGroup, _loadingLine;
         private CanvasGroup _welcomeCg;
 
-        public bool Cinematic => _heroSprite != null;
+        private readonly List<RectTransform> _motes = new List<RectTransform>();
+        private readonly List<CanvasGroup> _moteCg = new List<CanvasGroup>();
+        private readonly List<Vector4> _moteData = new List<Vector4>(); // velX, velY, phase, baseAlpha
+        private float _cw = 1920f, _ch = 1080f, _mt;
+        private static Sprite _dotSprite;
+
+        public bool Cinematic => _isCinematic;
 
         public override void OnOpen()
         {
             base.OnOpen();
-            if (Cinematic)
+            _isCinematic = _heroSprite != null && NextIsCinematic;
+            NextIsCinematic = false;
+
+            if (_isCinematic)
             {
                 BuildCinematic();
+                if (_cineRoot != null) _cineRoot.gameObject.SetActive(true);
                 if (_label != null) _label.gameObject.SetActive(false);
                 if (CanvasGroup != null) CanvasGroup.alpha = 1f;
                 StartCoroutine(PopWelcome());
@@ -46,6 +62,8 @@ namespace Hollowfen.UI
             }
             else
             {
+                if (_cineRoot != null) _cineRoot.gameObject.SetActive(false);
+                if (_label != null) _label.gameObject.SetActive(true);
                 if (_dotAnim != null) StopCoroutine(_dotAnim);
                 _dotAnim = StartCoroutine(AnimateDots());
             }
@@ -59,7 +77,7 @@ namespace Hollowfen.UI
             if (CanvasGroup != null) CanvasGroup.alpha = 1f;
         }
 
-        // Cross-fade the whole welcome card out to reveal the (same-image) narration behind it.
+        // Cross-fade the whole card out to reveal the (same-image) narration behind it.
         public void FadeOutAndClose(float seconds, Action onDone)
         {
             StartCoroutine(FadeOutRoutine(seconds, onDone));
@@ -85,36 +103,40 @@ namespace Hollowfen.UI
             _cineBuilt = true;
 
             var canvas = GetComponentInChildren<Canvas>();
-            Transform root = canvas != null ? canvas.transform : transform;
+            Transform parent = canvas != null ? canvas.transform : transform;
+            _cw = ((RectTransform)parent).rect.width;
+            _ch = ((RectTransform)parent).rect.height;
+            if (_cw < 1f) { _cw = 1920f; _ch = 1080f; }
 
-            // Hide the legacy plain-text labels — the cinematic welcome replaces them.
-            var oldEyebrow = root.Find("Eyebrow"); if (oldEyebrow != null) oldEyebrow.gameObject.SetActive(false);
-            var oldLabel = root.Find("LoadingLabel"); if (oldLabel != null) oldLabel.gameObject.SetActive(false);
+            // Self-contained cinematic root — leaves the plain-mode BG/label untouched.
+            var rootGo = new GameObject("CineRoot", typeof(RectTransform));
+            _cineRoot = rootGo.GetComponent<RectTransform>();
+            _cineRoot.SetParent(parent, false);
+            _cineRoot.anchorMin = Vector2.zero; _cineRoot.anchorMax = Vector2.one;
+            _cineRoot.offsetMin = Vector2.zero; _cineRoot.offsetMax = Vector2.zero;
+            Transform root = _cineRoot;
 
-            // Reuse the existing background image if present; else make one.
-            var bg = root.Find("BG_Wren");
-            Image heroImg = bg != null ? bg.GetComponent<Image>() : UICanvasUtil.NewImage("Hero", root, Color.white, false).GetComponent<Image>();
-            heroImg.sprite = _heroSprite;
-            heroImg.color = Color.white;
-            heroImg.preserveAspect = false;
-            _hero = heroImg.rectTransform;
-            _hero.anchorMin = _hero.anchorMax = new Vector2(0.5f, 0.5f);
-            _hero.pivot = new Vector2(0.5f, 0.5f);
-            _hero.sizeDelta = new Vector2(1920f, 1080f);
-            _hero.localScale = Vector3.one * KbScaleA;
-            _hero.anchoredPosition = KbPosA;
-            _hero.SetAsFirstSibling();
+            // Black base (fills the letterbox gaps at other aspects).
+            var black = NewImage("Black", root, Color.black);
+            Stretch(black.rectTransform);
 
-            // Bottom scrim (reuse if present) so the welcome title reads.
-            var scrimT = root.Find("Scrim");
-            Image scrim = scrimT != null ? scrimT.GetComponent<Image>() : UICanvasUtil.NewImage("Scrim", root, Color.black, false).GetComponent<Image>();
+            // Hero at the narration's Ken-Burns A-state.
+            var hero = NewImage("Hero", root, Color.white);
+            hero.sprite = _heroSprite; hero.preserveAspect = false;
+            var hRT = hero.rectTransform;
+            hRT.anchorMin = hRT.anchorMax = new Vector2(0.5f, 0.5f); hRT.pivot = new Vector2(0.5f, 0.5f);
+            hRT.sizeDelta = new Vector2(1920f, 1080f);
+            hRT.localScale = Vector3.one * KbScaleA;
+            hRT.anchoredPosition = KbPosA;
+
+            // Bottom scrim.
+            var scrim = NewImage("Scrim", root, new Color(0f, 0f, 0f, 0.82f));
             var sRT = scrim.rectTransform;
             sRT.anchorMin = new Vector2(0f, 0f); sRT.anchorMax = new Vector2(1f, 0f); sRT.pivot = new Vector2(0.5f, 0f);
-            sRT.sizeDelta = new Vector2(0f, 620f); sRT.anchoredPosition = Vector2.zero;
-            scrim.color = new Color(0f, 0f, 0f, 0.82f);
-            scrim.transform.SetSiblingIndex(1);
+            sRT.sizeDelta = new Vector2(0f, 620f);
 
-            // Letterbox bars (match the narration).
+            BuildMotes(root);
+
             MakeBar(root, "LB_Top", 1f);
             MakeBar(root, "LB_Bot", 0f);
 
@@ -130,17 +152,17 @@ namespace Hollowfen.UI
 
             var eyebrow = UICanvasUtil.NewEyebrow("WelcomeEyebrow", _welcomeGroup, _welcomeEyebrow, 24f,
                 new Color(0.78f, 0.66f, 0.42f, 1f));
+            eyebrow.alignment = TextAlignmentOptions.Center;
             var eRT = eyebrow.rectTransform;
-            eRT.anchorMin = new Vector2(0.5f, 0f); eRT.anchorMax = new Vector2(1f, 0f); eRT.pivot = new Vector2(0.5f, 0f);
+            eRT.anchorMin = new Vector2(0f, 0f); eRT.anchorMax = new Vector2(1f, 0f); eRT.pivot = new Vector2(0.5f, 0f);
             eRT.sizeDelta = new Vector2(0f, 30f); eRT.anchoredPosition = new Vector2(0f, 92f);
 
             var title = UICanvasUtil.NewHeading("WelcomeTitle", _welcomeGroup, _welcomeTitle, 72f,
                 new Color(0.96f, 0.93f, 0.85f, 1f), FontStyles.Normal, TextAlignmentOptions.Center);
             var tRT = title.rectTransform;
-            tRT.anchorMin = new Vector2(0.5f, 0f); tRT.anchorMax = new Vector2(1f, 0f); tRT.pivot = new Vector2(0.5f, 0f);
+            tRT.anchorMin = new Vector2(0f, 0f); tRT.anchorMax = new Vector2(1f, 0f); tRT.pivot = new Vector2(0.5f, 0f);
             tRT.sizeDelta = new Vector2(0f, 90f); tRT.anchoredPosition = new Vector2(0f, 0f);
 
-            // Discreet loading line at the very bottom.
             var ll = UICanvasUtil.NewBody("LoadingLine", root, "gathering the last light", 15f,
                 new Color(0.90f, 0.88f, 0.80f, 0.4f), FontStyles.Italic, TextAlignmentOptions.Center);
             _loadingLine = ll.rectTransform;
@@ -150,14 +172,44 @@ namespace Hollowfen.UI
             _loadingLine.anchoredPosition = new Vector2(0f, LetterboxHeight * 0.42f);
         }
 
-        private static void MakeBar(Transform parent, string name, float anchorY)
+        private void BuildMotes(Transform root)
         {
-            var img = UICanvasUtil.NewImage(name, parent, Color.black, false).GetComponent<Image>();
-            var rt = img.rectTransform;
-            rt.anchorMin = new Vector2(0f, anchorY); rt.anchorMax = new Vector2(1f, anchorY);
-            rt.pivot = new Vector2(0.5f, anchorY);
-            rt.sizeDelta = new Vector2(0f, LetterboxHeight);
-            rt.anchoredPosition = Vector2.zero;
+            EnsureDot();
+            var container = new GameObject("Motes", typeof(RectTransform));
+            var crt = container.GetComponent<RectTransform>();
+            crt.SetParent(root, false);
+            crt.anchorMin = Vector2.zero; crt.anchorMax = Vector2.one; crt.offsetMin = Vector2.zero; crt.offsetMax = Vector2.zero;
+            for (int i = 0; i < 26; i++)
+            {
+                var go = new GameObject("Mote_" + i, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(CanvasGroup));
+                var rt = go.GetComponent<RectTransform>(); rt.SetParent(crt, false);
+                rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f); rt.pivot = new Vector2(0.5f, 0.5f);
+                float size = UnityEngine.Random.Range(4f, 12f);
+                rt.sizeDelta = new Vector2(size, size);
+                rt.anchoredPosition = new Vector2(UnityEngine.Random.Range(-_cw * 0.5f, _cw * 0.5f), UnityEngine.Random.Range(-_ch * 0.5f, _ch * 0.5f));
+                var img = go.GetComponent<Image>(); img.sprite = _dotSprite; img.raycastTarget = false; img.color = new Color(1f, 0.88f, 0.6f, 1f);
+                var cg = go.GetComponent<CanvasGroup>();
+                float baseA = UnityEngine.Random.Range(0.4f, 1f) * Mathf.Lerp(0.6f, 1f, size / 12f);
+                cg.alpha = baseA;
+                _motes.Add(rt); _moteCg.Add(cg);
+                _moteData.Add(new Vector4(UnityEngine.Random.Range(-4f, 4f), UnityEngine.Random.Range(5f, 12f), UnityEngine.Random.Range(0f, 6.28f), baseA));
+            }
+        }
+
+        private void Update()
+        {
+            if (_motes.Count == 0 || _cineRoot == null || !_cineRoot.gameObject.activeInHierarchy) return;
+            _mt += Time.unscaledDeltaTime; float dt = Time.unscaledDeltaTime;
+            float hw = _cw * 0.5f + 20f, hh = _ch * 0.5f + 20f;
+            for (int i = 0; i < _motes.Count; i++)
+            {
+                var d = _moteData[i]; var p = _motes[i].anchoredPosition;
+                p.x += (d.x + Mathf.Sin(_mt * 0.4f + d.z) * 10f) * dt; p.y += d.y * dt;
+                if (p.y > hh) { p.y = -hh; p.x = UnityEngine.Random.Range(-hw, hw); }
+                if (p.x > hw) p.x = -hw; else if (p.x < -hw) p.x = hw;
+                _motes[i].anchoredPosition = p;
+                _moteCg[i].alpha = d.w * (0.55f + 0.45f * Mathf.Sin(_mt * 0.7f + d.z));
+            }
         }
 
         private IEnumerator PopWelcome()
@@ -201,6 +253,45 @@ namespace Hollowfen.UI
                 dots = (dots + 1) % 4;
                 yield return new WaitForSecondsRealtime(_dotInterval);
             }
+        }
+
+        // ---- tiny UI helpers (self-contained, don't touch UICanvasUtil styling) ----
+        private static Image NewImage(string name, Transform parent, Color color)
+        {
+            var go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            var rt = go.GetComponent<RectTransform>(); rt.SetParent(parent, false);
+            var img = go.GetComponent<Image>(); img.color = color; img.raycastTarget = false;
+            return img;
+        }
+
+        private static void Stretch(RectTransform rt)
+        {
+            rt.anchorMin = Vector2.zero; rt.anchorMax = Vector2.one; rt.offsetMin = Vector2.zero; rt.offsetMax = Vector2.zero;
+        }
+
+        private static void MakeBar(Transform parent, string name, float anchorY)
+        {
+            var img = NewImage(name, parent, Color.black);
+            var rt = img.rectTransform;
+            rt.anchorMin = new Vector2(0f, anchorY); rt.anchorMax = new Vector2(1f, anchorY);
+            rt.pivot = new Vector2(0.5f, anchorY);
+            rt.sizeDelta = new Vector2(0f, LetterboxHeight);
+            rt.anchoredPosition = Vector2.zero;
+        }
+
+        private static void EnsureDot()
+        {
+            if (_dotSprite != null) return;
+            int s = 48; var tex = new Texture2D(s, s, TextureFormat.RGBA32, false); tex.wrapMode = TextureWrapMode.Clamp;
+            float c = (s - 1) * 0.5f; var px = new Color32[s * s];
+            for (int y = 0; y < s; y++) for (int x = 0; x < s; x++)
+            {
+                float dd = Mathf.Clamp01(Mathf.Sqrt((x - c) * (x - c) + (y - c) * (y - c)) / c);
+                byte b = (byte)(Mathf.Pow(1f - dd, 1.6f) * 255f);
+                px[y * s + x] = new Color32(255, 255, 255, b);
+            }
+            tex.SetPixels32(px); tex.Apply();
+            _dotSprite = Sprite.Create(tex, new Rect(0, 0, s, s), new Vector2(0.5f, 0.5f), 100f);
         }
     }
 }

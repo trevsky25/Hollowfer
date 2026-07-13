@@ -25,14 +25,19 @@ OUT_ROOT = os.path.join(REPO, "Hollowfen-Unity/Assets/_Hollowfen/Audio/VO")
 # Voice cast (Kokoro voice ids; prefix picks the pipeline lang: a=American, b=British).
 VOICES = {
     "Wren":     ("af_heart", 1.0),
-    "Bram":     ("bm_george", 0.95),   # older British male — village register
-    "Narrator": ("af_heart", 0.88),    # Wren's voice, slower — the journal read
+    "Bram":     ("bm_lewis", 0.86),    # old innkeeper — deeper/gravellier + slow for age (batch-39)
+    "Narrator": ("af_heart", 0.86),    # Wren's voice, slower — the homecoming read
 }
 
-# The once-per-save homecoming intro (copy verbatim from StoryBeats.IntroCaptions).
+# The once-per-save homecoming intro (copy verbatim from StoryBeats.IntroCaptions —
+# batch-36 restored the bible's fuller 6-beat Scene-1 passage).
 INTRO_CAPTIONS = [
     "It had been three years since Wren Tobin walked the east road into Hollowfen.",
-    "The village did not greet her.",
+    "At first, the valley looked as it always had from the ridge: the low roofs tucked into the hollow, the dark shoulder of the Old Wood behind them, the pale line of the Wend cutting through the fields.",
+    "Then the road dipped, and the old picture came apart.",
+    "The river was wrong.",
+    "Smoke rose from fewer chimneys than Wren remembered. Two cottages near the well had boards nailed over their windows.",
+    "The village did not greet her. No children ran the lane. No cart rattled down from the Slatemoor road.",
 ]
 
 # Non-dialogue utterances (copy duplicated from Localization.cs — the parked staleness-manifest

@@ -116,6 +116,7 @@ namespace Hollowfen.UI
                 SaveCoordinator.LoadSlot(slot);
             }
             // New game gets the cinematic welcome→intro handoff (batch-38); load/continue is plain.
+            LoadingScreen.NextIsCinematic = newGame;
             if (UIManager.Instance != null)
                 UIManager.Instance.LoadSceneAndOpen(GameplaySceneName, null, newGame);
         }

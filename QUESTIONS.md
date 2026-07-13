@@ -14,12 +14,14 @@ _Inbox clear — Q8–Q11 answered 2026-07-12 (Trevor: "take all your recommenda
 proper TMP sprite sheet / icon set (the correct long-term home for the △◉ controller-button glyphs anyway).
 No interim ASCII swap. Tracked in the controller-glyph backlog item; not a font-mode change.
 
-### Q10 — AI-generated voiceover: test-only, or a shipping direction? (asked 2026-07-12 · batch-29 · answered 2026-07-12: "recommendation")
-**Decision:** AI VO stays **placeholder-quality direction-finding, not a committed EA direction**. Keep the
-batch-29 entrance-scene test; **do NOT mass-generate VO yet** — revisit after Trevor evaluates it in-game and
-locks casting. If any AI VO ships to EA, the **Steam AI-content disclosure** is required (stays on the pre-EA
-checklist). The Voice-mixer-group + settings-slider plumbing is a prerequisite that proceeds regardless of
-this call (it's needed for AI-VO, human-VO, or no-VO alike).
+### Q10 — AI-generated voiceover: test-only, or a shipping direction? (asked 2026-07-12 · batch-29 · answered 2026-07-12; UPDATED batch-39)
+**Decision (batch-29):** AI VO stays placeholder direction-finding; don't mass-generate yet.
+**UPDATE (batch-39):** Trevor **directed AI VO for the whole opening scene** — the 6-beat homecoming intro is
+now fully voiced (Narrator = `af_heart`), and Bram's dialogues were revoiced older/deeper (`bm_lewis`). So AI
+VO IS the direction for the opening at least. **Still open:** whether to voice the *entire remaining cast*
+(a mechanical batch once decided) and the voice-casting taste pass. **The Steam AI-content disclosure is now a
+firm pre-EA requirement** (AI VO ships). The Voice-mixer-group + settings-slider plumbing is still a
+prerequisite before broad VO (needed for the per-voice volume slider).
 
 ### Q9 — Credits copy: ship current 7 lines, or expand for launch? (asked 2026-07-12 · batch-28 · answered 2026-07-12: "recommendation")
 **Decision:** keep the current 7-line credits copy (batch-28 editorial hierarchy) as-is now; write the final

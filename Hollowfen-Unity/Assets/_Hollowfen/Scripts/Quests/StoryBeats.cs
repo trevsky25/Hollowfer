@@ -9,7 +9,7 @@ namespace Hollowfen.Quests
     // Caption copy is verbatim from docs/story.md.
     public class StoryBeats : MonoBehaviour
     {
-        [SerializeField, Tooltip("Voice-over for the FIRST and LAST intro captions (index 0 → clip[0], last → clip[1]). Missing/null entries are silent.")]
+        [SerializeField, Tooltip("Voice-over per intro caption, index-matched to IntroCaptions (batch-39: full 6-beat set). Missing/null entries are silent.")]
         private AudioClip[] _introVoiceClips;
 
         [SerializeField, Tooltip("Cinematic hero image for the opening (homecoming.png). Null → plain black narration.")]
@@ -60,13 +60,8 @@ namespace Hollowfen.Quests
             SaveManager.AutoSaveIntroSeen();
             if (NarrationOverlay.Instance != null)
             {
-                // The two existing VO clips voice the first and last captions (the emotional
-                // anchors); the restored middle beats play over the moving image (silent for now
-                // — full-passage VO pends the Q10 audio-direction call).
-                var clips = new AudioClip[IntroCaptions.Length];
-                if (_introVoiceClips != null && _introVoiceClips.Length > 0) clips[0] = _introVoiceClips[0];
-                if (_introVoiceClips != null && _introVoiceClips.Length > 1) clips[IntroCaptions.Length - 1] = _introVoiceClips[1];
-                NarrationOverlay.Instance.ShowCinematic(IntroCaptions, clips, _introHeroImage,
+                // Full-passage VO (batch-39): _introVoiceClips is index-matched to the 6 captions.
+                NarrationOverlay.Instance.ShowCinematic(IntroCaptions, _introVoiceClips, _introHeroImage,
                     () => { if (IntroGuide.Instance != null) IntroGuide.Instance.ShowOnce(); });
             }
         }
