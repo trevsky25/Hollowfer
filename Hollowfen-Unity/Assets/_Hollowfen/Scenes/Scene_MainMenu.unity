@@ -4897,7 +4897,7 @@ MonoBehaviour:
   _label: {fileID: 152032361}
   _baseText: Traveling to Hollowfen
   _dotInterval: 0.4
-  _heroSprite: {fileID: 21300000, guid: a4206099756db4411b8b2b87edf300f4, type: 3}
+  _heroSprite: {fileID: 21300000, guid: e36fe584bb0434297b89fc207ca1fa43, type: 3}
   _welcomeEyebrow: CHAPTER ONE
   _welcomeTitle: Homecoming
 --- !u!1 &1416958265
