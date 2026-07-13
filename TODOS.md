@@ -151,6 +151,7 @@ inheritance beat. Slices:
 
 ## Done
 
+- **Batch 54** (2026-07-13): main-menu warm tint → text-side gradient only — removed the full-screen `Cinematic_WarmGrade`, added a left→right `Cinematic_LeftWarm` band behind the text + softened the vignette, so Wren foraging reads true-colour (Trevor's note). Play-verified.
 - **Batch 53** (2026-07-13): journal discovery cinematic — Trevor's Meshy journal (Mat + prefab, placed as the visible book) + new `QuestInteractable._focusTarget` push-in on the 3D book → hands to the batch-51b painted-spread finale. Play-verified.
 - **Batch 52b** (2026-07-13): key-in-lock door unlock — `KeyLockedDoor` cinematic (key turns straight-on via new `PropFocusCinematic.frameDir`, door swings open into the mill interior). Play-verified.
 - **Batch 52** (2026-07-13): cinematic mill-key handoff — imported the Meshy key (Mat_MillKey + MillKey.prefab), new reusable `PropFocusCinematic` (HUD-hide + letterbox + bounds-centre push-in) + `MillKeyHandoff` (hero item-get on grant). Play-verified. (52b key-in-lock door unlock + 53 journal pickup next.)

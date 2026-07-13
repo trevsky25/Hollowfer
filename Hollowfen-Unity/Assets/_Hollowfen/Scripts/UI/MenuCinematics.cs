@@ -28,8 +28,14 @@ namespace Hollowfen.UI
         [SerializeField] private Color _mistColor = new Color(0.74f, 0.77f, 0.70f, 0.05f); // pale sage
 
         [Header("Grade")]
-        [SerializeField] private float _vignetteStrength = 0.55f;
-        [SerializeField] private Color _warmGrade = new Color(0.82f, 0.62f, 0.34f, 0.06f);
+        [SerializeField] private float _vignetteStrength = 0.40f; // softened so the hero reads true-colour
+
+        [Header("Text-side warm gradient")]
+        // The warm/gold tint now lives ONLY behind the left text column, cleanly fading out before the
+        // hero — so Wren foraging shows the image's true colour (batch-54, Trevor's note).
+        [SerializeField] private Color _leftWarmColor = new Color(0.32f, 0.22f, 0.09f, 1f); // warm amber
+        [SerializeField] private float _leftWarmStrength = 0.9f;   // alpha at the left edge
+        [SerializeField] private float _leftWarmWidth = 0.56f;     // fraction of screen width it spans
 
         [Header("Ken Burns")]
         [SerializeField] private float _kenBurnsScale = 1.06f;
@@ -50,6 +56,7 @@ namespace Hollowfen.UI
 
         private static Sprite _dotSprite;
         private static Sprite _vignetteSprite;
+        private static Sprite _leftFadeSprite;
 
         private class Mote
         {
@@ -132,8 +139,18 @@ namespace Hollowfen.UI
             var vgImg = vg.GetComponent<Image>(); vgImg.sprite = _vignetteSprite;
             vgImg.color = new Color(0.04f, 0.05f, 0.06f, _vignetteStrength);
 
-            var grade = NewFullScreen("Cinematic_WarmGrade", gradeInsert + 1);
-            grade.GetComponent<Image>().color = _warmGrade;
+            // Warm gradient ONLY behind the left text column (opaque at the far-left edge, cleanly faded
+            // to transparent before the hero), so Wren foraging keeps the image's true colour.
+            var warm = new GameObject("Cinematic_LeftWarm", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            var warmRt = warm.GetComponent<RectTransform>();
+            warmRt.SetParent(_canvasRect, false);
+            warmRt.anchorMin = new Vector2(0f, 0f); warmRt.anchorMax = new Vector2(0f, 1f); warmRt.pivot = new Vector2(0f, 0.5f);
+            warmRt.sizeDelta = new Vector2(w * _leftWarmWidth, 0f);
+            warmRt.anchoredPosition = Vector2.zero;
+            var warmImg = warm.GetComponent<Image>(); warmImg.raycastTarget = false;
+            warmImg.sprite = _leftFadeSprite;
+            warmImg.color = new Color(_leftWarmColor.r, _leftWarmColor.g, _leftWarmColor.b, _leftWarmStrength);
+            warmRt.SetSiblingIndex(Mathf.Clamp(gradeInsert + 1, 0, _canvasRect.childCount - 1));
         }
 
         private void Update()
@@ -262,6 +279,25 @@ namespace Hollowfen.UI
         {
             if (_dotSprite == null) _dotSprite = MakeRadial(64, false, 1.6f);
             if (_vignetteSprite == null) _vignetteSprite = MakeRadial(256, true, 2.2f);
+            if (_leftFadeSprite == null) _leftFadeSprite = MakeHorizontalFade(256, 1.9f);
+        }
+
+        /// Horizontal alpha ramp: opaque at the left edge (x=0) easing to transparent at the right (x=1).
+        private static Sprite MakeHorizontalFade(int width, float falloff)
+        {
+            int h = 4;
+            var tex = new Texture2D(width, h, TextureFormat.RGBA32, false);
+            tex.wrapMode = TextureWrapMode.Clamp; tex.filterMode = FilterMode.Bilinear;
+            var px = new Color32[width * h];
+            for (int x = 0; x < width; x++)
+            {
+                float t = x / (float)(width - 1);           // 0 left .. 1 right
+                float a = Mathf.Pow(1f - t, falloff);       // 1 left -> 0 right
+                byte b = (byte)(Mathf.Clamp01(a) * 255f);
+                for (int y = 0; y < h; y++) px[y * width + x] = new Color32(255, 255, 255, b);
+            }
+            tex.SetPixels32(px); tex.Apply();
+            return Sprite.Create(tex, new Rect(0, 0, width, h), new Vector2(0.5f, 0.5f), 100f);
         }
 
         /// Radial alpha sprite. invert=false → bright center fading out (mote/mist glow).
