@@ -30,6 +30,13 @@ namespace Hollowfen.Data
         [SerializeField] private string _displayNameId;
         [SerializeField] private string _descriptionId;
 
+        [Header("Field study plates (batch-61 Wren dossier)")]
+        [SerializeField] private Sprite _studySheet;
+        [SerializeField] private Sprite _figureFront;
+        [SerializeField] private Sprite _figureBack;
+        [SerializeField] private Sprite _figureThreeQuarter;
+        [SerializeField] private Sprite _knifePlate;
+
         public string Id => _id;
         public string CharacterName => _characterName;
         public string Role => _role;
@@ -46,5 +53,10 @@ namespace Hollowfen.Data
         public string Pullquote => _pullquote;
         public string DisplayNameId => _displayNameId;
         public string DescriptionId => _descriptionId;
+        public Sprite StudySheet => _studySheet;
+        public Sprite FigureFront => _figureFront;
+        public Sprite FigureBack => _figureBack;
+        public Sprite FigureThreeQuarter => _figureThreeQuarter;
+        public Sprite KnifePlate => _knifePlate;
     }
 }

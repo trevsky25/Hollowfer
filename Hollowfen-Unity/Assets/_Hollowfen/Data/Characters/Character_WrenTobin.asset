@@ -46,3 +46,8 @@ MonoBehaviour:
     like opening a door no one has touched in years.
   _displayNameId: character.wren_tobin.name
   _descriptionId: character.wren_tobin.lead
+  _studySheet: {fileID: 21300000, guid: 8a04705318fd74256bb8d04b3fcedc0e, type: 3}
+  _figureFront: {fileID: 21300000, guid: d4005f3298ef44ecb9718a25bd97b40a, type: 3}
+  _figureBack: {fileID: 21300000, guid: 764ab9f7ae81f462eb6d3f432bc49d94, type: 3}
+  _figureThreeQuarter: {fileID: 21300000, guid: e9666e5159bb9401eb1febafd6c0abec, type: 3}
+  _knifePlate: {fileID: 21300000, guid: b03406be18a9c444d93a6d8bb1eb68e5, type: 3}
