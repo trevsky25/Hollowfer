@@ -121,6 +121,7 @@ namespace Hollowfen
             { "settings.audio.master",         "Master" },
             { "settings.audio.music",          "Music" },
             { "settings.audio.sfx",            "SFX" },
+            { "settings.audio.ambience",       "Ambience" },
             { "settings.graphics.fullscreen",  "Fullscreen" },
             { "settings.graphics.resolution",  "Resolution" },
             { "settings.graphics.quality",     "Quality" },

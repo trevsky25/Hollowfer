@@ -37,6 +37,7 @@ namespace Hollowfen.UI
         private const string PrefMaster = "audio.master";
         private const string PrefMusic  = "audio.music";
         private const string PrefSFX    = "audio.sfx";
+        private const string PrefAmbience = "audio.ambience";
         private const float DefaultVolume = 0.8f;
         private const string PrefFullscreen = "graphics.fullscreen";
         private const string PrefResolution = "graphics.resolutionIndex";
@@ -62,8 +63,8 @@ namespace Hollowfen.UI
         private readonly GameObject[] _tabUnderlines = new GameObject[TabCount];
         private readonly GameObject[] _panels = new GameObject[TabCount];
 
-        private Slider _masterSlider, _musicSlider, _sfxSlider, _sensSlider;
-        private TMP_Text _masterValue, _musicValue, _sfxValue, _sensValue;
+        private Slider _masterSlider, _musicSlider, _sfxSlider, _ambienceSlider, _sensSlider;
+        private TMP_Text _masterValue, _musicValue, _sfxValue, _ambienceValue, _sensValue;
 
         private readonly List<Cycler> _cyclers = new List<Cycler>();
         private Cycler _fullscreenCyc, _resolutionCyc, _qualityCyc;
@@ -305,31 +306,38 @@ namespace Hollowfen.UI
         private void BuildAudioPanel(Transform parent)
         {
             float y = 0f;
-            _masterSlider = BuildSliderRow(parent, ref y, "settings.audio.master", 0f, 1f, false, out _masterValue);
-            _musicSlider  = BuildSliderRow(parent, ref y, "settings.audio.music",  0f, 1f, false, out _musicValue);
-            _sfxSlider    = BuildSliderRow(parent, ref y, "settings.audio.sfx",    0f, 1f, false, out _sfxValue);
+            _masterSlider   = BuildSliderRow(parent, ref y, "settings.audio.master",   0f, 1f, false, out _masterValue);
+            _musicSlider    = BuildSliderRow(parent, ref y, "settings.audio.music",    0f, 1f, false, out _musicValue);
+            _sfxSlider      = BuildSliderRow(parent, ref y, "settings.audio.sfx",      0f, 1f, false, out _sfxValue);
+            _ambienceSlider = BuildSliderRow(parent, ref y, "settings.audio.ambience", 0f, 1f, false, out _ambienceValue);
 
-            float master = PlayerPrefs.GetFloat(PrefMaster, DefaultVolume);
-            float music  = PlayerPrefs.GetFloat(PrefMusic,  DefaultVolume);
-            float sfx    = PlayerPrefs.GetFloat(PrefSFX,    DefaultVolume);
+            float master   = PlayerPrefs.GetFloat(PrefMaster,   DefaultVolume);
+            float music    = PlayerPrefs.GetFloat(PrefMusic,    DefaultVolume);
+            float sfx      = PlayerPrefs.GetFloat(PrefSFX,      DefaultVolume);
+            float ambience = PlayerPrefs.GetFloat(PrefAmbience, DefaultVolume);
 
             _masterSlider.SetValueWithoutNotify(master);
             _musicSlider.SetValueWithoutNotify(music);
             _sfxSlider.SetValueWithoutNotify(sfx);
+            _ambienceSlider.SetValueWithoutNotify(ambience);
 
             _masterSlider.onValueChanged.AddListener(OnMasterChanged);
             _musicSlider.onValueChanged.AddListener(OnMusicChanged);
             _sfxSlider.onValueChanged.AddListener(OnSFXChanged);
+            _ambienceSlider.onValueChanged.AddListener(OnAmbienceChanged);
 
             UpdateVolumeLabel(_masterValue, master);
             UpdateVolumeLabel(_musicValue, music);
             UpdateVolumeLabel(_sfxValue, sfx);
+            UpdateVolumeLabel(_ambienceValue, ambience);
 
             ApplyVolume("MasterVolume", master);
             ApplyVolume("MusicVolume",  music);
             ApplyVolume("SFXVolume",    sfx);
+            if (Hollowfen.Audio.AmbienceManager.Instance != null)
+                Hollowfen.Audio.AmbienceManager.Instance.SetUserVolume(ambience);
 
-            WireVertical(new Selectable[] { _masterSlider, _musicSlider, _sfxSlider });
+            WireVertical(new Selectable[] { _masterSlider, _musicSlider, _sfxSlider, _ambienceSlider });
         }
 
         private void BuildGraphicsPanel(Transform parent)
@@ -790,6 +798,13 @@ namespace Hollowfen.UI
         private void OnMasterChanged(float v) { PlayerPrefs.SetFloat(PrefMaster, v); ApplyVolume("MasterVolume", v); UpdateVolumeLabel(_masterValue, v); }
         private void OnMusicChanged(float v)  { PlayerPrefs.SetFloat(PrefMusic,  v); ApplyVolume("MusicVolume",  v); UpdateVolumeLabel(_musicValue, v); }
         private void OnSFXChanged(float v)    { PlayerPrefs.SetFloat(PrefSFX,    v); ApplyVolume("SFXVolume",    v); UpdateVolumeLabel(_sfxValue, v); }
+        private void OnAmbienceChanged(float v)
+        {
+            PlayerPrefs.SetFloat(PrefAmbience, v);
+            if (Hollowfen.Audio.AmbienceManager.Instance != null)
+                Hollowfen.Audio.AmbienceManager.Instance.SetUserVolume(v);
+            UpdateVolumeLabel(_ambienceValue, v);
+        }
 
         private static void UpdateVolumeLabel(TMP_Text label, float v)
         {
