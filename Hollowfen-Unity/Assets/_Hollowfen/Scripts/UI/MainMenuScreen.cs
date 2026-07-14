@@ -1,14 +1,14 @@
-using Hollowfen.Save;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Hollowfen.UI
 {
     public class MainMenuScreen : UIScreen
     {
-        [SerializeField] private Button _newGameButton;
-        [SerializeField] private Button _continueButton;
+        // The hero "Forage" button opens the journal / save-slot picker (existing saves to continue +
+        // empty slots to begin), so a separate Continue shortcut is redundant (removed batch-60). The
+        // field keeps its serialized name (_newGameButton) to preserve the scene reference.
+        [SerializeField] private Button _newGameButton;   // hero: "Forage →"
         [SerializeField] private Button _settingsButton;
         [SerializeField] private Button _creditsButton;
         [SerializeField] private Button _quitButton;
@@ -17,15 +17,12 @@ namespace Hollowfen.UI
         [SerializeField] private Button _fieldGuideButton;
 
         public override GameObject DefaultSelected =>
-            HasAnySave() && _continueButton != null
-                ? _continueButton.gameObject
-                : (_newGameButton != null ? _newGameButton.gameObject : base.DefaultSelected);
+            _newGameButton != null ? _newGameButton.gameObject : base.DefaultSelected;
 
         protected override void OnInitialize()
         {
             base.OnInitialize();
-            if (_newGameButton  != null) _newGameButton.onClick.AddListener(OnNewGame);
-            if (_continueButton != null) _continueButton.onClick.AddListener(OnContinue);
+            if (_newGameButton  != null) _newGameButton.onClick.AddListener(OnForage);
             if (_settingsButton != null) _settingsButton.onClick.AddListener(OnSettings);
             if (_creditsButton  != null) _creditsButton.onClick.AddListener(OnCredits);
             if (_quitButton     != null) _quitButton.onClick.AddListener(OnQuit);
@@ -51,31 +48,18 @@ namespace Hollowfen.UI
 
         public override void OnOpen()
         {
-            if (_continueButton != null) _continueButton.interactable = HasAnySave();
             // A queued Credits handoff that never consumed (e.g. OpenScreen dropped during
             // a transition) must not redirect the NEXT plain Settings open.
             SettingsScreen.NextOpenTab = null;
         }
 
-        private const string GameplaySceneName = "Scene_Hollowfen";
-
-        private void OnNewGame()
+        // Hero action: open the journal picker. Choose a saved journal to continue, or an empty slot
+        // to begin. The "first new game" achievement fires in SaveSlotScreen when a new journal is
+        // actually started (not merely on opening the picker).
+        private void OnForage()
         {
-            Debug.Log("[MainMenu] New Game");
-            GameEvents.TriggerAchievement("ACH_NEWGAME_FIRST");
+            Debug.Log("[MainMenu] Forage → journal picker");
             if (UIManager.Instance != null) UIManager.Instance.OpenScreen("save-slot");
-        }
-
-        private void OnContinue()
-        {
-            int slot = Hollowfen.Save.SaveCoordinator.MostRecentSlot();
-            if (slot < 0) { UISfx.Error(); return; }   // Continue with no save — dead-end press
-            Debug.Log($"[MainMenu] Continue → loading slot {slot}");
-            Hollowfen.Save.SaveCoordinator.LoadSlot(slot);
-            // The menu Continue button gets the cinematic welcome card too (batch-50), faded to the game.
-            LoadingScreen.NextIsContinue = true;
-            if (UIManager.Instance != null)
-                UIManager.Instance.LoadSceneAndOpen(GameplaySceneName);
         }
 
         private void OnSettings()
@@ -107,13 +91,6 @@ namespace Hollowfen.UI
 #else
             Application.Quit();
 #endif
-        }
-
-        private static bool HasAnySave()
-        {
-            for (int i = 0; i < SaveManager.TotalSlots; i++)
-                if (SaveManager.SlotHasData(i)) return true;
-            return false;
         }
     }
 }

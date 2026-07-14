@@ -114,6 +114,7 @@ namespace Hollowfen.UI
             if (newGame)
             {
                 Debug.Log($"[SaveSlot] Start new game in slot {slot}");
+                GameEvents.TriggerAchievement("ACH_NEWGAME_FIRST");   // moved from the menu (batch-60)
                 SaveCoordinator.StartNewGame(slot);
             }
             else

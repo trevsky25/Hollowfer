@@ -139,18 +139,11 @@ namespace Hollowfen.UI
             var vgImg = vg.GetComponent<Image>(); vgImg.sprite = _vignetteSprite;
             vgImg.color = new Color(0.04f, 0.05f, 0.06f, _vignetteStrength);
 
-            // Warm gradient ONLY behind the left text column (opaque at the far-left edge, cleanly faded
-            // to transparent before the hero), so Wren foraging keeps the image's true colour.
-            var warm = new GameObject("Cinematic_LeftWarm", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
-            var warmRt = warm.GetComponent<RectTransform>();
-            warmRt.SetParent(_canvasRect, false);
-            warmRt.anchorMin = new Vector2(0f, 0f); warmRt.anchorMax = new Vector2(0f, 1f); warmRt.pivot = new Vector2(0f, 0.5f);
-            warmRt.sizeDelta = new Vector2(w * _leftWarmWidth, 0f);
-            warmRt.anchoredPosition = Vector2.zero;
-            var warmImg = warm.GetComponent<Image>(); warmImg.raycastTarget = false;
-            warmImg.sprite = _leftFadeSprite;
-            warmImg.color = new Color(_leftWarmColor.r, _leftWarmColor.g, _leftWarmColor.b, _leftWarmStrength);
-            warmRt.SetSiblingIndex(Mathf.Clamp(gradeInsert + 1, 0, _canvasRect.childCount - 1));
+            // batch-60: the warm/gold text-side gradient (Cinematic_LeftWarm) was REMOVED at Trevor's
+            // request — the hero image reads cleaner at true colour. The neutral dark legibility
+            // gradients (scene Overlay_Left/BottomGradient) + the vignette still carry the text.
+            // The _leftWarm* fields + _leftFadeSprite are retained (unused) so the band can be
+            // restored quickly if wanted.
         }
 
         private void Update()
