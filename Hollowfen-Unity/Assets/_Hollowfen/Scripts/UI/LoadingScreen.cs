@@ -22,7 +22,7 @@ namespace Hollowfen.UI
         // no intro to dissolve into on a load); UIManager just fades the card out to the game.
         public static bool NextIsContinue;
 
-        [SerializeField] private Text _label;
+        [SerializeField] private TMP_Text _label;   // migrated legacy Text → TMP (batch-58)
         [SerializeField] private string _baseText = "Traveling to Hollowfen";
         [SerializeField] private float _dotInterval = 0.4f;
         [SerializeField, Tooltip("Homecoming hero image for the cinematic welcome.")]

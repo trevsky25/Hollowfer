@@ -1,6 +1,7 @@
 using System;
 using Hollowfen.Input;
 using Hollowfen.Save;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -10,9 +11,10 @@ namespace Hollowfen.UI
 {
     public class SaveSlotScreen : UIScreen
     {
-        [SerializeField] private Button[] _slotButtons = new Button[SaveManager.TotalSlots];
-        [SerializeField] private Text[]   _slotLabels  = new Text[SaveManager.TotalSlots];
-        [SerializeField] private Text[]   _slotMetas   = new Text[SaveManager.TotalSlots];
+        [SerializeField] private Button[]  _slotButtons = new Button[SaveManager.TotalSlots];
+        // Migrated legacy uGUI Text → TMP (batch-58) so slot rows pick up the EBGaramond body font.
+        [SerializeField] private TMP_Text[] _slotLabels = new TMP_Text[SaveManager.TotalSlots];
+        [SerializeField] private TMP_Text[] _slotMetas  = new TMP_Text[SaveManager.TotalSlots];
 
         private InputActions _input;
 
