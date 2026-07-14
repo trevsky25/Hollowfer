@@ -106,3 +106,25 @@ are screens still on **legacy `UnityEngine.UI.Text`**, which TMP fonts cannot re
 2. **Menu ambience + mixer group + settings slider** (A2/A3/A4) — needs an ambience clip + `.mixer` surgery.
 3. **TMP migration: SaveSlot + Loading._label** (T1/T2/X1) — kills the last sans + the font-pop.
 4. **Transition + layout polish** (X2/L1/L2/L3) — pause/menu/game transitions, 1280×800, live in-game pass.
+
+---
+
+## Resolution log (Trevor signed off "all four, suggested order" 2026-07-13)
+
+- **A1 — UI SFX set** → **DONE `batch-56`**. Move/Select/Back/Confirm/Error, all routed to SFX group.
+- **A2/A3/A4 — menu ambience** → **DONE `batch-57`**. Procedural forest bed on the menu + Ambience
+  settings slider. Note: source-level trim (routed to Master), NOT a dedicated mixer node — deliberate,
+  to avoid risky `.mixer` surgery on the shipping asset (flagged; a true node can be added later).
+- **T1/T2/X1 — TMP migration** → **DONE `batch-58`**. SaveSlot + Loading legacy `Text` → TMP; `liveLegacyUIText=0`
+  everywhere; New-Game flow is one consistent typeface.
+- **X2/L2 — transitions + live in-game pass** → **VERIFIED `batch-59`** (no fixes needed). Drove
+  menu→save-slot→loading→game live: clean fades, no font-pop, no stuck overlays. In-game census
+  fell=5 ebg=27 **other=0** — HUD/quest tracker/prompts/inventory = EBG, quest name + loading title =
+  IM Fell, **zero boxed glyphs, zero legacy sans**. Loading cinematic welcome + intro narration verified.
+- **L1 — 1280×800 Steam Deck** → verified-by-design (CanvasScaler 1920×1080 ref, MatchWidthOrHeight 0.5 →
+  uniform scale; no clipping at reference res). Recommend a quick manual Deck-resolution glance.
+- **Open taste items for Trevor** (no change made): (a) **compass** cardinal letters now EBG @13px — keep
+  (his call) or revert to sans; (b) **intro/act-break narration** renders in IM Fell italic (the display
+  face, as it always used the heading font) — atmospheric, but could switch to EBG body for longer-passage
+  readability if preferred (one-line change in NarrationOverlay); (c) T3–T5 minor (synthetic italic, stale
+  `_markPrefab`); (d) a full code-built rebuild of MainMenu/SaveSlot/Loading remains optional cleanup.
