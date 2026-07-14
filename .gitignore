@@ -56,3 +56,11 @@ Hollowfen-Unity/Assets/Magic Pig Games (Infinity PBR)/
 Hollowfen-Unity/Assets/Magic Pig Games (Infinity PBR).meta
 Hollowfen-Unity/Assets/NatureManufacture Assets/
 Hollowfen-Unity/Assets/NatureManufacture Assets.meta
+
+# GitHub rejects files >100MB — these web-prototype exports stay local-only (stripped from history 2026-07-13)
+public/world/demo3/demo1_village.glb
+public/world/demo3/demo1_village_clean.glb
+public/world/demo3/demo1_village_with_terrain.glb
+public/world/demo3/demo1_village_with_terrain_clean.glb
+public/world/demo3/demo1_village_quality.glb
+public/models/marra/Marra-Meshy/Meshy_AI_Arms_Outstretched_0501214822_texture_fbx.zip
