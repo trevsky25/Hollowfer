@@ -15,14 +15,22 @@ namespace Hollowfen.Quests
         [SerializeField] private string _keyItemId = "item.mill_key";
         [SerializeField] private float _forward = 1.05f;      // how far in front of Wren the key floats
         [SerializeField] private float _height = 1.42f;       // chest/eye height
-        [SerializeField] private float _camDistance = 0.34f;  // camera framing distance
-        [SerializeField] private float _fov = 26f;
-        [SerializeField] private float _pushSeconds = 1.1f;
+        [SerializeField] private float _camDistance = 0.32f;  // camera framing distance
+        [SerializeField] private float _fov = 24f;            // tighter lens → more compression on the key
+        [SerializeField] private float _pushSeconds = 1.35f;  // a touch slower so the arc reads
         [SerializeField] private float _holdSeconds = 2.4f;
         [SerializeField] private float _restoreSeconds = 0.7f;
         [SerializeField] private Vector3 _keyTilt = new Vector3(8f, 0f, 14f);  // shank near-horizontal, slight lean
         [SerializeField] private float _rockDegrees = 30f;   // gentle face-on rock (not a full spin)
         [SerializeField] private float _rockSpeed = 1.05f;
+
+        [Header("Cinematic approach (batch-62)")]
+        [SerializeField, Tooltip("Low hero angle: camera height vs the key at the hold. Negative = camera below, looking UP at the key catching the light.")]
+        private float _camHeightOffset = -0.07f;
+        [SerializeField, Tooltip("Yaw the push-in starts swung out by, easing to 0 — a sweeping curved approach around the key instead of a flat dolly.")]
+        private float _arcDegrees = 40f;
+        [SerializeField, Tooltip("Extra height the push-in starts raised by, easing to 0 — the camera descends onto the low hero angle.")]
+        private float _arcRise = 0.14f;
 
         private bool _played;
 
@@ -72,7 +80,10 @@ namespace Hollowfen.Quests
 
             var focus = Cinematics.PropFocusCinematic.Ensure();
             bool done = false;
-            focus.Play(key.transform, _camDistance, 0f, _fov, _pushSeconds, _holdSeconds, _restoreSeconds, null, () => done = true);
+            // Sweeping curved approach that descends onto a low hero angle (arcDegrees/arcRise), holding on
+            // the slowly-rocking key — the "amazing angle" pass Trevor asked for (batch-62).
+            focus.Play(key.transform, _camDistance, _camHeightOffset, _fov, _pushSeconds, _holdSeconds, _restoreSeconds,
+                null, () => done = true, default(Vector3), _arcDegrees, _arcRise, false);
             while (!done) yield return null;
             spinning = false;
             if (key != null) Destroy(key);

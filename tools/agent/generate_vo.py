@@ -40,6 +40,21 @@ INTRO_CAPTIONS = [
     "The village did not greet her. No children ran the lane, no cart on the Slatemoor road. The only one who stood there was an old friend — Bram, the innkeeper of The Crooked Pintle.",
 ]
 
+# The hidden-journal reveal (Scene 4), Wren's inner narration voice reading her father's journal
+# and note (batch-62). Index-matched to the captions split from Localization act1.hidden_journal.tobin_note.
+# TTS-clean text (em-dash signature dropped, intra-caption newline flattened); the on-screen captions
+# keep their flourishes. All Narrator (af_heart) — the established narration voice, since the passage is
+# framed as Wren reading. A distinct Tobin voice is a parked casting call (QUESTIONS Q10).
+JOURNAL_CAPTIONS = [
+    "The first pages were recipes, in her mother's hand.",
+    "Then Tobin's writing began. Field Cap. Wood Ear. Pinecrest.",
+    "Each a careful sketch, and under one a line pressed so hard the pencil tore the paper: never eat what you cannot name twice.",
+    "If you're reading this, I never told you.",
+    "The forest was always our family's secret. Your grandmother knew. Your mother knew. I was waiting until you were old enough.",
+    "I am sorry I waited too long.",
+    "Da.",
+]
+
 # Non-dialogue utterances (copy duplicated from Localization.cs — the parked staleness-manifest
 # follow-up in Docs/systems/audio.md covers keeping these honest).
 EXTRAS = {
@@ -164,6 +179,16 @@ def main():
             print(f"{group}:")
             for i, (speaker, text) in enumerate(utterances):
                 emit(os.path.join(OUT_ROOT, group), i, speaker, text)
+        return
+
+    # `--journal-only [i ...]` regenerates the hidden-journal reveal narration (batch-62); with indices,
+    # only those captions. Writes VO/HiddenJournal/<idx>_Narrator.wav.
+    if args and args[0] == "--journal-only":
+        want = {int(a) for a in args[1:]} if len(args) > 1 else set(range(len(JOURNAL_CAPTIONS)))
+        print("HiddenJournal:")
+        for i, caption in enumerate(JOURNAL_CAPTIONS):
+            if i in want:
+                emit(os.path.join(OUT_ROOT, "HiddenJournal"), i, "Narrator", caption)
         return
 
     # `--intro-only [i ...]` regenerates the homecoming intro narration; with indices, only those

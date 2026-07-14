@@ -77,6 +77,10 @@ namespace Hollowfen.UI
         private static Sprite _scrimSprite;
         private Sprite[] _pendingHeroes;
         private int[] _pendingBeatImage;
+        // batch-62: cinematic normally snaps opaque (it cross-fades from the boot loading screen).
+        // When there's no loading screen behind it (the mid-game journal reveal, dissolving in over a
+        // held prop-focus close-up), fade the whole overlay in instead of hard-cutting.
+        private bool _pendingFadeIn;
 
         public bool IsShowing => _running != null;
 
@@ -117,10 +121,12 @@ namespace Hollowfen.UI
         // Multi-image cinematic (batch-41): heroes[] in order; beatImage[i] = which image caption i
         // is painted over. When the image index changes between captions it crossfade-dissolves, and
         // each image runs its own motivated Ken Burns from DefaultMoves.
-        public void ShowCinematic(string[] captions, AudioClip[] clips, Sprite[] heroes, int[] beatImage, Action onDone = null)
-            => ShowInternal(captions, clips, heroes, beatImage, onDone);
+        // fadeIn (batch-62): dissolve the whole cinematic in (0→1) instead of snapping opaque — for a
+        // mid-game reveal with no loading screen behind it (the journal, over a held prop-focus frame).
+        public void ShowCinematic(string[] captions, AudioClip[] clips, Sprite[] heroes, int[] beatImage, Action onDone = null, bool fadeIn = false)
+            => ShowInternal(captions, clips, heroes, beatImage, onDone, fadeIn);
 
-        private void ShowInternal(string[] captions, AudioClip[] clips, Sprite[] heroes, int[] beatImage, Action onDone)
+        private void ShowInternal(string[] captions, AudioClip[] clips, Sprite[] heroes, int[] beatImage, Action onDone, bool fadeIn = false)
         {
             if (captions == null || captions.Length == 0) { onDone?.Invoke(); return; }
             BuildIfNeeded();
@@ -129,6 +135,7 @@ namespace Hollowfen.UI
             if (_voiceSource != null) _voiceSource.Stop();
             _pendingHeroes = (heroes != null && heroes.Length > 0) ? heroes : null;
             _pendingBeatImage = beatImage;
+            _pendingFadeIn = fadeIn;
             _pendingOnDone = onDone;
             _running = StartCoroutine(Run(captions, clips, onDone));
         }
@@ -203,10 +210,25 @@ namespace Hollowfen.UI
                 _heroA.color = Color.white;
                 _heroA.gameObject.SetActive(true);
                 _heroB.gameObject.SetActive(false);
-                _group.alpha = 1f;
-                _letterTop.sizeDelta = new Vector2(0f, _letterboxHeight);
-                _letterBot.sizeDelta = new Vector2(0f, _letterboxHeight);
                 StartKb(true, curImg);
+                if (_pendingFadeIn)
+                {
+                    // Dissolve the whole cinematic in over whatever's behind (a held prop-focus close-up):
+                    // real journal → painted journal, no hard cut. Fade grows the letterbox with the alpha.
+                    _group.alpha = 0f;
+                    _letterTop.sizeDelta = new Vector2(0f, 0f);
+                    _letterBot.sizeDelta = new Vector2(0f, 0f);
+                    yield return Fade(0f, 1f);
+                }
+                else
+                {
+                    // Appear opaque immediately at image 0's Ken-Burns A-state + full letterbox, so a
+                    // cinematic-welcome loading screen (same image, same letterbox) cross-fades out to
+                    // reveal us with zero flash (seamless opening).
+                    _group.alpha = 1f;
+                    _letterTop.sizeDelta = new Vector2(0f, _letterboxHeight);
+                    _letterBot.sizeDelta = new Vector2(0f, _letterboxHeight);
+                }
             }
             else
             {

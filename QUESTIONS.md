@@ -4,6 +4,17 @@ The decision inbox. Agents append questions ONLY Trevor can answer (design taste
 
 ## Open
 
+### Q15 — Should Tobin's farewell lines get their own voice? (asked 2026-07-13 · batch-62)
+**Context:** batch-62 voiced the hidden-journal reveal. The whole passage is currently Wren's narration
+voice (`af_heart`), consistent with the homecoming intro and act-break "From Wren's journal" narration,
+since the reveal is framed as Wren reading. But the bible calls Tobin's farewell note (captions 3–5:
+"If you're reading this, I never told you… I am sorry I waited too long. — Da") **"a different hand… a
+different man."** A distinct older male voice for just those three lines would land the emotional turn harder.
+**Options:** (a) keep it all Wren's voice — recommend, it's consistent and needs no new casting; (b) cast a
+Tobin voice (I'd need a Kokoro voice id you like, or your direction) and revoice captions 3–5; (c) leave the
+farewell lines **silent** (text only) so they read as written, not spoken. Purely taste — voice casting is
+your call (Q10 family). Regenerate with `generate_vo.py --journal-only` once decided.
+
 ### Q14 — Mill mission: two assets block the cinematic finale + the interior (asked 2026-07-13 · batch-51)
 **Context:** The mill mission spine (Bram→key→door→journal) works, and batch-51 added the journal's teaching
 (Field Cap/Wood Ear/Pinecrest) + Tobin's farewell note as live Georgia narration. Two remaining bible beats

@@ -83,3 +83,24 @@ head positions (SMR bounds) — zero per-dialogue authoring.
   excluded) pulls the camera to 88% of any hit.
 - Gotcha: the director runs in LateUpdate on unscaled time; anything else that writes Camera.main during
   a dialogue will fight it. MushroomFocusCamera can't engage (dialogue suspends PlayerInteractor focus).
+
+## PropFocusCinematic (batch-52; hold + arc batch-62)
+
+Reusable "hero item" push-in — `Scripts/Cinematics/PropFocusCinematic.cs`, self-created persistent
+singleton (survives the interacted prop deactivating). Takes over Camera.main (disables the
+CinemachineBrain, caches the gameplay pose), pushes in on a target's renderer-bounds centre, holds
+while the prop does its own hero animation, glides back, re-enables the brain. Dressing every focus
+shares: hides `_HUDCanvas`/`_MiniMapCanvas` and slides in 12%-height letterbox bars. Used by
+MillKeyHandoff (the floating mill key), KeyLockedDoor (keyhole), and QuestInteractable (journal reveal).
+- `Play(target, distance, height, fov, push, hold, restore, onPeak, onDone, frameDir, arcDegrees, arcRise, holdAtEnd)`.
+- **Arc (batch-62)**: `arcDegrees` swings the approach direction out and eases it to 0 over the push;
+  `arcRise` starts the approach raised and settles it down — a curved dolly onto the framing instead of a
+  flat one. The mill-key handoff uses arcDegrees 40 / arcRise 0.14 with a negative height (low hero angle
+  looking up as the key catches the light).
+- **Hold-at-end (batch-62)**: `holdAtEnd:true` leaves the camera PARKED on the prop after the hold (letterbox
+  up, HUD hidden, input suspended, brain still off) and fires `onDone` instead of gliding back; a later
+  `Restore()` runs the glide-out. This lets the journal reveal dissolve its painted spreads in over the held
+  book close-up (see menu-pages.md / QuestInteractable) rather than snapping in after a pointless glide back
+  to the room. `IsHeld` reports the parked state; `Restore(onDone)` is a no-op unless held.
+- Gotcha: like DialogueCinematics it owns Camera.main; don't run both at once. MillKeyHandoff waits on
+  `DialogueCinematics.IsActive` before starting so the two takeovers never fight.

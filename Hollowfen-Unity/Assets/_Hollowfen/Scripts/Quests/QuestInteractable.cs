@@ -33,6 +33,8 @@ namespace Hollowfen.Quests
         private Sprite[] _narrationHeroes;
         [SerializeField, Tooltip("Per-caption painting index (which _narrationHeroes image each caption sits over). Same length as the caption count; missing/over-range entries clamp.")]
         private int[] _narrationBeatImages;
+        [SerializeField, Tooltip("Per-caption voice-over for the narration reveal (batch-62 journal note), index-matched to the split captions. Null/short = that caption is silent.")]
+        private AudioClip[] _narrationVoiceClips;
 
         [Header("Focus push-in (optional, batch-53)")]
         [SerializeField, Tooltip("Prop pushed in on before the reveal plays (the 3D journal book). Null = no push-in.")]
@@ -78,17 +80,33 @@ namespace Hollowfen.Quests
                 QuestManager.CompleteQuest(_completesQuestIfActive.Id);
 
             // Optional cinematic push-in on the 3D prop (the journal book) before the reveal — the camera
-            // moves close on the book, then hands to PlayReveal which fades to the painted-spread finale.
+            // moves close on the book. When a PAINTED narration reveal follows (the journal spreads), the
+            // focus HOLDS on the book and the reveal dissolves in over that close-up (batch-62 smooth
+            // handoff — real journal → painted journal, no glide back to the room and no hard image cut);
+            // the focus camera glides out only after the narration finishes. Otherwise it restores first,
+            // then plays the reveal (the old behaviour, for dialogue props and black-caption passages).
+            bool paintedNarration = _narrationHeroes != null && _narrationHeroes.Length > 0
+                && !string.IsNullOrEmpty(_playsNarrationId);
+
             if (_focusTarget != null && Cinematics.PropFocusCinematic.Ensure() != null
                 && !Cinematics.PropFocusCinematic.Instance.IsPlaying)
-                Cinematics.PropFocusCinematic.Instance.Play(_focusTarget, _focusDistance, _focusHeight, _focusFov,
-                    _focusPush, _focusHold, _focusRestore, null, PlayReveal);
+            {
+                if (paintedNarration)
+                    Cinematics.PropFocusCinematic.Instance.Play(_focusTarget, _focusDistance, _focusHeight, _focusFov,
+                        _focusPush, _focusHold, _focusRestore, null, () => PlayReveal(true, true), default(Vector3), 0f, 0f, true);
+                else
+                    Cinematics.PropFocusCinematic.Instance.Play(_focusTarget, _focusDistance, _focusHeight, _focusFov,
+                        _focusPush, _focusHold, _focusRestore, null, () => PlayReveal(false, false));
+            }
             else
-                PlayReveal();
+                PlayReveal(false, false);
         }
 
         // Dialogue / narration payload + self-deactivate. Runs immediately, or after the focus push-in.
-        private void PlayReveal()
+        // fadeInCinematic: dissolve the painted reveal in over a held prop-focus close-up (vs snap opaque).
+        // restoreFocusAfter: the focus camera is parked (holdAtEnd) — glide it back once narration ends,
+        // and defer retiring the prop until then so it stays under the dissolve.
+        private void PlayReveal(bool fadeInCinematic, bool restoreFocusAfter)
         {
             if (_playsDialogue != null && Dialogue.DialogueScreen.Instance != null)
                 // Anchor = this prop, so monologues get the cinematic frame too (batch-45).
@@ -97,6 +115,7 @@ namespace Hollowfen.Quests
             // Read a passage as live serif narration captions (Tobin's journal note) — same overlay as
             // the opening intro. With painted spreads set (_narrationHeroes), it plays as the multi-image
             // ShowCinematic (crossfade + Ken Burns over the paintings, captions on top); else black captions.
+            bool heldReveal = false;
             if (!string.IsNullOrEmpty(_playsNarrationId) && UI.NarrationOverlay.Instance != null)
             {
                 string passage = Localization.Get(_playsNarrationId);
@@ -104,13 +123,30 @@ namespace Hollowfen.Quests
                 {
                     var captions = passage.Split(new[] { "\n\n" }, System.StringSplitOptions.RemoveEmptyEntries);
                     if (_narrationHeroes != null && _narrationHeroes.Length > 0)
-                        UI.NarrationOverlay.Instance.ShowCinematic(captions, null, _narrationHeroes, _narrationBeatImages, null);
+                    {
+                        heldReveal = restoreFocusAfter;
+                        System.Action onNarrationDone = heldReveal ? FinishHeldReveal : (System.Action)null;
+                        UI.NarrationOverlay.Instance.ShowCinematic(captions, _narrationVoiceClips, _narrationHeroes,
+                            _narrationBeatImages, onNarrationDone, fadeInCinematic);
+                    }
                     else
                         UI.NarrationOverlay.Instance.Show(captions);
                 }
             }
 
-            if (_deactivateOnUse) gameObject.SetActive(false);
+            // Retire the prop now — UNLESS a held reveal will do it after the focus camera glides back
+            // (so the book stays visible under the dissolve instead of vanishing mid-fade).
+            if (!heldReveal && _deactivateOnUse) gameObject.SetActive(false);
+        }
+
+        // Narration finished on a held focus shot: glide the parked camera back to gameplay, then retire
+        // the prop (the journal now lives in the UI/Field Guide).
+        private void FinishHeldReveal()
+        {
+            var pf = Cinematics.PropFocusCinematic.Instance;
+            if (pf != null && pf.IsHeld)
+                pf.Restore(() => { if (_deactivateOnUse) gameObject.SetActive(false); });
+            else if (_deactivateOnUse) gameObject.SetActive(false);
         }
 
         private void OnDrawGizmos()
