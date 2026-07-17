@@ -18,13 +18,15 @@ MonoBehaviour:
     text: He asks for the bitter soup now. Complains it isn't bitter enough. That
       is how I know it's working.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: dc278a841d5e345b8a34d6bf045f32d8, type: 3}
   _unlockStoryCard: {fileID: 0}
   _completeQuest: {fileID: 0}
-  _giveItemId:
+  _giveItemId: 
   _grantCoinsCopper: 0
   _spendsCoinsCopper: 0
   _sellsForageBasket: 0
   _basketCopperPerItem: 0
+  _basketBuyer: 0
   _grantForage: {fileID: 0}
   _grantForageCount: 1
   _consumeForage: {fileID: 0}
@@ -33,5 +35,7 @@ MonoBehaviour:
   _villageHopeDelta: 0
   _knowledgeDelta: 0
   _relationshipNpcIds: []
-  _relationshipDeltas: []
+  _relationshipDeltas: 
+  _transitionMoment: {fileID: 0}
   _nextDialog: {fileID: 0}
+  _choices: []

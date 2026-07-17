@@ -12,7 +12,7 @@ namespace Hollowfen.UI
     // with a "Chapter One / Homecoming" title, letterbox bars, drifting spore motes, and a discreet
     // loading line — while Scene_Hollowfen loads behind it. UIManager fades it out (FadeOutAndClose)
     // once the in-scene narration is up (same image), so the handoff is image→image seamless.
-    // Continue/Load keep the plain rolling-dots text (cinematic root stays hidden).
+    // Continue/load use the same cinematic card with returning copy, then fade into gameplay.
     public class LoadingScreen : UIScreen
     {
         // Set true by SaveSlotScreen right before a NEW-GAME LoadSceneAndOpen; consumed in OnOpen.
@@ -43,11 +43,35 @@ namespace Hollowfen.UI
         private RectTransform _cineRoot, _welcomeGroup, _loadingLine;
         private CanvasGroup _welcomeCg;
         private TMP_Text _eyebrowTmp, _titleTmp; // cached so per-open copy survives the build-once guard
-        private RectTransform _marqueeStreak;
-        private float _marqueeT;
+        private RectTransform _progressTrack, _progressFill, _progressSheen, _progressLead;
+        private Coroutine _welcomePop, _loadingLineAnim;
 
-        // Welcome loading states (batch-42, reworked batch-46: no press gate — the card stays a
-        // visibly MOVING loading screen: pulsing line + gold marquee + motes; the text flips to
+        // Unity's AsyncOperation reports scene loading from 0..0.9, then reserves the final
+        // step for activation. In practice it can sit at 0 for several seconds and then jump
+        // straight to 0.9, so the visible bar is a phase-aware presentation rather than a raw
+        // meter: reported work accelerates it, a gentle crawl keeps it moving between reports,
+        // and only CompleteLoad is allowed to take it to 100%.
+        private const float SceneLoadStart = 0.04f;
+        private const float SceneLoadReady = 0.90f;
+        private const float ActivationStarted = 0.94f;
+        private const float SceneActivated = 0.98f;
+        private const float ScenePresentationCeiling = 0.935f;
+        private const float ActivationPresentationCeiling = 0.985f;
+        private const float PassiveCrawlSpeed = 0.025f;
+        private const float MaximumCatchUpSpeed = 0.16f;
+        private const float CompletionMinimumSpeed = 0.45f;
+        private const float CompletionMaximumSpeed = 1.60f;
+        private const float ProgressTrackWidth = 420f;
+        private float _reportedProgress;
+        private float _displayedProgress;
+        private float _progressActivityTime;
+        private bool _loadComplete;
+        private double _lastRenderedFrameRealtime;
+        private float _maxObservedFrameGap;
+        private int _observedRenderedFrames;
+
+        // Welcome loading states (batch-42, reworked batch-74: no press gate — the card stays a
+        // visibly MOVING loading screen: phase-aware fill + a clipped sheen + motes; the text flips to
         // "entering Hollowfen" right before the scene-integration stall so the brief hitch reads
         // as arrival, not a freeze).
         private const string LoadingText = "gathering the last light";
@@ -62,6 +86,22 @@ namespace Hollowfen.UI
         private static Sprite _vignetteSprite;
 
         public bool Cinematic => _isCinematic;
+        public float ReportedProgress => _reportedProgress;
+        public float DisplayedProgress => _displayedProgress;
+        public float MaxObservedFrameGap => _maxObservedFrameGap;
+        public int ObservedRenderedFrames => _observedRenderedFrames;
+
+        protected override void OnInitialize()
+        {
+            base.OnInitialize();
+            // The cinematic is authored in the same 1920×1080 coordinates as the narration it
+            // dissolves into. Normalize the old scene canvas before either presentation builds.
+            var canvas = GetComponentInChildren<Canvas>(true);
+            if (canvas == null) return;
+            var scaler = canvas.GetComponent<CanvasScaler>();
+            if (scaler == null) scaler = canvas.gameObject.AddComponent<CanvasScaler>();
+            scaler.Init1080();
+        }
 
         public override void OnOpen()
         {
@@ -77,14 +117,17 @@ namespace Hollowfen.UI
             {
                 _welcomeState = 0;
                 BuildCinematic();
+                ResetLoadProgress();
                 // Per-open copy (BuildCinematic is guarded build-once, so set the text every open).
                 if (_eyebrowTmp != null) _eyebrowTmp.text = returning ? _returnEyebrow : _welcomeEyebrow;
                 if (_titleTmp != null) _titleTmp.text = returning ? _returnTitle : _welcomeTitle;
                 if (_cineRoot != null) _cineRoot.gameObject.SetActive(true);
                 if (_label != null) _label.gameObject.SetActive(false);
                 if (CanvasGroup != null) CanvasGroup.alpha = 1f;
-                StartCoroutine(PopWelcome());
-                if (_loadingLine != null) StartCoroutine(AnimateLoadingLine());
+                if (_welcomePop != null) StopCoroutine(_welcomePop);
+                _welcomePop = StartCoroutine(PopWelcome());
+                if (_loadingLineAnim != null) StopCoroutine(_loadingLineAnim);
+                if (_loadingLine != null) _loadingLineAnim = StartCoroutine(AnimateLoadingLine());
             }
             else
             {
@@ -99,12 +142,90 @@ namespace Hollowfen.UI
         {
             base.OnClose();
             if (_dotAnim != null) { StopCoroutine(_dotAnim); _dotAnim = null; }
+            if (_welcomePop != null) { StopCoroutine(_welcomePop); _welcomePop = null; }
+            if (_loadingLineAnim != null) { StopCoroutine(_loadingLineAnim); _loadingLineAnim = null; }
             if (_label != null) _label.text = _baseText;
             if (CanvasGroup != null) CanvasGroup.alpha = 1f;
         }
 
-        // Async load done, activation about to run — flip the line to "entering Hollowfen".
-        public void BeginActivation() { _welcomeState = 2; }
+        public void ResetLoadProgress()
+        {
+            _reportedProgress = 0f;
+            _displayedProgress = 0f;
+            _progressActivityTime = 0f;
+            _loadComplete = false;
+            _lastRenderedFrameRealtime = Time.realtimeSinceStartupAsDouble;
+            _maxObservedFrameGap = 0f;
+            _observedRenderedFrames = 0;
+            ApplyProgressVisual();
+        }
+
+        // Map Unity's real scene-data phase (0..0.9) into the visible loading segment.
+        public static float MapSceneProgress(float operationProgress)
+        {
+            float normalized = Mathf.Clamp01(operationProgress / 0.9f);
+            return Mathf.Lerp(SceneLoadStart, SceneLoadReady, normalized);
+        }
+
+        public void ReportSceneLoadProgress(float operationProgress) =>
+            ReportProgress(MapSceneProgress(operationProgress));
+
+        // Async scene data is ready and activation is about to run.
+        public void BeginActivation()
+        {
+            _welcomeState = 2;
+            ReportProgress(ActivationStarted);
+        }
+
+        public void ReportSceneActivated() => ReportProgress(SceneActivated);
+        public void CompleteLoad()
+        {
+            _loadComplete = true;
+            ReportProgress(1f);
+        }
+
+        private void ReportProgress(float progress)
+        {
+            // AsyncOperation can report in coarse jumps. The raw state remains monotonic; Update
+            // combines it with a capped presentation crawl so the visible fill never parks at a
+            // milestone and never reaches 100 before the load is genuinely complete.
+            _reportedProgress = Mathf.Max(_reportedProgress, Mathf.Clamp01(progress));
+        }
+
+        // Kept static so the presentation contract can be verified without running a scene load.
+        // `reported` accelerates catch-up, while the phase ceiling supplies continuous motion when
+        // Unity's AsyncOperation is temporarily silent.
+        public static float AdvanceDisplayedProgress(float displayed, float reported,
+            bool activating, bool complete, float unscaledDeltaTime)
+        {
+            displayed = Mathf.Clamp01(displayed);
+            reported = Mathf.Clamp01(reported);
+            float ceiling = complete
+                ? 1f
+                : (activating ? ActivationPresentationCeiling : ScenePresentationCeiling);
+            ceiling = Mathf.Max(displayed, ceiling); // presentation is strictly monotonic
+
+            float speed;
+            if (complete)
+            {
+                float completionGap = 1f - displayed;
+                speed = Mathf.Clamp(completionGap * 3.5f,
+                    CompletionMinimumSpeed, CompletionMaximumSpeed);
+            }
+            else
+            {
+                float reportedTarget = Mathf.Min(reported, ceiling);
+                float reportedGap = Mathf.Max(0f, reportedTarget - displayed);
+                float catchUpSpeed = Mathf.Min(MaximumCatchUpSpeed, reportedGap * 2.4f);
+                speed = Mathf.Max(PassiveCrawlSpeed, catchUpSpeed);
+            }
+
+            // A long scene-integration frame can produce a very large unscaledDeltaTime. Cap the
+            // presentation step so the first rendered frame afterward still advances smoothly
+            // instead of converting the hitch into another visible percentage jump.
+            float presentationDelta = Mathf.Clamp(unscaledDeltaTime, 0f, 0.05f);
+            return Mathf.MoveTowards(displayed, ceiling, speed * presentationDelta);
+        }
 
         // Cross-fade the whole card out to reveal the (same-image) narration behind it.
         public void FadeOutAndClose(float seconds, Action onDone)
@@ -213,22 +334,38 @@ namespace Hollowfen.UI
             _loadingLine.sizeDelta = new Vector2(700f, 24f);
             _loadingLine.anchoredPosition = new Vector2(0f, LetterboxHeight * 0.42f);
 
-            // Moving loading marquee (batch-46): a thin ink track with a gold streak sweeping
-            // across — an unambiguous "this is loading" motion cue above the loading line.
-            // RectMask2D (never Mask — scroll-viewport gotcha) clips the streak to the track.
-            var track = NewImage("MarqueeTrack", root, new Color(0.90f, 0.88f, 0.80f, 0.13f));
+            // Phase-aware progress bar. AsyncOperation + activation milestones accelerate the
+            // continuously advancing fill; the clipped sheen reinforces motion on slow frames.
+            var track = NewImage("ProgressTrack", root, new Color(0.90f, 0.88f, 0.80f, 0.16f));
             var trackRT = track.rectTransform;
+            _progressTrack = trackRT;
             trackRT.anchorMin = new Vector2(0.5f, 0f); trackRT.anchorMax = new Vector2(0.5f, 0f);
             trackRT.pivot = new Vector2(0.5f, 0f);
-            trackRT.sizeDelta = new Vector2(320f, 3f);
+            trackRT.sizeDelta = new Vector2(ProgressTrackWidth, 6f);
             trackRT.anchoredPosition = new Vector2(0f, LetterboxHeight * 0.42f + 32f);
             track.gameObject.AddComponent<RectMask2D>();
-            var streak = NewImage("Streak", track.transform, new Color(0.965f, 0.812f, 0.475f, 0.9f));
-            _marqueeStreak = streak.rectTransform;
-            _marqueeStreak.anchorMin = new Vector2(0f, 0f); _marqueeStreak.anchorMax = new Vector2(0f, 1f);
-            _marqueeStreak.pivot = new Vector2(0.5f, 0.5f);
-            _marqueeStreak.sizeDelta = new Vector2(90f, 0f);
-            _marqueeStreak.anchoredPosition = new Vector2(-45f, 0f);
+
+            var fill = NewImage("ProgressFill", track.transform, new Color(0.79f, 0.62f, 0.31f, 1f));
+            _progressFill = fill.rectTransform;
+            _progressFill.anchorMin = Vector2.zero;
+            _progressFill.anchorMax = new Vector2(0f, 1f);
+            _progressFill.pivot = new Vector2(0f, 0.5f);
+            _progressFill.offsetMin = Vector2.zero;
+            _progressFill.offsetMax = Vector2.zero;
+
+            var sheen = NewImage("ProgressSheen", fill.transform, new Color(1f, 0.90f, 0.62f, 0.72f));
+            _progressSheen = sheen.rectTransform;
+            _progressSheen.anchorMin = new Vector2(0f, 0f); _progressSheen.anchorMax = new Vector2(0f, 1f);
+            _progressSheen.pivot = new Vector2(0.5f, 0.5f);
+            _progressSheen.sizeDelta = new Vector2(54f, 0f);
+
+            var lead = NewImage("ProgressLead", track.transform, new Color(1f, 0.86f, 0.48f, 1f));
+            _progressLead = lead.rectTransform;
+            _progressLead.anchorMin = _progressLead.anchorMax = new Vector2(0f, 0.5f);
+            _progressLead.pivot = new Vector2(0.5f, 0.5f);
+            _progressLead.sizeDelta = new Vector2(7f, 10f);
+            _progressLead.anchoredPosition = Vector2.zero;
+            ApplyProgressVisual();
         }
 
         private void BuildMotes(Transform root)
@@ -257,13 +394,25 @@ namespace Hollowfen.UI
 
         private void Update()
         {
-            if (_motes.Count == 0 || _cineRoot == null || !_cineRoot.gameObject.activeInHierarchy) return;
-            // Marquee streak sweeps the track continuously (unscaled — the load doesn't touch timeScale).
-            if (_marqueeStreak != null)
-            {
-                _marqueeT += Time.unscaledDeltaTime;
-                _marqueeStreak.anchoredPosition = new Vector2(Mathf.Repeat(_marqueeT * 170f, 410f) - 45f, 0f);
-            }
+            if (_cineRoot == null || !_cineRoot.gameObject.activeInHierarchy) return;
+
+            double now = Time.realtimeSinceStartupAsDouble;
+            if (_lastRenderedFrameRealtime > 0d)
+                _maxObservedFrameGap = Mathf.Max(
+                    _maxObservedFrameGap, (float)(now - _lastRenderedFrameRealtime));
+            _lastRenderedFrameRealtime = now;
+            _observedRenderedFrames++;
+
+            _displayedProgress = AdvanceDisplayedProgress(
+                _displayedProgress,
+                _reportedProgress,
+                _welcomeState == 2,
+                _loadComplete,
+                Time.unscaledDeltaTime);
+            _progressActivityTime += Time.unscaledDeltaTime;
+            ApplyProgressVisual();
+
+            if (_motes.Count == 0) return;
             _mt += Time.unscaledDeltaTime; float dt = Time.unscaledDeltaTime;
             float hw = _cw * 0.5f + 20f, hh = _ch * 0.5f + 20f;
             for (int i = 0; i < _motes.Count; i++)
@@ -274,6 +423,40 @@ namespace Hollowfen.UI
                 if (p.x > hw) p.x = -hw; else if (p.x < -hw) p.x = hw;
                 _motes[i].anchoredPosition = p;
                 _moteCg[i].alpha = d.w * (0.55f + 0.45f * Mathf.Sin(_mt * 0.7f + d.z));
+            }
+        }
+
+        private void ApplyProgressVisual()
+        {
+            float p = Mathf.Clamp01(_displayedProgress);
+            if (_progressFill != null)
+                _progressFill.anchorMax = new Vector2(p, 1f);
+
+            if (_progressLead != null)
+            {
+                _progressLead.anchorMin = _progressLead.anchorMax = new Vector2(p, 0.5f);
+                _progressLead.gameObject.SetActive(p > 0.001f && p < 0.999f);
+                var image = _progressLead.GetComponent<Image>();
+                if (image != null)
+                {
+                    float pulse = 0.76f + 0.24f * Mathf.Sin(_progressActivityTime * 5f);
+                    image.color = new Color(1f, 0.86f, 0.48f, pulse);
+                }
+            }
+
+            if (_progressSheen != null)
+            {
+                float trackWidth = _progressTrack != null && _progressTrack.rect.width > 1f
+                    ? _progressTrack.rect.width
+                    : ProgressTrackWidth;
+                float fillWidth = trackWidth * p;
+                bool visible = fillWidth > 12f && p < 0.999f;
+                _progressSheen.gameObject.SetActive(visible);
+                if (visible)
+                {
+                    float x = Mathf.Repeat(_progressActivityTime * 125f, fillWidth + 54f) - 27f;
+                    _progressSheen.anchoredPosition = new Vector2(x, 0f);
+                }
             }
         }
 
@@ -302,21 +485,14 @@ namespace Hollowfen.UI
             if (tmp == null) yield break;
             var cg = _loadingLine.GetComponent<CanvasGroup>();
             if (cg == null) cg = _loadingLine.gameObject.AddComponent<CanvasGroup>();
-            float t = 0f; int dots = 0; float nextDot = 0f;
+            float t = 0f;
             while (true)
             {
                 t += Time.unscaledDeltaTime;
-                if (_welcomeState == 2)
-                {
-                    tmp.text = EnteringText;
-                    cg.alpha = 0.9f;
-                }
-                else
-                {
-                    // Loading: the pulsing "gathering the last light" with cycling dots.
-                    cg.alpha = 0.5f + 0.5f * Mathf.Sin(t * 2.2f);
-                    if (t >= nextDot) { tmp.text = LoadingText + new string('.', dots); dots = (dots + 1) % 4; nextDot = t + _dotInterval; }
-                }
+                string phase = _welcomeState == 2 ? EnteringText : LoadingText;
+                int percent = Mathf.Clamp(Mathf.RoundToInt(_displayedProgress * 100f), 0, 100);
+                tmp.text = phase + "  ·  " + percent + "%";
+                cg.alpha = _welcomeState == 2 ? 0.9f : 0.68f + 0.12f * Mathf.Sin(t * 2.2f);
                 yield return null;
             }
         }

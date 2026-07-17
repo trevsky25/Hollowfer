@@ -6,9 +6,9 @@ hookup, and in-scene placement** (same flow as the existing mushrooms). Check it
 tell Claude when a batch is ready to wire in. Priorities: **P0 = needed for the EA slice (Acts I–II, per
 QUESTIONS Q3)**, P1 = EA-complete cast/species, P2 = post-EA (Act IV / long-tail).
 
-Current state (verified 2026-07-12): **11 NPCs are all placeholder capsules** (only Wren has a body model);
-**3 of 21 mushroom species have real Meshy models** (Field Mushroom, Fly Agaric, Oyster) — the rest are
-tinted variants of those three or NatureManufacture pack meshes; **no key / book / knife models exist** in any
+Current state (verified 2026-07-14): **11 NPCs are all placeholder capsules** (only Wren has a body model);
+**20 of 21 mushroom entries have accurate Meshy-backed world + journal prefabs** (batch-68; 16 unique source models,
+with same-fungus aliases sharing geometry); Aldermark/Maitake alone remains pending. **No key / book / knife models exist** in any
 owned pack. Reference art: `public/concept/character-identity/` (web-prototype identity sheets) + Wren's
 `Assets/_Hollowfen/UI/Characters/wren-profile.png`.
 
@@ -54,19 +54,15 @@ Each NPC needs: a body model (Meshy), a T-pose/rig suitable for Mixamo, and late
 
 ---
 
-## MESHY — Mushroom species (accurate models; 18 of 21 still placeholder)
+## MESHY — Mushroom species (20 of 21 integrated)
 Educational game → every species should read as its **real** identity. Priority by whether the player forages
 or the plot leans on it.
-- [ ] **Wendlight → real Liberty Cap** *(P0, REMODEL)* — currently a mystical glowing tinted variant; remodel to
-  read like a real *Psilocybe semilanceata* (small, conical, pale — no glow).
-- [ ] **Act I forageables** *(P0)* — Wood Ear, Pinecrest, Goldfoot currently use tinted Field-Cap variants; give
-  them accurate models (Wood Ear = *Auricularia*, etc.).
-- [ ] **Field Mushroom mesh DECIMATION** *(P0, cleanup not new model)* — the existing Field Mushroom is **414k
-  verts**; decimate it (and any other heavy Meshy export) before EA. Meshy's remesh/decimate or an in-Unity pass.
-- [ ] **T4 rares → real models** *(P1)* — Moonring (Destroying Angel / *Amanita virosa*), Hollowheart
-  (Death Cap / *A. phalloides*) — accurate, ominous.
-- [ ] **Remaining species → real models** *(P2)* — Chanterelle, Lacewig (also needs a `_worldPrefab` if it should
-  ever be forageable), and the rest of the 21, retired off tinted variants.
+- [x] **Wendlight → real Liberty Cap** *(P0)* — batch-68
+- [x] **Act I forageables** *(P0)* — Wood Ear, Pinecrest, Goldfoot, Field Cap — batch-68
+- [x] **Field Mushroom and full-set decimation** *(P0)* — batch-68 two-budget generated pipeline
+- [x] **T4 rares → real models** *(P1)* — Moonring / Destroying Angel and Hollowheart / Death Cap — batch-68
+- [x] **Remaining delivered species → real models** *(P2)* — Chanterelle, Lacewig, Coppercup, Bonepale, Brightspore, and the rest — batch-68
+- [ ] **Aldermark / Hen of the Woods** *(P1)* — real *Grifola frondosa* model for the clear-cut stump; only remaining species
 
 ---
 

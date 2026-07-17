@@ -41,6 +41,7 @@ namespace Hollowfen.Cinematics
         private float _startFov;
         private CinemachineBrain _brain;
         private float _pendingRestore = 0.55f;
+        private NarrativePresentationSession.Lease _inputLease;
 
         public static PropFocusCinematic Ensure()
         {
@@ -60,6 +61,8 @@ namespace Hollowfen.Cinematics
 
         private void OnDestroy()
         {
+            _inputLease?.Dispose();
+            _inputLease = null;
             if (Instance == this) Instance = null;
         }
 
@@ -91,8 +94,7 @@ namespace Hollowfen.Cinematics
             var cam = Camera.main;
             IsPlaying = true;
             _pendingRestore = restoreSeconds;
-            Foraging.PlayerInteractor.Suspended = true;
-            Foraging.PlayerInteractor.SetPlayerInputEnabled(false);
+            _inputLease = NarrativePresentationSession.Acquire(this);
             HideHud();
             BuildLetterbox();
             _lbCanvas.gameObject.SetActive(true);
@@ -200,8 +202,8 @@ namespace Hollowfen.Cinematics
             if (_brain != null) _brain.enabled = true;
             if (_lbCanvas != null) _lbCanvas.gameObject.SetActive(false);
             ShowHud();
-            Foraging.PlayerInteractor.Suspended = false;
-            Foraging.PlayerInteractor.SetPlayerInputEnabled(true);
+            _inputLease?.Dispose();
+            _inputLease = null;
             IsPlaying = false;
             IsHeld = false;
         }
@@ -228,6 +230,8 @@ namespace Hollowfen.Cinematics
                 var cg = go.GetComponent<CanvasGroup>();
                 if (cg == null) cg = go.AddComponent<CanvasGroup>();
                 cg.alpha = 0f;
+                cg.interactable = false;
+                cg.blocksRaycasts = false;
                 _hudHidden.Add(cg);
             }
         }

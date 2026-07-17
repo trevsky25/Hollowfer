@@ -91,7 +91,7 @@ namespace Hollowfen.UI
             var lblGO = new GameObject("WaypointLabel", typeof(RectTransform));
             lblGO.transform.SetParent(_container.parent, false); // sibling of strip so labels sit under the strip without being clipped
             _waypointLabel = lblGO.AddComponent<TextMeshProUGUI>();
-            _waypointLabel.fontSize = 13f;
+            _waypointLabel.fontSize = 15.5f;
             _waypointLabel.color = _waypointColor;
             _waypointLabel.alignment = TextAlignmentOptions.Center;
             _waypointLabel.fontStyle = FontStyles.Italic;
@@ -101,7 +101,7 @@ namespace Hollowfen.UI
             lblRT.anchorMin = new Vector2(0.5f, 0f);
             lblRT.anchorMax = new Vector2(0.5f, 0f);
             lblRT.pivot = new Vector2(0.5f, 1f);
-            lblRT.sizeDelta = new Vector2(360f, 18f);
+            lblRT.sizeDelta = new Vector2(420f, 24f);
             // The strip itself is anchored top-center of the HUD canvas; the label goes just under it.
             // Place at the strip's bottom edge: use the strip's own anchored position relative to
             // its parent to compute the right Y offset at runtime.

@@ -21,6 +21,7 @@ namespace Hollowfen.Foraging
         public bool IsHarvestCinematicActive { get; set; }
         public CinemachineFollow Follow => _follow;
         public Vector3 BaseOffset => _baseOffset;
+        public float CurrentFov => _cam != null ? _cam.Lens.FieldOfView : _focusFOV;
         [SerializeField, Tooltip("Priority while no mushroom is focused — must be lower than the player follow cam.")]
         private int _idlePriority = 5;
         [SerializeField, Tooltip("Priority while a mushroom is focused — higher than the player follow cam (typically 10).")]
@@ -145,6 +146,11 @@ namespace Hollowfen.Foraging
             _cam.Follow = _focusedTarget;
             _cam.LookAt = _focusedTarget;
 
+            // This camera spends most of its life tracking a previous specimen at low priority.
+            // Invalidate that cached pipeline state before blending so damping starts at the new
+            // mushroom instead of flying across the world from the last focus target.
+            _cam.PreviousStateIsValid = false;
+
             // Frame from the player's side of the mushroom so the blend stays short and the
             // camera never crosses through walls or the player to reach a world-fixed angle.
             Vector3 toPlayer = _player != null
@@ -160,6 +166,35 @@ namespace Hollowfen.Foraging
             _cam.Priority = _activePriority;
             _orbitYaw = 0f;
             _orbitPitch = 0f;
+        }
+
+        // The Inspect screen normally engages focus before a harvest starts, but the challenge
+        // calls this as a deterministic backstop for direct scene tests and instant confirmation.
+        public void EnsureHarvestFocus(MushroomNode node)
+        {
+            if (node == null) return;
+            if (_focusedTarget != node.transform) Engage(node);
+        }
+
+        public void SetHarvestFraming(Vector3 followOffset, float fieldOfView)
+        {
+            if (_follow != null) _follow.FollowOffset = followOffset;
+            if (_cam == null) return;
+            var lens = _cam.Lens;
+            lens.FieldOfView = Mathf.Clamp(fieldOfView, 12f, 70f);
+            _cam.Lens = lens;
+        }
+
+        public void SetHarvestAim(Transform aim)
+        {
+            if (_cam == null || aim == null) return;
+            _cam.LookAt = aim;
+            _cam.PreviousStateIsValid = false;
+        }
+
+        public void InvalidateHarvestState()
+        {
+            if (_cam != null) _cam.PreviousStateIsValid = false;
         }
 
         private void ClearFocus()

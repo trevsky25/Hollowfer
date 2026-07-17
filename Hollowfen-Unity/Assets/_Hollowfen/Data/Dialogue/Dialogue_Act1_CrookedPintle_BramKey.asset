@@ -81,6 +81,7 @@ MonoBehaviour:
   _spendsCoinsCopper: 0
   _sellsForageBasket: 0
   _basketCopperPerItem: 0
+  _basketBuyer: 0
   _grantForage: {fileID: 0}
   _grantForageCount: 1
   _consumeForage: {fileID: 0}
@@ -90,5 +91,6 @@ MonoBehaviour:
   _knowledgeDelta: 0
   _relationshipNpcIds: []
   _relationshipDeltas: 
+  _transitionMoment: {fileID: 0}
   _nextDialog: {fileID: 11400000, guid: c0cf675b41b64327adcdc005614923b6, type: 2}
   _choices: []

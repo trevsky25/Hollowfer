@@ -43,12 +43,23 @@ namespace Hollowfen.NPCs
         // Walk the entries in author order, return the first whose conditions all pass.
         public DialogueData PickDialog()
         {
+            var entry = PickEntryDialog(false);
+            return entry != null ? entry : _repeatDialog;
+        }
+
+        // Used by NPCInteractable to keep authored story beats ahead of ambient village work.
+        // A story-linked request may explicitly take over its own active quest after its intro.
+        public DialogueData PickActiveQuestDialog() => PickEntryDialog(true);
+
+        private DialogueData PickEntryDialog(bool activeQuestEntriesOnly)
+        {
             if (_dialogueEntries != null)
             {
                 for (int i = 0; i < _dialogueEntries.Length; i++)
                 {
                     var e = _dialogueEntries[i];
                     if (e.dialog == null) continue;
+                    if (activeQuestEntriesOnly && e.activeQuest == null) continue;
                     if (e.requiresQuestCompleted != null && !QuestManager.IsCompleted(e.requiresQuestCompleted.Id)) continue;
                     if (e.activeQuest != null && !QuestManager.IsActive(e.activeQuest.Id)) continue;
                     if (!string.IsNullOrEmpty(e.requiresFlagId) && !GameScores.HasFlag(e.requiresFlagId)) continue;
@@ -58,7 +69,7 @@ namespace Hollowfen.NPCs
                     return e.dialog;
                 }
             }
-            return _repeatDialog;
+            return null;
         }
     }
 }

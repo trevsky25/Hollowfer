@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using Hollowfen.Cinematics;
+using Hollowfen.Data;
 using Hollowfen.Foraging;
 using TMPro;
 using UnityEngine;
@@ -65,12 +67,17 @@ namespace Hollowfen.UI
         private RectTransform _letterBot;
         private TMP_Text _caption;
         private TMP_Text _hint;
+        private RectTransform _momentTitleRoot;
+        private TMP_Text _momentEyebrow;
+        private TMP_Text _momentTitle;
+        private TMP_Text _momentSubtitle;
         private bool _built;
         private Coroutine _running;
         private Coroutine _kbCoA;
         private Coroutine _kbCoB;
         private AudioSource _voiceSource;
         private Action _pendingOnDone;
+        private NarrativePresentationSession.Lease _inputLease;
 
         private Image _activeHero;
         private bool _cinematic;
@@ -81,6 +88,7 @@ namespace Hollowfen.UI
         // When there's no loading screen behind it (the mid-game journal reveal, dissolving in over a
         // held prop-focus close-up), fade the whole overlay in instead of hard-cutting.
         private bool _pendingFadeIn;
+        private StoryMomentData _pendingMoment;
 
         public bool IsShowing => _running != null;
 
@@ -92,6 +100,7 @@ namespace Hollowfen.UI
 
         private void OnDestroy()
         {
+            ReleaseInputLease();
             if (Instance == this) Instance = null;
         }
 
@@ -126,16 +135,32 @@ namespace Hollowfen.UI
         public void ShowCinematic(string[] captions, AudioClip[] clips, Sprite[] heroes, int[] beatImage, Action onDone = null, bool fadeIn = false)
             => ShowInternal(captions, clips, heroes, beatImage, onDone, fadeIn);
 
-        private void ShowInternal(string[] captions, AudioClip[] clips, Sprite[] heroes, int[] beatImage, Action onDone, bool fadeIn = false)
+        // Data-authored quest presentation. The same renderer now handles the journal discovery,
+        // NPC scene interstitials, and future act breaks without scene components owning media arrays.
+        public void ShowStoryMoment(StoryMomentData moment, Action onDone = null)
+        {
+            if (moment == null) { onDone?.Invoke(); return; }
+            ShowInternal(moment.ResolveCaptions(), moment.VoiceClips, moment.ResolveImages(),
+                moment.BeatImages, onDone, moment.FadeIn, moment);
+        }
+
+        private void ShowInternal(string[] captions, AudioClip[] clips, Sprite[] heroes, int[] beatImage,
+            Action onDone, bool fadeIn = false, StoryMomentData moment = null)
         {
             if (captions == null || captions.Length == 0) { onDone?.Invoke(); return; }
             BuildIfNeeded();
-            if (_running != null) StopCoroutine(_running);
+            if (_running != null)
+            {
+                StopCoroutine(_running);
+                _running = null;
+                ReleaseInputLease();
+            }
             StopKb(true); StopKb(false);
             if (_voiceSource != null) _voiceSource.Stop();
             _pendingHeroes = (heroes != null && heroes.Length > 0) ? heroes : null;
             _pendingBeatImage = beatImage;
             _pendingFadeIn = fadeIn;
+            _pendingMoment = moment;
             _pendingOnDone = onDone;
             _running = StartCoroutine(Run(captions, clips, onDone));
         }
@@ -149,8 +174,9 @@ namespace Hollowfen.UI
             _running = null;
             if (_voiceSource != null) _voiceSource.Stop();
             if (_canvas != null) _canvas.gameObject.SetActive(false);
-            PlayerInteractor.Suspended = false;
-            PlayerInteractor.SetPlayerInputEnabled(true);
+            ConfigureStoryMoment(null);
+            _pendingMoment = null;
+            ReleaseInputLease();
             var done = _pendingOnDone; _pendingOnDone = null;
             done?.Invoke();
         }
@@ -189,11 +215,12 @@ namespace Hollowfen.UI
         private IEnumerator Run(string[] captions, AudioClip[] clips, Action onDone)
         {
             _cinematic = _pendingHeroes != null;
+            var activeMoment = _pendingMoment;
 
-            PlayerInteractor.Suspended = true;
-            PlayerInteractor.SetPlayerInputEnabled(false);
+            _inputLease = NarrativePresentationSession.Acquire(this);
 
             ConfigureMode(_cinematic);
+            ConfigureStoryMoment(activeMoment);
 
             _canvas.gameObject.SetActive(true);
             _caption.text = "";
@@ -262,9 +289,11 @@ namespace Hollowfen.UI
 
                 // Voiced: hold for the read (+ a breath). Silent: hold proportional to length
                 // so the longer restored passages get time to read.
-                float hold = clip != null
-                    ? Mathf.Max(_autoAdvanceSeconds, clip.length + 0.8f)
-                    : SilentHold(line);
+                float hold = activeMoment != null && activeMoment.HoldSeconds > 0f
+                    ? Mathf.Max(_minHoldSeconds, activeMoment.HoldSeconds)
+                    : clip != null
+                        ? Mathf.Max(_autoAdvanceSeconds, clip.length + 0.8f)
+                        : SilentHold(line);
                 float shown = Time.unscaledTime;
                 while (true)
                 {
@@ -287,11 +316,42 @@ namespace Hollowfen.UI
             StopKb(true); StopKb(false);
             _canvas.gameObject.SetActive(false);
 
-            PlayerInteractor.Suspended = false;
-            PlayerInteractor.SetPlayerInputEnabled(true);
+            ConfigureStoryMoment(null);
+            _pendingMoment = null;
+            ReleaseInputLease();
             _running = null;
             _pendingOnDone = null;
             onDone?.Invoke();
+        }
+
+        private void ReleaseInputLease()
+        {
+            _inputLease?.Dispose();
+            _inputLease = null;
+        }
+
+        private void ConfigureStoryMoment(StoryMomentData moment)
+        {
+            if (_momentTitleRoot == null) return;
+
+            // Dialogue interstitials can use the canonical StoryCard painting as a clean,
+            // image-only beat. The hidden caption still drives VO/read-time pacing, but no
+            // title, subtitle, caption, or input hint is drawn over the artwork.
+            bool showCopy = moment == null || moment.ShowCaptions;
+            _caption.gameObject.SetActive(showCopy);
+            _hint.gameObject.SetActive(showCopy);
+
+            bool show = moment != null && moment.ShowStoryCardTitle && moment.StoryCard != null;
+            _momentTitleRoot.gameObject.SetActive(show);
+            if (!show) return;
+
+            var card = moment.StoryCard;
+            string brow = card.Act ?? "";
+            if (!string.IsNullOrEmpty(card.Scene))
+                brow = string.IsNullOrEmpty(brow) ? card.Scene : brow + "  ·  " + card.Scene;
+            _momentEyebrow.text = brow.ToUpperInvariant();
+            _momentTitle.text = JournalText.StoryTitle(card);
+            _momentSubtitle.text = JournalText.StorySubtitle(card);
         }
 
         // Dissolve the active painting into heroes[imageIndex]. The incoming layer is forced to the
@@ -482,6 +542,49 @@ namespace Hollowfen.UI
             // Letterbox bars.
             _letterTop = MakeBar("LetterboxTop", canvasGo.transform, 1f);
             _letterBot = MakeBar("LetterboxBot", canvasGo.transform, 0f);
+
+            // Scene-title plate: restrained gold hierarchy over the illustration. It is independent
+            // from unlocking; a dialogue may preview this card while the journal reward stays locked.
+            _momentTitleRoot = UICanvasUtil.NewRect("StoryMomentTitle", canvasGo.transform);
+            _momentTitleRoot.anchorMin = _momentTitleRoot.anchorMax = new Vector2(0f, 1f);
+            _momentTitleRoot.pivot = new Vector2(0f, 1f);
+            _momentTitleRoot.sizeDelta = new Vector2(900f, 210f);
+            _momentTitleRoot.anchoredPosition = new Vector2(112f, -150f);
+
+            var titleRail = UICanvasUtil.NewImage("TitleRail", _momentTitleRoot,
+                HollowfenPalette.Gold, false).GetComponent<Image>();
+            titleRail.sprite = UICanvasUtil.RoundedRect(2);
+            titleRail.type = Image.Type.Sliced;
+            var railRT = titleRail.rectTransform;
+            railRT.anchorMin = new Vector2(0f, 0f); railRT.anchorMax = new Vector2(0f, 1f);
+            railRT.pivot = new Vector2(0f, 0.5f);
+            railRT.sizeDelta = new Vector2(4f, 0f);
+            railRT.anchoredPosition = Vector2.zero;
+
+            _momentEyebrow = UICanvasUtil.NewEyebrow("Eyebrow", _momentTitleRoot, "", 16f,
+                HollowfenPalette.GoldGlow, TextAlignmentOptions.TopLeft);
+            var meRT = _momentEyebrow.rectTransform;
+            meRT.anchorMin = new Vector2(0f, 1f); meRT.anchorMax = new Vector2(1f, 1f);
+            meRT.pivot = new Vector2(0f, 1f); meRT.sizeDelta = new Vector2(-30f, 28f);
+            meRT.anchoredPosition = new Vector2(26f, -4f);
+
+            _momentTitle = UICanvasUtil.NewHeading("Title", _momentTitleRoot, "", 64f,
+                HollowfenPalette.Cream, FontStyles.Normal, TextAlignmentOptions.TopLeft);
+            _momentTitle.textWrappingMode = TextWrappingModes.Normal;
+            var mtRT = _momentTitle.rectTransform;
+            mtRT.anchorMin = new Vector2(0f, 1f); mtRT.anchorMax = new Vector2(1f, 1f);
+            mtRT.pivot = new Vector2(0f, 1f); mtRT.sizeDelta = new Vector2(-30f, 90f);
+            mtRT.anchoredPosition = new Vector2(26f, -34f);
+
+            _momentSubtitle = UICanvasUtil.NewBody("Subtitle", _momentTitleRoot, "", 24f,
+                new Color(HollowfenPalette.Cream.r, HollowfenPalette.Cream.g, HollowfenPalette.Cream.b, 0.82f),
+                FontStyles.Italic, TextAlignmentOptions.TopLeft);
+            _momentSubtitle.textWrappingMode = TextWrappingModes.Normal;
+            var msRT = _momentSubtitle.rectTransform;
+            msRT.anchorMin = new Vector2(0f, 1f); msRT.anchorMax = new Vector2(1f, 1f);
+            msRT.pivot = new Vector2(0f, 1f); msRT.sizeDelta = new Vector2(-30f, 70f);
+            msRT.anchoredPosition = new Vector2(28f, -122f);
+            _momentTitleRoot.gameObject.SetActive(false);
 
             _caption = UICanvasUtil.NewHeading("Caption", canvasGo.transform, "", 38f,
                 new Color(0.95f, 0.92f, 0.84f, 1f), FontStyles.Italic, TextAlignmentOptions.Center);

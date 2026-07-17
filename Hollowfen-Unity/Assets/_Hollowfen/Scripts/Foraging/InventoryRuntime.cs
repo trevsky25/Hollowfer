@@ -13,6 +13,20 @@ namespace Hollowfen.Foraging
     // value type to a small struct. For now the foraging slice only carries mushrooms.
     public static class InventoryRuntime
     {
+        public readonly struct BasketSale
+        {
+            public BasketSale(int soldCount, int refusedCount, int copper)
+            {
+                SoldCount = soldCount;
+                RefusedCount = refusedCount;
+                Copper = copper;
+            }
+
+            public int SoldCount { get; }
+            public int RefusedCount { get; }
+            public int Copper { get; }
+        }
+
         private static readonly Dictionary<string, int> _counts = new Dictionary<string, int>();
         private static readonly Dictionary<string, MushroomFieldGuideData> _byId = new Dictionary<string, MushroomFieldGuideData>();
         private static MushroomFieldGuideDatabase _database;
@@ -83,6 +97,38 @@ namespace Hollowfen.Foraging
             return true;
         }
 
+        // Atomic multi-species delivery: validate the whole order before changing anything,
+        // then persist once. This prevents half-consumed NPC requests and an autosave per row.
+        public static bool TryRemoveBatch(MushroomFieldGuideData[] species, int[] amounts)
+        {
+            if (species == null || amounts == null) return false;
+            int length = Mathf.Min(species.Length, amounts.Length);
+            if (length <= 0) return false;
+            EnsureHydrated();
+
+            var required = new Dictionary<string, int>(StringComparer.Ordinal);
+            for (int i = 0; i < length; i++)
+            {
+                if (species[i] == null) return false;
+                int amount = Mathf.Max(1, amounts[i]);
+                required.TryGetValue(species[i].Id, out int current);
+                required[species[i].Id] = current + amount;
+                _byId[species[i].Id] = species[i];
+            }
+            foreach (var row in required)
+                if (!_counts.TryGetValue(row.Key, out int current) || current < row.Value) return false;
+
+            foreach (var row in required)
+            {
+                int next = _counts[row.Key] - row.Value;
+                if (next <= 0) _counts.Remove(row.Key);
+                else _counts[row.Key] = next;
+            }
+            Persist();
+            OnChanged?.Invoke(null, 0);
+            return true;
+        }
+
         // Empties the basket (firstSale: Marra takes the lot for the pot).
         public static void RemoveAll()
         {
@@ -91,6 +137,54 @@ namespace Hollowfen.Foraging
             _counts.Clear();
             Persist();
             OnChanged?.Invoke(null, 0);
+        }
+
+        public static BasketSale SellTo(MushroomBuyer buyer)
+        {
+            EnsureHydrated();
+            BasketSale quote = QuoteFor(buyer);
+            if (quote.SoldCount <= 0) return quote;
+
+            var remove = new List<string>();
+            foreach (var pair in _counts)
+            {
+                var species = ResolveData(pair.Key);
+                int each = MushroomRules.SaleValue(species, buyer);
+                if (each > 0) remove.Add(pair.Key);
+            }
+
+            if (remove.Count > 0)
+            {
+                foreach (var id in remove) _counts.Remove(id);
+                Persist();
+                OnChanged?.Invoke(null, 0);
+            }
+            return quote;
+        }
+
+        // Read-only quote used by Wren's Purse. Buyer policy still lives on the mushroom data,
+        // so the preview and the committed sale cannot drift apart.
+        public static BasketSale QuoteFor(MushroomBuyer buyer)
+        {
+            EnsureHydrated();
+            if (buyer == MushroomBuyer.None || _counts.Count == 0)
+                return new BasketSale(0, TotalCount, 0);
+
+            int sold = 0;
+            int refused = 0;
+            int copper = 0;
+            foreach (var pair in _counts)
+            {
+                var species = ResolveData(pair.Key);
+                int each = MushroomRules.SaleValue(species, buyer);
+                if (each <= 0) refused += pair.Value;
+                else
+                {
+                    sold += pair.Value;
+                    copper += pair.Value * each;
+                }
+            }
+            return new BasketSale(sold, refused, copper);
         }
 
         // Used by save load to reset all in-memory state to a snapshot.

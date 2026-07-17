@@ -15,15 +15,17 @@ MonoBehaviour:
   _id: act3.theo.capital.hub
   _lines:
   - speaker: Theo
-    text: 'Still turning it over. Ask what you like, or don''t.'
+    text: Still turning it over. Ask what you like, or don't.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 702cb2a417a7e4797867eede424da9f3, type: 3}
   _unlockStoryCard: {fileID: 0}
   _completeQuest: {fileID: 0}
-  _giveItemId:
+  _giveItemId: 
   _grantCoinsCopper: 0
   _spendsCoinsCopper: 0
   _sellsForageBasket: 0
   _basketCopperPerItem: 0
+  _basketBuyer: 0
   _grantForage: {fileID: 0}
   _grantForageCount: 1
   _consumeForage: {fileID: 0}
@@ -32,18 +34,23 @@ MonoBehaviour:
   _villageHopeDelta: 0
   _knowledgeDelta: 0
   _relationshipNpcIds: []
-  _relationshipDeltas: []
+  _relationshipDeltas: 
+  _transitionMoment: {fileID: 0}
   _nextDialog: {fileID: 0}
   _choices:
-  - text: 'What would that cost me?'
+  - text: What would that cost me?
     next: {fileID: 11400000, guid: cd213d2631374534adaee11f24cbfc37, type: 2}
-    setsFlagId:
-  - text: 'And Hollowfen — what happens to it?'
+    setsFlagId: 
+    ending: {fileID: 0}
+  - text: "And Hollowfen \u2014 what happens to it?"
     next: {fileID: 11400000, guid: c298b380599149049a3a44cd50d6945f, type: 2}
-    setsFlagId:
-  - text: 'When would this be?'
+    setsFlagId: 
+    ending: {fileID: 0}
+  - text: When would this be?
     next: {fileID: 11400000, guid: f7625a6294bf435b8bcd623ed94c4057, type: 2}
-    setsFlagId:
-  - text: 'I need to think on it.'
+    setsFlagId: 
+    ending: {fileID: 0}
+  - text: I need to think on it.
     next: {fileID: 11400000, guid: 65a41759aabd4162a10a1fbd17a3247f, type: 2}
-    setsFlagId:
+    setsFlagId: 
+    ending: {fileID: 0}

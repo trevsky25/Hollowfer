@@ -33,7 +33,18 @@ MonoBehaviour:
   _notes: 'This is the emotional mushroom of Hollowfen: scarce, gentle, and easy
     to overharvest. Finding one should feel like a small mercy.'
   _photo: {fileID: 21300000, guid: b238d754e5968416cbefe2908873a131, type: 3}
-  _photoCredit: 
+  _photoCredit:
   _worldPrefab: {fileID: 5716283212947672387, guid: 7efd7a2a04a8a4ec88f06f636813e534, type: 3}
+  _journalPreviewPrefab: {fileID: 8390988146733830461, guid: 93f543e2611644ab2a850c1a47f5cffa, type: 3}
+  _journalExposure: 0.85
   _displayNameId: mushroom.brightspore.name
   _descriptionId: mushroom.brightspore.description
+  _forageTier: 2
+  _requiredForageFlagId: foraging_knife_unlocked
+  _wildRespawnDays: 4
+  _marraValueCopper: 0
+  _theoValueCopper: 14
+  _cultivable: 1
+  _cultivationHours: 12
+  _cultivationYield: 2
+  _cultivationUnlockFlagId: edda_grandfather_recovering

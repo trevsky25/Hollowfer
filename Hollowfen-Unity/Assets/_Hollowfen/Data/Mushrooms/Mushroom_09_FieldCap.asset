@@ -34,7 +34,18 @@ MonoBehaviour:
   _notes: 'A humble first find with a useful lesson: habitat matters. Bram calls
     them common. Marra calls them breakfast when the village still has butter.'
   _photo: {fileID: 21300000, guid: 02ef72fd1da97490290c144f842d66eb, type: 3}
-  _photoCredit: 
+  _photoCredit:
   _worldPrefab: {fileID: 7479168876297052834, guid: 902561bbde9cf4756b5585d73161a7a1, type: 3}
+  _journalPreviewPrefab: {fileID: 4439964037814628172, guid: c4950eafbcb9b4d8f88cff2a681ff229, type: 3}
+  _journalExposure: 0.28
   _displayNameId: mushroom.fieldCap.name
   _descriptionId: mushroom.fieldCap.description
+  _forageTier: 1
+  _requiredForageFlagId:
+  _wildRespawnDays: 1
+  _marraValueCopper: 4
+  _theoValueCopper: 5
+  _cultivable: 0
+  _cultivationHours: 6
+  _cultivationYield: 3
+  _cultivationUnlockFlagId:

@@ -15,36 +15,45 @@ MonoBehaviour:
   _id: act2.hollin.first_meeting
   _lines:
   - speaker: Hollin
-    text: 'I asked at three villages before someone said your name.'
+    text: I asked at three villages before someone said your name.
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: 3ba6bcc49a1ca4549a2523a1f2965a40, type: 3}
   - speaker: Wren
-    text: 'Are you buying?'
+    text: Are you buying?
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: bb36e3555fff6466ebf5d8a592c11db8, type: 3}
   - speaker: Hollin
-    text: 'No.'
+    text: No.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: e79a14437d6014372b1cb0e3b99ef50d, type: 3}
   - speaker: Wren
-    text: 'Selling?'
+    text: Selling?
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: c0a0f9ec1dfec4227994f8b4602d1354, type: 3}
   - speaker: Hollin
     text: 'No.
 
 
-      I am walking. And looking for a place my grandmother used to name when she thought no one was listening.'
+      I am walking. And looking for a place my grandmother used
+      to name when she thought no one was listening.'
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: edc15b0ef0c56462cb9801e5c451d09c, type: 3}
   - speaker: Wren
-    text: 'What place?'
+    text: What place?
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 0a1105c1a9e4a48ac978a1a3d535a8ae, type: 3}
   - speaker: Hollin
-    text: 'Not yet.'
+    text: Not yet.
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: 429b38a3bb1844fb09cfb60e27d9d6ba, type: 3}
   _unlockStoryCard: {fileID: 0}
   _completeQuest: {fileID: 11400000, guid: 0a89ad7b8f66425ebf9661c6ad668b81, type: 2}
-  _giveItemId:
+  _giveItemId: 
   _grantCoinsCopper: 0
   _spendsCoinsCopper: 0
   _sellsForageBasket: 0
   _basketCopperPerItem: 0
+  _basketBuyer: 0
   _grantForage: {fileID: 0}
   _grantForageCount: 1
   _consumeForage: {fileID: 0}
@@ -53,5 +62,7 @@ MonoBehaviour:
   _villageHopeDelta: 0
   _knowledgeDelta: 0
   _relationshipNpcIds: []
-  _relationshipDeltas: []
+  _relationshipDeltas: 
+  _transitionMoment: {fileID: 0}
   _nextDialog: {fileID: 0}
+  _choices: []

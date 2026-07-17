@@ -47,7 +47,7 @@ namespace Hollowfen.Foraging
 
         private void Awake()
         {
-            _input = new InputActions();
+            EnsureInput();
             if (_foragingMask.value == 0)
             {
                 int layer = LayerMask.NameToLayer("Foraging");
@@ -57,20 +57,33 @@ namespace Hollowfen.Foraging
 
         private void OnEnable()
         {
+            // Non-serialized generated input wrappers are cleared by a domain reload while
+            // scene objects survive. Recreate the wrapper here as well as in Awake so UI and
+            // interaction hotkeys cannot die after a script recompile in Play Mode.
+            EnsureInput();
             _input.Player.Enable();
             _input.Player.Interact.performed += OnInteract;
         }
 
         private void OnDisable()
         {
-            _input.Player.Interact.performed -= OnInteract;
-            _input.Player.Disable();
+            if (_input != null)
+            {
+                _input.Player.Interact.performed -= OnInteract;
+                _input.Player.Disable();
+            }
             SetFocus(null);
         }
 
         private void OnDestroy()
         {
             _input?.Dispose();
+            _input = null;
+        }
+
+        private void EnsureInput()
+        {
+            if (_input == null) _input = new InputActions();
         }
 
         private void Update()

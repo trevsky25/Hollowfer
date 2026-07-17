@@ -15,24 +15,30 @@ MonoBehaviour:
   _id: act3.calden.records
   _lines:
   - speaker: Wren
-    text: 'Wendlight where clean water ran. Sable''s record names what the church chose to forget.'
+    text: Wendlight where clean water ran. Sable's record names what the church chose
+      to forget.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: d9f9bb505b6364dea8267f4209246be8, type: 3}
   - speaker: Calden
-    text: 'Then I have reading to do that I have avoided for thirty years.'
+    text: Then I have reading to do that I have avoided for thirty years.
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: 9df60180c016c4b77be4ae4d7c92e974, type: 3}
   - speaker: Wren
-    text: 'You''ll look?'
+    text: You'll look?
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: f88c8a103118241098e1a11d2412b807, type: 3}
   - speaker: Calden
-    text: 'Give me a day with the old registers. Come to the garden gate after.'
+    text: Give me a day with the old registers. Come to the garden gate after.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 6f5fab58172864d2fb1064d6ea084809, type: 3}
   _unlockStoryCard: {fileID: 0}
   _completeQuest: {fileID: 0}
-  _giveItemId:
+  _giveItemId: 
   _grantCoinsCopper: 0
   _spendsCoinsCopper: 0
   _sellsForageBasket: 0
   _basketCopperPerItem: 0
+  _basketBuyer: 0
   _grantForage: {fileID: 0}
   _grantForageCount: 1
   _consumeForage: {fileID: 0}
@@ -42,6 +48,7 @@ MonoBehaviour:
   _villageHopeDelta: 0
   _knowledgeDelta: 0
   _relationshipNpcIds: []
-  _relationshipDeltas: []
+  _relationshipDeltas: 
+  _transitionMoment: {fileID: 0}
   _nextDialog: {fileID: 0}
   _choices: []

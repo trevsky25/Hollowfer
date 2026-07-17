@@ -1,5 +1,7 @@
 using Hollowfen.Dialogue;
 using Hollowfen.Foraging;
+using Hollowfen.Quests;
+using Hollowfen.Requests;
 using UnityEngine;
 
 namespace Hollowfen.NPCs
@@ -14,7 +16,15 @@ namespace Hollowfen.NPCs
         [SerializeField] private NPCData _data;
 
         public NPCData Data => _data;
-        public string PromptVerb => "prompt.npc.talk";
+        public string PromptVerb
+        {
+            get
+            {
+                ResolveInteraction(out var request, out var dialog, out _);
+                if (request == null || dialog != null) return "prompt.npc.talk";
+                return VillageRequests.CanDeliver(request) ? "prompt.request.deliver" : "prompt.request.view";
+            }
+        }
         public string PromptTarget => _data != null
             ? Hollowfen.Localization.Get(_data.DisplayNameId)
             : "(unset)";
@@ -23,17 +33,55 @@ namespace Hollowfen.NPCs
         {
             if (_data == null) return false;
             if (DialogueScreen.Instance != null && DialogueScreen.Instance.IsOpen) return false;
-            return _data.PickDialog() != null;
+            if (VillageRequestScreen.Instance != null && VillageRequestScreen.Instance.IsOpen) return false;
+            ResolveInteraction(out var request, out var dialog, out _);
+            return request != null || dialog != null;
         }
 
         public void Interact(GameObject actor)
         {
             if (!CanInteract(actor)) return;
-            var dlg = _data.PickDialog();
-            if (dlg == null) return;
+            ResolveInteraction(out var request, out var dialog, out var fallback);
+            if (request != null && dialog == null)
+            {
+                VillageRequestScreen.Ensure().Open(request, PromptTarget, transform, fallback);
+                return;
+            }
+            if (dialog == null) return;
             if (DialogueScreen.Instance == null) { Debug.LogWarning("NPCInteractable: no DialogueScreen in scene."); return; }
-            // Anchor = this NPC, so the cinematic camera can frame speaker vs listener (batch-45).
-            DialogueScreen.Instance.Open(dlg, transform);
+            DialogueScreen.Instance.Open(dialog, transform);
+        }
+
+        private void ResolveInteraction(out VillageRequestData request, out DialogueData dialog,
+            out DialogueData fallback)
+        {
+            request = null;
+            dialog = null;
+            fallback = null;
+            if (_data == null) return;
+
+            request = VillageRequests.CurrentForNpc(_data.Id);
+            var activeStory = _data.PickActiveQuestDialog();
+            bool requestOwnsActiveQuest = request != null &&
+                !string.IsNullOrWhiteSpace(request.ActiveQuestId) &&
+                QuestManager.IsActive(request.ActiveQuestId);
+
+            if (activeStory != null && !requestOwnsActiveQuest)
+            {
+                dialog = activeStory;
+                request = null;
+                return;
+            }
+
+            if (request != null)
+            {
+                // Story deliveries deliberately keep the player inside their objective. Ordinary
+                // orders always offer the NPC's normal conversation/trade as a second button.
+                fallback = requestOwnsActiveQuest ? null : _data.PickDialog();
+                return;
+            }
+
+            dialog = _data.PickDialog();
         }
 
         private void OnDrawGizmos()

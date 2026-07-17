@@ -39,6 +39,8 @@ namespace Hollowfen.Foraging
         public RenderTexture RenderTexture { get; private set; }
 
         private Camera _cam;
+        private Light _keyLight;
+        private Light _fillLight;
         private Transform _mount;
         private GameObject _current;
         private int _previewLayer;
@@ -59,7 +61,9 @@ namespace Hollowfen.Foraging
             Instance = this;
 
             _previewLayer = LayerMask.NameToLayer("MushroomPreview");
-            BuildRig();
+            // The inspect/inventory canvases start hidden. Building their camera, lights and 1024²
+            // render target here adds avoidable work to Scene_Hollowfen activation, so Show() owns
+            // first-use initialization instead.
         }
 
         private void OnDestroy()
@@ -70,6 +74,8 @@ namespace Hollowfen.Foraging
 
         private void BuildRig()
         {
+            if (_cam != null) return;
+
             // Camera — position offset; aim is set later via LookAt(mount) once the mount exists.
             var camGO = new GameObject("PreviewCamera");
             camGO.transform.SetParent(transform, false);
@@ -97,23 +103,23 @@ namespace Hollowfen.Foraging
             var lightGO = new GameObject("PreviewKeyLight");
             lightGO.transform.SetParent(transform, false);
             lightGO.transform.localRotation = Quaternion.Euler(40f, 200f, 0f);
-            var key = lightGO.AddComponent<Light>();
-            key.type = LightType.Directional;
-            key.color = new Color(1f, 0.96f, 0.88f);
-            key.intensity = 1.2f;
-            key.shadows = LightShadows.None;
-            key.cullingMask = _previewLayer >= 0 ? (1 << _previewLayer) : ~0;
+            _keyLight = lightGO.AddComponent<Light>();
+            _keyLight.type = LightType.Directional;
+            _keyLight.color = new Color(1f, 0.96f, 0.88f);
+            _keyLight.intensity = 1.2f;
+            _keyLight.shadows = LightShadows.None;
+            _keyLight.cullingMask = _previewLayer >= 0 ? (1 << _previewLayer) : ~0;
 
             // Fill light
             var fillGO = new GameObject("PreviewFillLight");
             fillGO.transform.SetParent(transform, false);
             fillGO.transform.localRotation = Quaternion.Euler(20f, 50f, 0f);
-            var fill = fillGO.AddComponent<Light>();
-            fill.type = LightType.Directional;
-            fill.color = new Color(0.7f, 0.78f, 0.85f);
-            fill.intensity = 0.6f;
-            fill.shadows = LightShadows.None;
-            fill.cullingMask = _previewLayer >= 0 ? (1 << _previewLayer) : ~0;
+            _fillLight = fillGO.AddComponent<Light>();
+            _fillLight.type = LightType.Directional;
+            _fillLight.color = new Color(0.7f, 0.78f, 0.85f);
+            _fillLight.intensity = 0.6f;
+            _fillLight.shadows = LightShadows.None;
+            _fillLight.cullingMask = _previewLayer >= 0 ? (1 << _previewLayer) : ~0;
 
             // Mount that the spawned mushroom parents under; we rotate this.
             var mountGO = new GameObject("Mount");
@@ -126,6 +132,19 @@ namespace Hollowfen.Foraging
             // Cache base camera + mount world positions so pan can shift both by the same delta.
             _camBaseWorldPos = camGO.transform.position;
             _mountWorldPos = _mount.position;
+            SetRigActive(false);
+        }
+
+        private void EnsureRig()
+        {
+            if (_cam == null) BuildRig();
+        }
+
+        private void SetRigActive(bool active)
+        {
+            if (_cam != null) _cam.enabled = active;
+            if (_keyLight != null) _keyLight.enabled = active;
+            if (_fillLight != null) _fillLight.enabled = active;
         }
 
         public void Show(MushroomFieldGuideData data) => Show(data, false);
@@ -134,6 +153,8 @@ namespace Hollowfen.Foraging
         {
             Clear();
             if (data == null || data.WorldPrefab == null) return;
+            EnsureRig();
+            SetRigActive(true);
             _current = Instantiate(data.WorldPrefab, _mount);
             _current.transform.localPosition = Vector3.zero;
             _current.transform.localRotation = Quaternion.identity;
@@ -181,6 +202,7 @@ namespace Hollowfen.Foraging
         public void Clear()
         {
             if (_current != null) { Destroy(_current); _current = null; }
+            SetRigActive(false);
         }
 
         public void ResetView()

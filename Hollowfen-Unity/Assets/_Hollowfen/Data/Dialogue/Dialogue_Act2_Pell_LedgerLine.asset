@@ -15,21 +15,25 @@ MonoBehaviour:
   _id: act2.pell.ledger_line
   _lines:
   - speaker: Pell
-    text: 'Do not look pleased yet. One shutter is not a village.'
+    text: Do not look pleased yet. One shutter is not a village.
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: ca8b3efe9d9d94fd4837def9c04b479f, type: 3}
   - speaker: Wren
-    text: 'Two shutters?'
+    text: Two shutters?
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: c103dbcd7fd464caabb19f5066dc3c3c, type: 3}
   - speaker: Pell
-    text: 'Two shutters is a sentence beginning.'
+    text: Two shutters is a sentence beginning.
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: df89778da521f417c8d43a686ae69d03, type: 3}
   _unlockStoryCard: {fileID: 0}
   _completeQuest: {fileID: 11400000, guid: 526e25bd081e4e6a9029e8273760d303, type: 2}
-  _giveItemId:
+  _giveItemId: 
   _grantCoinsCopper: 0
   _spendsCoinsCopper: 0
   _sellsForageBasket: 0
   _basketCopperPerItem: 0
+  _basketBuyer: 0
   _grantForage: {fileID: 0}
   _grantForageCount: 1
   _consumeForage: {fileID: 0}
@@ -38,5 +42,7 @@ MonoBehaviour:
   _villageHopeDelta: 0
   _knowledgeDelta: 0
   _relationshipNpcIds: []
-  _relationshipDeltas: []
+  _relationshipDeltas: 
+  _transitionMoment: {fileID: 0}
   _nextDialog: {fileID: 0}
+  _choices: []

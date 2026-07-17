@@ -90,6 +90,36 @@ namespace Hollowfen.Quests
             return true;
         }
 
+        /// <summary>
+        /// Atomically mutates the in-memory score snapshot for exactly one ending, then performs
+        /// one score autosave. A second ending can never be layered onto a completed save.
+        /// </summary>
+        public static bool TryCompleteEnding(string endingFlagId, IEnumerable<string> consequenceFlags)
+        {
+            if (string.IsNullOrWhiteSpace(endingFlagId)) return false;
+            EnsureHydrated();
+            if (_flags.Contains("game_complete")) return false;
+
+            string[] endingFlags =
+            {
+                "ending_free_hollow",
+                "ending_lordly_patronage",
+                "ending_capital",
+                "ending_witch_path",
+            };
+            foreach (var flag in endingFlags)
+                if (_flags.Contains(flag)) return false;
+
+            _flags.Add(endingFlagId);
+            if (consequenceFlags != null)
+                foreach (var flag in consequenceFlags)
+                    if (!string.IsNullOrWhiteSpace(flag)) _flags.Add(flag);
+            _flags.Add("game_complete");
+            Persist();
+            OnChanged?.Invoke();
+            return true;
+        }
+
         public static IEnumerable<KeyValuePair<string, int>> Relationships
         {
             get { EnsureHydrated(); return _relationships; }

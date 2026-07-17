@@ -17,6 +17,9 @@ namespace Hollowfen.UI
         [SerializeField] private TMP_Text[] _slotMetas  = new TMP_Text[SaveManager.TotalSlots];
 
         private InputActions _input;
+        private Button _closeButton;
+        private RectTransform _presentationRoot;
+        private const float LegacyCanvasScale = 1.423f;
 
         public override GameObject DefaultSelected
         {
@@ -50,6 +53,49 @@ namespace Hollowfen.UI
                 var rowImg = _slotButtons[i].GetComponent<UnityEngine.UI.Image>();
                 if (rowImg != null) UICanvasUtil.Roundify(rowImg, 16);
             }
+
+            var canvas = GetComponentInChildren<Canvas>(true);
+            if (canvas != null)
+            {
+                NormalizeLegacyCanvas(canvas);
+                _closeButton = JournalChrome.BuildCloseButton(_presentationRoot != null
+                    ? _presentationRoot : canvas.transform, () =>
+                {
+                    if (UIManager.Instance != null) UIManager.Instance.Back();
+                });
+                WireNavigation();
+            }
+            else
+            {
+                Debug.LogError("[SaveSlotScreen] Missing child Canvas; close control could not be built.");
+            }
+        }
+
+        private void NormalizeLegacyCanvas(Canvas canvas)
+        {
+            var canvasRect = canvas.transform as RectTransform;
+            if (canvasRect == null) return;
+
+            // Preserve the approved 1280×800 journal composition while putting its canvas onto
+            // the shared 1920×1080 scaling contract. A centered presentation root provides the
+            // exact inverse scale, including at non-16:9 resolutions, without resizing every
+            // scene-authored row by hand.
+            var existing = new System.Collections.Generic.List<Transform>();
+            for (int i = 0; i < canvas.transform.childCount; i++)
+                existing.Add(canvas.transform.GetChild(i));
+
+            var scaler = canvas.GetComponent<CanvasScaler>();
+            if (scaler == null) scaler = canvas.gameObject.AddComponent<CanvasScaler>();
+            scaler.Init1080();
+            _presentationRoot = UICanvasUtil.NewRect("SaveSlotPresentation", canvas.transform);
+            // These scene-authored children were laid out against an explicit 1280×800 canvas.
+            // Unity does not refresh canvasRect.rect synchronously when a scaler changes during
+            // Awake, so deriving this size here intermittently shrank the whole screen to 70%.
+            _presentationRoot.sizeDelta = new Vector2(1280f, 800f);
+            _presentationRoot.localScale = Vector3.one * LegacyCanvasScale;
+
+            foreach (Transform child in existing)
+                if (child != null) child.SetParent(_presentationRoot, false);
         }
 
         public override void OnOpen()
@@ -107,6 +153,28 @@ namespace Hollowfen.UI
         }
 
         private const string GameplaySceneName = "Scene_Hollowfen";
+
+        private void WireNavigation()
+        {
+            Button first = null;
+            Button previous = null;
+            Button beforePrevious = null;
+            for (int i = 0; i < _slotButtons.Length; i++)
+            {
+                var current = _slotButtons[i];
+                if (current == null) continue;
+                if (first == null) first = current;
+                if (previous != null)
+                    JournalChrome.SetNavigation(previous, beforePrevious != null ? beforePrevious : _closeButton, current);
+                beforePrevious = previous;
+                previous = current;
+            }
+
+            if (previous != null)
+                JournalChrome.SetNavigation(previous, beforePrevious != null ? beforePrevious : _closeButton, null);
+            if (_closeButton != null && first != null)
+                JournalChrome.SetNavigation(_closeButton, previous, first, first, null);
+        }
 
         private void OnSlotSelected(int slot)
         {

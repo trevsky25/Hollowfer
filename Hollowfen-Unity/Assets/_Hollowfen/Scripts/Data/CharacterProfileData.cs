@@ -30,6 +30,11 @@ namespace Hollowfen.Data
         [SerializeField] private string _displayNameId;
         [SerializeField] private string _descriptionId;
 
+        [Header("Interactive journal study")]
+        [SerializeField] private GameObject _journalModelPrefab;
+        [SerializeField] private AnimationClip _journalIdleClip;
+        [SerializeField, Range(0f, 0.4f)] private float _journalExposure = 0.15f;
+
         [Header("Field study plates (batch-61 Wren dossier)")]
         [SerializeField] private Sprite _studySheet;
         [SerializeField] private Sprite _figureFront;
@@ -53,6 +58,9 @@ namespace Hollowfen.Data
         public string Pullquote => _pullquote;
         public string DisplayNameId => _displayNameId;
         public string DescriptionId => _descriptionId;
+        public GameObject JournalModelPrefab => _journalModelPrefab;
+        public AnimationClip JournalIdleClip => _journalIdleClip;
+        public float JournalExposure => _journalExposure;
         public Sprite StudySheet => _studySheet;
         public Sprite FigureFront => _figureFront;
         public Sprite FigureBack => _figureBack;

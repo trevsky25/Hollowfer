@@ -136,6 +136,23 @@ namespace Hollowfen.EditorTools
                     SetField(so, "_photo", sprite);
                 }
 
+                string worldModelPath = MushroomModelImporter.WorldPrefabPathForSpecies(m.id);
+                if (!string.IsNullOrEmpty(worldModelPath))
+                {
+                    var worldModel = AssetDatabase.LoadAssetAtPath<GameObject>(worldModelPath);
+                    if (worldModel == null) Debug.LogWarning($"[DataImporter] World model not found at {worldModelPath} for mushroom {m.id}");
+                    SetField(so, "_worldPrefab", worldModel);
+                }
+
+                string journalModelPath = MushroomModelImporter.JournalPrefabPathForSpecies(m.id);
+                if (!string.IsNullOrEmpty(journalModelPath))
+                {
+                    var journalModel = AssetDatabase.LoadAssetAtPath<GameObject>(journalModelPath);
+                    if (journalModel == null) Debug.LogWarning($"[DataImporter] Journal model not found at {journalModelPath} for mushroom {m.id}");
+                    SetField(so, "_journalPreviewPrefab", journalModel);
+                }
+                SetField(so, "_journalExposure", MushroomModelImporter.JournalExposureForSpecies(m.id));
+
                 var assetName = $"Mushroom_{NumberPrefix(i, total)}_{ToPascal(m.id)}.asset";
                 var assetPath = $"{outFolder}/{assetName}";
                 AssetDatabase.CreateAsset(so, assetPath);

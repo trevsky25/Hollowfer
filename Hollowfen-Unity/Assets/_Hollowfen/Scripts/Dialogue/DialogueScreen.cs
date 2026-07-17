@@ -1,5 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Hollowfen.Audio;
+using Hollowfen.Cinematics;
+using Hollowfen.Data;
 using Hollowfen.Foraging;
 using Hollowfen.Quests;
 using Hollowfen.UI;
@@ -22,6 +26,7 @@ namespace Hollowfen.Dialogue
     public class DialogueScreen : MonoBehaviour
     {
         public static DialogueScreen Instance { get; private set; }
+        public static event Action<string> SpeakerChanged;
 
         [SerializeField] private Sprite _parchmentSprite;
         [SerializeField, Tooltip("Characters per second for typewriter. 32 matches the web prototype.")]
@@ -63,7 +68,12 @@ namespace Hollowfen.Dialogue
         private bool _choosing;
         private int _choiceIndex;
         private DialogueChoice[] _activeChoices;
+        private EndingEligibility[] _choiceEligibility;
+        private bool _endingChoiceMode;
         private bool _stickLatched;
+        private bool _presentingTransition;
+        private Action _onCompleted;
+        private NarrativePresentationSession.Lease _inputLease;
 
         private GameObject _root;
         private TMP_Text _speakerLabel;
@@ -72,6 +82,8 @@ namespace Hollowfen.Dialogue
 
         public bool IsOpen => _isOpen;
         public bool IsChoosing => _choosing;
+        public AudioClip CurrentVoiceClip => _voiceSource != null ? _voiceSource.clip : null;
+        public UnityEngine.Audio.AudioMixerGroup VoiceOutput => _voiceOutput;
 
         private void Awake()
         {
@@ -83,53 +95,65 @@ namespace Hollowfen.Dialogue
 
         private void OnDestroy()
         {
+            SpeakerChanged?.Invoke(null);
+            _inputLease?.Dispose();
+            _inputLease = null;
             if (Instance == this) Instance = null;
         }
 
-        public void Open(DialogueData dialog) => Open(dialog, null);
+        public void Open(DialogueData dialog) => Open(dialog, null, null);
 
         // Anchored variant (batch-45): `anchor` is the NPC/prop being spoken with — it gives the
         // DialogueCinematics director its second framing subject. Null = no camera direction.
-        public void Open(DialogueData dialog, Transform anchor)
+        public void Open(DialogueData dialog, Transform anchor) => Open(dialog, anchor, null);
+
+        public void Open(DialogueData dialog, Transform anchor, Action onCompleted)
         {
             if (dialog == null || dialog.Lines == null || dialog.Lines.Length == 0) return;
             BuildIfNeeded();
             _currentDialog = dialog;
             _currentLineIndex = 0;
+            _onCompleted = onCompleted;
+            _presentingTransition = false;
             _isOpen = true;
             SetActiveSilent(true);
             _previousTimeScale = Time.timeScale;
             Time.timeScale = 0f;
-            PlayerInteractor.Suspended = true;
-            // Kill the player controller's input too — Space advances dialogue AND jumps, and with
-            // the batch-45 unscaled animators the jump visibly fires mid-conversation (batch-46 fix).
-            PlayerInteractor.SetPlayerInputEnabled(false);
+            _inputLease = NarrativePresentationSession.Acquire(this);
             SetHudVisible(false);
             CursorVisible(true);
             if (anchor != null) DialogueCinematics.Ensure().Begin(anchor);
             ShowCurrentLine();
         }
 
-        public void Close()
+        public void Close() => CloseInternal(false);
+
+        private void CloseInternal(bool completed)
         {
             if (!_isOpen) return;
+            var completion = completed ? _onCompleted : null;
+            _onCompleted = null;
+            _presentingTransition = false;
             _isOpen = false;
+            SpeakerChanged?.Invoke(null);
             if (_typewriterCo != null) { StopCoroutine(_typewriterCo); _typewriterCo = null; }
             if (_voiceSource != null) _voiceSource.Stop();
             if (DialogueCinematics.Instance != null) DialogueCinematics.Instance.End();
             EndChoices();
             SetActiveSilent(false);
             Time.timeScale = _previousTimeScale;
-            PlayerInteractor.Suspended = false;
-            PlayerInteractor.SetPlayerInputEnabled(true);
+            _inputLease?.Dispose();
+            _inputLease = null;
             SetHudVisible(true);
             CursorVisible(false);
             _currentDialog = null;
+            completion?.Invoke();
         }
 
         private void Update()
         {
             if (!_isOpen) return;
+            if (_presentingTransition) return;
             if (_choosing) { ReadChoiceInput(); return; }
             if (ReadAdvancePressed())
             {
@@ -170,6 +194,7 @@ namespace Hollowfen.Dialogue
             if (_typewriterCo != null) StopCoroutine(_typewriterCo);
             _typewriterCo = StartCoroutine(Typewriter(line.text ?? ""));
             PlayVoice(line.voiceClip);
+            SpeakerChanged?.Invoke(line.speaker);
 
             // Direct the camera at this line's speaker (batch-45). Push-in paced by the VO
             // read when voiced, else by a typewriter-speed estimate of the text.
@@ -231,7 +256,7 @@ namespace Hollowfen.Dialogue
         private void FinishDialog()
         {
             var done = _currentDialog;
-            if (done == null) { Close(); return; }
+            if (done == null) { CloseInternal(true); return; }
 
             // Fire outcomes. Order: items first, then card unlock, then quest complete, then chain.
             if (!string.IsNullOrEmpty(done.GiveItemId))
@@ -247,17 +272,31 @@ namespace Hollowfen.Dialogue
             // Basket sale pays per item (repeatable Marra loop) on top of any fixed grant,
             // and the count must be read BEFORE the basket empties.
             int coinsIn = done.GrantCoinsCopper;
+            string incomeReason = "purse.transaction.dialogue";
             if (done.SellsForageBasket)
             {
-                coinsIn += InventoryRuntime.TotalCount * done.BasketCopperPerItem;
-                InventoryRuntime.RemoveAll();
+                if (done.BasketBuyer != MushroomBuyer.None)
+                {
+                    var sale = InventoryRuntime.SellTo(done.BasketBuyer);
+                    coinsIn += sale.Copper;
+                    incomeReason = done.BasketBuyer == MushroomBuyer.Marra
+                        ? "purse.transaction.marra_sale"
+                        : "purse.transaction.theo_sale";
+                    Debug.Log($"[Trade] {done.BasketBuyer}: sold {sale.SoldCount}, " +
+                              $"refused {sale.RefusedCount}, paid {sale.Copper}c.");
+                }
+                else
+                {
+                    coinsIn += InventoryRuntime.TotalCount * done.BasketCopperPerItem;
+                    InventoryRuntime.RemoveAll();
+                }
             }
 
             if (done.SpendsCoinsCopper > 0)
-                Items.CoinPurse.TrySpend(done.SpendsCoinsCopper);
+                Items.CoinPurse.TrySpend(done.SpendsCoinsCopper, "purse.transaction.purchase");
 
             if (coinsIn > 0)
-                Items.CoinPurse.Add(coinsIn);
+                Items.CoinPurse.Add(coinsIn, incomeReason);
 
             if (done.SetFlagIds != null)
                 foreach (var flag in done.SetFlagIds)
@@ -279,6 +318,42 @@ namespace Hollowfen.Dialogue
             if (done.CompleteQuest != null)
                 QuestManager.CompleteQuest(done.CompleteQuest.Id);
 
+            // Pick one outcome cue rather than stacking coins, items, quests, and cards on the
+            // same frame. The most narratively important result wins.
+            if (done.UnlockStoryCard != null || done.CompleteQuest != null)
+                GameplaySfx.QuestComplete();
+            else if (coinsIn > 0)
+                GameplaySfx.CoinsEarned();
+            else if (done.SpendsCoinsCopper > 0)
+                GameplaySfx.CoinsSpent();
+            else if (!string.IsNullOrEmpty(done.GiveItemId) ||
+                     (done.GrantForage != null && done.GrantForageCount > 0))
+                GameplaySfx.ItemAcquired();
+
+            // An authored transition sits between dialogue nodes without changing outcome timing.
+            // The dialogue remains open (and owns time/camera/input); the narrative overlay nests
+            // its own presentation lease and returns here before choices or the next node begin.
+            if (done.TransitionMoment != null)
+            {
+                _presentingTransition = true;
+                SpeakerChanged?.Invoke(null);
+                if (_voiceSource != null) _voiceSource.Stop();
+                StoryMomentDirector.Ensure().Play(done.TransitionMoment, null, () =>
+                {
+                    if (!_isOpen) return;
+                    _presentingTransition = false;
+                    ContinueAfterDialog(done);
+                });
+                return;
+            }
+
+            ContinueAfterDialog(done);
+        }
+
+        private void ContinueAfterDialog(DialogueData done)
+        {
+            if (done == null) { CloseInternal(true); return; }
+
             // Choices take precedence over the linear chain: outcomes above have already
             // fired ("this conversation happened"); each branch then owns its own outcomes.
             if (done.Choices != null && done.Choices.Length > 0)
@@ -296,7 +371,7 @@ namespace Hollowfen.Dialogue
             }
             else
             {
-                Close();
+                CloseInternal(true);
             }
         }
 
@@ -304,9 +379,24 @@ namespace Hollowfen.Dialogue
 
         private void BeginChoices(DialogueChoice[] choices)
         {
+            SpeakerChanged?.Invoke(null);
             _choosing = true;
             _activeChoices = choices;
-            _choiceIndex = 0;
+            _choiceEligibility = new EndingEligibility[choices.Length];
+            _endingChoiceMode = false;
+            for (int i = 0; i < choices.Length; i++)
+            {
+                if (choices[i].ending != null)
+                {
+                    _endingChoiceMode = true;
+                    _choiceEligibility[i] = EndingResolver.Evaluate(choices[i].ending);
+                }
+                else
+                {
+                    _choiceEligibility[i] = new EndingEligibility(true, null);
+                }
+            }
+            _choiceIndex = FirstAvailableChoice();
             // Camera settles to the two-shot while the player weighs the choice (batch-45).
             if (DialogueCinematics.Instance != null) DialogueCinematics.Instance.OnChoices();
             _stickLatched = true; // require the stick to re-center before it moves the cursor
@@ -318,7 +408,12 @@ namespace Hollowfen.Dialogue
                 _choicePills[i].Root.SetActive(active);
                 if (active)
                 {
-                    _choicePills[i].Label.text = (i + 1) + "   " + (choices[i].text ?? "");
+                    string choiceText = choices[i].ending != null && !string.IsNullOrWhiteSpace(choices[i].ending.ChoiceText)
+                        ? choices[i].ending.ChoiceText
+                        : choices[i].text ?? "";
+                    bool available = _choiceEligibility[i].IsEligible;
+                    _choicePills[i].Label.text = (i + 1) + "   " + choiceText + (available ? "" : "   — unavailable");
+                    _choicePills[i].Button.interactable = available;
                     // Choice 1 reads on TOP: stack downward from the highest slot.
                     ((RectTransform)_choicePills[i].Root.transform).anchoredPosition =
                         new Vector2(0f, (shown - 1 - i) * 54f);
@@ -333,6 +428,8 @@ namespace Hollowfen.Dialogue
         {
             _choosing = false;
             _activeChoices = null;
+            _choiceEligibility = null;
+            _endingChoiceMode = false;
             if (_choiceRoot != null) _choiceRoot.SetActive(false);
             if (_hintText != null) _hintText.text = "Space  ·  continue";
         }
@@ -342,13 +439,24 @@ namespace Hollowfen.Dialogue
         public void SelectChoice(int index)
         {
             if (!_choosing || _activeChoices == null || index < 0 || index >= _activeChoices.Length) return;
+            if (_choiceEligibility != null && index < _choiceEligibility.Length && !_choiceEligibility[index].IsEligible)
+            {
+                UISfx.Error();
+                if (_bodyText != null) _bodyText.text = _choiceEligibility[index].Reason;
+                return;
+            }
             var choice = _activeChoices[index];
             EndChoices();
 
             if (!string.IsNullOrEmpty(choice.setsFlagId))
                 GameScores.SetFlag(choice.setsFlagId);
 
-            if (choice.next != null)
+            if (choice.ending != null)
+            {
+                CloseInternal(false);
+                EndingDirector.Ensure().Begin(choice.ending);
+            }
+            else if (choice.next != null)
             {
                 _currentDialog = choice.next;
                 _currentLineIndex = 0;
@@ -356,7 +464,7 @@ namespace Hollowfen.Dialogue
             }
             else
             {
-                Close();
+                CloseInternal(true);
             }
         }
 
@@ -389,7 +497,7 @@ namespace Hollowfen.Dialogue
             }
             if (move != 0)
             {
-                _choiceIndex = (_choiceIndex + move + count) % count;
+                _choiceIndex = NextAvailableChoice(_choiceIndex, move, count);
                 RefreshChoiceHighlight();
                 return;
             }
@@ -405,14 +513,47 @@ namespace Hollowfen.Dialogue
             {
                 if (!_choicePills[i].Root.activeSelf) continue;
                 bool selected = i == _choiceIndex;
+                bool available = _choiceEligibility == null || i >= _choiceEligibility.Length || _choiceEligibility[i].IsEligible;
                 _choicePills[i].Fill.color = selected
                     ? Color.Lerp(new Color(0.13f, 0.10f, 0.06f, 0.97f), HollowfenPalette.Gold, 0.42f)
-                    : new Color(0.13f, 0.10f, 0.06f, 0.94f);
+                    : available ? new Color(0.13f, 0.10f, 0.06f, 0.94f) : new Color(0.09f, 0.08f, 0.07f, 0.82f);
                 _choicePills[i].Stroke.color = selected
                     ? HollowfenPalette.Gold
-                    : new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0.35f);
-                _choicePills[i].Label.color = selected ? HollowfenPalette.GoldGlow : HollowfenPalette.Cream;
+                    : new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, available ? 0.35f : 0.14f);
+                _choicePills[i].Label.color = selected ? HollowfenPalette.GoldGlow
+                    : available ? HollowfenPalette.Cream : new Color(HollowfenPalette.Cream.r, HollowfenPalette.Cream.g, HollowfenPalette.Cream.b, 0.42f);
             }
+
+            if (_endingChoiceMode && _activeChoices != null && _choiceIndex >= 0 && _choiceIndex < _activeChoices.Length)
+            {
+                var ending = _activeChoices[_choiceIndex].ending;
+                if (_speakerLabel != null) _speakerLabel.text = Localization.Get("ending.choice.speaker");
+                if (_bodyText != null && ending != null)
+                    _bodyText.text = _choiceEligibility[_choiceIndex].IsEligible
+                        ? ending.ChoiceContext
+                        : _choiceEligibility[_choiceIndex].Reason;
+            }
+        }
+
+        private int FirstAvailableChoice()
+        {
+            if (_choiceEligibility == null) return 0;
+            for (int i = 0; i < _choiceEligibility.Length; i++)
+                if (_choiceEligibility[i].IsEligible) return i;
+            return 0;
+        }
+
+        private int NextAvailableChoice(int current, int direction, int count)
+        {
+            if (count <= 0) return 0;
+            int next = current;
+            for (int i = 0; i < count; i++)
+            {
+                next = (next + direction + count) % count;
+                if (_choiceEligibility == null || next >= _choiceEligibility.Length || _choiceEligibility[next].IsEligible)
+                    return next;
+            }
+            return current;
         }
 
         // Cinematic frame: the gameplay HUD steps aside while a conversation plays.
@@ -426,6 +567,10 @@ namespace Hollowfen.Dialogue
                 var cg = go.GetComponent<CanvasGroup>();
                 if (cg == null) cg = go.AddComponent<CanvasGroup>();
                 cg.alpha = visible ? 1f : 0f;
+                // Gameplay HUD canvases are passive presentation. They should never consume
+                // pointer events, especially while transparent beneath dialogue choices.
+                cg.interactable = false;
+                cg.blocksRaycasts = false;
             }
         }
 
@@ -457,6 +602,7 @@ namespace Hollowfen.Dialogue
             public Image Fill;
             public Image Stroke;
             public TMP_Text Label;
+            public Button Button;
         }
 
         private GameObject _choiceRoot;
@@ -512,7 +658,7 @@ namespace Hollowfen.Dialogue
                 btn.transition = Selectable.Transition.None;
                 btn.onClick.AddListener(() => SelectChoice(captured));
 
-                _choicePills.Add(new ChoicePill { Root = pillGo, Fill = fill, Stroke = stroke, Label = label });
+                _choicePills.Add(new ChoicePill { Root = pillGo, Fill = fill, Stroke = stroke, Label = label, Button = btn });
                 pillGo.SetActive(false);
             }
             _choiceRoot.SetActive(false);

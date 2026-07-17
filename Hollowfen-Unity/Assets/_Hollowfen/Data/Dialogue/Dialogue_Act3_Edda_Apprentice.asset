@@ -18,42 +18,54 @@ MonoBehaviour:
     text: 'I would like to be apprenticed.
 
 
-      Properly. Not carrying baskets. Not watching from paths.'
+      Properly. Not carrying baskets.
+      Not watching from paths.'
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: 8be3fab8d4267459a99f534629dd7ffa, type: 3}
   - speaker: Wren
-    text: 'To whom?'
+    text: To whom?
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 34279ad0a8d8e4f719f81ffcc7565511, type: 3}
   - speaker: Edda
-    text: 'Do not make me say the obvious part. I practiced the other part.'
+    text: Do not make me say the obvious part. I practiced the other part.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: da7ace76f8ba444238b842144ffb64ef, type: 3}
   - speaker: Wren
-    text: 'Then say it.'
+    text: Then say it.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: c76363a75f89b4e43a3fdfd2984eca47, type: 3}
   - speaker: Edda
-    text: 'I want to learn names, and false names, and where to cut, and when not to.
+    text: 'I want to learn names, and false names, and where to cut, and when not
+      to.
 
 
-      Grandfather is well enough now. I asked him. He said I should stop hovering over his soup and go become troublesome somewhere useful.'
+      Grandfather is well enough now. I asked him. He said I should stop
+      hovering over his soup and go become troublesome somewhere useful.'
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: cfe8236562ac94513a69efbc5e30fa50, type: 3}
   - speaker: Wren
-    text: 'Did you practice that?'
+    text: Did you practice that?
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: f0dae9064c6b3475fbef988785fe7e96, type: 3}
   - speaker: Edda
-    text: 'Eleven times.'
+    text: Eleven times.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 1ad0a99e424774e2eafd617bea921369, type: 3}
   - speaker: Wren
     text: 'It was good.
 
 
       Yes. But you start with cleaning the knife.'
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 79dfcd9e5a4c74bbeb117792fd007cbd, type: 3}
   _unlockStoryCard: {fileID: 0}
   _completeQuest: {fileID: 11400000, guid: d650824881984f5aa9e48285054bb846, type: 2}
-  _giveItemId:
+  _giveItemId: 
   _grantCoinsCopper: 0
   _spendsCoinsCopper: 0
   _sellsForageBasket: 0
   _basketCopperPerItem: 0
+  _basketBuyer: 0
   _grantForage: {fileID: 0}
   _grantForageCount: 1
   _consumeForage: {fileID: 0}
@@ -64,6 +76,7 @@ MonoBehaviour:
   _villageHopeDelta: 0
   _knowledgeDelta: 0
   _relationshipNpcIds: []
-  _relationshipDeltas: []
+  _relationshipDeltas: 
+  _transitionMoment: {fileID: 0}
   _nextDialog: {fileID: 0}
   _choices: []

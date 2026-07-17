@@ -17,32 +17,46 @@ MonoBehaviour:
   - speaker: Bram
     text: Three silver, two copper.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: f7a58bef570a1428cb2c7f86ff0ffb45, type: 3}
   - speaker: Wren
     text: That much?
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 13c9733fcae4e43618b2889180084b87, type: 3}
   - speaker: Bram
     text: First proper bowl we've sold in a month.
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: 1f16d4c75b29e4727b477c9311a0f884, type: 3}
   - speaker: Marra
     text: Don't look grateful. Bring better ones next time.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 159b256ff113141b482c2769c47a75cc, type: 3}
   - speaker: Wren
     text: That is gratitude, from you.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: be48760e8c428400f95861bbe67a9ac2, type: 3}
   - speaker: Marra
     text: Careful.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 48aa19651f17d410f889d3b0b227e3f5, type: 3}
   _unlockStoryCard: {fileID: 11400000, guid: cf19cd8806b76499fbcad7f7d47f272b, type: 2}
   _completeQuest: {fileID: 11400000, guid: 8af58c6703004c4392bc2c30a4a102c1, type: 2}
-  _giveItemId:
+  _giveItemId: 
   _grantCoinsCopper: 38
+  _spendsCoinsCopper: 0
   _sellsForageBasket: 1
+  _basketCopperPerItem: 0
+  _basketBuyer: 0
+  _grantForage: {fileID: 0}
+  _grantForageCount: 1
+  _consumeForage: {fileID: 0}
+  _consumeForageCount: 1
+  _setFlagIds: []
   _villageHopeDelta: 5
   _knowledgeDelta: 0
   _relationshipNpcIds:
   - bram
   - marra
-  _relationshipDeltas:
-  - 10
-  - 5
+  _relationshipDeltas: 0a00000005000000
+  _transitionMoment: {fileID: 0}
   _nextDialog: {fileID: 0}
+  _choices: []

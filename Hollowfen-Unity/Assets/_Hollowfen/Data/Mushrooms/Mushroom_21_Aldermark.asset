@@ -16,19 +16,40 @@ MonoBehaviour:
   _commonName: Aldermark
   _latinName: Grifola frondosa
   _edibility: 0
-  _edibilityLabel: Edible — prized
-  _description: "Sable's seedbook name for the Hen of the Woods (Grifola frondosa). It grows in great grey rosettes at the base of stressed and cut hardwoods — pale and stubborn in the shade, thriving exactly where a wood has been wounded. Prized in the pot and the medicine chest alike: the useful thing that comes after the harm."
+  _edibilityLabel: "Edible \u2014 prized"
+  _description: "Sable's seedbook name for the Hen of the Woods (Grifola frondosa).
+    It grows in great grey rosettes at the base of stressed and cut hardwoods \u2014
+    pale and stubborn in the shade, thriving exactly where a wood has been wounded.
+    Prized in the pot and the medicine chest alike: the useful thing that comes after
+    the harm."
   _idFeatures:
   - Large overlapping grey-brown fronds in a rosette, like ruffled feathers
-  - Grows from the base of oaks and hardwood stumps, often the same spot year after year
+  - Grows from the base of oaks and hardwood stumps, often the same spot year after
+    year
   - Pale pored underside (no gills), spores white
   - Firm fibrous flesh with a mealy, earthy scent
-  _habitat: Base of stressed, dying, or freshly-cut hardwoods — especially oak — and their stumps.
+  _habitat: "Base of stressed, dying, or freshly-cut hardwoods \u2014 especially
+    oak \u2014 and their stumps."
   _season: Late summer through autumn
-  _lookalikes: "Berkeley's Polypore and the black-staining polypore share the base-of-oak habit but grow tougher and single-capped, not ruffled — none dangerous. Confirm the grey ruffled fronds over a pale pored underside."
-  _notes: 'A genuine prize, culinary and medicinal both. That it grows thickest where the wood was cut is not irony to a lord — to Wren it is evidence and leverage in one hand.'
+  _lookalikes: "Berkeley's Polypore and the black-staining polypore share the base-of-oak
+    habit but grow tougher and single-capped, not ruffled \u2014 none dangerous.
+    Confirm the grey ruffled fronds over a pale pored underside."
+  _notes: "A genuine prize, culinary and medicinal both. That it grows thickest where
+    the wood was cut is not irony to a lord \u2014 to Wren it is evidence and leverage
+    in one hand."
   _photo: {fileID: 0}
   _photoCredit:
   _worldPrefab: {fileID: 0}
+  _journalPreviewPrefab: {fileID: 0}
+  _journalExposure: 0.42
   _displayNameId: mushroom.aldermark.name
   _descriptionId: mushroom.aldermark.description
+  _forageTier: 4
+  _requiredForageFlagId: sable_seedbook_recovered
+  _wildRespawnDays: 5
+  _marraValueCopper: 10
+  _theoValueCopper: 18
+  _cultivable: 0
+  _cultivationHours: 6
+  _cultivationYield: 3
+  _cultivationUnlockFlagId:

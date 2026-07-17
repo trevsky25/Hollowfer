@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95267338c201c4c76b2d6ee20a231830, type: 3}
+  m_Name: Request_Edda_BrightsporeDraught
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Requests.VillageRequestData
+  _id: edda_brightspore_draught
+  _npcId: edda
+  _kind: 1
+  _titleId: request.edda.brightspore_draught.title
+  _descriptionId: request.edda.brightspore_draught.body
+  _requesterLineId: request.edda.brightspore_draught.line
+  _heroImage: {fileID: 21300000, guid: eea468fe5a83d49e0b94c3999e71c7a3, type: 3}
+  _requiredSpecies:
+  - {fileID: 11400000, guid: 60b9b87ae9cc149b2aaca2adedec80ba, type: 2}
+  - {fileID: 11400000, guid: bb5c7d5872a0d4901b7219b2011d04e0, type: 2}
+  _requiredCounts: 0100000001000000
+  _rewardCopper: 24
+  _firstCompletionRelationshipDelta: 1
+  _firstCompletionKnowledgeDelta: 1
+  _requiredFlagIds:
+  - apprentice_system_unlocked
+  _requiredCompletedQuestIds: []
+  _activeQuestId:
+  _oneShot: 0
+  _completionFlagIds: []
+  _completeQuest: {fileID: 0}
+  _completionDialogue: {fileID: 0}

@@ -81,7 +81,6 @@ namespace Hollowfen.Foraging
             _group = GetComponent<CanvasGroup>();
             if (_group == null) _group = gameObject.AddComponent<CanvasGroup>();
 
-            BuildIfNeeded();
             _input = new InputActions();
             _canvas.enabled = false;
         }
@@ -134,7 +133,13 @@ namespace Hollowfen.Foraging
             ApplyContent(data, discovered);
 
             if (MushroomPreviewer.Instance != null)
+            {
                 MushroomPreviewer.Instance.Show(data, !discovered);
+                // Show() creates the shared preview rig on first use, so bind after it has had a
+                // chance to allocate its RenderTexture.
+                if (_previewImage != null)
+                    _previewImage.texture = MushroomPreviewer.Instance.RenderTexture;
+            }
 
             _canvas.enabled = true;
             _group.alpha = 1f;
@@ -152,8 +157,9 @@ namespace Hollowfen.Foraging
 
             if (EventSystem.current != null && _forageBtn != null)
             {
-                EventSystem.current.SetSelectedGameObject(_forageBtn.gameObject);
-                _lastSelectedButton = _forageBtn.gameObject;
+                var initial = _forageBtn.interactable ? _forageBtn.gameObject : _leaveBtn.gameObject;
+                EventSystem.current.SetSelectedGameObject(initial);
+                _lastSelectedButton = initial;
             }
         }
 
@@ -215,8 +221,13 @@ namespace Hollowfen.Foraging
         private void OnForageClicked()
         {
             var node = _currentNode;
+            if (node == null || !MushroomRules.CanHarvest(node.Data))
+            {
+                UISfx.Error();
+                return;
+            }
             HideForCinematic();
-            if (node != null) node.BeginHarvest();
+            node.BeginHarvest();
         }
 
         private void OnLeaveClicked()
@@ -330,6 +341,7 @@ namespace Hollowfen.Foraging
 
         private void ApplyContent(MushroomFieldGuideData data, bool discovered)
         {
+            bool harvestUnlocked = MushroomRules.CanHarvest(data);
             if (discovered)
             {
                 _eyebrow.text = (string.IsNullOrEmpty(data.EdibilityLabel) ? data.Edibility.ToString() : data.EdibilityLabel).ToUpperInvariant();
@@ -372,6 +384,13 @@ namespace Hollowfen.Foraging
                 _body.text = Hollowfen.Localization.Get("inspect.unknown.body");
                 if (_statStrip != null) _statStrip.gameObject.SetActive(false);
                 if (_foragerNote != null) _foragerNote.gameObject.SetActive(false);
+            }
+
+            if (_forageBtn != null) _forageBtn.interactable = harvestUnlocked;
+            if (!harvestUnlocked && _foragerNote != null)
+            {
+                _foragerNote.gameObject.SetActive(true);
+                _foragerNote.text = Hollowfen.Localization.Get("inspect.locked.knowledge");
             }
         }
 
@@ -510,11 +529,11 @@ namespace Hollowfen.Foraging
             hsRT.anchorMin = new Vector2(0f, 1f);
             hsRT.anchorMax = new Vector2(1f, 1f);
             hsRT.pivot = new Vector2(0.5f, 1f);
-            hsRT.sizeDelta = new Vector2(0f, 26f);
+            hsRT.sizeDelta = new Vector2(0f, 34f);
             hsRT.anchoredPosition = Vector2.zero;
             var hint = UICanvasUtil.NewBody("Hint", hintScrim.transform,
                 "L/M/R-Drag · Scroll   ·   L/R-Stick · LT/RT",
-                12f, HollowfenPalette.Cream,
+                14.5f, HollowfenPalette.Cream,
                 TMPro.FontStyles.Italic, TMPro.TextAlignmentOptions.Center);
             UICanvasUtil.Stretch(hint.rectTransform);
 

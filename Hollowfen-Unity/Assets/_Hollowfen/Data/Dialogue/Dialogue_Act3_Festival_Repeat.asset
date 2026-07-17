@@ -15,15 +15,17 @@ MonoBehaviour:
   _id: act3.festival.repeat
   _lines:
   - speaker: Marra
-    text: 'No one called it rustic. I am almost disappointed.'
+    text: No one called it rustic. I am almost disappointed.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: ce47430838da44e1cbac7ac74687f736, type: 3}
   _unlockStoryCard: {fileID: 0}
   _completeQuest: {fileID: 0}
-  _giveItemId:
+  _giveItemId: 
   _grantCoinsCopper: 0
   _spendsCoinsCopper: 0
   _sellsForageBasket: 0
   _basketCopperPerItem: 0
+  _basketBuyer: 0
   _grantForage: {fileID: 0}
   _grantForageCount: 1
   _consumeForage: {fileID: 0}
@@ -32,6 +34,7 @@ MonoBehaviour:
   _villageHopeDelta: 0
   _knowledgeDelta: 0
   _relationshipNpcIds: []
-  _relationshipDeltas: []
+  _relationshipDeltas: 
+  _transitionMoment: {fileID: 0}
   _nextDialog: {fileID: 0}
   _choices: []

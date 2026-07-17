@@ -65,6 +65,7 @@ namespace Hollowfen.UI
 
         private Slider _masterSlider, _musicSlider, _sfxSlider, _ambienceSlider, _sensSlider;
         private TMP_Text _masterValue, _musicValue, _sfxValue, _ambienceValue, _sensValue;
+        private Button _closeButton;
 
         private readonly List<Cycler> _cyclers = new List<Cycler>();
         private Cycler _fullscreenCyc, _resolutionCyc, _qualityCyc;
@@ -220,6 +221,11 @@ namespace Hollowfen.UI
             var rule = UICanvasUtil.NewImage("GoldRule", transform, HollowfenPalette.GoldFaint, false);
             UICanvasUtil.SetRect((RectTransform)rule.transform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(ColW, 2f), new Vector2(ColX, RuleY));
 
+            _closeButton = JournalChrome.BuildCloseButton(transform, () =>
+            {
+                if (UIManager.Instance != null) UIManager.Instance.Back();
+            });
+
             BuildTabRow();
 
             for (int i = 0; i < TabCount; i++)
@@ -239,8 +245,8 @@ namespace Hollowfen.UI
             BuildControlsPanel(_panels[(int)Tab.Controls].transform);
             BuildCreditsPanel(_panels[(int)Tab.Credits].transform);
 
-            var hint = UICanvasUtil.NewBody("Hint", transform, Localization.Get("settings.hint"), 13f,
-                new Color(HollowfenPalette.Moss.r, HollowfenPalette.Moss.g, HollowfenPalette.Moss.b, 0.85f),
+            var hint = UICanvasUtil.NewBody("Hint", transform, Localization.Get("settings.hint"), 15f,
+                new Color(HollowfenPalette.Moss.r, HollowfenPalette.Moss.g, HollowfenPalette.Moss.b, 0.95f),
                 FontStyles.Italic, TextAlignmentOptions.Center);
             UICanvasUtil.SetRect(hint.rectTransform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(900f, 20f), new Vector2(0f, 26f));
         }
@@ -257,7 +263,9 @@ namespace Hollowfen.UI
                 label.rectTransform.pivot = new Vector2(0f, 1f);
                 label.ForceMeshUpdate();
                 float w = label.preferredWidth + 4f;
-                UICanvasUtil.SetRect(label.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(w, 26f), new Vector2(x, TabsY));
+                // Keep the minimal text-only tab appearance, but give mouse users the same
+                // comfortable 44+ reference-pixel target that controller focus already implies.
+                UICanvasUtil.SetRect(label.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(w, 48f), new Vector2(x, TabsY));
                 label.raycastTarget = true;
 
                 var btn = label.gameObject.AddComponent<Button>();
@@ -351,6 +359,7 @@ namespace Hollowfen.UI
             {
                 PlayerPrefs.SetInt(PrefFullscreen, i);
                 Screen.fullScreen = i == 1;
+                ProductionPerformancePolicy.RequestDisplayRefresh();
             };
 
             // Deduped resolution list (Screen.resolutions repeats each size per refresh rate).
@@ -370,6 +379,7 @@ namespace Hollowfen.UI
                 PlayerPrefs.SetInt(PrefResolution, i);
                 var s = _resolutionSizes[i];
                 Screen.SetResolution(s.x, s.y, Screen.fullScreenMode);
+                ProductionPerformancePolicy.RequestDisplayRefresh();
             };
 
             // Quality — hidden when the project defines fewer than two levels (a dead
@@ -389,6 +399,7 @@ namespace Hollowfen.UI
                 {
                     PlayerPrefs.SetInt(PrefQuality, i);
                     QualitySettings.SetQualityLevel(i, true);
+                    ProductionPerformancePolicy.RequestDisplayRefresh();
                 };
             }
 
@@ -436,7 +447,8 @@ namespace Hollowfen.UI
             _sensSlider.onValueChanged.AddListener(OnSensitivityChanged);
             WireVertical(new Selectable[] { _sensSlider });
 
-            // Binding reference table (copy preserved verbatim from the shipped screen).
+            // Current project bindings. Compact enough to keep every gameplay action
+            // visible at 1080p without turning the reference page into a scroll view.
             float colAction = 0f, colPad = 250f, colKb = 520f;
             y -= 6f;
 
@@ -465,7 +477,9 @@ namespace Hollowfen.UI
                 new[] { "settings.bind.look",     "settings.bind.look.pad",     "settings.bind.look.kb" },
                 new[] { "settings.bind.interact", "settings.bind.interact.pad", "settings.bind.interact.kb" },
                 new[] { "settings.bind.jump",     "settings.bind.jump.pad",     "settings.bind.jump.kb" },
+                new[] { "settings.bind.satchel",  "settings.bind.satchel.pad",  "settings.bind.satchel.kb" },
                 new[] { "settings.bind.journal",  "settings.bind.journal.pad",  "settings.bind.journal.kb" },
+                new[] { "settings.bind.map",      "settings.bind.map.pad",      "settings.bind.map.kb" },
                 new[] { "settings.bind.pause",    "settings.bind.pause.pad",    "settings.bind.pause.kb" },
             }, colAction, colPad, colKb);
 
@@ -488,7 +502,7 @@ namespace Hollowfen.UI
                 AddTableText(parent, colAction, y, 240f, row[0], false, HollowfenPalette.Parchment);
                 AddTableText(parent, colPad,    y, 260f, row[1], false, HollowfenPalette.Moss);
                 AddTableText(parent, colKb,     y, 240f, row[2], false, HollowfenPalette.Moss);
-                y -= 25f;
+                y -= 24f;
             }
             y -= 8f;
             return y;
@@ -498,13 +512,13 @@ namespace Hollowfen.UI
         {
             if (header)
             {
-                var t = UICanvasUtil.NewEyebrow("H", parent, Localization.Get(key), 12f,
+                var t = UICanvasUtil.NewEyebrow("H", parent, Localization.Get(key), 13.5f,
                     new Color(HollowfenPalette.Moss.r, HollowfenPalette.Moss.g, HollowfenPalette.Moss.b, 0.9f));
                 UICanvasUtil.SetRect(t.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(w, 18f), new Vector2(x, y));
             }
             else
             {
-                var t = UICanvasUtil.NewBody("C", parent, Localization.Get(key), 15f, color ?? HollowfenPalette.Parchment, FontStyles.Normal, TextAlignmentOptions.TopLeft);
+                var t = UICanvasUtil.NewBody("C", parent, Localization.Get(key), 16.5f, color ?? HollowfenPalette.Parchment, FontStyles.Normal, TextAlignmentOptions.TopLeft);
                 t.enableWordWrapping = false;
                 UICanvasUtil.SetRect(t.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(w, 20f), new Vector2(x, y));
             }
@@ -559,7 +573,9 @@ namespace Hollowfen.UI
 
             float sy = y - 32f;
             var sliderRt = UICanvasUtil.NewRect("Slider_" + labelKey, parent);
-            UICanvasUtil.SetRect(sliderRt, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(ColW, 24f), new Vector2(0f, sy));
+            // The visual rail stays deliberately slim, while the Slider owns a generous invisible
+            // interaction band for mouse/trackpad users and Steam Deck touch input.
+            UICanvasUtil.SetRect(sliderRt, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(ColW, 48f), new Vector2(0f, sy + 12f));
 
             // Track background.
             var bg = UICanvasUtil.NewImage("Background", sliderRt, new Color(1f, 1f, 1f, 0.10f), false);
@@ -603,7 +619,13 @@ namespace Hollowfen.UI
             slider.maxValue = max;
             slider.wholeNumbers = whole;
 
-            AddFocusHighlight(sliderRt.gameObject, handleImg, HollowfenPalette.Cream, HollowfenPalette.GoldGlow, 1f, handleRt, 1.3f);
+            var railGo = UICanvasUtil.NewImage("FocusRail", sliderRt, HollowfenPalette.FocusRail, false);
+            var railRt = railGo.GetComponent<RectTransform>();
+            UICanvasUtil.SetRect(railRt, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f),
+                new Vector2(3f, 32f), new Vector2(-12f, 0f));
+            UICanvasUtil.Roundify(railGo.GetComponent<Image>(), 2);
+            AddFocusHighlight(sliderRt.gameObject, handleImg, HollowfenPalette.Cream, HollowfenPalette.GoldGlow,
+                1f, handleRt, 1.3f, railGo.GetComponent<Image>());
 
             y -= 92f;
             return slider;
@@ -617,7 +639,8 @@ namespace Hollowfen.UI
             var fill = row.gameObject.AddComponent<Image>();
             fill.sprite = UICanvasUtil.RoundedRect(10);
             fill.type = Image.Type.Sliced;
-            fill.color = new Color(0f, 0f, 0f, 0.001f);   // resting: invisible; focus paints it
+            fill.color = new Color(HollowfenPalette.SurfaceQuiet.r, HollowfenPalette.SurfaceQuiet.g,
+                HollowfenPalette.SurfaceQuiet.b, 0.18f);
             fill.raycastTarget = true;
 
             var btn = row.gameObject.AddComponent<Button>();
@@ -641,16 +664,7 @@ namespace Hollowfen.UI
             // Submit also cycles forward — every input path can drive the row.
             btn.onClick.AddListener(() => cyc.Cycle(1));
 
-            // Focus visual: gold wash over the row (PauseScreen row idiom).
-            var glowGo = UICanvasUtil.NewImage("FocusGlow", row, new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0f), false);
-            var glowImg = glowGo.GetComponent<Image>();
-            glowImg.sprite = UICanvasUtil.RoundedRect(10);
-            glowImg.type = Image.Type.Sliced;
-            UICanvasUtil.Stretch((RectTransform)glowGo.transform);
-            AddFocusHighlight(row.gameObject, glowImg,
-                new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0f),
-                new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0.13f),
-                1.01f);
+            JournalChrome.AddSurfaceFocus(row.gameObject, 10, 1.005f);
 
             y -= 66f;
             return cyc;
@@ -660,7 +674,7 @@ namespace Hollowfen.UI
         {
             var t = UICanvasUtil.NewBody("Arrow" + glyph, row, glyph, 26f, HollowfenPalette.Moss, FontStyles.Normal, TextAlignmentOptions.Center);
             t.raycastTarget = true;
-            UICanvasUtil.SetRect(t.rectTransform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(34f, 34f), anchored);
+            UICanvasUtil.SetRect(t.rectTransform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(48f, 48f), anchored);
             var b = t.gameObject.AddComponent<Button>();
             b.transition = Selectable.Transition.ColorTint;
             b.targetGraphic = t;
@@ -674,30 +688,13 @@ namespace Hollowfen.UI
             b.onClick.AddListener(() => onClick());
         }
 
-        private void AddFocusHighlight(GameObject host, Graphic target, Color baseColor, Color focusedColor, float focusedScale, RectTransform scaleTarget = null, float scaleAmount = 0f)
+        private void AddFocusHighlight(GameObject host, Graphic target, Color baseColor, Color focusedColor,
+            float focusedScale, RectTransform scaleTarget = null, float scaleAmount = 0f, Graphic glow = null)
         {
             var fh = host.AddComponent<FocusHighlight>();
-            var fhT = typeof(FocusHighlight);
-            System.Action<string, object> setF = (n, v) =>
-            {
-                var f = fhT.GetField(n, System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-                if (f != null) f.SetValue(fh, v);
-            };
-            setF("_targetGraphic", target);
-            setF("_baseColor", baseColor);       // Awake already cached — reflection re-point (known gotcha)
-            setF("_focusedColor", focusedColor);
-            if (scaleTarget != null)
-            {
-                setF("_scaleTarget", scaleTarget);
-                setF("_focusedScale", scaleAmount);
-            }
-            else
-            {
-                setF("_focusedScale", focusedScale);
-            }
-            setF("_swapColor", true);
-            setF("_swapScale", true);
-            setF("_underlineText", false);
+            if (target != null) target.color = baseColor;
+            fh.Configure(target, scaleTarget != null ? scaleTarget : host.transform as RectTransform,
+                focusedColor, scaleTarget != null ? scaleAmount : focusedScale, true, true, false, glow);
         }
 
         private void WireVertical(Selectable[] order)
@@ -781,7 +778,17 @@ namespace Hollowfen.UI
                 if (_tabButtons[i] == null) continue;
                 var nav = _tabButtons[i].navigation;
                 nav.selectOnDown = firstControl;
+                nav.selectOnUp = _closeButton;
                 _tabButtons[i].navigation = nav;
+            }
+
+            if (_closeButton != null)
+            {
+                var closeNav = _closeButton.navigation;
+                closeNav.mode = Navigation.Mode.Explicit;
+                closeNav.selectOnDown = _tabButtons[(int)_currentTab];
+                closeNav.selectOnLeft = _tabButtons[(int)_currentTab];
+                _closeButton.navigation = closeNav;
             }
 
             // Content column's top-most controls climb back to the ACTIVE tab button.

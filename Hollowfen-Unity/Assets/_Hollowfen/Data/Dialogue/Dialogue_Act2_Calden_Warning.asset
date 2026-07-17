@@ -18,27 +18,34 @@ MonoBehaviour:
     text: 'I knew your father. I baptized you.
 
 
-      So I will say this once and kindly: leave the deep wood alone.'
+      So I will say this once and
+      kindly: leave the deep wood alone.'
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: 8857c5ae26e5e4c93bb746ac3a4f3259, type: 3}
   - speaker: Wren
-    text: 'The Edge Woods fed your village this month.'
+    text: The Edge Woods fed your village this month.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 0e82f1b151d9d4b3f9717b0675677b2c, type: 3}
   - speaker: Calden
-    text: 'The edge of a thing is not the thing.'
+    text: The edge of a thing is not the thing.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 4d76d9316bc714d4c87251bdcc59cdb1, type: 3}
   - speaker: Wren
-    text: 'What are you afraid of?'
+    text: What are you afraid of?
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 39ca3cc565d8c4843a69cdf9cc39a055, type: 3}
   - speaker: Calden
-    text: 'Being late to wisdom. Being early to harm.'
+    text: Being late to wisdom. Being early to harm.
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: f65d4b1bc7e9849e0aee62003c741639, type: 3}
   _unlockStoryCard: {fileID: 0}
   _completeQuest: {fileID: 0}
-  _giveItemId:
+  _giveItemId: 
   _grantCoinsCopper: 0
   _spendsCoinsCopper: 0
   _sellsForageBasket: 0
   _basketCopperPerItem: 0
+  _basketBuyer: 0
   _grantForage: {fileID: 0}
   _grantForageCount: 1
   _consumeForage: {fileID: 0}
@@ -48,5 +55,7 @@ MonoBehaviour:
   _villageHopeDelta: 0
   _knowledgeDelta: 0
   _relationshipNpcIds: []
-  _relationshipDeltas: []
+  _relationshipDeltas: 
+  _transitionMoment: {fileID: 0}
   _nextDialog: {fileID: 0}
+  _choices: []

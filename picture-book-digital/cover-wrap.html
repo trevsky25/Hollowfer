@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Hollowfen — Hardcover Wrap (Mixam case binding)</title>
+<!--
+  MIXAM HARDCOVER COVER SPREAD — 10x8in landscape book, 52pp interior
+  Formula (Mixam): back 10 + hinge .2 + SPINE + hinge .2 + front 10, book height 8,
+  then 0.8in wrap bleed on ALL four edges.
+
+  SPINE = 0.375in (estimate for ~52pp; Mixam's order preview shows the exact figure).
+  To change the spine width: update the THREE values marked SPINE below
+  (@page width, body width, .spine width). Total width = 22in + SPINE.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+@page{size:22.375in 9.6in;margin:0} /* SPINE: 22in + spine */
+*{margin:0;padding:0;box-sizing:border-box}
+body{width:22.375in;height:9.6in;display:flex;background:#0f0d0a;font-family:"EB Garamond",Georgia,serif;overflow:hidden} /* SPINE */
+.panel{position:relative;height:9.6in;overflow:hidden}
+.back,.front{width:10.8in}   /* 10in trim + 0.8in outer wrap; inner edge meets hinge */
+.spine{width:.775in}         /* SPINE: .2 hinge + spine + .2 hinge */
+.panel img.art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+
+/* smooth panel transitions toward the fold zones (Mixam variance advice) */
+.back::after{content:"";position:absolute;inset:0;background:linear-gradient(to right,rgba(15,13,10,.55) 0%,rgba(15,13,10,.62) 62%,#0f0d0a 97%)}
+.front::after{content:"";position:absolute;inset:0;background:linear-gradient(to left,rgba(15,13,10,.18) 0%,rgba(15,13,10,.12) 55%,#0f0d0a 97%),linear-gradient(to top,rgba(15,13,10,.85) 6%,rgba(15,13,10,.15) 42%)}
+.spine{background:linear-gradient(#141110,#0f0d0a 30%,#0f0d0a 70%,#141110)}
+
+/* ===== front (right panel) ===== */
+.front .titlebox{position:absolute;left:.5in;right:1.3in;bottom:1.55in;z-index:3;text-align:center;color:#ecdfc2} /* centered on trim: panel x .8–10.8 is bleed-offset; trim spans 0–10 */
+.front .ot{font-family:"IM Fell English SC",serif;font-size:10.5pt;letter-spacing:.42em;text-indent:.42em;color:#c99a4b;margin-bottom:.16in}
+.front h1{font-family:"IM Fell English",serif;font-weight:400;font-size:70pt;line-height:.95;letter-spacing:.04em;text-shadow:0 3px 26px rgba(0,0,0,.75)}
+.front .st{font-family:"IM Fell English",serif;font-style:italic;font-size:18pt;margin-top:.12in}
+.front .by{font-style:italic;font-size:10pt;color:rgba(236,223,194,.75);margin-top:.16in;line-height:1.5}
+
+/* ===== spine ===== */
+.spine .stx{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(90deg);white-space:nowrap;display:flex;align-items:center;gap:.22in;color:#ecdfc2}
+.spine .stx b{font-family:"IM Fell English",serif;font-weight:400;font-size:13pt;letter-spacing:.12em}
+.spine .stx i{font-family:"IM Fell English",serif;font-style:italic;font-size:9pt;color:rgba(236,223,194,.7)}
+.spine .stx .dot{width:5px;height:5px;border-radius:50%;background:#7d2b1f}
+
+/* ===== back (left panel) ===== */
+.back .blurb{position:absolute;left:2.1in;right:1.3in;top:50%;transform:translateY(-50%);z-index:3;text-align:center;color:#e6d9bf} /* centered on trim: back trim spans .8–10.8 */
+.back .k{font-family:"IM Fell English SC",serif;font-size:9pt;letter-spacing:.34em;text-indent:.34em;color:#c99a4b;margin-bottom:.24in}
+.back p.body{font-size:12.5pt;line-height:1.75;font-style:italic;color:rgba(236,223,194,.92);text-shadow:0 1px 10px rgba(0,0,0,.7)}
+.back .quote{margin-top:.34in;font-family:"IM Fell English",serif;font-style:italic;font-size:14.5pt;color:#c99a4b}
+.back .qsrc{font-family:"IM Fell English SC",serif;font-size:8pt;letter-spacing:.24em;color:rgba(236,223,194,.55);margin-top:.08in}
+.back .imprint{position:absolute;left:.8in;right:0;bottom:1.25in;text-align:center;z-index:3}
+.back .imprint svg{width:1.5in;height:.28in;color:rgba(230,217,191,.55)}
+.back .imprint p{font-family:"IM Fell English SC",serif;font-size:8pt;letter-spacing:.3em;text-indent:.3em;color:rgba(236,223,194,.6);margin-top:.07in}
+</style>
+</head>
+<body>
+
+<!-- BACK COVER (left) -->
+<div class="panel back">
+  <img class="art" src="press-img/endpaper.jpg" alt="">
+  <div class="blurb">
+    <p class="k">An Illustrated Tale in Four Acts · With Four Endings</p>
+    <p class="body">Three years after she left, Wren Tobin walks the east road home to a village the river has forgotten. Her father is dead. His mill is still. What he left her — wrapped in oilcloth, tied in a hesitating knot — is a journal of names: Field Cap, Goldfoot, Brightspore, Wendlight. In Hollowfen, knowing the true name of a thing can feed a family, save a life, and unbury what powerful men worked hard to make a village forget.</p>
+    <p class="quote">“Never eat what you cannot name twice.”</p>
+    <p class="qsrc">— Tobin's journal, underlined until the pencil tore the page</p>
+  </div>
+  <div class="imprint">
+    <svg viewBox="0 0 190 34" fill="none"><path d="M0 17h70M120 17h70" stroke="currentColor" stroke-width="1"/><path d="M95 6c-7 0-13 4-13 9 0 1 .6 2 2 2h22c1.4 0 2-1 2-2 0-5-6-9-13-9Z" stroke="currentColor" stroke-width="1.4"/><path d="M95 17v9m-3 2c0-1.5 1-2 3-2s3 .5 3 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    <p>The Crooked Pintle Press · Hollowfen</p>
+  </div>
+</div>
+
+<!-- SPINE -->
+<div class="panel spine">
+  <div class="stx"><b>HOLLOWFEN</b><span class="dot"></span><i>The Failing Village</i></div>
+</div>
+
+<!-- FRONT COVER (right) -->
+<div class="panel front">
+  <img class="art" src="press-img/cover.jpg" alt="">
+  <div class="titlebox">
+    <p class="ot">An Illustrated Tale in Four Acts</p>
+    <h1>HOLLOWFEN</h1>
+    <p class="st">The Failing Village</p>
+    <p class="by">Being the story of Wren Tobin, who came home to a village the river had forgotten,<br>and found what her family had hidden in the woods</p>
+  </div>
+</div>
+
+</body>
+</html>

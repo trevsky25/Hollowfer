@@ -19,6 +19,8 @@ namespace Hollowfen.Quests
         [Header("On Complete")]
         [SerializeField, Tooltip("Story card unlocked when this quest completes (optional).")]
         private StoryCardData _unlockStoryCardOnComplete;
+        [SerializeField, Tooltip("Optional authored hero presentation. Null uses the compact story-card completion treatment.")]
+        private StoryMomentData _storyMoment;
         [SerializeField, Tooltip("Quest auto-started when this one completes (optional).")]
         private QuestData _nextQuest;
 
@@ -39,6 +41,7 @@ namespace Hollowfen.Quests
         public int Act => _act;
         public int Order => _order;
         public StoryCardData UnlockStoryCardOnComplete => _unlockStoryCardOnComplete;
+        public StoryMomentData StoryMoment => _storyMoment;
         public QuestData NextQuest => _nextQuest;
         public LocationData WaypointLocation => _waypointLocation;
         public int VillageHopeDelta => _villageHopeDelta;

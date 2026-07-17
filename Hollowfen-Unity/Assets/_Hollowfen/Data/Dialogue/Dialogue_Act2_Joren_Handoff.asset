@@ -17,18 +17,23 @@ MonoBehaviour:
   - speaker: Joren
     text: On the anvil.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 7b77b3122fde04223834bde2067482d6, type: 3}
   - speaker: Wren
     text: Horn handle. Dark back. Joren, this is better than I asked for.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: c6687c78c5c874bbcba2494887fb844b, type: 3}
   - speaker: Joren
     text: Mm.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: a9747c0d88655443d878bab3548db896, type: 3}
   - speaker: Wren
     text: I paid.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 3ccfc8ece6c4141b6907117feed72a9e, type: 3}
   - speaker: Joren
     text: I know what I said.
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: 80016ba4b6efa439bbc1da5b4f000410, type: 3}
   _unlockStoryCard: {fileID: 0}
   _completeQuest: {fileID: 11400000, guid: 361dbfb41db8407590f092f68dd45ae9, type: 2}
   _giveItemId: item.forage_knife
@@ -36,11 +41,16 @@ MonoBehaviour:
   _spendsCoinsCopper: 0
   _sellsForageBasket: 0
   _basketCopperPerItem: 0
+  _basketBuyer: 0
   _grantForage: {fileID: 0}
   _grantForageCount: 1
+  _consumeForage: {fileID: 0}
+  _consumeForageCount: 1
   _setFlagIds: []
   _villageHopeDelta: 0
   _knowledgeDelta: 0
   _relationshipNpcIds: []
-  _relationshipDeltas: []
+  _relationshipDeltas: 
+  _transitionMoment: {fileID: 0}
   _nextDialog: {fileID: 0}
+  _choices: []

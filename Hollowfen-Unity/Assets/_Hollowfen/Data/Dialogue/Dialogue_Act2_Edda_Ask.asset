@@ -17,19 +17,23 @@ MonoBehaviour:
   - speaker: Edda
     text: Grandfather hasn't eaten since Monday.
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: db89bfb18837a4bfa9b3eece152637be, type: 3}
   - speaker: Wren
     text: Why tell me?
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 80cbdc165d24d41b5abcc016cd59c5e7, type: 3}
   - speaker: Edda
     text: You go where people don't.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: ed28bc8e909dd4e33a05a3a18ee037c2, type: 3}
   _unlockStoryCard: {fileID: 0}
   _completeQuest: {fileID: 0}
-  _giveItemId:
+  _giveItemId: 
   _grantCoinsCopper: 0
   _spendsCoinsCopper: 0
   _sellsForageBasket: 0
   _basketCopperPerItem: 0
+  _basketBuyer: 0
   _grantForage: {fileID: 0}
   _grantForageCount: 1
   _consumeForage: {fileID: 0}
@@ -39,5 +43,7 @@ MonoBehaviour:
   _villageHopeDelta: 0
   _knowledgeDelta: 0
   _relationshipNpcIds: []
-  _relationshipDeltas: []
+  _relationshipDeltas: 
+  _transitionMoment: {fileID: 0}
   _nextDialog: {fileID: 0}
+  _choices: []

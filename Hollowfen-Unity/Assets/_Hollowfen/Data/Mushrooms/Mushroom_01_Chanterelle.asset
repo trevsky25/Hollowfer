@@ -35,5 +35,17 @@ MonoBehaviour:
     lookalikes often differ in flesh color.'
   _photo: {fileID: 21300000, guid: 99902c9f1f40942239e53483511a9605, type: 3}
   _photoCredit: Wikimedia Commons
+  _worldPrefab: {fileID: 8741782227378417798, guid: 8613c4164ed1945d9b1faa0feee8f73d, type: 3}
+  _journalPreviewPrefab: {fileID: 5704515457140674847, guid: a0d183a38aecb4cbe8f2389f4907f197, type: 3}
+  _journalExposure: 0.3
   _displayNameId: mushroom.chanterelle.name
   _descriptionId: mushroom.chanterelle.description
+  _forageTier: 2
+  _requiredForageFlagId: foraging_knife_unlocked
+  _wildRespawnDays: 2
+  _marraValueCopper: 7
+  _theoValueCopper: 10
+  _cultivable: 0
+  _cultivationHours: 6
+  _cultivationYield: 3
+  _cultivationUnlockFlagId:

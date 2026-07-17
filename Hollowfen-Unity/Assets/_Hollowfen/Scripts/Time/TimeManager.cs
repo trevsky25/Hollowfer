@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Hollowfen.GameTime
 {
-    // The game clock: a day counter plus a 0-24h time-of-day that drives the sun. One real
+    // The game clock: a day counter plus a 0-24h time-of-day. One real
     // minute is configurable game time (default 20 real minutes per day). The clock runs on
     // Time.deltaTime, so pause/dialogue (timeScale 0) freezes it for free. Day + hour persist
     // in the active save slot. Downstream systems subscribe to OnDayChanged / OnSundown
@@ -17,6 +17,8 @@ namespace Hollowfen.GameTime
         private float _minutesPerGameDay = 20f;
         [SerializeField, Tooltip("The scene sun (defaults to RenderSettings.sun).")]
         private Light _sun;
+        [SerializeField, Tooltip("Art-directed sky, light, fog, and exposure cycle.")]
+        private DayNightLighting _lighting;
         [SerializeField, Tooltip("Clock value for brand-new games.")]
         private float _newGameHour = 14f;
         [SerializeField, Tooltip("Hour at which OnSundown fires.")]
@@ -29,9 +31,17 @@ namespace Hollowfen.GameTime
         public static event Action<int> OnDayChanged;
         public static event Action OnSundown;
 
-        private float _baseSunIntensity = 1.2f;
-        private float _baseAmbient = 1.2f;
-        private float _sunYaw = 330f;
+#if UNITY_2019_3_OR_NEWER
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+#else
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+#endif
+        private static void ResetOnLoad()
+        {
+            Instance = null;
+            OnDayChanged = null;
+            OnSundown = null;
+        }
 
         private void Awake()
         {
@@ -39,12 +49,9 @@ namespace Hollowfen.GameTime
             Instance = this;
 
             if (_sun == null) _sun = RenderSettings.sun;
-            if (_sun != null)
-            {
-                _baseSunIntensity = _sun.intensity;
-                _sunYaw = _sun.transform.eulerAngles.y;
-            }
-            _baseAmbient = RenderSettings.ambientIntensity;
+            if (_lighting == null) _lighting = GetComponent<DayNightLighting>();
+            if (_lighting == null) _lighting = gameObject.AddComponent<DayNightLighting>();
+            _lighting.Initialize(_sun);
 
             // Hydrate from the active slot; fresh saves start day 1 at the configured hour.
             var meta = SaveManager.GetSlotMeta(SaveManager.ActiveSlot);
@@ -58,7 +65,7 @@ namespace Hollowfen.GameTime
                 Day = 1;
                 Hour = _newGameHour;
             }
-            ApplySun();
+            ApplyLighting();
         }
 
         private void OnDestroy()
@@ -84,7 +91,7 @@ namespace Hollowfen.GameTime
                 SaveCoordinator.SaveAllWithPlayer();
             }
 
-            ApplySun();
+            ApplyLighting();
         }
 
         // For sleep/wait mechanics and tests. Fires day events when the day advances.
@@ -94,7 +101,52 @@ namespace Hollowfen.GameTime
             Day = Mathf.Max(1, day);
             Hour = Mathf.Repeat(hour, 24f);
             if (dayChanged) OnDayChanged?.Invoke(Day);
-            ApplySun();
+            ApplyLighting();
+        }
+
+        /// <summary>
+        /// Advances forward through the real clock boundary events. Resting must use this rather
+        /// than SetTime so sundown pressure, dawn schedules, crops, and respawns all observe the
+        /// same timeline as ordinary play.
+        /// </summary>
+        public void AdvanceTo(int targetDay, float targetHour, bool saveCheckpoint = true)
+        {
+            targetDay = Mathf.Max(1, targetDay);
+            targetHour = Mathf.Repeat(targetHour, 24f);
+            double current = (Day - 1) * 24d + Hour;
+            double target = (targetDay - 1) * 24d + targetHour;
+            if (target <= current + 0.0001d) return;
+
+            while (true)
+            {
+                double dayStart = (Day - 1) * 24d;
+                double sundown = dayStart + _sundownHour;
+                double nextDawn = dayStart + 24d;
+
+                if (current < sundown && sundown <= target)
+                {
+                    Hour = _sundownHour;
+                    current = sundown;
+                    OnSundown?.Invoke();
+                    continue;
+                }
+
+                if (current < nextDawn && nextDawn <= target)
+                {
+                    Day++;
+                    Hour = 0f;
+                    current = nextDawn;
+                    OnDayChanged?.Invoke(Day);
+                    continue;
+                }
+
+                break;
+            }
+
+            Day = targetDay;
+            Hour = targetHour;
+            ApplyLighting();
+            if (saveCheckpoint) SaveCoordinator.SaveAllWithPlayer();
         }
 
         public void WriteTo(SaveSlotMeta meta)
@@ -104,32 +156,9 @@ namespace Hollowfen.GameTime
             meta.GameHour = Hour;
         }
 
-        // Sun elevation follows a sine arc: rises ~6h, peaks ~60 deg at noon, sets ~18h.
-        // At night the same light dims to a cool moon so shadows never fully vanish.
-        private void ApplySun()
+        private void ApplyLighting()
         {
-            if (_sun == null) return;
-
-            float t = (Hour - 6f) / 12f; // 0 at sunrise, 1 at sunset
-            float elevation = Mathf.Sin(Mathf.Clamp01(t) * Mathf.PI) * 60f;
-            bool day = t >= 0f && t <= 1f;
-
-            if (day)
-            {
-                float warm = 1f - Mathf.Abs(t - 0.5f) * 2f; // 1 at noon, 0 at rise/set
-                _sun.transform.rotation = Quaternion.Euler(Mathf.Max(8f, elevation), _sunYaw, 0f);
-                _sun.intensity = Mathf.Lerp(0.45f, _baseSunIntensity, Mathf.SmoothStep(0f, 1f, warm));
-                _sun.color = Color.Lerp(new Color(1f, 0.62f, 0.35f), new Color(1f, 0.93f, 0.84f), Mathf.SmoothStep(0f, 1f, warm));
-                RenderSettings.ambientIntensity = Mathf.Lerp(0.55f, _baseAmbient, warm);
-            }
-            else
-            {
-                // Moonlight: low angle opposite-ish yaw, dim and blue.
-                _sun.transform.rotation = Quaternion.Euler(30f, _sunYaw + 180f, 0f);
-                _sun.intensity = 0.14f;
-                _sun.color = new Color(0.55f, 0.65f, 0.9f);
-                RenderSettings.ambientIntensity = 0.35f;
-            }
+            if (_lighting != null) _lighting.Apply(Hour);
         }
     }
 }

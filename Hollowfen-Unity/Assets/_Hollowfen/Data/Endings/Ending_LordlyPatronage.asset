@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5c728fb7dcb046ca98c54f46a63e11d, type: 3}
+  m_Name: Ending_LordlyPatronage
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.EndingData
+  _id: lordly_patronage
+  _endingFlagId: ending_lordly_patronage
+  _choiceText: Accept Aldric's patronage
+  _choiceContext: The village eats. Its roofs and well will be repaired beneath Aldric's
+    banner, and Wren will live with the price of that safety.
+  _lockedHint: Lord Aldric cannot offer terms until the meeting reaches its decision.
+  _minimumVillageHope: 0
+  _minimumKnowledge: 0
+  _requiredFlagIds:
+  - final_choice_available
+  _relationshipNpcIds: []
+  _minimumRelationshipValues: []
+  _resolutionDialogue: {fileID: 11400000, guid: e4e4ec96fce994da596750ade37737f6, type: 2}
+  _storyCard: {fileID: 11400000, guid: 8392fef4834b5451f922078dff485a98, type: 2}
+  _epilogueCaptions:
+  - Wren signed. The village ate. Those two facts stood beside each other and refused
+    to become simple.
+  - Roofs were repaired before winter. The well was rebuilt in clean stone. A paid
+    sluice brought enough water to turn the mill wheel for show and some grinding.
+    Aldric's banner hung near the chapel gate.
+  - Marra had better copper pots. Bram hired help. Pell's ledger grew fat with deliveries,
+    stipends, inspections, and mercies discovered after paperwork instructed them.
+  - Theo left for the Capital alone. Edda asked to go with him. Wren said yes because
+    saying no would have made the bargain worse than it already was.
+  - At the lane's edge, Edda looked back once. Wren kept her hand raised until the
+    wagon disappeared.
+  - The village prospered. Wren lived with that. So did the village.
+  _consequenceFlagIds:
+  - aldric_offer_accepted
+  - hollowfen_under_patronage
+  _achievementId: ACH_ENDING_LORDLY_PATRONAGE

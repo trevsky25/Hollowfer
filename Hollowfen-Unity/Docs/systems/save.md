@@ -1,10 +1,10 @@
 # Save System
 One JSON file per slot (`persistentDataPath/saves/slot{N}.json`, 4 slots, JsonUtility of a single flat `SaveSlotMeta`); `SaveManager` (static) owns slot IO + targeted `AutoSave*` writers, `SaveCoordinator` (static) orchestrates full save/load across all game systems, `PlayerSpawnRestorer` restores Wren's transform on scene load.
-Key scripts: `Assets/_Hollowfen/Scripts/Save/` — SaveManager, SaveSlotMeta, SaveCoordinator, PlayerSpawnRestorer (namespace `Hollowfen.Save`).
-Save triggers: pause-menu Save, story-beat checkpoints (`StoryBeats`), day-boundary (`TimeManager`) — all `SaveAllWithPlayer()`; plus per-change targeted autosaves from 9 systems (inventory, coins, quests, key items, scores, grow beds, discovery, locations, intro flag).
+Key scripts: `Assets/_Hollowfen/Scripts/Save/` — SaveManager, SaveSlotMeta, SaveCoordinator, PlayerSpawnRestorer (namespace `Hollowfen.Save`); slot-picker UI: `Assets/_Hollowfen/Scripts/UI/SaveSlotScreen.cs`.
+Save triggers: pause-menu Save, story-beat checkpoints, natural dawn, confirmed rest, and request delivery — all `SaveAllWithPlayer()`; plus per-change targeted autosaves from 11 systems (including village requests).
 Persistence split: ALL per-playthrough state in slot JSON; PlayerPrefs holds only device settings + `forage.firstHarvestSeen` (`forage.discoveredIds` is legacy — migrated into the slot then deleted).
-Biggest gotchas: `AutoSave*` writes target `ActiveSlot`, NOT slot 0 (slot 0 is just the default); no atomic writes (crash mid-write corrupts the slot); `SaveAllWithPlayer` finds Wren via `GameObject.Find("PlayerArmature")` and silently degrades if renamed.
-Status: shipped with Act I (c2b9405), extended Batch 11 (grow beds, clock). Doc verified against code 2026-07-11.
+Biggest gotchas: `AutoSave*` writes target `ActiveSlot`, NOT slot 0; `CurrentQuest` remains cached display text for the slot row even though `CurrentQuestId` now carries the stable ID; `SaveAllWithPlayer` finds Wren via `GameObject.Find("PlayerArmature")` and silently degrades if renamed.
+Status: ending state, purse transaction history, wild-forage lifecycle round-trip, and crash-safe atomic replacement verified through 2026-07-16, including corrupt-primary recovery and byte-for-byte restoration of the tester's four real slots.
 
 > Self-healing doc: if you change this system, update this doc (including the 7-line header) in the same batch, and note the change in the batch worksheet.
 
@@ -17,32 +17,40 @@ Slot layout: `TotalSlots = 4`, `AutosaveSlot = 0` (naming is misleading — see 
 | Member | Behavior |
 |---|---|
 | `SetActiveSlot(int)` | Clamps to `[0,3]`, sets `ActiveSlot`. |
-| `SlotHasData(int)` / `GetSlotMeta(int)` / `DeleteSlot(int)` | File exists / read+deserialize (null on missing/corrupt, logs) / delete. |
+| `SlotHasData(int)` / `GetSlotMeta(int)` / `DeleteSlot(int)` | Primary-or-backup exists / deserialize primary then recover `.bak` on missing/corrupt / delete primary, backup, and temp. |
 | `WritePlaceholderToSlot(int)` | Fresh meta (`CurrentQuest="Act I — Arrival"`, `CurrentAct=1`) so New Game shows a slot row immediately. |
 | `WriteSlot(int, meta)` | Full write; forces `SlotNumber`; backfills `TimestampUnix` only if 0. Used by `SaveCoordinator.SaveAll`. |
-| `AutoSaveInventory / AutoSaveCoins / AutoSaveQuestState / AutoSaveKeyItems / AutoSaveScores / AutoSaveDiscoveredLocations / AutoSaveGrowBeds / AutoSaveDiscovery / AutoSaveIntroSeen` | All follow the same recipe: read `ActiveSlot` meta (or default) → overwrite one field → refresh timestamp → write back. `AutoSaveScores` pulls values itself via `GameScores.WriteTo(meta)`. |
+| `AutoSaveInventory / AutoSaveCoins / AutoSaveQuestState / AutoSaveKeyItems / AutoSaveScores / AutoSaveDiscoveredLocations / AutoSaveGrowBeds / AutoSaveForageNodes / AutoSaveVillageRequests / AutoSaveDiscovery / AutoSaveIntroSeen` | All follow the same recipe: read `ActiveSlot` meta (or default) → overwrite one field → refresh timestamp → write back. `AutoSaveCoins` writes both total copper and its newest-first ledger snapshot; `AutoSaveScores` pulls values itself via `GameScores.WriteTo(meta)`. |
 | `ResetOnLoad` (private, `[RuntimeInitializeOnLoadMethod(SubsystemRegistration)]`) | Resets `ActiveSlot=0` on domain load — guards Enter-Play-Mode-without-domain-reload staleness. |
+
+Every full or targeted writer funnels through `WriteJsonAtomically`: write + flush `slotN.json.tmp`, replace the primary while retaining `slotN.json.bak`, then clean the temp in `finally`. A platform without `File.Replace` uses a copy/delete/move fallback. The previous complete snapshot is therefore recoverable after an interrupted/corrupt primary.
+
+## Save-slot picker
+
+Main Menu `Forage` pushes `screenId="save-slot"` over `main-menu`. The four scene-authored journal rows are refreshed on every open; selecting a populated row loads it and selecting an empty row starts a new game. The shared top-right close control and `UI/Cancel` both call `UIManager.Back()`, revealing Main Menu rather than replacing or reloading it. Explicit navigation links `CloseButton → Slot0 → Slot1 → Slot2 → Slot3`, with Up from `Slot0` returning to Close.
 
 ## SaveSlotMeta — full schema (flat, JsonUtility)
 
-- **Slot meta**: `SlotNumber`, `TimestampUnix` (UTC), `CurrentQuest` (⚠️ localized display string, not an ID), `CurrentAct`, `TotalPlayTimeSeconds`.
-- **Game state**: `Inventory` (`InventorySnapshot{Ids[],Counts[]}`), `KeyItemIds[]` (e.g. `"item.mill_key"`), `CompletedQuestIds[]`, `UnlockedStoryCardIds[]`, `CoinsCopper` (12 copper = 1 silver), `HomecomingIntroSeen`, `DiscoveredMushroomIds[]`, `DiscoveredLocationIds[]`.
+- **Slot meta**: `SlotNumber`, `TimestampUnix` (UTC), `CurrentQuest` (cached display string), `CurrentQuestId` (stable ID; null on legacy saves), `CurrentAct`, `TotalPlayTimeSeconds`. A completed ending writes `game_complete`, Act 4, and localized completed copy.
+- **Game state**: `Inventory` (`InventorySnapshot{Ids[],Counts[]}`), `KeyItemIds[]` (e.g. `"item.mill_key"`), `CompletedQuestIds[]`, `UnlockedStoryCardIds[]`, `CoinsCopper` (12 copper = 1 silver), `CoinLedger` (`CoinLedgerSnapshot{AmountsCopper[],BalancesAfterCopper[],ReasonIds[]}`, newest first, max 8), `HomecomingIntroSeen`, `DiscoveredMushroomIds[]`, `DiscoveredLocationIds[]`.
 - **Player transform**: `HasPlayerTransform`, `PlayerPosX/Y/Z`, `PlayerYaw` (pitch/roll discarded).
 - **Scores (ending gates)**: `VillageHope`, `Knowledge`, `RelationshipNpcIds[]`+`RelationshipValues[]`, `GameFlagIds[]`.
 - **Clock**: `GameDay` (0 = legacy save → treated as day 1), `GameHour`.
 - **Cultivation**: `GrowBeds` (`GrowBedSnapshot{Ids[],SpeciesIds[],PlantedDays[],PlantedHours[],Remaining[]}`) — growth derives from planted day/hour vs clock; **no timer state saved**.
+- **Wild forage ecology**: `ForageNodes` (`ForageNodeSnapshot{Ids[],HarvestedDays[]}`) — only harvested scene-node ids and cut days are stored; availability derives from the current day and each species' respawn profile.
+- **Village requests**: `VillageRequests` (`VillageRequestSnapshot`) — completed one-shot IDs; daily NPC/request/day parallel arrays; tracked request ID/day. First-completion relationship guards live in `GameFlagIds`.
 
 Parallel arrays everywhere because JsonUtility can't do dictionaries — keep them index-aligned.
 
 ## SaveCoordinator (static) — orchestration
 
-- **`StartNewGame(slot)`**: SetActiveSlot → DeleteSlot → reset/null-hydrate every store (`QuestManager.ResetForSlotSwitch`, then HydrateFrom(null) on InventoryRuntime, KeyItems, CoinPurse, MushroomDiscovery, GameScores, GrowBeds, LocationRegistry) → WritePlaceholderToSlot.
-- **`LoadSlot(slot)`**: SetActiveSlot → GetSlotMeta → QuestManager reset+hydrate FIRST (deliberate) → hydrate the other stores (all null-tolerant). ⚠️ TimeManager is NOT hydrated here — it self-hydrates on scene load (asymmetric with SaveAll).
+- **`StartNewGame(slot)`**: SetActiveSlot → DeleteSlot → reset/null-hydrate every store, including wild forage and VillageRequests → WritePlaceholderToSlot.
+- **`LoadSlot(slot)`**: SetActiveSlot → GetSlotMeta → QuestManager reset+hydrate FIRST (deliberate) → hydrate the other stores, including coin balance/history, wild forage, and VillageRequests (all null-tolerant). ⚠️ TimeManager is NOT hydrated here — it self-hydrates on scene load (asymmetric with SaveAll).
 - **`MostRecentSlot()`**: max `TimestampUnix` across slots, `-1` if none. Backs "Continue".
-- **`SaveAll(playerPosition?, playerYaw)`**: read-modify-write on ActiveSlot — captures snapshots from all stores, `GameScores.WriteTo`, `TimeManager.Instance?.WriteTo` (clock silently skipped in menu context), `CurrentQuest = Localization.Get(ActiveQuest.DisplayNameId)` + act (or literal `"Act I complete"`), player transform only when position passed (menu saves pass null → previous transform preserved), timestamp, `WriteSlot`.
+- **`SaveAll(playerPosition?, playerYaw)`**: read-modify-write on ActiveSlot — captures all stores, scores, and clock; records display copy + stable active quest ID, or `game_complete`/Act 4 after an ending; preserves the old transform when none is supplied; atomically writes the slot.
 - **`SaveAllWithPlayer()`**: `GameObject.Find("PlayerArmature")` → SaveAll with position + yaw; falls back to `SaveAll()` if not found.
 
-**Save triggers**: pause menu (`PauseScreen`), story-beat checkpoints (`StoryBeats`), day boundary (`TimeManager`) → full `SaveAllWithPlayer`. Targeted autosaves fire on every change from: InventoryRuntime, CoinPurse, QuestManager, KeyItems, GameScores, GrowBeds, MushroomDiscovery, LocationRegistry, StoryBeats(intro).
+**Save triggers**: pause menu (`PauseScreen`), story-beat checkpoints (`StoryBeats`), natural day boundary, `RestSpot` completion, and successful village delivery → full `SaveAllWithPlayer`. Targeted autosaves also fire from the owning stores, including `VillageRequests` for tracking/claims.
 
 ## PlayerSpawnRestorer
 
@@ -57,9 +65,8 @@ Rule: game state → slot JSON via SaveCoordinator; device/user prefs → Player
 
 ## Gotchas
 
-- **No atomic writes** — plain `File.WriteAllText`; crash mid-write corrupts the slot and `GetSlotMeta` reads it as "empty". Hardening item in TODOS.md (temp-file + rename).
 - **"Autosave slot" drift**: after loading slot 2, autosaves land in slot 2 — `AutosaveSlot = 0` is only the default. UI copy should say "3 manual + default".
-- **`CurrentQuest` is a localized string at save time** — switch language and old slot rows show the old language. Convention violation, plus the default literal is copy-pasted ~10× in SaveManager.
+- **`CurrentQuest` display cache remains localized at save time** — the new `CurrentQuestId` stops new logic from depending on that text, but SaveSlotScreen still renders the cached text until the localization migration.
 - **`GameObject.Find("PlayerArmature")`** — rename the armature and saves silently lose the transform (Continue spawns at authored position, no error).
 - **Read-modify-write, last-write-wins per file** — safe for fields (each writer re-reads from disk) but an autosave storm = N full file IO cycles; throttling is the caller's job.
 - **Editor**: `ResetOnLoad` guards disabled-domain-reload staleness in Play mode.

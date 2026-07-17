@@ -75,19 +75,46 @@ namespace Hollowfen.Map
             _targetOrthoSize = _orthoSize;
             _cam.orthographicSize = _orthoSize;
 
-            // Create a runtime RT at the configured landscape aspect. Overrides any project RT asset
-            // assigned in the inspector — that asset can stay orphaned (no longer referenced).
-            RenderTexture = new RenderTexture(_renderTextureSize.x, _renderTextureSize.y, 24, RenderTextureFormat.ARGB32);
-            RenderTexture.name = "MapViewRT_Runtime";
-            RenderTexture.antiAliasing = 4;
-            RenderTexture.Create();
-            _cam.targetTexture = RenderTexture;
+            // The full-screen map starts closed. Do not allocate its large 2048x1024 render target
+            // or render an offscreen camera during scene activation; both are deferred until Open().
+            // Clear the legacy project RT assigned in the scene so it cannot render accidentally.
+            _cam.targetTexture = null;
+            _cam.enabled = false;
 
             ApplyPosition();
         }
 
+        public RenderTexture EnsureRenderTexture()
+        {
+            if (RenderTexture != null)
+            {
+                if (!RenderTexture.IsCreated()) RenderTexture.Create();
+                if (_cam != null) _cam.targetTexture = RenderTexture;
+                return RenderTexture;
+            }
+
+            RenderTexture = new RenderTexture(
+                _renderTextureSize.x, _renderTextureSize.y, 24, RenderTextureFormat.ARGB32)
+            {
+                name = "MapViewRT_Runtime",
+                antiAliasing = 4
+            };
+            RenderTexture.Create();
+            if (_cam == null) _cam = GetComponent<Camera>();
+            _cam.targetTexture = RenderTexture;
+            return RenderTexture;
+        }
+
+        public void SetRenderingActive(bool active)
+        {
+            if (_cam == null) _cam = GetComponent<Camera>();
+            if (active) EnsureRenderTexture();
+            _cam.enabled = active;
+        }
+
         private void OnDestroy()
         {
+            if (_cam != null && _cam.targetTexture == RenderTexture) _cam.targetTexture = null;
             if (RenderTexture != null) { RenderTexture.Release(); Destroy(RenderTexture); RenderTexture = null; }
         }
 
@@ -162,6 +189,8 @@ namespace Hollowfen.Map
 
         private void LateUpdate()
         {
+            if (_cam == null || !_cam.enabled) return;
+
             if (Mode == CamMode.FollowPlayer)
                 ApplyPosition();
             // else: hold current xz; Pan() updates it manually

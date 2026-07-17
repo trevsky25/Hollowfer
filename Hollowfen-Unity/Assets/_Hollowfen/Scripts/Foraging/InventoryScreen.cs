@@ -90,7 +90,6 @@ namespace Hollowfen.Foraging
             _group = GetComponent<CanvasGroup>();
             if (_group == null) _group = gameObject.AddComponent<CanvasGroup>();
 
-            BuildIfNeeded();
             _input = new InputActions();
             _canvas.enabled = false;
 
@@ -448,6 +447,9 @@ namespace Hollowfen.Foraging
             if (MushroomPreviewer.Instance != null)
             {
                 MushroomPreviewer.Instance.Show(cell.Data, false);
+                // The preview rig is lazy; Show() must run before its RenderTexture is available.
+                if (_previewImage != null)
+                    _previewImage.texture = MushroomPreviewer.Instance.RenderTexture;
                 _previewMissingNote.gameObject.SetActive(cell.Data.WorldPrefab == null);
             }
         }
@@ -724,11 +726,11 @@ namespace Hollowfen.Foraging
             var hsRT = (RectTransform)hintScrim.transform;
             hsRT.anchorMin = new Vector2(0f, 1f); hsRT.anchorMax = new Vector2(1f, 1f);
             hsRT.pivot = new Vector2(0.5f, 1f);
-            hsRT.sizeDelta = new Vector2(0f, 26f);
+            hsRT.sizeDelta = new Vector2(0f, 34f);
             hsRT.anchoredPosition = Vector2.zero;
             _hintText = UICanvasUtil.NewBody("Hint", hintScrim.transform,
                 "",
-                12f, HollowfenPalette.Cream, TMPro.FontStyles.Italic, TMPro.TextAlignmentOptions.Center);
+                14.5f, HollowfenPalette.Cream, TMPro.FontStyles.Italic, TMPro.TextAlignmentOptions.Center);
             UICanvasUtil.Stretch(_hintText.rectTransform);
 
             // "MODEL COMING SOON" overlay (centered in preview, hidden when prefab present)

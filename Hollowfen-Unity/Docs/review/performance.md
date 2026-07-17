@@ -12,11 +12,15 @@ A new mesh/prop placed in a scene · Meshy/kitbash imports · materials/shaders 
 URP render settings · anything added to the per-frame update or draw path.
 
 ## Checklist (verify each)
-- **Mesh vert budget.** New/imported meshes are decimated before they ship. Known debt: the Field Mushroom is
-  414k verts (must decimate before EA). A new prop over a few-thousand verts for a small object → PASS WITH
-  CHANGES (decimate). Ask for the actual vert count.
+- **Mesh vert budget.** New/imported meshes are decimated before they ship. Batch-68's mushroom precedent is
+  12k–16k world triangles plus a separate 60k–75k journal derivative; the old 414k-vertex Field Mushroom debt
+  is resolved (15.8k world / 47.4k journal vertices). Batch-71's one-at-a-time Wren journal study is capped at
+  90k triangles / 61.8k vertices (source: 542.5k / 304.2k) with 2K albedo/normal + 1K emission. A new small prop
+  above budget → PASS WITH CHANGES.
 - **Draw calls / batching.** New props don't explode draw calls (check static/GPU batching, shared materials).
-  A screenful of unique-material props is a flag.
+  A screenful of unique-material props is a flag. Journal mushroom exposure uses one temporary material clone per
+  visible source material, but viewport hydration caps the index to six rigs at 1280×800 (plus one detail rig), and
+  every clone is destroyed when its presenter is cleared.
 - **Atlas / texture memory.** Font atlas pages and textures stay proportionate. Batch-32 note: Georgia is 2
   atlas pages, the fallback is multi-page — each page is a texture + a fallback material (minor per-glyph-page
   draw cost). Adding a huge glyph set or a 2048 atlas without need → question it. CJK (future) needs its own

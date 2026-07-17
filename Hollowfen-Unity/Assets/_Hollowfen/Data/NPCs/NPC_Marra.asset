@@ -21,7 +21,7 @@ MonoBehaviour:
     requiresCoinsCopper: 0
     requiresBasketNonEmpty: 0
     requiresForage: {fileID: 0}
-    dialog: {fileID: 11400000, guid: f4e39764e31b4d0d88b4c5c8f09da6ab, type: 2}
+    dialog: {fileID: 11400000, guid: 410e00da0cb7a4308950e2acc0d1881f, type: 2}
   - activeQuest: {fileID: 11400000, guid: bd86d1b8a0dd4755902c72775da664d8, type: 2}
     requiresQuestCompleted: {fileID: 0}
     requiresFlagId:
@@ -34,12 +34,14 @@ MonoBehaviour:
     requiresFlagId:
     requiresCoinsCopper: 0
     requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
     dialog: {fileID: 11400000, guid: d576b2075c014c74a9294ac673987888, type: 2}
   - activeQuest: {fileID: 0}
     requiresQuestCompleted: {fileID: 11400000, guid: dd4b3b018abd4443b893b8d40870a9f7, type: 2}
     requiresFlagId:
     requiresCoinsCopper: 0
     requiresBasketNonEmpty: 1
+    requiresForage: {fileID: 0}
     dialog: {fileID: 11400000, guid: 643b4a29c17d46a2a281e4f8c81ee4f2, type: 2}
   - activeQuest: {fileID: 0}
     requiresQuestCompleted: {fileID: 11400000, guid: 2279b658c2e24d238bd17796d4b16552, type: 2}
@@ -60,5 +62,6 @@ MonoBehaviour:
     requiresFlagId:
     requiresCoinsCopper: 0
     requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
     dialog: {fileID: 11400000, guid: 6eecd938d7a1483d8d487fb188ae14af, type: 2}
   _repeatDialog: {fileID: 0}

@@ -40,5 +40,17 @@ MonoBehaviour:
     gilled mushroom with extreme suspicion.'
   _photo: {fileID: 21300000, guid: a74608848eb6942deb4c8b7a8485083b, type: 3}
   _photoCredit: Wikimedia Commons
+  _worldPrefab: {fileID: 8001537540343851171, guid: 8322a093d9b7c4224a55d3208af8ba7b, type: 3}
+  _journalPreviewPrefab: {fileID: 2803773873806099325, guid: 5c048ebc433ee43c3909dd7824330291, type: 3}
+  _journalExposure: 0.2
   _displayNameId: mushroom.destroyingAngel.name
   _descriptionId: mushroom.destroyingAngel.description
+  _forageTier: 4
+  _requiredForageFlagId: tier4_mushrooms_unlocked
+  _wildRespawnDays: 5
+  _marraValueCopper: 0
+  _theoValueCopper: 0
+  _cultivable: 0
+  _cultivationHours: 6
+  _cultivationYield: 3
+  _cultivationUnlockFlagId:

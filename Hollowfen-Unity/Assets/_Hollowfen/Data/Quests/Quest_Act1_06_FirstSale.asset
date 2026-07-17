@@ -18,5 +18,6 @@ MonoBehaviour:
   _act: 1
   _order: 6
   _unlockStoryCardOnComplete: {fileID: 0}
+  _storyMoment: {fileID: 11400000, guid: 926c6cd25cb043ccb75ae265fb4ae05f, type: 2}
   _nextQuest: {fileID: 11400000, guid: bb25aa206b764410b9eb5925b6101dc8, type: 2}
   _waypointLocation: {fileID: 11400000, guid: 83948b99912734547bc3d389153419eb, type: 2}

@@ -1,10 +1,10 @@
 # Map System
-Full-bleed full-screen map (redesigned 2026-06-11) + mini-map corner widget + compass strip, all rendering the real 3D world via ortho cameras → RenderTextures → UI. Full map: pan (stick/WASD/middle-drag) + two zoom presets, camera frame clamped to terrain bounds; POI pins with label chips; proximity discovery persisted to the save slot; single active waypoint with pulsing halo; region chip via RegionTriggers; focused-POI side card.
-Key scripts: `Assets/_Hollowfen/Scripts/Map/` — MapScreen, MapCamera, MapInputBridge, LocationData, LocationMarker, LocationMarkerOverlay, LocationRegistry, RegionTrigger, MiniMapCamera, MiniMapWidget, PlayerHeadingArrow.
+Full-bleed full-screen map + mini-map corner widget + compass strip, all rendering the real 3D world via ortho cameras → RenderTextures → UI. Full map supports pan, two zoom presets, clamped framing, POI discovery/waypoints, region display, and a live labeled current-location marker with Wren's heading.
+Key scripts: `Assets/_Hollowfen/Scripts/Map/` — MapScreen, MapCamera, MapInputBridge, LocationData, LocationMarker, LocationMarkerOverlay, LocationRegistry, RegionCatalog, RegionTrigger, MiniMapCamera, MiniMapWidget, PlayerHeadingArrow; `UI/RegionArrivalToast`.
 Data: `Data/Locations/LocationData_*.asset` (14 POIs incl. `clear_cut` + `manor`; only FathersMill `_discoveredByDefault`); discovery key = `_id`, names/descriptions via localization keys (`loc.<id>.name/.desc`). Regions: `village`/`wend`/`old_wood`/`manor` — `_regionId` renders via MapScreen `LocalizeRegion` (add a `case` per new region or it shows the raw id).
 Entry points: `Player/OpenMap` (M / Select / touchpad) toggles, `UI/Cancel` closes (MapInputBridge); inside: arrows/D-pad cycle POIs, Enter/A toggles waypoint, Tab/RB zoom preset, F/R3 recenter.
-Biggest gotchas: `BuildIfNeeded` DESTROYS all children of the map canvas on first open (hand-placed UI dies silently); MapScreen.cs header comment (lines ~9–14) still describes the OLD parchment design — don't trust it; `MapCamera.Awake` creates a runtime 2048×1024 RT that orphans any inspector-assigned RT asset; clamp bounds auto-tighten to `Terrain.activeTerrain` (falls back to a 500×500 rect if no terrain).
-Status: verified against code 2026-07-11.
+Biggest gotchas: `BuildIfNeeded` DESTROYS all children of the map canvas on first open; `MapCamera.Awake` creates a runtime 2048×1024 RT that orphans any inspector-assigned RT asset; the current-location marker must remain after `POIRoot` in sibling order so POI labels cannot cover it.
+Status: current-location marker, map reopen, POI focus, and regional routing verified in Play mode 2026-07-16.
 
 > Self-healing doc: if you change this system, update this doc (including the 7-line header) in the same batch, and note the change in the batch worksheet.
 
@@ -14,7 +14,7 @@ Status: verified against code 2026-07-11.
 
 Built on first `Open()` (`BuildIfNeeded` → `BuildUI`), 1920×1080 reference. **Destroys all existing canvas children first** (captures the RT beforehand).
 
-- **MapZone**: full-stretch minus TopBar (64px) / BottomBar (56px) → 1920×960 = the RT's 2:1 aspect, pixel-true. Contains the RawImage, soft edge vignettes (gradient sprites), `POIRoot` + `LocationMarkerOverlay` (icon 18f, labels on, undiscovered included), heading arrow (dual UITriangle + `PlayerHeadingArrow.Configure(mapCam, mapImageRT)`), single "N" chip top-center (the 8 compass pills are gone — map always renders +Z up).
+- **MapZone**: full-stretch minus TopBar (64px) / BottomBar (56px) → 1920×960 = the RT's 2:1 aspect, pixel-true. Contains the RawImage, soft edge vignettes (gradient sprites), `POIRoot` + `LocationMarkerOverlay` (icon 18f, labels on, undiscovered included), a live `CurrentLocationMarker`, and a single "N" chip top-center (the 8 compass pills are gone — map always renders +Z up). The player marker uses a dark circular plate, cream direction glyph, sage pulse, and localized `YOU ARE HERE` chip; only the glyph rotates, keeping the label upright.
 - **TopBar** (ink glass + gold hairline): serif "Hollowfen", eyebrow "FIELD JOURNAL · CARTOGRAPHY", RegionChip + ZoomChip ("VILLAGE"/"REGIONAL").
 - **BottomBar**: keycap-pill hints via HorizontalLayoutGroup + ContentSizeFitter (TMP preferred sizes unreliable on creation frame — sizing left to layout system).
 - **SideCard** (380×640, right-anchored): rounded parchment card — eyebrow/title/body (via `Localization.Get`), DISTANCE + REGION stats, gold Waypoint button.
@@ -35,8 +35,11 @@ Built on first `Open()` (`BuildIfNeeded` → `BuildUI`), 1920×1080 reference. *
 - **LocationData** SO: `_id` (persistence key) · `_displayNameId`/`_shortDescriptionId` (localization) · `_mapIcon` (⚠️ vestigial — pins are procedural, all 8 assets null) · `_discoveredByDefault` · `_regionId` (`village`/`old_wood`/`wend`).
 - **LocationMarker** (scene): holds the SO + `_discoverRadius` (20m default, 0 = never). Registers with LocationRegistry OnEnable (⚠️ must STAY enabled after discovery — disabling unregisters). Discovery check throttled to 1/0.5s per marker, XZ distance vs the `"Player"` tag, on unscaled time.
 - **LocationMarkerOverlay** (on MapImage; mini-map reuses it with labels off): per-LateUpdate `WorldToViewportPoint` projection into a center-anchored container; pooled procedural pins (waypoint = pulsing gold halo; discovered = gold dot + name chip; undiscovered = 0.4-alpha dot + "?" chip only while focused; focused = GoldGlow + 1.45× scale; waypoint always shows its real name even undiscovered — "a quest pointed Wren there by name"). Chip width re-measured every frame (TMP trap). `SetFocusedId/ClearFocus/HitTestScreenPoint` API.
+- **PlayerHeadingArrow**: resolves the tagged player, projects her position into the full-map container each `LateUpdate`, and hides the marker if it leaves the visible camera frame. Full-map configuration supplies separate heading/pulse children so the arrow rotates and the ring pulses on unscaled time while the plate and label stay upright; mini-map callers that omit those children retain legacy whole-marker rotation.
 - **LocationRegistry** (static): markers + `_discovered` set + regions + `ActiveWaypoint`. Events: `LocationDiscovered(id)`, `RegionChanged(regionId)`, `WaypointChanged(marker)`. Persistence: `SaveSlotMeta.DiscoveredLocationIds` — lazy hydrate + immediate `AutoSaveDiscoveredLocations` on discovery; `HydrateFromSave` re-applies defaults. Waypoint NOT persisted; auto-clears when its marker unregisters. `ResetOnLoad` clears everything incl. events (domain-reload-off safe). Quest waypoints: `QuestManager.StartQuest` matches `QuestData.WaypointLocation` → `SetWaypoint`.
-- **RegionTrigger**: BoxCollider trigger push/pops on player enter/exit; highest-`Priority` active trigger wins. ⚠️ Region display names are a hardcoded switch in MapScreen (`village`→"Hollowfen Village"…).
+- **RegionTrigger**: BoxCollider trigger push/pops on player enter/exit; highest-`Priority` active trigger wins. Disabling a trigger pops it, preventing story swaps from pinning stale state. Six volumes cover northern/southern village, Wend crossing/clear-cut, Old Wood, and manor.
+- **RegionCatalog**: four stable ids (`village`, `wend`, `old_wood`, `manor`) → localized display name/subtitle with English fallback. Map chrome, audio, and arrival presentation share it.
+- **RegionArrivalToast**: code-built order-14 overlay below map/dialogue. Fades/slides at the top center using unscaled time, captures no input, pauses nothing, and ignores null/unknown regions.
 
 ## POI placement workflow (now trivial)
 
@@ -47,8 +50,8 @@ Built on first `Open()` (`BuildIfNeeded` → `BuildUI`), 1920×1080 reference. *
 ## Gotchas
 
 - Stale header comment + dead `BuildFrame()` in MapScreen.cs — parchment-era leftovers.
-- Hardcoded display strings bypass localization: region-name switch, "VILLAGE"/"REGIONAL", "HOLLOWFEN", "N", "?", "FIELD JOURNAL · CARTOGRAPHY", bottom-bar hints (side card IS localized). Pre-EA localization pass item.
+- Hardcoded display strings still bypass localization for "VILLAGE"/"REGIONAL", "HOLLOWFEN", "N", "?", "FIELD JOURNAL · CARTOGRAPHY", and bottom-bar hints. Region names/subtitles are now localized through `RegionCatalog`.
 - Find-by-name/tag coupling: `_HUDCanvas` by name; `"Player"` tag in MapScreen, MapCamera, LocationMarker.
 - Everything animates on unscaled time (timeScale 0 while open); discovery also ticks on unscaled time.
 - Scene without an active terrain → default 500×500 clamp rect at origin (wrong for any real world).
-- Region-enter toast UI still unbuilt (`RegionChanged` event exists) — TODOS.
+- Region volumes are broad authored boxes rather than a full terrain partition; traversal QA should tune boundaries if final roads/world dressing move.

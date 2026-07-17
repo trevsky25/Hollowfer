@@ -22,6 +22,7 @@ namespace Hollowfen.UI
         protected override void OnInitialize()
         {
             base.OnInitialize();
+            NormalizePointerTargets();
             if (_newGameButton  != null) _newGameButton.onClick.AddListener(OnForage);
             if (_settingsButton != null) _settingsButton.onClick.AddListener(OnSettings);
             if (_creditsButton  != null) _creditsButton.onClick.AddListener(OnCredits);
@@ -29,6 +30,34 @@ namespace Hollowfen.UI
             if (_storyButton      != null) _storyButton.onClick.AddListener(OnStory);
             if (_wrenButton       != null) _wrenButton.onClick.AddListener(OnWren);
             if (_fieldGuideButton != null) _fieldGuideButton.onClick.AddListener(OnFieldGuide);
+        }
+
+        // The editorial navigation labels used to look generous but their actual raycast rects
+        // collapsed to roughly six reference pixels because NavRow reserved 24 px of top padding
+        // inside a 30 px layout slot. Give every label a production-sized pointer target while
+        // preserving the same restrained text treatment.
+        private void NormalizePointerTargets()
+        {
+            var navRow = transform.Find("Canvas/TextCard/NavRow");
+            if (navRow != null)
+            {
+                var rowLayout = navRow.GetComponent<HorizontalLayoutGroup>();
+                if (rowLayout != null) rowLayout.padding = new RectOffset(0, 0, 4, 4);
+                var rowSize = navRow.GetComponent<LayoutElement>();
+                if (rowSize != null) rowSize.preferredHeight = 56f;
+
+                foreach (Button button in navRow.GetComponentsInChildren<Button>(true))
+                {
+                    foreach (LayoutElement size in button.GetComponents<LayoutElement>())
+                    {
+                        size.minHeight = Mathf.Max(size.minHeight, 48f);
+                        size.preferredHeight = Mathf.Max(size.preferredHeight, 48f);
+                    }
+                }
+            }
+
+            if (_quitButton != null && _quitButton.transform is RectTransform quitRect)
+                quitRect.sizeDelta = new Vector2(quitRect.sizeDelta.x, Mathf.Max(48f, quitRect.sizeDelta.y));
         }
 
         private void OnStory()

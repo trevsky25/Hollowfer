@@ -81,6 +81,9 @@ namespace Hollowfen.Map
         public void Open()
         {
             if (_isOpen) return;
+            // Allocate/enable the full-map camera only when the map is actually requested. This
+            // keeps its large RT and top-down render out of the gameplay scene activation frame.
+            if (_mapCamera != null) _mapCamera.SetRenderingActive(true);
             BuildIfNeeded();
             _isOpen = true;
             SetActiveSilent(true);
@@ -144,7 +147,11 @@ namespace Hollowfen.Map
             if (_miniMapRoot != null) _miniMapRoot.SetActive(true);
             SetHudVisible(true);
             // Return camera to follow-player so the mini-map / next-open are correct.
-            if (_mapCamera != null) _mapCamera.CenterOnPlayer();
+            if (_mapCamera != null)
+            {
+                _mapCamera.CenterOnPlayer();
+                _mapCamera.SetRenderingActive(false);
+            }
             _mouseDragging = false;
             SetFocus(null);
             if (_freezeTimeWhileOpen)
@@ -519,15 +526,7 @@ namespace Hollowfen.Map
 
         private static string LocalizeRegion(string regionId)
         {
-            if (string.IsNullOrEmpty(regionId)) return "—";
-            switch (regionId)
-            {
-                case "village":  return "Hollowfen Village";
-                case "old_wood": return "The Old Wood";
-                case "wend":     return "The Wend";
-                case "manor":    return "Aldric's Manor";
-                default:         return regionId;
-            }
+            return RegionCatalog.DisplayName(regionId);
         }
 
         private void SetActiveSilent(bool active)
@@ -545,6 +544,8 @@ namespace Hollowfen.Map
             var cg = go.GetComponent<CanvasGroup>();
             if (cg == null) cg = go.AddComponent<CanvasGroup>();
             cg.alpha = visible ? 1f : 0f;
+            cg.interactable = false;
+            cg.blocksRaycasts = false;
         }
 
         // ----------------- UI BUILDER -----------------
@@ -554,16 +555,11 @@ namespace Hollowfen.Map
             if (_built) return;
             _built = true;
 
-            // Pull the runtime RT from MapCamera (created at the configured landscape aspect).
-            // Falls back to the project RT asset if MapCamera's runtime RT isn't ready yet.
+            // Pull the lazily-created runtime RT from MapCamera. Open() activates the camera before
+            // building, so the texture is guaranteed to exist without paying for it during load.
             if (_mapCamera != null)
             {
-                _mapTexture = _mapCamera.RenderTexture;
-                if (_mapTexture == null)
-                {
-                    var camComp = _mapCamera.GetComponent<Camera>();
-                    if (camComp != null) _mapTexture = camComp.targetTexture;
-                }
+                _mapTexture = _mapCamera.EnsureRenderTexture();
             }
             if (_mapTexture == null)
             {
@@ -624,8 +620,8 @@ namespace Hollowfen.Map
                 new UICanvasUtil.GradientStop(1.00f, new Color(0f, 0f, 0f, 0.24f)),
             }, 256);
 
-            // 2) POI overlay + player arrow. Markers pool into their own container created BEFORE
-            // the arrow so the "you are here" arrow always draws on top of pins.
+            // 2) POI overlay + current-location marker. POIs pool into their own container created
+            // BEFORE the player marker, so "YOU ARE HERE" always draws above pins/labels.
             var poiRoot = new GameObject("POIRoot", typeof(RectTransform));
             poiRoot.transform.SetParent(mapGO.transform, false);
             UICanvasUtil.Stretch((RectTransform)poiRoot.transform);
@@ -633,26 +629,7 @@ namespace Hollowfen.Map
             var mapCam = _mapCamera != null ? _mapCamera.GetComponent<Camera>() : null;
             _markerOverlay.Configure(mapCam, (RectTransform)poiRoot.transform, 18f, showLabels: true, includeUndiscovered: true);
 
-            var arrowGO = new GameObject("HeadingArrow", typeof(RectTransform));
-            arrowGO.transform.SetParent(mapGO.transform, false);
-            var arRT = (RectTransform)arrowGO.transform;
-            arRT.anchorMin = new Vector2(0.5f, 0.5f); arRT.anchorMax = new Vector2(0.5f, 0.5f);
-            arRT.pivot = new Vector2(0.5f, 0.5f);
-            arRT.sizeDelta = new Vector2(30f, 36f);
-            arRT.anchoredPosition = Vector2.zero;
-            var backTri = new GameObject("Back", typeof(RectTransform)).AddComponent<UITriangle>();
-            backTri.transform.SetParent(arRT, false);
-            backTri.color = new Color(0.04f, 0.03f, 0.02f, 0.9f);
-            backTri.raycastTarget = false;
-            var btRT = (RectTransform)backTri.transform;
-            btRT.anchorMin = Vector2.zero; btRT.anchorMax = Vector2.one;
-            btRT.offsetMin = new Vector2(-4f, -4f); btRT.offsetMax = new Vector2(4f, 4f);
-            var frontTri = new GameObject("Front", typeof(RectTransform)).AddComponent<UITriangle>();
-            frontTri.transform.SetParent(arRT, false);
-            frontTri.color = HollowfenPalette.GoldGlow;
-            frontTri.raycastTarget = false;
-            UICanvasUtil.Stretch((RectTransform)frontTri.transform);
-            arrowGO.AddComponent<PlayerHeadingArrow>().Configure(mapCam, (RectTransform)mapGO.transform);
+            BuildCurrentLocationMarker((RectTransform)mapGO.transform, mapCam);
 
             BuildNorthMarker(mapZoneRT);
 
@@ -683,7 +660,7 @@ namespace Hollowfen.Map
             sepRT.sizeDelta = new Vector2(1.4f, 26f);
             sepRT.anchoredPosition = new Vector2(268f, 0f);
 
-            var eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", tbRT, "FIELD JOURNAL  ·  CARTOGRAPHY", 11f,
+            var eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", tbRT, "FIELD JOURNAL  ·  CARTOGRAPHY", 12.5f,
                 HollowfenPalette.Gold, TMPro.TextAlignmentOptions.Left);
             var eyRT = eyebrow.rectTransform;
             eyRT.anchorMin = new Vector2(0f, 0.5f); eyRT.anchorMax = new Vector2(0f, 0.5f);
@@ -708,6 +685,100 @@ namespace Hollowfen.Map
             // 5) Side info card — opaque parchment, rounded, shadowed. Sits over the map's right edge.
             BuildSidePanel(mapZoneRT);
             RefreshSidePanel();
+        }
+
+        private static void BuildCurrentLocationMarker(RectTransform mapContainer, Camera mapCam)
+        {
+            // Root tracks Wren's projected position but never rotates, keeping its plate and label
+            // readable. The child DirectionGlyph alone follows her heading.
+            var markerGO = new GameObject("CurrentLocationMarker", typeof(RectTransform), typeof(CanvasGroup));
+            markerGO.transform.SetParent(mapContainer, false);
+            var markerRT = (RectTransform)markerGO.transform;
+            markerRT.anchorMin = new Vector2(0.5f, 0.5f);
+            markerRT.anchorMax = new Vector2(0.5f, 0.5f);
+            markerRT.pivot = new Vector2(0.5f, 0.5f);
+            markerRT.sizeDelta = new Vector2(38f, 38f);
+            markerRT.anchoredPosition = Vector2.zero;
+
+            var pulse = new GameObject("Pulse", typeof(RectTransform)).AddComponent<Image>();
+            pulse.transform.SetParent(markerRT, false);
+            pulse.sprite = UICanvasUtil.Ring(64, 4f);
+            pulse.color = new Color(HollowfenPalette.Sage.r, HollowfenPalette.Sage.g, HollowfenPalette.Sage.b, 0.78f);
+            pulse.raycastTarget = false;
+            var pulseRT = pulse.rectTransform;
+            pulseRT.anchorMin = Vector2.zero;
+            pulseRT.anchorMax = Vector2.one;
+            pulseRT.offsetMin = new Vector2(-10f, -10f);
+            pulseRT.offsetMax = new Vector2(10f, 10f);
+
+            var plate = new GameObject("Plate", typeof(RectTransform)).AddComponent<Image>();
+            plate.transform.SetParent(markerRT, false);
+            plate.sprite = UICanvasUtil.Circle(64);
+            plate.color = new Color(HollowfenPalette.InkDeep.r, HollowfenPalette.InkDeep.g, HollowfenPalette.InkDeep.b, 0.96f);
+            plate.raycastTarget = false;
+            UICanvasUtil.Stretch(plate.rectTransform);
+
+            var plateRing = new GameObject("PlateRing", typeof(RectTransform)).AddComponent<Image>();
+            plateRing.transform.SetParent(markerRT, false);
+            plateRing.sprite = UICanvasUtil.Ring(64, 3f);
+            plateRing.color = new Color(HollowfenPalette.Cream.r, HollowfenPalette.Cream.g, HollowfenPalette.Cream.b, 0.92f);
+            plateRing.raycastTarget = false;
+            UICanvasUtil.Stretch(plateRing.rectTransform);
+
+            var glyphGO = new GameObject("DirectionGlyph", typeof(RectTransform));
+            glyphGO.transform.SetParent(markerRT, false);
+            var glyphRT = (RectTransform)glyphGO.transform;
+            glyphRT.anchorMin = new Vector2(0.5f, 0.5f);
+            glyphRT.anchorMax = new Vector2(0.5f, 0.5f);
+            glyphRT.pivot = new Vector2(0.5f, 0.5f);
+            glyphRT.sizeDelta = new Vector2(17f, 22f);
+            glyphRT.anchoredPosition = new Vector2(0f, 1f);
+
+            var arrowShadow = new GameObject("Shadow", typeof(RectTransform)).AddComponent<UITriangle>();
+            arrowShadow.transform.SetParent(glyphRT, false);
+            arrowShadow.color = new Color(0f, 0f, 0f, 0.82f);
+            arrowShadow.raycastTarget = false;
+            var shadowRT = (RectTransform)arrowShadow.transform;
+            shadowRT.anchorMin = Vector2.zero;
+            shadowRT.anchorMax = Vector2.one;
+            shadowRT.offsetMin = new Vector2(-2.5f, -2.5f);
+            shadowRT.offsetMax = new Vector2(2.5f, 2.5f);
+
+            var arrow = new GameObject("Arrow", typeof(RectTransform)).AddComponent<UITriangle>();
+            arrow.transform.SetParent(glyphRT, false);
+            arrow.color = HollowfenPalette.Cream;
+            arrow.raycastTarget = false;
+            UICanvasUtil.Stretch((RectTransform)arrow.transform);
+
+            var chipGO = new GameObject("CurrentLocationChip", typeof(RectTransform));
+            chipGO.transform.SetParent(markerRT, false);
+            var chipRT = (RectTransform)chipGO.transform;
+            chipRT.anchorMin = new Vector2(0.5f, 0f);
+            chipRT.anchorMax = new Vector2(0.5f, 0f);
+            chipRT.pivot = new Vector2(0.5f, 1f);
+            chipRT.sizeDelta = new Vector2(118f, 26f);
+            chipRT.anchoredPosition = new Vector2(0f, -9f);
+            var chipFill = chipGO.AddComponent<Image>();
+            chipFill.sprite = UICanvasUtil.RoundedRect(9);
+            chipFill.type = Image.Type.Sliced;
+            chipFill.color = new Color(HollowfenPalette.InkDeep.r, HollowfenPalette.InkDeep.g, HollowfenPalette.InkDeep.b, 0.94f);
+            chipFill.raycastTarget = false;
+
+            var chipStroke = UICanvasUtil.NewImage("Stroke", chipRT,
+                new Color(HollowfenPalette.Sage.r, HollowfenPalette.Sage.g, HollowfenPalette.Sage.b, 0.8f), false);
+            var strokeImage = chipStroke.GetComponent<Image>();
+            strokeImage.sprite = UICanvasUtil.RoundedOutline(9, 1.3f);
+            strokeImage.type = Image.Type.Sliced;
+            UICanvasUtil.Stretch((RectTransform)chipStroke.transform);
+
+            var label = UICanvasUtil.NewEyebrow("Label", chipRT,
+                Localization.Get("map.current_location"), 12.5f, HollowfenPalette.Cream,
+                TextAlignmentOptions.Center);
+            label.fontStyle = FontStyles.Bold;
+            label.raycastTarget = false;
+            UICanvasUtil.Stretch(label.rectTransform);
+
+            markerGO.AddComponent<PlayerHeadingArrow>().Configure(mapCam, mapContainer, glyphRT, pulseRT);
         }
 
         // Thin gold hairline along one edge of a chrome bar.
@@ -745,7 +816,7 @@ namespace Hollowfen.Map
             stImg.sprite = UICanvasUtil.RoundedOutline(10, 1.3f);
             stImg.type = Image.Type.Sliced;
             UICanvasUtil.Stretch((RectTransform)stroke.transform);
-            var label = UICanvasUtil.NewEyebrow("Label", cRT, text, 12f, textColor, TMPro.TextAlignmentOptions.Center);
+            var label = UICanvasUtil.NewEyebrow("Label", cRT, text, 13.5f, textColor, TMPro.TextAlignmentOptions.Center);
             label.fontStyle = TMPro.FontStyles.Bold;
             label.raycastTarget = false;
             UICanvasUtil.Stretch(label.rectTransform);
@@ -809,12 +880,12 @@ namespace Hollowfen.Map
                 kLG.childForceExpandHeight = false;
                 key.AddComponent<ContentSizeFitter>().horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
                 ((RectTransform)key.transform).sizeDelta = new Vector2(60f, 26f);
-                var kTxt = UICanvasUtil.NewEyebrow("Txt", key.transform, hints[i][0], 11f, HollowfenPalette.Gold, TMPro.TextAlignmentOptions.Center);
+                var kTxt = UICanvasUtil.NewEyebrow("Txt", key.transform, hints[i][0], 13.5f, HollowfenPalette.Gold, TMPro.TextAlignmentOptions.Center);
                 kTxt.fontStyle = TMPro.FontStyles.Bold;
                 kTxt.textWrappingMode = TextWrappingModes.NoWrap;
                 kTxt.raycastTarget = false;
 
-                var lbl = UICanvasUtil.NewBody("Lbl", group.transform, hints[i][1], 13f,
+                var lbl = UICanvasUtil.NewBody("Lbl", group.transform, hints[i][1], 14.5f,
                     HollowfenPalette.Cream, TMPro.FontStyles.Normal, TMPro.TextAlignmentOptions.Left);
                 lbl.textWrappingMode = TextWrappingModes.NoWrap;
                 lbl.raycastTarget = false;
@@ -857,7 +928,7 @@ namespace Hollowfen.Map
             Color inkSoft = new Color(0.27f, 0.22f, 0.15f, 1f);
 
             _sideEyebrow = UICanvasUtil.NewEyebrow("Eyebrow", spRT,
-                "LANDMARK", 11f, HollowfenPalette.Gold, TMPro.TextAlignmentOptions.TopLeft);
+                "LANDMARK", 12.5f, HollowfenPalette.Gold, TMPro.TextAlignmentOptions.TopLeft);
             var eRT = _sideEyebrow.rectTransform;
             eRT.anchorMin = new Vector2(0f, 1f); eRT.anchorMax = new Vector2(1f, 1f);
             eRT.pivot = new Vector2(0.5f, 1f);
@@ -883,7 +954,7 @@ namespace Hollowfen.Map
             rRT.sizeDelta = new Vector2(72f, 2f);
             rRT.anchoredPosition = new Vector2(padX, topY - 98f);
 
-            _sideBody = UICanvasUtil.NewBody("Body", spRT, "", 15f,
+            _sideBody = UICanvasUtil.NewBody("Body", spRT, "", 17f,
                 inkSoft, TMPro.FontStyles.Italic, TMPro.TextAlignmentOptions.TopLeft);
             var bRT = _sideBody.rectTransform;
             bRT.anchorMin = new Vector2(0f, 1f); bRT.anchorMax = new Vector2(1f, 1f);
@@ -934,7 +1005,7 @@ namespace Hollowfen.Map
 
         private static TMP_Text BuildStatLabel(RectTransform parent, string name, string text, float x, float y)
         {
-            var t = UICanvasUtil.NewEyebrow(name, parent, text, 10f, HollowfenPalette.Moss, TMPro.TextAlignmentOptions.TopLeft);
+            var t = UICanvasUtil.NewEyebrow(name, parent, text, 13.5f, HollowfenPalette.Moss, TMPro.TextAlignmentOptions.TopLeft);
             var rt = t.rectTransform;
             rt.anchorMin = new Vector2(0f, 1f); rt.anchorMax = new Vector2(0f, 1f);
             rt.pivot = new Vector2(0f, 1f);

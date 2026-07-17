@@ -38,5 +38,17 @@ MonoBehaviour:
     \u2014 never collect by appearance alone."
   _photo: {fileID: 21300000, guid: 2ee3be24c4dae4c2180158e9f017bd0d, type: 3}
   _photoCredit: Wikimedia Commons
+  _worldPrefab: {fileID: 5082839435806348898, guid: 55758410b7d784e25a5b468cb7fc864b, type: 3}
+  _journalPreviewPrefab: {fileID: 5316456425882353935, guid: 61cc8766f21a7428fad6af8b4cd87987, type: 3}
+  _journalExposure: 0.41
   _displayNameId: mushroom.libertyCap.name
   _descriptionId: mushroom.libertyCap.description
+  _forageTier: 3
+  _requiredForageFlagId: tier4_mushrooms_unlocked
+  _wildRespawnDays: 3
+  _marraValueCopper: 0
+  _theoValueCopper: 0
+  _cultivable: 0
+  _cultivationHours: 6
+  _cultivationYield: 3
+  _cultivationUnlockFlagId:

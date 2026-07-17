@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5c728fb7dcb046ca98c54f46a63e11d, type: 3}
+  m_Name: Ending_WitchsPath
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.EndingData
+  _id: witch_path
+  _endingFlagId: ending_witch_path
+  _choiceText: Take the Witch's Path
+  _choiceContext: Wren and Hollin restore the cottage and the old work together.
+    Hollowfen becomes a quieter place of questions, names, and careful teaching.
+  _lockedHint: Wren needs deeper knowledge, Hollin's trust, and Sable's cottage and
+    seedbook before this path can be named.
+  _minimumVillageHope: 0
+  _minimumKnowledge: 35
+  _requiredFlagIds:
+  - final_choice_available
+  - witch_cottage_found
+  - sable_seedbook_recovered
+  _relationshipNpcIds:
+  - hollin
+  _minimumRelationshipValues: 0f000000
+  _resolutionDialogue: {fileID: 11400000, guid: 3d1c09b6ed37245bea70500e7f5a58cc, type: 2}
+  _storyCard: {fileID: 11400000, guid: 3a8f369d918c94e8c8da2b12b13405a6, type: 2}
+  _epilogueCaptions:
+  - Wren refused Aldric and did not follow Theo. That left the path no one had named
+    clearly enough to count as a plan.
+  - The Witch's Cottage was repaired by first snow. Joren patched the hinges. Edda
+    hauled kindling. Hollin trimmed ivy from the shutter and stood a long time before
+    opening it.
+  - They did not call themselves witches. Almy laughed when Wren said so, then coughed
+    for long enough that no one laughed with her. Names arrive after work, she said.
+  - So they worked. They walked the Deep Wood, named what was there, wrote what had
+    not yet been written, and taught carefully.
+  - Hollowfen prospered more quietly than it might have under Aldric, less brightly
+    than it might have under trade. People came from Veyrwick with questions and
+    left more thoughtful than they came.
+  - At first snow, Wren and Hollin walked the path to the cottage together, neither
+    leading.
+  _consequenceFlagIds:
+  - aldric_offer_refused
+  - theo_capital_offer_declined
+  - witch_cottage_restored
+  - old_knowledge_restored
+  _achievementId: ACH_ENDING_WITCH_PATH

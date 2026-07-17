@@ -1,44 +1,67 @@
 # Menu Pages (Story / Wren / Field Guide)
-Three data-driven menu pages reachable from Main Menu, all built programmatically in `OnInitialize` from ScriptableObject databases. Visuals match the web prototype at `/src/` (design source of truth): serif headings, sage/gold/cream palette, full-bleed heroes, gold-rule act dividers.
-Key scripts: `Assets/_Hollowfen/Scripts/UI/` — StoryScreen, StoryDetailScreen, WrenScreen, FieldGuideScreen, MushroomDetailScreen, StoryCardCell, MushroomCardCell.
-Data: 30 `StoryCardData` + 17 `MushroomFieldGuideData` + 1 `CharacterProfileData` SOs under `Assets/_Hollowfen/Data/`, registered in ordered database SOs.
-Entry points: Main Menu NavRow buttons push `story` / `wren` / `field-guide` screen IDs.
-Biggest gotchas: iteration order of database SOs is canonical (matches web JS files); `DataImporter` editor tool regenerates SOs from JSON dumps in `Hollowfen-Unity/Temp/`; invisible section waypoints (batch-61) need explicit `Navigation` wiring or pad focus dead-ends.
-Status: shipped + verified. WrenScreen rebuilt batch-61 ("Forager's Dossier" — full-bleed hero + field-study plates). Screens read raw SO fields — `Localization.Get` wiring is a deferred follow-up.
+Three ScriptableObject-driven menu pages form one controller-first field-journal family. Every screen is built programmatically in `OnInitialize` and targets Steam Deck at 1280×800 first.
+Key scripts: `Assets/_Hollowfen/Scripts/UI/` — `StoryScreen`, `StoryDetailScreen`, `WrenScreen`, `FieldGuideScreen`, `MushroomDetailScreen`, plus the shared `Journal*` helpers.
+Data: 30 `StoryCardData`, 21 `MushroomFieldGuideData`, and one `CharacterProfileData`, registered in ordered database SOs under `Assets/_Hollowfen/`.
+Entry points: Main Menu and Pause buttons push `story`, `wren`, or `field-guide` through `UIManager`; detail screens push over their index and pop back to it.
+Biggest gotchas: database order is canonical; locked content must use the same availability predicate for rendering, focus, opening, paging, and counting; sprite art goes through `JournalArtPresenter`; 3D journal art must use a dedicated visual-only preview asset, never a gameplay controller prefab.
+Status: batch-71 turns Wren's page into an interactive living character study with an optimized animated model, studio lighting, and pointer/gamepad orbit and zoom; the existing dossier and five plates remain intact.
 
 > Self-healing doc: if you change this system, update this doc (including the 7-line header) in the same batch, and note the change in the batch worksheet.
 
 ---
 
+## Shared journal foundation
+
+| Component | Role |
+|---|---|
+| `JournalChrome` | Shared close control, journal eyebrow/title/summary, bottom controller hint, flexible TMP sizing, restrained structural borders, and the common focus rail/wash treatment. |
+| `JournalArtPresenter` | One aspect-aware sprite presenter. `cover=true` uses `AspectRatioFitter.EnvelopeParent` inside a `RectMask2D`; contained plates/photos use `FitInParent`. It also owns missing-art and tint state. |
+| `JournalMushroomModelPresenter` | An isolated off-screen model/camera/light rig per visible modeled specimen. It owns an alpha-capable square RenderTexture, four short-range studio lights, and a short-lived preview material clone whose manifest-driven exposure balances dark and pale source albedos without touching gameplay materials. It disables gameplay behavior/colliders, auto-rotates on unscaled time, releases preview materials when recycled, and supports optional orbit/zoom interaction. |
+| `JournalWrenModelPresenter` | Wren's visual-only off-screen character stage. It owns a landscape alpha RenderTexture, four-light portrait setup, preview-only material clone, and a Playables graph for the breathing idle. The rig has no player input, movement, camera-follow, collision, or gameplay scripts. Pointer/right-stick orbit, wheel/triggers zoom, and reset all use unscaled time and release their runtime resources with the screen. |
+| `JournalNavigation` | Generic availability-aware lookup, previous/next search, available count, and page position. Detail paging cannot land on locked content. |
+| `JournalText` | Resolves Story, mushroom, and character SO fields through derived localization IDs and `Localization.Get(id, englishFallback)`. Array fields receive stable indexed IDs. |
+| `ScrollFocusFollower` | Keeps an explicitly navigated card or reading waypoint visible and restores the originating index position after Back. |
+
+`FocusHighlight.Configure(...)` is the supported runtime setup API for new controls. Do not mutate its private cached color/graphic fields through reflection.
+
 ## Screens
 
-| Component | Path | Role |
-|---|---|---|
-| `StoryScreen` | `_Hollowfen/Scripts/UI/StoryScreen.cs` (`screenId="story"`) | Three-column grid grouped by act. Each act block: gold uppercase label · gold-fading rule · `N CARDS` count badge. Cell = photo + scene eyebrow + serif title + subtitle. Click → StoryDetailScreen. |
-| `StoryDetailScreen` | `_Hollowfen/Scripts/UI/StoryDetailScreen.cs` (`screenId="story-detail"`) | Full-bleed hero with bottom-up dark gradient + content scrim. 3-col overlay: heading column · body between vertical separators · italic Wren note (gold left border) + beats list. Top-right `✕`, bottom prev/page-indicator/next walking the database. |
-| `WrenScreen` | `_Hollowfen/Scripts/UI/WrenScreen.cs` (`screenId="wren"`) | **Batch-61 "Forager's Dossier".** FIXED full-bleed hero painting (`wren-profile.png`, AspectRatioFitter EnvelopeParent) with slow Ken Burns drift + scroll parallax in `Update`, left/bottom/top gradient scrims + a "deep scrim" whose alpha rises with scroll so the plate gallery sits on near-dark. Scroll layer on top: left identity column (eyebrow, 118pt serif name, italic tagline, gold rule, lead, hairline-divided stat strip AGE/HOME/WORK/KEEPSAKE), Background + Perspective dossier cards, "SHE CARRIES" kit strip, then "FIELD STUDY · CHARACTER SHEET" — Plate I study sheet (1440×960), Plates II–IV figure row (front/back/three-quarter), Plate V knife plate paired with the pullquote panel. Every section carries an invisible `Selectable` waypoint (explicit Navigation chain, FocusHighlight lights the section hairline) so a pad walks the page and `ScrollFocusFollower` glides between sections; top-right `✕` close. Plate sprites live on `CharacterProfileData` (`_studySheet`, `_figureFront/_figureBack/_figureThreeQuarter`, `_knifePlate`). |
-| `FieldGuideScreen` | `_Hollowfen/Scripts/UI/FieldGuideScreen.cs` (`screenId="field-guide"`) | Four-column grid. Cell = photo + serif common name + italic Latin + edibility dot + tinted label. Click → MushroomDetailScreen. |
-| `MushroomDetailScreen` | `_Hollowfen/Scripts/UI/MushroomDetailScreen.cs` (`screenId="mushroom-detail"`) | Hero photo + edibility chip + serif name + italic Latin + description + meta strip (HABITAT / SEASON / LOOK-ALIKES). Bottom row: "Identifying features" bullets + "Forager's note" italic. Bottom-left Back. |
+| Component | Role and behavior |
+|---|---|
+| `StoryScreen` (`screenId="story"`) | Three-column memory index grouped by act. Cards are borderless at rest and use the shared rail/wash focus state. Locked cards are inert, non-selectable, darkened, and reveal neither title nor art. Focus begins on the first unlocked card, skips locked cards, and returns to the originating card/scroll position after detail. |
+| `StoryDetailScreen` (`screenId="story-detail"`) | Fullscreen cinematic cover art with one readable right-side journal leaf. Previous/next walks unlocked cards only and reports available position (`N of M`). Annotations expand inside the leaf; Back hides annotations first, then pops the reader. |
+| `FieldGuideScreen` (`screenId="field-guide"`) | Three-column square specimen index at Deck resolution. Undiscovered entries are inert `?` cards. A discovered species with dedicated journal 3D art shows an auto-rotating, transparently composited model and unboxed `3D STUDY` label; other species retain their realistic photo card. Model presenters are hydrated only while their card intersects the masked viewport (six rigs at the Deck target instead of twenty). Resting cards have no outline; focus uses the shared rail/wash state. |
+| `MushroomDetailScreen` (`screenId="mushroom-detail"`) | Two-leaf specimen spread: the left leaf is a large 3D study on a soft halo (or an explicit pending state), with no nested RenderTexture rectangle. Detail framing fits rotation-safe model bounds directly to the camera plane with a 2% margin, making clicked specimens about 25% larger than the former sphere fit while index cards keep their original framing. Mouse/touch drag or the right stick orbits; wheel or LT/RT zooms; `R`/right-stick click resets. The realistic field photo and identification copy occupy the right leaf. |
+| `WrenScreen` (`screenId="wren"`) | A two-column character atelier at the top: Wren's animated, transparently composited 3D model sits in a softly lit living-study arch while identity, lead copy, and a 2×2 stat block occupy the facing column. The supplied painting remains as a dim atmospheric backdrop. Drag/right stick orbits, wheel/LT-RT zooms, and `R`/right-stick click resets. The Background/Perspective dossier, kit, pull-quote, and interactive five-plate gallery continue below with explicit controller navigation. |
 
-## Cell helpers
+## Availability and return-focus contract
 
-- `StoryCardCell` / `MushroomCardCell` — tiny MonoBehaviours on instantiated cells holding the SO ref + an `Action` callback wired by the screen.
-- `ScrollFocusFollower` keeps gamepad focus visible (see ui-framework.md).
+Each index/detail pair has one `IsAvailable` predicate. Use it everywhere:
+
+1. Draw the locked/discovered state.
+2. Set `Button.interactable` and explicit `Navigation` links.
+3. Reject programmatic opens of unavailable content.
+4. Compute previous/next and `N of M` through `JournalNavigation`.
+5. Remember the originating SO and restore its card through `DefaultSelected` when the detail pops.
+
+This prevents a UI-only lock from becoming a progression or controller-focus leak.
 
 ## ScriptableObject content
 
-| SO | Path | Notes |
-|---|---|---|
-| `StoryCardData` | `_Hollowfen/Scripts/Data/StoryCardData.cs` | `id, act, scene, title, subtitle, body, wrenNote, beats[], image, unlockAt, questId, displayNameId, descriptionId`. 30 assets at `_Hollowfen/Data/StoryCards/StoryCard_NN_*.asset` — verbatim from `src/data/StoryCards.js`. |
-| `MushroomFieldGuideData` | `_Hollowfen/Scripts/Data/MushroomFieldGuideData.cs` | `id, commonName, latinName, edibility (enum), edibilityLabel, description, idFeatures[], habitat, season, lookalikes, notes, photo, photoCredit`. 17 assets at `_Hollowfen/Data/Mushrooms/` (16 web-imported + hand-authored Oyster). |
-| `CharacterProfileData` | `_Hollowfen/Scripts/Data/CharacterProfileData.cs` | Holds any cast member; one Wren asset at `_Hollowfen/Data/Characters/Character_WrenTobin.asset`. Batch-61 added five field-study plate sprites (`_studySheet`, `_figureFront`, `_figureBack`, `_figureThreeQuarter`, `_knifePlate`) — sources at `_Hollowfen/UI/Characters/wren-{study-sheet,figure-front,figure-back,figure-threequarter,knife-plate}.png`. |
-| `StoryCardDatabase` / `MushroomFieldGuideDatabase` | `_Hollowfen/Scripts/Data/` | Registry SOs with ordered arrays. Screens read a `[SerializeField]` reference; **iteration order is canonical** (mushrooms match `src/data/mushroomIndex.js`; cards match JS-file order). |
-| `DataImporter` | `_Hollowfen/Scripts/Editor/DataImporter.cs` | One-shot editor utility parsing JSON dumps in `Hollowfen-Unity/Temp/` to recreate the SO assets. When web data changes: re-export JSON, run via MCP `execute_code`, re-import. |
+| SO | Notes |
+|---|---|
+| `StoryCardData` | 30 ordered assets in `_Hollowfen/Data/StoryCards/`; fields include act/scene/title/subtitle/body/Wren note/beats/image/unlock metadata. All 30 require images. |
+| `MushroomFieldGuideData` | 21 ordered assets in `_Hollowfen/Data/Mushrooms/`; common/Latin names, edibility, prose, identification fields, photo/credit, gameplay `_worldPrefab`, optional `_journalPreviewPrefab`, and preview-only `_journalExposure`. Entries 01–20 have dedicated generated journal models; Oyster and Aldermark intentionally have no field photo, and Aldermark alone still lacks a model. |
+| `CharacterProfileData` | Wren's profile prose, kit, pull-quote, hero, five field-study plates, dedicated `_journalModelPrefab`, breathing `_journalIdleClip`, and preview-only exposure in `_Hollowfen/Data/Characters/Character_WrenTobin.asset`. `WrenJournalModelImporter` rebuilds and wires the 3D fields. |
+| `StoryCardDatabase` / `MushroomFieldGuideDatabase` | Canonical ordered registries. Never sort at runtime unless the design explicitly changes the content order. |
+| `DataImporter` | Editor-only JSON import utility. Fresh imports resolve both gameplay and journal prefabs through `MushroomModelImporter` and its shared manifest; there is no second hardcoded model list. Run the model importer before a fresh data import, then run `DataIntegrity.RunAll`. |
 
-## Image assets
+## Verification and deferred work
 
-PNGs from `/public` imported under `_Hollowfen/UI/{StoryCards,Mushrooms,Characters}/` (47 files), configured Sprite (2D and UI). Sprite refs wired by `DataImporter`.
-
-## Deferred
-
-- **Localization IDs are stamped on every SO** (`story.<id>.title`, `mushroom.<id>.name`, …) but screens read raw fields. Wiring through `Localization.Get(id)` needs the LUT entries added first (see localization.md + TODOS.md).
+- Batch-68 model evidence lives in `Docs/screenshots/batch-68/`. Batch-69 lighting/interaction evidence lives in `Docs/screenshots/batch-69/` and includes balanced Brightspore plus its zoomed/orbited state at 1280×800.
+- Batch-70 detail-framing evidence lives in `Docs/screenshots/batch-70/brightspore-larger-detail-1280x800.png`; the all-model yaw audit found a worst projected fill of 0.980, so no modeled species crosses the camera edge at its default zoom.
+- Batch-71 Wren evidence lives in `Docs/screenshots/batch-71/`: the default living-study spread and an orbited/zoomed inspection state at 1280×800. The shipping derivative measures 89,999 triangles / 61,849 vertices, down from the 542,469-triangle / 304,206-vertex source.
+- `DataIntegrity` asserts database counts (30/21), required journal fields, all Story images, the Wren hero/five plates/model/idle/exposure, fixed journal localization IDs, and that every manifest-backed species has both a species-correct `MushroomNode` world prefab and dedicated journal prefab.
+- Dedicated 3D journal coverage is 20/21. Aldermark shows `Three-dimensional study pending` until a real Maitake model is delivered; substituting a different species is prohibited by the educational/canon rule.
+- Oyster intentionally has no field photo; its right-hand description block uses the localized missing-sketch state while retaining the authored 3D study on the left.
+- The localization routing is complete; Simplified Chinese translations and per-content LUT rows remain a pre-EA content pass.

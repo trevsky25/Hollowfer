@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Hollowfen.Audio;
 using Hollowfen.Input;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -74,6 +75,7 @@ namespace Hollowfen.UI
 
             _bootTime = Time.unscaledTime;
             UISfx.SetOutput(_uiSfxOutput);
+            GameplaySfx.SetOutput(_uiSfxOutput);
 
             EnsureFadeOverlay();
             EnsureUIInputModule();
@@ -138,6 +140,12 @@ namespace Hollowfen.UI
                 foreach (var e in all)
                     if (e != keep) Destroy(e.gameObject);
             }
+
+            // Scene loads can swap between a cursor-driven menu and mouse-look gameplay while
+            // this manager survives in DontDestroyOnLoad. Re-apply the policy after the new
+            // scene's player objects exist so a continue/new-game handoff cannot leave the
+            // cursor visible and unlocked in the world.
+            UpdateCursorPolicy();
         }
 
         // Async scene transition with the loading screen layered on top.
@@ -175,27 +183,83 @@ namespace Hollowfen.UI
             // load, so continue just fades the card out to the game.
             bool showWelcome = loading != null && loading.Cinematic;
             bool seamlessHandoff = cinematicHandoff && showWelcome;
+            loading?.ResetLoadProgress();
 
-            var op = SceneManager.LoadSceneAsync(sceneName);
-            if (showWelcome && op != null)
+            AsyncOperation op = null;
+            var previousLoadingPriority = Application.backgroundLoadingPriority;
+            bool limitLoadingFrameBudget = showWelcome;
+            if (limitLoadingFrameBudget)
             {
-                // Welcome hold-activation (batch-42/46): load the scene but hold activation until the
-                // async phase completes, keeping the welcome card visibly ALIVE (pulsing line + marquee
-                // + motes) the whole way. No press gate — a keypress that led straight into the heavy
-                // integration stall read as a freeze; a moving loading screen that hitches briefly at
-                // the end reads as loading.
-                op.allowSceneActivation = false;
-                while (op.progress < 0.89f) yield return null;
-                // A short breath so the welcome is readable even on a fast SSD.
-                yield return new WaitForSecondsRealtime(0.8f);
-                loading.BeginActivation();
-                yield return null; // let "entering Hollowfen" render once before the stall
-                op.allowSceneActivation = true;
+                // Unity's default background loader can consume enough main-thread integration time
+                // to starve the loading canvas for seconds at a time. BelowNormal gives integration
+                // a bounded per-frame slice while retaining enough throughput for this large scene;
+                // that trade is appropriate while the loading card is the only presentation.
+                Application.backgroundLoadingPriority = UnityEngine.ThreadPriority.BelowNormal;
             }
-            while (op != null && !op.isDone) yield return null;
+
+            try
+            {
+                op = SceneManager.LoadSceneAsync(sceneName);
+                if (showWelcome && op != null)
+                {
+                    // Unity reports scene data from 0..0.9, then reserves the last step for activation.
+                    // Feed that real value into LoadingScreen's phase-aware presentation while holding
+                    // activation long enough to render the entering phase before integration. Unity can
+                    // report this work in coarse jumps; LoadingScreen keeps the visible fill moving safely
+                    // between reports and reserves 100% for genuine completion.
+                    op.allowSceneActivation = false;
+                    // Unity 6 can quantize its "ready" plateau to 0.888... rather than exactly
+                    // 0.9. Waiting at 0.89 can therefore deadlock with activation disabled. Release
+                    // the gate once data is in the final tranche; Unity still delays activation
+                    // internally until the scene is genuinely ready.
+                    while (op.progress < 0.88f)
+                    {
+                        loading.ReportSceneLoadProgress(op.progress);
+                        yield return null;
+                    }
+                    loading.ReportSceneLoadProgress(op.progress);
+                    loading.BeginActivation();
+                    yield return null; // let "entering Hollowfen" render once before integration
+                    op.allowSceneActivation = true;
+                }
+                while (op != null && !op.isDone)
+                {
+                    loading?.ReportSceneLoadProgress(op.progress);
+                    yield return null;
+                }
+            }
+            finally
+            {
+                if (limitLoadingFrameBudget)
+                    Application.backgroundLoadingPriority = previousLoadingPriority;
+            }
 
             // Brief settle so the new scene has a frame to render before we hand off.
+            loading?.ReportSceneActivated();
             yield return new WaitForSecondsRealtime(0.25f);
+            loading?.CompleteLoad();
+
+            // Let the continuously animated display visibly land on 100% before the card fades. This
+            // does not delay scene work; activation and settling are already complete at this point.
+            if (showWelcome && loading != null)
+            {
+                float progressSettle = 0f;
+                while (loading.DisplayedProgress < 0.999f && progressSettle < 1.5f)
+                {
+                    progressSettle += Time.unscaledDeltaTime;
+                    yield return null;
+                }
+                // A short readable arrival beat prevents the fade from beginning on the exact frame
+                // the percentage becomes 100.
+                if (loading.DisplayedProgress >= 0.999f)
+                    yield return new WaitForSecondsRealtime(0.12f);
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                Debug.Log($"[LoadingScreen] '{sceneName}' rendered {loading.ObservedRenderedFrames} " +
+                          $"loading frames; longest frame gap " +
+                          $"{loading.MaxObservedFrameGap * 1000f:0.0} ms.");
+#endif
+            }
 
             // Seamless opening (batch-38): the cinematic welcome card holds until the in-scene
             // narration is up (same ridge image), then cross-fades out to reveal it. NEW GAME ONLY.
@@ -430,6 +494,7 @@ namespace Hollowfen.UI
             // and quitting from a hidden pause leaks PlayerInteractor.Suspended). Batch-30.
             if (IntroGuide.Instance != null && IntroGuide.Instance.IsShowing) return;
             if (NarrationOverlay.Instance != null && NarrationOverlay.Instance.IsShowing) return;
+            if (EndingDirector.Instance != null && EndingDirector.Instance.IsPresenting) return;
             EnsurePauseInstance();
             OpenScreen("pause");
         }
@@ -453,6 +518,35 @@ namespace Hollowfen.UI
             if (_input == null) return;
             if (_stack.Count > 0) _input.UI.Enable();
             else _input.UI.Disable();
+            UpdateCursorPolicy();
+        }
+
+        // The UI stack is the single authority for menu cursor state. Previously each page
+        // handled this differently (and Pause did not handle it at all), which could produce a
+        // visible-but-locked cursor or leave gameplay unlocked after a loading-screen handoff.
+        private void UpdateCursorPolicy()
+        {
+            bool menuOpen = _stack.Count > 0;
+            var playerInput = FindFirstObjectByType<StarterAssets.StarterAssetsInputs>(
+                FindObjectsInactive.Exclude);
+            bool gameplayScene = playerInput != null;
+
+            if (playerInput != null)
+            {
+                playerInput.cursorLocked = !menuOpen;
+                playerInput.cursorInputForLook = !menuOpen;
+            }
+
+            if (menuOpen || !gameplayScene)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
         }
 
         private void SetFocusToTop()
@@ -547,6 +641,21 @@ namespace Hollowfen.UI
             _fadeOverlay.alpha = 0f;
             _fadeOverlay.blocksRaycasts = false;
             _fadeOverlay.interactable = false;
+        }
+    }
+
+    // Player builds enter through Scene_MainMenu, whose UIManager owns the single persistent
+    // Input System EventSystem. Developers also run Scene_Hollowfen directly, so provide the same
+    // modern fallback after scene startup only when no persistent manager/EventSystem exists.
+    // This replaces the gameplay scene's old StandaloneInputModule, which briefly produced two
+    // active EventSystems during every normal menu-to-game transition.
+    internal static class EventSystemRuntimeBootstrap
+    {
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+        private static void EnsureForDirectScenePlay()
+        {
+            if (EventSystem.current != null) return;
+            new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
         }
     }
 }

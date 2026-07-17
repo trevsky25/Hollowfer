@@ -44,7 +44,12 @@ Status: standing constraints — change only with an explicit product decision.
 ## Performance floor
 
 - 60fps on Steam Deck for the village scene; Old Wood may target 40fps if needed.
-- Profile early + often (profiler MCP tooling). Known debt: 414k-vert Field Mushroom mesh needs decimation before EA.
+- `ProductionPerformancePolicy` (batch-89) enforces the 60fps target in players: hardware VSync at clean
+  60Hz multiples, a software 60fps fallback on non-multiple refresh displays, and live re-evaluation after
+  display/fullscreen/quality changes. The tagged gameplay camera runs native scale with HDR, SMAA High,
+  dithering, and occlusion culling. Its post pipeline remains active for those camera-quality passes while a
+  zero volume mask prevents the legacy vendor demo profile from recoloring Hollowfen's day/night palette.
+- Profile early + often (profiler MCP tooling). Batch-68 resolved the 414k-vertex Field Mushroom debt: shipping world/journal derivatives are 15.8k/47.4k vertices, and all delivered mushroom models use separate 12k–16k / 60k–75k triangle budgets.
 
 ## Known ship blockers (tracked in TODOS.md)
 

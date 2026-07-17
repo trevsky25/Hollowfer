@@ -15,18 +15,19 @@ MonoBehaviour:
   _id: act2.pell.waiting_cousin
   _lines:
   - speaker: Pell
-    text: 'The Wenmar shutters are up. The north-lane cousin is on the road from Veyrwick — two children, one pot, and a rooster in a sack, if the letter''s honest.
-
-
-      Give it a day.'
+    text: "The Wenmar shutters are up. The north-lane cousin is on the road from
+      Veyrwick \u2014 two children, one pot, and a rooster in a sack, if the letter's
+      honest.\n\nGive it a day."
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: fb8dd0fe822f0460f99aa5720333c550, type: 3}
   _unlockStoryCard: {fileID: 0}
   _completeQuest: {fileID: 0}
-  _giveItemId:
+  _giveItemId: 
   _grantCoinsCopper: 0
   _spendsCoinsCopper: 0
   _sellsForageBasket: 0
   _basketCopperPerItem: 0
+  _basketBuyer: 0
   _grantForage: {fileID: 0}
   _grantForageCount: 1
   _consumeForage: {fileID: 0}
@@ -35,5 +36,7 @@ MonoBehaviour:
   _villageHopeDelta: 0
   _knowledgeDelta: 0
   _relationshipNpcIds: []
-  _relationshipDeltas: []
+  _relationshipDeltas: 
+  _transitionMoment: {fileID: 0}
   _nextDialog: {fileID: 0}
+  _choices: []

@@ -15,48 +15,65 @@ MonoBehaviour:
   _id: act4.meet.aldric
   _lines:
   - speaker: Wren
-    text: 'The manor was smaller than rumor and cleaner than kindness. He received me in an oak-paneled study with the tea already poured — not command, not threat, but civility so complete it made refusal feel rude.'
+    text: "The manor was smaller than rumor and cleaner than kindness. He received
+      me in an oak-paneled study with the tea already poured \u2014 not command,
+      not threat, but civility so complete it made refusal feel rude."
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: 7f8a0c8c4cd26450bb2506590b4a59b9, type: 3}
   - speaker: Aldric
-    text: 'I should very much like to make your acquaintance, Miss Tobin.'
+    text: I should very much like to make your acquaintance, Miss Tobin.
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: e29ad14019f2b43828b15c07f499fbfe, type: 3}
   - speaker: Wren
-    text: 'You sent a letter.'
+    text: You sent a letter.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: b152967bf7f2f4132865ee4688db5080, type: 3}
   - speaker: Aldric
-    text: 'A letter is not an acquaintance. Merely an opening bid.'
+    text: A letter is not an acquaintance. Merely an opening bid.
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: 81e8582358b63463f8dd8a73aa881477, type: 3}
   - speaker: Wren
-    text: 'He listened while I spoke of the Wend. He did not deny the woodcutters. He regretted the consequence as a man regrets rain through a roof he has not personally patched.'
+    text: He listened while I spoke of the Wend. He did not deny the woodcutters.
+      He regretted the consequence as a man regrets rain through a roof he has not
+      personally patched.
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: 562835ba101e44e3c8d9ca0124803efb, type: 3}
   - speaker: Aldric
-    text: 'I can make Hollowfen prosperous.'
+    text: I can make Hollowfen prosperous.
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: 96d052a22104b46d79a3c990ff31bed5, type: 3}
   - speaker: Wren
-    text: 'Yes.'
+    text: Yes.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: b801faaac039642309be1350d4a62018, type: 3}
   - speaker: Aldric
-    text: 'You concede that?'
+    text: You concede that?
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: 069381d64b24f4072b51a4bb0394b47a, type: 3}
   - speaker: Wren
-    text: 'I concede arithmetic.'
+    text: I concede arithmetic.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 463d715a141494c5eb0e38855aec2bcf, type: 3}
   - speaker: Wren
-    text: 'I set the Aldermark on the polished table between us.'
+    text: I set the Aldermark on the polished table between us.
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: b397b6cbad7934f39b763ae1604782ef, type: 3}
   - speaker: Wren
-    text: 'The question is what you think prosperous is allowed to cost.'
+    text: The question is what you think prosperous is allowed to cost.
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: 161ff25cb5685432988ec577c83858e1, type: 3}
   - speaker: Wren
-    text: 'The room went very quiet around us.'
+    text: The room went very quiet around us.
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: d924c72a5971246cab8a1d461ce1b3dd, type: 3}
   _unlockStoryCard: {fileID: 0}
   _completeQuest: {fileID: 11400000, guid: be1d1f6805f5410da490e633a51a491f, type: 2}
-  _giveItemId:
+  _giveItemId: 
   _grantCoinsCopper: 0
   _spendsCoinsCopper: 0
   _sellsForageBasket: 0
   _basketCopperPerItem: 0
+  _basketBuyer: 0
   _grantForage: {fileID: 0}
   _grantForageCount: 1
   _consumeForage: {fileID: 0}
@@ -65,6 +82,23 @@ MonoBehaviour:
   _villageHopeDelta: 0
   _knowledgeDelta: 0
   _relationshipNpcIds: []
-  _relationshipDeltas: []
+  _relationshipDeltas: 
+  _transitionMoment: {fileID: 0}
   _nextDialog: {fileID: 0}
-  _choices: []
+  _choices:
+  - text: Refuse the monopoly
+    next: {fileID: 0}
+    setsFlagId: 
+    ending: {fileID: 11400000, guid: eea24fa88644443dcbba17ac1b02b7cb, type: 2}
+  - text: Accept Aldric's patronage
+    next: {fileID: 0}
+    setsFlagId: 
+    ending: {fileID: 11400000, guid: e2658c894b9bb4a34b02ad9213f9ac38, type: 2}
+  - text: Leave for the Capital
+    next: {fileID: 0}
+    setsFlagId: 
+    ending: {fileID: 11400000, guid: af70977e7711441998675e4210c73d55, type: 2}
+  - text: Take the Witch's Path
+    next: {fileID: 0}
+    setsFlagId: 
+    ending: {fileID: 11400000, guid: 0b45864d597f3410da4398fd802acbfd, type: 2}

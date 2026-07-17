@@ -17,19 +17,41 @@ MonoBehaviour:
   _latinName: Amanita virosa
   _edibility: 1
   _edibilityLabel: Deadly
-  _description: 'Sable''s seedbook name for the Destroying Angel (Amanita virosa) — pure white, elegant, and among the deadliest mushrooms in the world. The old hand called it Moonring for the pale ring on its stem and the cap that seems to hold moonlight; the science is grimmer: the same liver-destroying amatoxins as the Death Cap.'
+  _description: "Sable's seedbook name for the Destroying Angel (Amanita virosa)
+    \u2014 pure white, elegant, and among the deadliest mushrooms in the world. The
+    old hand called it Moonring for the pale ring on its stem and the cap that seems
+    to hold moonlight; the science is grimmer: the same liver-destroying amatoxins
+    as the Death Cap."
   _idFeatures:
-  - Entirely pure white — cap, gills, stem, all white
+  - "Entirely pure white \u2014 cap, gills, stem, all white"
   - White free gills, never pink, never brown
-  - A white ring (annulus) on the upper stem — the moonring itself
+  - "A white ring (annulus) on the upper stem \u2014 the moonring itself"
   - Bulbous sac-like volva at the base, often hidden in soil or moss
   - White spore print
-  _habitat: Mycorrhizal with broadleaf trees — birch, beech, oak; mixed woodland edges.
+  _habitat: "Mycorrhizal with broadleaf trees \u2014 birch, beech, oak; mixed woodland
+    edges."
   _season: Mid-summer through autumn
-  _lookalikes: Field Mushroom (Agaricus campestris) is EDIBLE but has pink or brown gills, never white, and no volva. The unchanging white gills are the universal warning.
-  _notes: 'With the Death Cap, this accounts for nearly all fatal mushroom poisonings in temperate regions. Delayed onset: six to twelve hours of nothing, then violent illness, a false recovery, then liver failure. Treat any all-white gilled mushroom with extreme suspicion. Sable''s seedbook does not teach picking it — it teaches knowing it.'
+  _lookalikes: Field Mushroom (Agaricus campestris) is EDIBLE but has pink or brown
+    gills, never white, and no volva. The unchanging white gills are the universal
+    warning.
+  _notes: "With the Death Cap, this accounts for nearly all fatal mushroom poisonings
+    in temperate regions. Delayed onset: six to twelve hours of nothing, then violent
+    illness, a false recovery, then liver failure. Treat any all-white gilled mushroom
+    with extreme suspicion. Sable's seedbook does not teach picking it \u2014 it
+    teaches knowing it."
   _photo: {fileID: 21300000, guid: a74608848eb6942deb4c8b7a8485083b, type: 3}
   _photoCredit: Wikimedia Commons
-  _worldPrefab: {fileID: 0}
+  _worldPrefab: {fileID: 6971912759272904032, guid: 515529e67e9724628b7cb3766643dd9c, type: 3}
+  _journalPreviewPrefab: {fileID: 1278755651213106980, guid: aee269366f7214e1fa4fb6554df07270, type: 3}
+  _journalExposure: 0.2
   _displayNameId: mushroom.moonring.name
   _descriptionId: mushroom.moonring.description
+  _forageTier: 3
+  _requiredForageFlagId: tier4_mushrooms_unlocked
+  _wildRespawnDays: 5
+  _marraValueCopper: 0
+  _theoValueCopper: 0
+  _cultivable: 0
+  _cultivationHours: 6
+  _cultivationYield: 3
+  _cultivationUnlockFlagId:

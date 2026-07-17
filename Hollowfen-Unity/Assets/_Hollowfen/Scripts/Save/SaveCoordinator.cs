@@ -24,6 +24,8 @@ namespace Hollowfen.Save
             MushroomDiscovery.HydrateFrom(null);
             GameScores.HydrateFrom(null);
             Cultivation.GrowBeds.HydrateFrom(null);
+            ForageNodeStates.HydrateFrom(null);
+            Hollowfen.Requests.VillageRequests.HydrateFrom(null);
             Map.LocationRegistry.HydrateFromSave(null);
 
             // Fresh meta so the slot row shows up immediately.
@@ -39,10 +41,12 @@ namespace Hollowfen.Save
             QuestManagerHydrate(meta);
             InventoryRuntime.HydrateFrom(meta?.Inventory);
             KeyItems.HydrateFrom(meta?.KeyItemIds);
-            CoinPurse.HydrateFrom(meta?.CoinsCopper ?? 0);
+            CoinPurse.HydrateFrom(meta?.CoinsCopper ?? 0, meta?.CoinLedger);
             MushroomDiscovery.HydrateFrom(meta?.DiscoveredMushroomIds);
             GameScores.HydrateFrom(meta);
             Cultivation.GrowBeds.HydrateFrom(meta?.GrowBeds);
+            ForageNodeStates.HydrateFrom(meta?.ForageNodes);
+            Hollowfen.Requests.VillageRequests.HydrateFrom(meta?.VillageRequests);
             Map.LocationRegistry.HydrateFromSave(meta?.DiscoveredLocationIds);
         }
 
@@ -69,8 +73,11 @@ namespace Hollowfen.Save
             meta.Inventory = InventoryRuntime.ToSnapshot();
             meta.KeyItemIds = KeyItems.ToArray();
             meta.CoinsCopper = CoinPurse.TotalCopper;
+            meta.CoinLedger = CoinPurse.ToLedgerSnapshot();
             meta.DiscoveredMushroomIds = MushroomDiscovery.ToArray();
             meta.GrowBeds = Cultivation.GrowBeds.ToSnapshot();
+            meta.ForageNodes = ForageNodeStates.ToSnapshot();
+            meta.VillageRequests = Hollowfen.Requests.VillageRequests.ToSnapshot();
             meta.DiscoveredLocationIds = Map.LocationRegistry.DiscoveredToArray();
 
             var quests = new string[QuestManager.CompletedQuestIds.Count];
@@ -87,14 +94,22 @@ namespace Hollowfen.Save
                 Hollowfen.GameTime.TimeManager.Instance.WriteTo(meta);
 
             var active = QuestManager.ActiveQuest;
-            if (active != null)
+            if (GameScores.HasFlag("game_complete"))
+            {
+                meta.CurrentQuest = Localization.Get("ending.save.complete");
+                meta.CurrentQuestId = "game_complete";
+                meta.CurrentAct = 4;
+            }
+            else if (active != null)
             {
                 meta.CurrentQuest = Localization.Get(active.DisplayNameId);
+                meta.CurrentQuestId = active.Id;
                 meta.CurrentAct = active.Act;
             }
             else if (quests.Length > 0)
             {
                 meta.CurrentQuest = "Act I complete";
+                meta.CurrentQuestId = "";
             }
 
             if (playerPosition.HasValue)

@@ -40,5 +40,16 @@ MonoBehaviour:
   _photo: {fileID: 21300000, guid: a9343f7cdfedc42f4899d2502f1e95aa, type: 3}
   _photoCredit: Wikimedia Commons
   _worldPrefab: {fileID: 7117828910065969868, guid: ff51963d45a30415d96edcfc828bc0bf, type: 3}
+  _journalPreviewPrefab: {fileID: 4915444337342313755, guid: 2fb17e0f1ef2a4c36aa1e742f4ca328c, type: 3}
+  _journalExposure: 0.28
   _displayNameId: mushroom.flyAgaric.name
   _descriptionId: mushroom.flyAgaric.description
+  _forageTier: 3
+  _requiredForageFlagId: tier4_mushrooms_unlocked
+  _wildRespawnDays: 4
+  _marraValueCopper: 0
+  _theoValueCopper: 0
+  _cultivable: 0
+  _cultivationHours: 6
+  _cultivationYield: 3
+  _cultivationUnlockFlagId:

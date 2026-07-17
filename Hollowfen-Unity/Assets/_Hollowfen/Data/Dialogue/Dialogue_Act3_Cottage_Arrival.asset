@@ -15,36 +15,45 @@ MonoBehaviour:
   _id: act3.cottage.arrival
   _lines:
   - speaker: Hollin
-    text: 'I think the path remembers feet better than names.'
+    text: I think the path remembers feet better than names.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 41b98b5bfd3da46b680ba6bcff268cd7, type: 3}
   - speaker: Wren
-    text: 'That is either comforting or not.'
+    text: That is either comforting or not.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 741174ad53f9445a29f4fa88ccdf927b, type: 3}
   - speaker: Almy
-    text: 'Both. Usually both.'
+    text: Both. Usually both.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 282c7db5a836c4063ba3238c82fafce8, type: 3}
   - speaker: Wren
-    text: 'Is this it?'
+    text: Is this it?
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 008d5d713c6b346e785a70e83eead5df, type: 3}
   - speaker: Almy
-    text: 'This is where I was young.'
+    text: This is where I was young.
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: 0956905eaaceb4fe092b99fc15eabea2, type: 3}
   - speaker: Hollin
-    text: 'Then we should enter kindly.'
+    text: Then we should enter kindly.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 7a0f031cfe1e84abaa42139a40ca804b, type: 3}
   - speaker: Wren
     text: 'The open page shows a spring basin, and a mushroom in pale ink. Witchwell.
 
 
-      And three names in another hand: Moonring. Hollowheart. Wendlight.'
+      And
+      three names in another hand: Moonring. Hollowheart. Wendlight.'
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: f954d86b6afea494d81a6887481e36dc, type: 3}
   _unlockStoryCard: {fileID: 0}
   _completeQuest: {fileID: 11400000, guid: 8e2a42f4ab104161ad2bb1d2b62ad7c3, type: 2}
-  _giveItemId:
+  _giveItemId: 
   _grantCoinsCopper: 0
   _spendsCoinsCopper: 0
   _sellsForageBasket: 0
   _basketCopperPerItem: 0
+  _basketBuyer: 0
   _grantForage: {fileID: 0}
   _grantForageCount: 1
   _consumeForage: {fileID: 0}
@@ -53,6 +62,7 @@ MonoBehaviour:
   _villageHopeDelta: 0
   _knowledgeDelta: 0
   _relationshipNpcIds: []
-  _relationshipDeltas: []
+  _relationshipDeltas: 
+  _transitionMoment: {fileID: 0}
   _nextDialog: {fileID: 0}
   _choices: []

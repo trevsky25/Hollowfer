@@ -8,6 +8,7 @@ namespace Hollowfen.Save
         public int SlotNumber;
         public long TimestampUnix;
         public string CurrentQuest;
+        public string CurrentQuestId;
         public int CurrentAct;
         public float TotalPlayTimeSeconds;
 
@@ -23,6 +24,7 @@ namespace Hollowfen.Save
 
         // Wren's money, in total copper (12 copper = 1 silver).
         public int CoinsCopper;
+        public CoinLedgerSnapshot CoinLedger;
 
         // One-shot narrative beats.
         public bool HomecomingIntroSeen;
@@ -53,6 +55,14 @@ namespace Hollowfen.Save
 
         // Cultivation — one row per grow bed that has ever been planted.
         public GrowBedSnapshot GrowBeds;
+
+        // Wild forage ecology — harvested scene-node ids and the day each was cut.
+        // A node's species data owns its respawn cadence, so balance changes need no migration.
+        public ForageNodeSnapshot ForageNodes;
+
+        // Repeatable village work — persistent one-shots, today's claimed NPC orders, and
+        // the optional request currently pinned beneath the story quest HUD.
+        public VillageRequestSnapshot VillageRequests;
     }
 
     // Parallel arrays, JsonUtility-friendly (same recipe as InventorySnapshot).
@@ -73,5 +83,33 @@ namespace Hollowfen.Save
     {
         public string[] Ids;
         public int[] Counts;
+    }
+
+    // Newest entries are stored first. Parallel arrays keep the ledger compatible with
+    // JsonUtility and allow old saves (where this object is null) to load unchanged.
+    [Serializable]
+    public class CoinLedgerSnapshot
+    {
+        public int[] AmountsCopper;
+        public int[] BalancesAfterCopper;
+        public string[] ReasonIds;
+    }
+
+    [Serializable]
+    public class ForageNodeSnapshot
+    {
+        public string[] Ids;
+        public int[] HarvestedDays;
+    }
+
+    [Serializable]
+    public class VillageRequestSnapshot
+    {
+        public string[] CompletedOneShotIds;
+        public string[] DailyNpcIds;
+        public string[] DailyRequestIds;
+        public int[] DailyDays;
+        public string TrackedRequestId;
+        public int TrackedDay;
     }
 }

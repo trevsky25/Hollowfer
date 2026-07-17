@@ -29,6 +29,8 @@ namespace Hollowfen.Dialogue
         public DialogueData next;
         [Tooltip("Game flag set when this choice is picked (e.g. theo_offer_accepted). Empty = none.")]
         public string setsFlagId;
+        [Tooltip("Optional terminal ending selected by this choice. Mutually exclusive with Next.")]
+        public EndingData ending;
     }
 
     [CreateAssetMenu(fileName = "Dialogue_New", menuName = "Hollowfen/Dialogue/Dialogue Data")]
@@ -49,6 +51,8 @@ namespace Hollowfen.Dialogue
         private bool _sellsForageBasket;
         [SerializeField, Tooltip("With Sells Forage Basket: copper paid PER mushroom in the basket (repeatable Marra sale loop).")]
         private int _basketCopperPerItem;
+        [SerializeField, Tooltip("Species-aware buyer. None preserves the legacy flat basket payout for authored one-off scenes.")]
+        private MushroomBuyer _basketBuyer;
         [SerializeField, Tooltip("Forage granted on finish (Almy's Wood Ear spawn plugs). Null = none.")]
         private MushroomFieldGuideData _grantForage;
         [SerializeField] private int _grantForageCount = 1;
@@ -65,6 +69,9 @@ namespace Hollowfen.Dialogue
         private string[] _relationshipNpcIds;
         [SerializeField] private int[] _relationshipDeltas;
 
+        [Header("Presentation transition")]
+        [SerializeField, Tooltip("Optional story moment shown after this node's outcomes and before choices or Next Dialog.")]
+        private StoryMomentData _transitionMoment;
         [SerializeField] private DialogueData _nextDialog;
         [SerializeField, Tooltip("Player choices shown after the last line (outcomes fire first). Non-empty = _nextDialog is ignored; each choice branches on its own. Max 4.")]
         private DialogueChoice[] _choices;
@@ -78,6 +85,7 @@ namespace Hollowfen.Dialogue
         public int SpendsCoinsCopper => _spendsCoinsCopper;
         public bool SellsForageBasket => _sellsForageBasket;
         public int BasketCopperPerItem => _basketCopperPerItem;
+        public MushroomBuyer BasketBuyer => _basketBuyer;
         public MushroomFieldGuideData GrantForage => _grantForage;
         public int GrantForageCount => _grantForageCount;
         public MushroomFieldGuideData ConsumeForage => _consumeForage;
@@ -87,6 +95,7 @@ namespace Hollowfen.Dialogue
         public int KnowledgeDelta => _knowledgeDelta;
         public string[] RelationshipNpcIds => _relationshipNpcIds;
         public int[] RelationshipDeltas => _relationshipDeltas;
+        public StoryMomentData TransitionMoment => _transitionMoment;
         public DialogueData NextDialog => _nextDialog;
         public DialogueChoice[] Choices => _choices;
     }

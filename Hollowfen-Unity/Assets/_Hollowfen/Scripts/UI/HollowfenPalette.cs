@@ -19,6 +19,17 @@ namespace Hollowfen.UI
         public static readonly Color GoldFaint  = new Color(0.792f, 0.659f, 0.341f, 0.45f);
         public static readonly Color GoldGlow   = new Color(0.965f, 0.812f, 0.475f, 1f); // focus highlight
 
+        // Menu surfaces (batch-64). These are deliberately neutral/forest-toned:
+        // gold is reserved for hierarchy and interaction, not used as a box fill.
+        public static readonly Color JournalBackdrop = new Color(0.020f, 0.031f, 0.020f, 1f);
+        public static readonly Color SurfaceBase     = new Color(0.043f, 0.063f, 0.047f, 0.94f);
+        public static readonly Color SurfaceRaised   = new Color(0.072f, 0.096f, 0.076f, 0.92f);
+        public static readonly Color SurfaceQuiet    = new Color(0.055f, 0.073f, 0.058f, 0.66f);
+        public static readonly Color StructuralLine  = new Color(0.965f, 0.929f, 0.847f, 0.10f);
+        public static readonly Color DividerLine     = new Color(0.792f, 0.659f, 0.341f, 0.18f);
+        public static readonly Color FocusWash       = new Color(0.792f, 0.659f, 0.341f, 0.045f);
+        public static readonly Color FocusRail       = new Color(0.965f, 0.812f, 0.475f, 0.92f);
+
         // Edibility (per handoff)
         public static readonly Color EdEdible    = new Color32(0x7E, 0xC3, 0x8A, 0xFF);
         public static readonly Color EdDeadly    = new Color32(0xD3, 0x6A, 0x5B, 0xFF);

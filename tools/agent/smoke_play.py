@@ -12,6 +12,7 @@ Promoted from the Batch 11 verification script (2026-07-11).
 
 import argparse
 import os
+import signal
 import subprocess
 import sys
 import time
@@ -20,17 +21,37 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import unitymcp
 
 
-def call(tool, args, retries=6):
+def _rpc_with_deadline(method, params, seconds=10):
+    """Keep a stale SSE response from pinning the whole smoke run for five minutes."""
+    previous = signal.getsignal(signal.SIGALRM)
+
+    def timed_out(_signum, _frame):
+        raise TimeoutError(f"Unity bridge response exceeded {seconds}s")
+
+    signal.signal(signal.SIGALRM, timed_out)
+    signal.setitimer(signal.ITIMER_REAL, seconds)
+    try:
+        return unitymcp.rpc(method, params)
+    finally:
+        signal.setitimer(signal.ITIMER_REAL, 0)
+        signal.signal(signal.SIGALRM, previous)
+
+
+def call(tool, args, retries=4):
     last = None
     for _ in range(retries):
         try:
-            obj = unitymcp.rpc("tools/call", {"name": tool, "arguments": args})
+            obj = _rpc_with_deadline("tools/call", {"name": tool, "arguments": args})
             if obj and "result" in obj:
                 sc = obj["result"].get("structuredContent", {})
                 return sc.get("data") or sc.get("result", {}).get("data") or sc
             last = obj
         except Exception as e:  # bridge blips during play-mode entry
             last = str(e)
+            try:
+                os.remove(unitymcp.SESSION_CACHE)
+            except OSError:
+                pass
         time.sleep(3)
     print(f"smoke: bridge call {tool} failed: {last}", file=sys.stderr)
     sys.exit(3)
@@ -39,6 +60,29 @@ def call(tool, args, retries=6):
 def execute(code):
     data = call("execute_code", {"action": "execute", "code": code})
     return data.get("result") if isinstance(data, dict) else None
+
+
+def pipe_counts(code, label, retries=5):
+    """Read an `int|int` bridge result, tolerating a transient boolean ack.
+
+    Unity can acknowledge execute_code with `True` for one bridge tick while scripts
+    finish reloading. That is transport state, not a console count, so retry instead
+    of crashing the smoke runner while the game itself is healthy.
+    """
+    last = None
+    for _ in range(retries):
+        last = execute(code)
+        if isinstance(last, str):
+            parts = last.split("|")
+            if len(parts) == 2:
+                try:
+                    return int(parts[0]), int(parts[1])
+                except ValueError:
+                    pass
+        time.sleep(1)
+    print(f"smoke: invalid {label} response after {retries} attempts: {last!r}",
+          file=sys.stderr)
+    sys.exit(3)
 
 
 STATE = 'return UnityEditor.EditorApplication.isPlaying + "|" + UnityEngine.Time.frameCount;'
@@ -72,7 +116,7 @@ def main():
     subprocess.run(["osascript", "-e", 'tell application "Unity" to activate'],
                    capture_output=True, timeout=10)
 
-    pre_errors = int(execute(CONSOLE).split("|")[0])
+    pre_errors, _ = pipe_counts(CONSOLE, "pre-play console")
     print(f"smoke: pre-play console errors={pre_errors}")
 
     call("manage_editor", {"action": "play"})
@@ -108,7 +152,7 @@ def main():
         call("manage_editor", {"action": "stop"})
         return 2
 
-    errors = int(execute(CONSOLE).split("|")[0])
+    errors, _ = pipe_counts(CONSOLE, "in-play console")
     state = execute(GAMESTATE)
     call("manage_editor", {"action": "stop"})
 

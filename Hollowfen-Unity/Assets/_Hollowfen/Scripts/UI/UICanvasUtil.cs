@@ -384,6 +384,32 @@ namespace Hollowfen.UI
             return sp;
         }
 
+        // Soft radial alpha falloff. Stretching the sprite produces a clean model
+        // halo or contact shadow without introducing a rectangular backing panel.
+        public static Sprite RadialGlow(int diameter = 128)
+        {
+            string key = "rg" + diameter;
+            if (_shapeCache.TryGetValue(key, out var cached) && cached != null) return cached;
+            var tex = new Texture2D(diameter, diameter, TextureFormat.RGBA32, false);
+            tex.wrapMode = TextureWrapMode.Clamp;
+            tex.filterMode = FilterMode.Bilinear;
+            float center = diameter * 0.5f;
+            float radius = Mathf.Max(1f, center - 1f);
+            for (int y = 0; y < diameter; y++)
+            for (int x = 0; x < diameter; x++)
+            {
+                float dx = (x + 0.5f - center) / radius;
+                float dy = (y + 0.5f - center) / radius;
+                float t = Mathf.Clamp01(1f - Mathf.Sqrt(dx * dx + dy * dy));
+                float a = t * t * (3f - 2f * t);
+                tex.SetPixel(x, y, new Color(1f, 1f, 1f, a));
+            }
+            tex.Apply(false, false);
+            var sp = Sprite.Create(tex, new Rect(0, 0, diameter, diameter), new Vector2(0.5f, 0.5f), 100f, 0u, SpriteMeshType.FullRect);
+            _shapeCache[key] = sp;
+            return sp;
+        }
+
         // Subtle paper-grain speckle: per-pixel alpha noise, fixed seed (deterministic across
         // sessions). Stretch over a parchment fill and tint via Image.color with a dark ink —
         // the sprite's alpha carries the grain. First consumer: the IntroGuide journal page.

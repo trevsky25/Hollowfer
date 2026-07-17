@@ -50,7 +50,7 @@ namespace Hollowfen.UI
             rt.anchorMin = new Vector2(1f, 1f);
             rt.anchorMax = new Vector2(1f, 1f);
             rt.pivot = new Vector2(1f, 1f);
-            rt.sizeDelta = new Vector2(196f, 32f);
+            rt.sizeDelta = new Vector2(220f, 38f);
             rt.anchoredPosition = new Vector2(-88f, -352f); // centred under the 320px mini-map
 
             var stroke = UICanvasUtil.NewImage("Hairline", rt, new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0.28f), false);
@@ -59,7 +59,7 @@ namespace Hollowfen.UI
             sImg.type = Image.Type.Sliced;
             UICanvasUtil.Stretch((RectTransform)stroke.transform);
 
-            _label = UICanvasUtil.NewEyebrow("Label", rt, "", 11f, HollowfenPalette.Cream, TextAlignmentOptions.Center);
+            _label = UICanvasUtil.NewEyebrow("Label", rt, "", 15f, HollowfenPalette.Cream, TextAlignmentOptions.Center);
             UICanvasUtil.Stretch(_label.rectTransform);
         }
     }

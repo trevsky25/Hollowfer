@@ -215,7 +215,7 @@ namespace Hollowfen.UI
             riRT.anchoredPosition = new Vector2(0f, -102.5f);
 
             // Message — italic body ink, centered, up to ~3 lines.
-            _messageText = UICanvasUtil.NewBody("Message", card, "", 17.5f, InkSoft, FontStyles.Italic, TextAlignmentOptions.Center);
+            _messageText = UICanvasUtil.NewBody("Message", card, "", 19f, InkSoft, FontStyles.Italic, TextAlignmentOptions.Center);
             _messageText.textWrappingMode = TextWrappingModes.Normal;
             _messageText.lineSpacing = 8f;
             var mRT = _messageText.rectTransform;
@@ -232,7 +232,7 @@ namespace Hollowfen.UI
             _defaultFocus = _cancelButton.gameObject;
 
             // Quiet hint under the buttons.
-            var hint = UICanvasUtil.NewBody("Hint", card, Localization.Get("confirm.hint"), 11.5f,
+            var hint = UICanvasUtil.NewBody("Hint", card, Localization.Get("confirm.hint"), 13.5f,
                 MossDark, FontStyles.Italic, TextAlignmentOptions.Center);
             var hRT = hint.rectTransform;
             hRT.anchorMin = new Vector2(0.5f, 0f); hRT.anchorMax = new Vector2(0.5f, 0f);

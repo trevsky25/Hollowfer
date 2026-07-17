@@ -15,32 +15,42 @@ MonoBehaviour:
   _id: act3.voss.letter
   _lines:
   - speaker: Voss
-    text: 'I am not here to collect.'
+    text: I am not here to collect.
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: 55288d9ddbd2848e2bc263c52948f956, type: 3}
   - speaker: Wren
-    text: 'That is new.'
+    text: That is new.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 9d24745e732ae4d3fb626bea3a2212de, type: 3}
   - speaker: Voss
     text: 'Lord Aldric asked that I deliver this personally.
 
 
-      Whatever it says, read it before the rumor reaches the inn.'
+      Whatever it
+      says, read it before the rumor reaches the inn.'
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: e5d9d0fc020934328a66ce8af93648b3, type: 3}
   - speaker: Wren
-    text: 'Do you know what it says?'
+    text: Do you know what it says?
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: a88fa0d87f66b43f79f5ad4ae0615c65, type: 3}
   - speaker: Voss
-    text: 'No.'
+    text: No.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 0cebc87ed1d254e1ba8f1daed50fc954, type: 3}
   - speaker: Wren
-    text: 'Do you want to?'
+    text: Do you want to?
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: a008fd97c229942baa794eea3d06e197, type: 3}
   - speaker: Voss
-    text: 'No.'
+    text: No.
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: d00da74b2362849a28662be84115660f, type: 3}
   - speaker: Wren
-    text: 'The letter was folded thick and sealed with dark red wax. The mark pressed into it I had seen before — burned into the timber at the Wend''s old bend.'
+    text: "The letter was folded thick and sealed with dark red wax. The mark pressed
+      into it I had seen before \u2014 burned into the timber at the Wend's old bend."
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: 3e533745488904930b34b3dbb9ae080e, type: 3}
   _unlockStoryCard: {fileID: 0}
   _completeQuest: {fileID: 0}
   _giveItemId: item.aldric_letter
@@ -48,6 +58,7 @@ MonoBehaviour:
   _spendsCoinsCopper: 0
   _sellsForageBasket: 0
   _basketCopperPerItem: 0
+  _basketBuyer: 0
   _grantForage: {fileID: 0}
   _grantForageCount: 1
   _consumeForage: {fileID: 0}
@@ -56,12 +67,15 @@ MonoBehaviour:
   _villageHopeDelta: 0
   _knowledgeDelta: 0
   _relationshipNpcIds: []
-  _relationshipDeltas: []
+  _relationshipDeltas: 
+  _transitionMoment: {fileID: 0}
   _nextDialog: {fileID: 0}
   _choices:
-  - text: 'Break the seal now.'
+  - text: Break the seal now.
     next: {fileID: 11400000, guid: 53aa8713cb8b4124a070a3d643640add, type: 2}
-    setsFlagId:
-  - text: 'Set it aside until evening.'
+    setsFlagId: 
+    ending: {fileID: 0}
+  - text: Set it aside until evening.
     next: {fileID: 11400000, guid: 45dd66f4653144a4b418fc9e06edbfeb, type: 2}
-    setsFlagId:
+    setsFlagId: 
+    ending: {fileID: 0}

@@ -37,5 +37,16 @@ MonoBehaviour:
   _photo: {fileID: 21300000, guid: 15ac10a612d0c4ca383f7c8038bacce6, type: 3}
   _photoCredit: Wikimedia Commons
   _worldPrefab: {fileID: 159277080366722686, guid: 8d4cf1208e1c04392bcd90170c146761, type: 3}
+  _journalPreviewPrefab: {fileID: 1686060877623512647, guid: 55f15d547069e4dfcb54e9a865ca6c59, type: 3}
+  _journalExposure: 0.32
   _displayNameId: mushroom.fieldMushroom.name
   _descriptionId: mushroom.fieldMushroom.description
+  _forageTier: 1
+  _requiredForageFlagId:
+  _wildRespawnDays: 1
+  _marraValueCopper: 4
+  _theoValueCopper: 5
+  _cultivable: 0
+  _cultivationHours: 6
+  _cultivationYield: 3
+  _cultivationUnlockFlagId:

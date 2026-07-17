@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70027fc9f19ac4815a39a02f71c1fd4c, type: 3}
+  m_Name: VillageRequestDatabase
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Requests.VillageRequestDatabase
+  _requests:
+  - {fileID: 11400000, guid: 24c9e0114ff0c46e3b7ef205bbb9860a, type: 2}
+  - {fileID: 11400000, guid: 237d8e64e0fcc49559ccb99204c52f67, type: 2}
+  - {fileID: 11400000, guid: bac059c5d81684c098606f6209b5ef9d, type: 2}
+  - {fileID: 11400000, guid: eb34f7831372b4f0187c1bdb68520de0, type: 2}
+  - {fileID: 11400000, guid: 62c7a35b42b2e4f8eb0beb3ffefccfc7, type: 2}
+  - {fileID: 11400000, guid: eae5be22f570c440fb1b7381d4fdce0d, type: 2}
+  - {fileID: 11400000, guid: b06b1814784a54395ae149fcd56bae97, type: 2}
+  - {fileID: 11400000, guid: ad668e2b951324071bb8292b7361987a, type: 2}
+  - {fileID: 11400000, guid: 5f6742aead1a2473da025d93a9cb2f15, type: 2}
+  - {fileID: 11400000, guid: a3e1d55eb65f745d4a471b1b0475e497, type: 2}

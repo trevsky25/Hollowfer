@@ -20,7 +20,7 @@ namespace Hollowfen.Map
         [SerializeField] private float _iconSize = 18f;
         [SerializeField, Range(0f, 1f)] private float _undiscoveredAlpha = 0.4f;
         [SerializeField] private bool _showLabels;
-        [SerializeField] private float _labelFontSize = 12.5f;
+        [SerializeField] private float _labelFontSize = 13.5f;
         [SerializeField] private float _labelOffsetY = -8f;
         [SerializeField] private bool _hideOutsideRect = true;
         [SerializeField] private bool _includeUndiscovered = true;
