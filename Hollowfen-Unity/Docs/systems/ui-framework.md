@@ -4,7 +4,7 @@ Key scripts: `Assets/_Hollowfen/Scripts/UI/` — UIManager/UIScreen, menu screen
 Scene flow: `Scene_MainMenu` (boot, DDOL menu screens) ⇄ `Scene_Hollowfen` (gameplay) via `UIManager.LoadSceneAndOpen`.
 Entry points: any screen change goes through `UIManager.Push/Pop`; scene changes through `LoadSceneAndOpen(sceneName, nextScreenId)`.
 Biggest gotchas: configure runtime focus visuals with `FocusHighlight.Configure(...)`; prefer `RectMask2D`; avoid uGUI Outline on sliced sprites; runtime screens must call `ConfigureRuntimeScreen` before registration. Presentation state is lease-owned—see `presentation-sessions.md`—and shortcut input is blocked while any presentation or screen transition owns it. Overlay cards must not combine rounded fills with detached shadows or unclipped full-rectangle decoration. Root screens must declare `IsRootScreen`; every `ScaleWithScreenSize` canvas must use the accessibility policy's current reference resolution.
-Status: production-audited through 2026-07-18. Root/modal shape rules, identification recovery, the seven-project controller ledger, restoration lower thirds, 100/108/115% interface scaling, reduced-motion alternatives, and caption backing are runtime-verified; standard and largest settings/ledger layouts received live visual inspection.
+Status: production-audited through 2026-07-21. Root/modal shape rules, identification recovery, the seven-project controller ledger, restoration lower thirds, 100/108/115% interface scaling, reduced-motion alternatives, and caption backing are runtime-verified. Batch 123 retired the unattached coroutine-era `UITestDriver`; `ProductionUIVerifier`, focused verifiers, and isolated smoke own current regression coverage.
 
 > Self-healing doc: if you change this system, update this doc (including the 7-line header) in the same batch, and note the change in the batch worksheet.
 
@@ -24,6 +24,9 @@ Scene_MainMenu  ──Continue──►  Scene_Hollowfen  ──Pause→Quit─�
 - `Scene_Hollowfen` (`Assets/_Hollowfen/Scenes/Scene_Hollowfen.unity`) is the actual village — a copy of Magic Pig Games' "Medieval Environment - Demo 1" moved into our owned folder so package updates don't clobber it. Contains `PlayerArmature` (Wren) with `ThirdPersonController` + `StarterAssetsInputs` + `PlayerInput` on `Assets/Starter Assets/.../StarterAssets.inputactions`. The original demo stays untouched at its package path.
 - Legacy prototype `Assets/Scenes/MainMenu.unity` is visual reference only (intentional design — port the look, don't regenerate art).
 - Build Settings order (batch-34 cleanup): Scene_MainMenu (0), Scene_Hollowfen. The legacy `MainMenu`/`Village` prototype scenes were dropped from the build.
+- `Scene_UITest` remains a non-build manual fixture with `test-a`/`test-b` screens. Its obsolete,
+  unattached auto-running `UITestDriver` was removed in batch 123; do not use that fixture as
+  production-regression evidence in place of `ProductionUIVerifier` and the current smoke harness.
 
 ## Core components
 

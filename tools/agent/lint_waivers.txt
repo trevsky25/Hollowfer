@@ -1,4 +1,2 @@
 # Lint waivers — "<path-substring>::<rule>  # reason (and who owns the fix)"
 # A waiver is a debt marker, not a dismissal: every entry should point at a TODOS item.
-
-Map/LocationDebugHUD.cs::legacy-input  # dev-only debug HUD; retirement owned by TODOS "Build cleanup sweep"

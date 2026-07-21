@@ -3,8 +3,8 @@ What every automated check in this project actually proves, how to run it, and w
 Run: `tools/agent/lint_hollowfen.py` (always) · `tools/agent/run_integrity.py` or menu "Hollowfen/Data Integrity Report" (Unity open) · `tools/agent/smoke_play.py` (Unity open + visible). Pre-commit runs lint always and integrity when the bridge is up (`git config core.hooksPath .githooks`, set per clone).
 Checker code: `Assets/_Hollowfen/Scripts/Editor/DataIntegrity.cs` — an editor utility, NOT a Unity Test Framework assembly, because game code compiles into Assembly-CSharp (coupled to no-asmdef third-party sources) and test assemblies can't reference it.
 Philosophy: checks target failures that are SILENT at runtime (Localization.Get returns the raw id on a miss; PickDialog skips null entries; extra relationship ids are ignored). Loud failures don't need tests — the console already catches them.
-Waiver policy: lint waivers in `tools/agent/lint_waivers.txt`, each pointing at the TODOS item that owns the fix. A waiver is a debt marker, not a dismissal.
-Status: all three layers verified through 2026-07-21. Focused verifiers cover save-file integrity, durable inventory batches, endings, presentation ownership, repeatable gameplay, village requests, Living Restoration, the apothecary, day/night, dynamic weather, NPC schedules, relationship memory/personal arcs, regional feedback, audio/voice, and active production UI. Batch 120 adds a gated visual/performance baseline; Batch 121 exposes the synchronous checks through a safe native Pipeline allowlist; Batch 122 proves the world audit can drive a bounded scene-collision cleanup while preserving functional wall collision. Destructive state verifiers use an isolated temporary save directory where supported.
+Waiver policy: lint waivers in `tools/agent/lint_waivers.txt`, each pointing at the TODOS item that owns the fix. A waiver is a debt marker, not a dismissal; Batch 123 resolves the final current waiver, so the expected baseline is `WAIVED=0`.
+Status: all three layers verified through 2026-07-21. Focused verifiers cover save-file integrity, durable inventory batches, endings, presentation ownership, repeatable gameplay, village requests, Living Restoration, the apothecary, day/night, dynamic weather, NPC schedules, relationship memory/personal arcs, regional feedback, audio/voice, and active production UI. Batch 120 adds a gated visual/performance baseline; Batch 121 exposes the synchronous checks through a safe native Pipeline allowlist; Batch 122 proves the world audit can drive a bounded scene-collision cleanup; Batch 123 removes obsolete Player-compiling debug paths and reaches a zero-waiver lint baseline. Destructive state verifiers use an isolated temporary save directory where supported.
 
 > Self-healing doc: adding a check? Document it here. Hitting a new failure class? Add a check AND a row here in the same batch.
 
@@ -13,6 +13,8 @@ Status: all three layers verified through 2026-07-21. Focused verifiers cover sa
 ## Layer 1 — Gotcha lint (`tools/agent/lint_hollowfen.py`)
 
 No Unity required; runs in every pre-commit. Scans `Assets/_Hollowfen` only (never third-party).
+The current clean expectation is `ERRORS=0 WARNINGS=0 WAIVED=0`; a new waiver must name its owning
+queue item and should not replace a small, safe production cleanup.
 
 | Rule | Severity | Proves |
 |---|---|---|

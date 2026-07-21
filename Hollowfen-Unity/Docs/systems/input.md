@@ -4,7 +4,7 @@ Key assets: `Assets/_Hollowfen/Input/InputActions.inputactions` (C# wrapper auto
 Action maps: UI (Navigate, Submit, Cancel, TabLeft, TabRight, Delete), Player (Move, Look, Interact, Jump, OpenInventory, OpenFieldGuide, Pause, OpenMap), Dialogue (Advance, Skip, Choice1-4). The forage cutting micro-challenge polls live devices directly for analog precision and haptics.
 Conventions: Submit=South(Cross/A), Cancel=East(Circle/B), Steam Deck bindings mirror gamepad.
 Biggest gotchas: modal ownership must flow through `NarrativePresentationSession` so nested screens cannot re-enable Wren or global shortcuts early; brand glyphs are physical-face hints, not Steam Input binding-origin glyphs. Gameplay camera noise runs after collision avoidance, so its positional amplitude must remain smaller than the camera collision buffer.
-Status: centralized presentation ownership, connection-first brand-aware prompts, transition-safe PlayStation narration hints, dialogue/narration action-map controls, and an interior-safe follow camera are Play Mode verified 2026-07-18.
+Status: centralized presentation ownership, connection-first brand-aware prompts, transition-safe PlayStation narration hints, dialogue/narration action-map controls, and an interior-safe follow camera are Play Mode verified. Batch 123 retired the last project legacy-input waiver by removing the inactive location debug overlay; lint is now clean with zero waivers.
 
 > Self-healing doc: if you change this system, update this doc (including the 7-line header) in the same batch, and note the change in the batch worksheet.
 
@@ -31,6 +31,10 @@ Status: centralized presentation ownership, connection-first brand-aware prompts
 
 ## Notes
 
+- **No legacy-input debug exception remains.** Batch 123 removed the inactive `LocationDebugHUD`
+  scene root and script rather than migrate its discovery-mutating `F` shortcut. Location state can
+  be inspected through the native Pipeline/Coplay tooling without compiling a debug input path into
+  Player assemblies.
 - **The gameplay follow camera is interior-safe.** `PlayerFollowCamera.prefab` retains Cinemachine obstacle avoidance on Default-layer architecture, but its radius is 0.35 m and continuous Perlin amplitude is only 0.08. The former 0.50 amplitude ran after collision solving and could push the final camera pose through thin walls; the 0.10 m near clip adds clearance at tight corners.
 - **Journal and satchel are separate actions.** `OpenFieldGuide` opens the mushroom journal directly (`J` / D-Pad Up); `OpenInventory` keeps provisions on (`I` / Square). Triangle remains Interact and the DualSense touchpad remains Map.
 - **D-Pad Up is gameplay-contextual.** `InventoryInputBridge` ignores the shortcut while a UIManager screen or modal gameplay surface owns input, so D-Pad navigation cannot unexpectedly open the guide inside menus.

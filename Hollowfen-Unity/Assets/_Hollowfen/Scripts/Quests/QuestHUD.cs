@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace Hollowfen.Quests
 {
-    // Small persistent HUD widget on the gameplay canvas. Top-left in the safe zone (under the
-    // LocationDebugHUD when present). Shows the current quest's name + objective text. Hides itself
+    // Small persistent HUD widget on the gameplay canvas. Top-left in the safe zone. Shows the
+    // current quest's name + objective text. Hides itself
     // when no quest is active. Subscribes to QuestManager events; no per-frame polling.
     public class QuestHUD : MonoBehaviour
     {

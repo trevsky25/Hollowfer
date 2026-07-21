@@ -4,7 +4,7 @@ Key scripts: `Assets/_Hollowfen/Scripts/Map/` — MapScreen, MapCamera, MapInput
 Data: `Data/Locations/LocationData_*.asset` (14 POIs incl. `clear_cut` + `manor`; only FathersMill `_discoveredByDefault`); discovery key = `_id`, names/descriptions via localization keys (`loc.<id>.name/.desc`). Regions: `village`/`wend`/`old_wood`/`manor` — `_regionId` renders via MapScreen `LocalizeRegion` (add a `case` per new region or it shows the raw id).
 Entry points: `Player/OpenMap` (M / Select / touchpad) toggles, `UI/Cancel` closes (MapInputBridge); inside: arrows/D-pad cycle POIs, Enter/A toggles waypoint, Tab/RB zoom preset, F/R3 recenter.
 Biggest gotchas: `BuildIfNeeded` DESTROYS all children of the map canvas on first open; `MapCamera.Awake` creates a runtime 2048×1024 RT that orphans any inspector-assigned RT asset; the current-location marker must remain after `POIRoot` in sibling order so POI labels cannot cover it.
-Status: current-location marker, map reopen, POI focus, regional routing, shadow-free mini-map, centred day-period pill, and rounded compass verified in Play mode through 2026-07-17.
+Status: current-location marker, map reopen, POI focus, regional routing, shadow-free mini-map, centred day-period pill, and rounded compass are Play Mode verified. Batch 123 removed the inactive legacy location-debug scene root; production discovery remains owned by `LocationRegistry` and normal marker triggers.
 
 > Self-healing doc: if you change this system, update this doc (including the 7-line header) in the same batch, and note the change in the batch worksheet.
 
@@ -56,6 +56,9 @@ Built on first `Open()` (`BuildIfNeeded` → `BuildUI`), 1920×1080 reference. *
 
 ## Gotchas
 
+- The retired `LocationDebugHUD` is not a supported discovery route. Inspect registry state through
+  Pipeline/Coplay or a focused verifier; do not add a Player-compiling IMGUI/input shortcut that can
+  mutate saved discovery state.
 - Stale header comment + dead `BuildFrame()` in MapScreen.cs — parchment-era leftovers.
 - Hardcoded display strings still bypass localization for "VILLAGE"/"REGIONAL", "HOLLOWFEN", "N", "?", "FIELD JOURNAL · CARTOGRAPHY", and bottom-bar hints. Region names/subtitles are now localized through `RegionCatalog`.
 - Find-by-name/tag coupling: `_HUDCanvas` by name; `"Player"` tag in MapScreen, MapCamera, LocationMarker.
