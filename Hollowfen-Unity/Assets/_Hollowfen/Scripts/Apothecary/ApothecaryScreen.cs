@@ -294,7 +294,7 @@ namespace Hollowfen.Apothecary
                     new Color(.98f, .95f, .86f, .48f);
 
                 TMP_Text number = UICanvasUtil.NewEyebrow("Number", row,
-                    (i + 1).ToString("00"), 18f, i == _selected ? Forest : InkMuted);
+                    (i + 1).ToString("00"), 20f, i == _selected ? Forest : InkMuted);
                 UICanvasUtil.SetRect(number.rectTransform, new Vector2(0f, .58f), new Vector2(.18f, 1f),
                     new Vector2(0f, 1f), Vector2.zero, new Vector2(18f, -14f));
                 TMP_Text label = UICanvasUtil.NewHeading("Title", row,
@@ -304,7 +304,7 @@ namespace Hollowfen.Apothecary
                     new Vector2(.5f, .5f), Vector2.zero, Vector2.zero);
 
                 ApothecaryRuntime.CraftResult state = ApothecaryRuntime.Availability(recipe);
-                TMP_Text status = UICanvasUtil.NewBody("Status", row, RowStatus(recipe, state), 18f,
+                TMP_Text status = UICanvasUtil.NewBody("Status", row, RowStatus(recipe, state), 20f,
                     state == ApothecaryRuntime.CraftResult.Prepared ? ForestRaised : InkMuted,
                     FontStyles.Normal, TextAlignmentOptions.Left);
                 UICanvasUtil.SetRect(status.rectTransform, new Vector2(.15f, .05f), new Vector2(.96f, .38f),
@@ -439,7 +439,7 @@ namespace Hollowfen.Apothecary
                 dot.type = Image.Type.Sliced;
                 dot.color = done ? Success : active ? Gold : new Color(.36f, .33f, .27f, .28f);
                 TMP_Text label = UICanvasUtil.NewBody("Label", row,
-                    Localization.Get(steps.Length > i ? steps[i] : "apothecary.step.prepare"), 18f,
+                    Localization.Get(steps.Length > i ? steps[i] : "apothecary.step.prepare"), 20f,
                     done ? ForestRaised : active ? Ink : InkMuted, done ? FontStyles.Bold : FontStyles.Normal,
                     TextAlignmentOptions.Left);
                 UICanvasUtil.SetRect(label.rectTransform, new Vector2(.08f, 0f), new Vector2(1f, 1f),
@@ -528,7 +528,7 @@ namespace Hollowfen.Apothecary
             UICanvasUtil.AddShadow(card, 24, 32, .52f, -10f);
 
             TMP_Text eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", card,
-                Localization.Get("apothecary.eyebrow"), 18f, HollowfenPalette.PaperAccentInk,
+                Localization.Get("apothecary.eyebrow"), 20f, HollowfenPalette.PaperAccentInk,
                 TextAlignmentOptions.Center);
             SetFixed(eyebrow.rectTransform, new Vector2(900f, 28f), new Vector2(0f, 420f));
             TMP_Text heading = UICanvasUtil.NewHeading("Heading", card,
@@ -540,7 +540,7 @@ namespace Hollowfen.Apothecary
                 new Vector2(-560f, -52f));
             UICanvasUtil.MakeRoundedPanel(left, PaperDeep, 20, .45f);
             TMP_Text ledger = UICanvasUtil.NewEyebrow("Ledger", left,
-                Localization.Get("apothecary.recipes"), 18f, HollowfenPalette.PaperAccentInk,
+                Localization.Get("apothecary.recipes"), 20f, HollowfenPalette.PaperAccentInk,
                 TextAlignmentOptions.Center);
             SetFixed(ledger.rectTransform, new Vector2(340f, 30f), new Vector2(0f, 330f));
             _recipeList = NewFixed("RecipeList", left, new Vector2(360f, 560f), new Vector2(0f, 0f));
@@ -566,7 +566,7 @@ namespace Hollowfen.Apothecary
                 TextAlignmentOptions.Center);
             SetFixed(_heroLock.rectTransform, new Vector2(330f, 120f), Vector2.zero);
 
-            _kind = UICanvasUtil.NewEyebrow("Kind", detail, "", 18f,
+            _kind = UICanvasUtil.NewEyebrow("Kind", detail, "", 20f,
                 HollowfenPalette.PaperAccentInk, TextAlignmentOptions.Left);
             SetFixed(_kind.rectTransform, new Vector2(510f, 26f), new Vector2(246f, 315f));
             _title = UICanvasUtil.NewHeading("RecipeTitle", detail, "", 36f, Ink,
@@ -575,12 +575,12 @@ namespace Hollowfen.Apothecary
             _summary = UICanvasUtil.NewBody("Summary", detail, "", 20f, InkMuted,
                 FontStyles.Normal, TextAlignmentOptions.TopLeft);
             SetFixed(_summary.rectTransform, new Vector2(510f, 142f), new Vector2(246f, 125f));
-            _stock = UICanvasUtil.NewBody("Stock", detail, "", 18f, ForestRaised,
+            _stock = UICanvasUtil.NewBody("Stock", detail, "", 20f, ForestRaised,
                 FontStyles.Bold, TextAlignmentOptions.Left);
             SetFixed(_stock.rectTransform, new Vector2(510f, 34f), new Vector2(246f, 42f));
 
             TMP_Text ingredientHead = UICanvasUtil.NewEyebrow("IngredientHead", detail,
-                Localization.Get("apothecary.ingredients"), 18f, HollowfenPalette.PaperAccentInk);
+                Localization.Get("apothecary.ingredients"), 20f, HollowfenPalette.PaperAccentInk);
             SetFixed(ingredientHead.rectTransform, new Vector2(440f, 28f), new Vector2(-290f, -22f));
             _ingredients = UICanvasUtil.NewBody("Ingredients", detail, "", 20f, Ink,
                 FontStyles.Normal, TextAlignmentOptions.TopLeft);
@@ -588,7 +588,7 @@ namespace Hollowfen.Apothecary
             SetFixed(_ingredients.rectTransform, new Vector2(440f, 154f), new Vector2(-290f, -112f));
 
             TMP_Text stepsHead = UICanvasUtil.NewEyebrow("StepsHead", detail,
-                Localization.Get("apothecary.method"), 18f, HollowfenPalette.PaperAccentInk);
+                Localization.Get("apothecary.method"), 20f, HollowfenPalette.PaperAccentInk);
             SetFixed(stepsHead.rectTransform, new Vector2(480f, 28f), new Vector2(260f, -22f));
             _stepsRoot = NewFixed("Steps", detail, new Vector2(490f, 175f), new Vector2(260f, -118f));
 
@@ -627,7 +627,7 @@ namespace Hollowfen.Apothecary
             image.sprite = UICanvasUtil.RoundedRect(14);
             image.type = Image.Type.Sliced;
             image.color = background;
-            TMP_Text label = UICanvasUtil.NewBody("Label", rt, text, 19f, foreground,
+            TMP_Text label = UICanvasUtil.NewBody("Label", rt, text, 20f, foreground,
                 FontStyles.Bold, TextAlignmentOptions.Center);
             UICanvasUtil.Stretch(label.rectTransform);
             Button button = rt.gameObject.AddComponent<Button>();

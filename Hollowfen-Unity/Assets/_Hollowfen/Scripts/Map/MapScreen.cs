@@ -675,7 +675,7 @@ namespace Hollowfen.Map
             sepRT.sizeDelta = new Vector2(1.4f, 26f);
             sepRT.anchoredPosition = new Vector2(268f, 0f);
 
-            var eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", tbRT, Hollowfen.Localization.Get("map.eyebrow"), 12.5f,
+            var eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", tbRT, Hollowfen.Localization.Get("map.eyebrow"), 18f,
                 HollowfenPalette.Gold, TMPro.TextAlignmentOptions.Left);
             var eyRT = eyebrow.rectTransform;
             eyRT.anchorMin = new Vector2(0f, 0.5f); eyRT.anchorMax = new Vector2(0f, 0.5f);
@@ -787,7 +787,7 @@ namespace Hollowfen.Map
             UICanvasUtil.Stretch((RectTransform)chipStroke.transform);
 
             var label = UICanvasUtil.NewEyebrow("Label", chipRT,
-                Localization.Get("map.current_location"), 12.5f, HollowfenPalette.Cream,
+                Localization.Get("map.current_location"), 18f, HollowfenPalette.Cream,
                 TextAlignmentOptions.Center);
             label.fontStyle = FontStyles.Bold;
             label.raycastTarget = false;
@@ -831,7 +831,7 @@ namespace Hollowfen.Map
             stImg.sprite = UICanvasUtil.RoundedOutline(10, 1.3f);
             stImg.type = Image.Type.Sliced;
             UICanvasUtil.Stretch((RectTransform)stroke.transform);
-            var label = UICanvasUtil.NewEyebrow("Label", cRT, text, 13.5f, textColor, TMPro.TextAlignmentOptions.Center);
+            var label = UICanvasUtil.NewEyebrow("Label", cRT, text, 18f, textColor, TMPro.TextAlignmentOptions.Center);
             label.fontStyle = TMPro.FontStyles.Bold;
             label.raycastTarget = false;
             UICanvasUtil.Stretch(label.rectTransform);
@@ -895,12 +895,12 @@ namespace Hollowfen.Map
                 kLG.childForceExpandHeight = false;
                 key.AddComponent<ContentSizeFitter>().horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
                 ((RectTransform)key.transform).sizeDelta = new Vector2(60f, 26f);
-                var kTxt = UICanvasUtil.NewEyebrow("Txt", key.transform, hints[i][0], 13.5f, HollowfenPalette.Gold, TMPro.TextAlignmentOptions.Center);
+                var kTxt = UICanvasUtil.NewEyebrow("Txt", key.transform, hints[i][0], 18f, HollowfenPalette.Gold, TMPro.TextAlignmentOptions.Center);
                 kTxt.fontStyle = TMPro.FontStyles.Bold;
                 kTxt.textWrappingMode = TextWrappingModes.NoWrap;
                 kTxt.raycastTarget = false;
 
-                var lbl = UICanvasUtil.NewBody("Lbl", group.transform, hints[i][1], 14.5f,
+                var lbl = UICanvasUtil.NewBody("Lbl", group.transform, hints[i][1], 18f,
                     HollowfenPalette.Cream, TMPro.FontStyles.Normal, TMPro.TextAlignmentOptions.Left);
                 lbl.textWrappingMode = TextWrappingModes.NoWrap;
                 lbl.raycastTarget = false;
@@ -943,7 +943,7 @@ namespace Hollowfen.Map
             Color inkSoft = new Color(0.27f, 0.22f, 0.15f, 1f);
 
             _sideEyebrow = UICanvasUtil.NewEyebrow("Eyebrow", spRT,
-                Hollowfen.Localization.Get("map.eyebrow.landmark"), 12.5f, HollowfenPalette.PaperAccentInk, TMPro.TextAlignmentOptions.TopLeft);
+                Hollowfen.Localization.Get("map.eyebrow.landmark"), 18f, HollowfenPalette.PaperAccentInk, TMPro.TextAlignmentOptions.TopLeft);
             var eRT = _sideEyebrow.rectTransform;
             eRT.anchorMin = new Vector2(0f, 1f); eRT.anchorMax = new Vector2(1f, 1f);
             eRT.pivot = new Vector2(0.5f, 1f);
@@ -969,7 +969,7 @@ namespace Hollowfen.Map
             rRT.sizeDelta = new Vector2(72f, 2f);
             rRT.anchoredPosition = new Vector2(padX, topY - 98f);
 
-            _sideBody = UICanvasUtil.NewBody("Body", spRT, "", 17f,
+            _sideBody = UICanvasUtil.NewBody("Body", spRT, "", 20f,
                 inkSoft, TMPro.FontStyles.Italic, TMPro.TextAlignmentOptions.TopLeft);
             var bRT = _sideBody.rectTransform;
             bRT.anchorMin = new Vector2(0f, 1f); bRT.anchorMax = new Vector2(1f, 1f);
@@ -1011,7 +1011,7 @@ namespace Hollowfen.Map
             btn.onClick.AddListener(ToggleWaypointOnFocused);
 
             _sideWaypointBtnLabel = UICanvasUtil.NewEyebrow("Label", btnRT,
-                Hollowfen.Localization.Get("map.btn.waypoint"), 13f,
+                Hollowfen.Localization.Get("map.btn.waypoint"), 18f,
                 HollowfenPalette.InkDeep, TMPro.TextAlignmentOptions.Center);
             _sideWaypointBtnLabel.fontStyle = TMPro.FontStyles.Bold;
             _sideWaypointBtnLabel.raycastTarget = false;
@@ -1020,7 +1020,7 @@ namespace Hollowfen.Map
 
         private static TMP_Text BuildStatLabel(RectTransform parent, string name, string text, float x, float y)
         {
-            var t = UICanvasUtil.NewEyebrow(name, parent, text, 13.5f, HollowfenPalette.PaperMutedInk, TMPro.TextAlignmentOptions.TopLeft);
+            var t = UICanvasUtil.NewEyebrow(name, parent, text, 18f, HollowfenPalette.PaperMutedInk, TMPro.TextAlignmentOptions.TopLeft);
             var rt = t.rectTransform;
             rt.anchorMin = new Vector2(0f, 1f); rt.anchorMax = new Vector2(0f, 1f);
             rt.pivot = new Vector2(0f, 1f);
@@ -1033,7 +1033,7 @@ namespace Hollowfen.Map
 
         private static TMP_Text BuildStatValue(RectTransform parent, string name, float x, float y, Color color)
         {
-            var t = UICanvasUtil.NewBody(name, parent, "—", 16f, color, TMPro.FontStyles.Normal, TMPro.TextAlignmentOptions.TopLeft);
+            var t = UICanvasUtil.NewBody(name, parent, "—", 18f, color, TMPro.FontStyles.Normal, TMPro.TextAlignmentOptions.TopLeft);
             var rt = t.rectTransform;
             rt.anchorMin = new Vector2(0f, 1f); rt.anchorMax = new Vector2(0f, 1f);
             rt.pivot = new Vector2(0f, 1f);
@@ -1071,7 +1071,7 @@ namespace Hollowfen.Map
             nRT.sizeDelta = new Vector2(10f, 6f);
             nRT.anchoredPosition = new Vector2(0f, 1f);
 
-            var txt = UICanvasUtil.NewEyebrow("Txt", pRT, Hollowfen.Localization.Get("map.cardinal.n"), 15f,
+            var txt = UICanvasUtil.NewEyebrow("Txt", pRT, Hollowfen.Localization.Get("map.cardinal.n"), 18f,
                 HollowfenPalette.GoldGlow, TMPro.TextAlignmentOptions.Center);
             UICanvasUtil.Stretch(txt.rectTransform);
             txt.fontStyle = TMPro.FontStyles.Bold;

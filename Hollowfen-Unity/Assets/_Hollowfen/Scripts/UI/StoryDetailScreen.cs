@@ -156,7 +156,7 @@ namespace Hollowfen.UI
             identity.offsetMax = new Vector2(-42f, identity.offsetMax.y);
             identity.sizeDelta = new Vector2(identity.sizeDelta.x, 248f);
 
-            _eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", identity, "", 12f, Gold);
+            _eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", identity, "", 18f, Gold);
             UICanvasUtil.SetRect(_eyebrow.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, 1f), new Vector2(0f, 22f), new Vector2(0f, -30f));
 
             _title = UICanvasUtil.NewHeading("Title", identity, "", 58f, Cream, FontStyles.Normal, TextAlignmentOptions.TopLeft);
@@ -226,7 +226,7 @@ namespace Hollowfen.UI
             var annotationFitter = _annotationsRoot.AddComponent<ContentSizeFitter>();
             annotationFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
-            var noteTitle = UICanvasUtil.NewEyebrow("Title", _annotationsRoot.transform, Localization.Get("journal.story.annotations"), 12f, Gold);
+            var noteTitle = UICanvasUtil.NewEyebrow("Title", _annotationsRoot.transform, Localization.Get("journal.story.annotations"), 18f, Gold);
             JournalChrome.FitText(noteTitle, 22f);
             _wrenNote = UICanvasUtil.NewBody("WrenNote", _annotationsRoot.transform, "", 19f, Body, FontStyles.Italic);
             _wrenNote.lineSpacing = 7f;
@@ -252,7 +252,7 @@ namespace Hollowfen.UI
             _annotationsButton.transition = Selectable.Transition.None;
             _annotationsButton.targetGraphic = annotationImage;
             _annotationsButton.onClick.AddListener(() => SetAnnotationsVisible(!_annotationsVisible, true));
-            _annotationsLabel = UICanvasUtil.NewEyebrow("Label", annotationRt, Localization.Get("journal.story.annotations"), 12f, Gold, TextAlignmentOptions.Center);
+            _annotationsLabel = UICanvasUtil.NewEyebrow("Label", annotationRt, Localization.Get("journal.story.annotations"), 18f, Gold, TextAlignmentOptions.Center);
             UICanvasUtil.Stretch(_annotationsLabel.rectTransform);
             var annotationFocus = annotationRt.gameObject.AddComponent<FocusHighlight>();
             annotationFocus.Configure(annotationImage, annotationRt, new Color(Gold.r, Gold.g, Gold.b, 0.22f), 1.02f);
@@ -270,7 +270,7 @@ namespace Hollowfen.UI
             prevRt.offsetMax = Vector2.zero;
             _prevButton.onClick.AddListener(GoPrev);
 
-            _pageIndicator = UICanvasUtil.NewBody("Page", nav, "", 15f, Subtle, FontStyles.Italic, TextAlignmentOptions.Center);
+            _pageIndicator = UICanvasUtil.NewBody("Page", nav, "", 18f, Subtle, FontStyles.Italic, TextAlignmentOptions.Center);
             UICanvasUtil.SetRect(_pageIndicator.rectTransform, new Vector2(0.42f, 0f), new Vector2(0.58f, 1f), new Vector2(0.5f, 0.5f), Vector2.zero, Vector2.zero);
 
             _nextButton = BuildNavButton(nav, "Next", false, out _nextLabel);
@@ -292,14 +292,14 @@ namespace Hollowfen.UI
             button.targetGraphic = image;
 
             var direction = UICanvasUtil.NewEyebrow("Direction", rt,
-                Localization.Get(previous ? "journal.previous" : "journal.next"), 12.5f, Subtle,
+                Localization.Get(previous ? "journal.previous" : "journal.next"), 18f, Subtle,
                 previous ? TextAlignmentOptions.Left : TextAlignmentOptions.Right);
             UICanvasUtil.SetRect(direction.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(previous ? 0f : 1f, 1f), new Vector2(0f, 18f), new Vector2(0f, -10f));
             label = UICanvasUtil.NewHeading("Label", rt, "", 19f, Cream, FontStyles.Italic,
                 previous ? TextAlignmentOptions.BottomLeft : TextAlignmentOptions.BottomRight);
             UICanvasUtil.SetRect(label.rectTransform, Vector2.zero, Vector2.one, new Vector2(previous ? 0f : 1f, 0.5f), new Vector2(-4f, -22f), new Vector2(previous ? 4f : -4f, 0f));
             label.enableAutoSizing = true;
-            label.fontSizeMin = 14f;
+            label.fontSizeMin = 18f;
             label.fontSizeMax = 19f;
             var focus = rt.gameObject.AddComponent<FocusHighlight>();
             focus.Configure(label, rt, Gold, 1.035f);

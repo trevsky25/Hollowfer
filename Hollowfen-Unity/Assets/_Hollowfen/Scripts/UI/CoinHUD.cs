@@ -154,7 +154,7 @@ namespace Hollowfen.UI
             dRT.sizeDelta = new Vector2(1f, 24f);
             dRT.anchoredPosition = new Vector2(-112f, 0f);
 
-            _hint = UICanvasUtil.NewEyebrow("PurseHint", rt, Localization.Get("hud.purse.keyboard"), 12.5f,
+            _hint = UICanvasUtil.NewEyebrow("PurseHint", rt, Localization.Get("hud.purse.keyboard"), 18f,
                 HollowfenPalette.Gold, TextAlignmentOptions.Center);
             var hRT = _hint.rectTransform;
             hRT.anchorMin = new Vector2(1f, 0f); hRT.anchorMax = new Vector2(1f, 1f);

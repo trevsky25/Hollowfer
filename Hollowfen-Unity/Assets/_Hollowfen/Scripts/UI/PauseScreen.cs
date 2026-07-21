@@ -170,7 +170,7 @@ namespace Hollowfen.UI
             innerRT.offsetMax = new Vector2(-10f, -10f);
 
             // Header
-            var eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", card, Localization.Get("ui.pause.eyebrow"), 13f, HollowfenPalette.PaperAccentInk, TextAlignmentOptions.Center);
+            var eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", card, Localization.Get("ui.pause.eyebrow"), 18f, HollowfenPalette.PaperAccentInk, TextAlignmentOptions.Center);
             UICanvasUtil.SetRect(eyebrow.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, 18f), new Vector2(0f, -42f));
 
             var title = UICanvasUtil.NewHeading("Title", card, Localization.Get("ui.pause.title"), 52f, HollowfenPalette.InkDeep, FontStyles.Normal, TextAlignmentOptions.Center);
@@ -191,7 +191,7 @@ namespace Hollowfen.UI
             _quitButton       = BuildRow(card, Localization.Get("ui.pause.quit"), ref y, out var quitLabel, danger: true);
 
             // Hint
-            var hint = UICanvasUtil.NewBody("Hint", card, Localization.Get("ui.pause.hint"), 15f,
+            var hint = UICanvasUtil.NewBody("Hint", card, Localization.Get("ui.pause.hint"), 18f,
                 HollowfenPalette.PaperMutedInk,
                 FontStyles.Italic, TextAlignmentOptions.Center);
             UICanvasUtil.SetRect(hint.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 20f), new Vector2(0f, 22f));

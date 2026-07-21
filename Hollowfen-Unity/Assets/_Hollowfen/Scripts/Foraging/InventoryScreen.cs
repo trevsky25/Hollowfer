@@ -491,11 +491,11 @@ namespace Hollowfen.Foraging
             bRT.sizeDelta = new Vector2(46f, 24f);
             bRT.anchoredPosition = new Vector2(-8f, -8f);
             var badgeTxt = UICanvasUtil.NewEyebrow("Txt", badgeGO.transform,
-                "×" + count, 14f, HollowfenPalette.InkDeep, TMPro.TextAlignmentOptions.Center);
+                "×" + count, 18f, HollowfenPalette.InkDeep, TMPro.TextAlignmentOptions.Center);
             UICanvasUtil.Stretch(badgeTxt.rectTransform);
 
             // Name
-            var name = UICanvasUtil.NewBody("Name", root.transform, JournalText.MushroomName(data), 16f,
+            var name = UICanvasUtil.NewBody("Name", root.transform, JournalText.MushroomName(data), 18f,
                 HollowfenPalette.InkDeep, TMPro.FontStyles.Normal, TMPro.TextAlignmentOptions.Center);
             var nRT = name.rectTransform;
             nRT.anchorMin = new Vector2(0f, 0f);
@@ -599,7 +599,7 @@ namespace Hollowfen.Foraging
 
             // Top eyebrow
             var topEyebrow = UICanvasUtil.NewEyebrow("TopEyebrow", panel.transform,
-                Hollowfen.Localization.Get("inventory.eyebrow"), 13f, HollowfenPalette.PaperAccentInk, TMPro.TextAlignmentOptions.Center);
+                Hollowfen.Localization.Get("inventory.eyebrow"), 18f, HollowfenPalette.PaperAccentInk, TMPro.TextAlignmentOptions.Center);
             var teRT = topEyebrow.rectTransform;
             teRT.anchorMin = new Vector2(0f, 1f); teRT.anchorMax = new Vector2(1f, 1f);
             teRT.pivot = new Vector2(0.5f, 1f);
@@ -638,7 +638,7 @@ namespace Hollowfen.Foraging
             UICanvasUtil.Stretch((RectTransform)_populatedState.transform);
 
             // Keepsakes strip — bottom-left, panel-level so it shows even with an empty pouch.
-            _keepsakesLabel = UICanvasUtil.NewBody("Keepsakes", panel.transform, "", 17f,
+            _keepsakesLabel = UICanvasUtil.NewBody("Keepsakes", panel.transform, "", 18f,
                 BodyInk, TMPro.FontStyles.Italic, TMPro.TextAlignmentOptions.BottomLeft);
             _keepsakesLabel.richText = true;
             var kRT = _keepsakesLabel.rectTransform;
@@ -728,12 +728,12 @@ namespace Hollowfen.Foraging
             hsRT.anchoredPosition = Vector2.zero;
             _hintText = UICanvasUtil.NewBody("Hint", hintScrim.transform,
                 "",
-                14.5f, HollowfenPalette.Cream, TMPro.FontStyles.Italic, TMPro.TextAlignmentOptions.Center);
+                18f, HollowfenPalette.Cream, TMPro.FontStyles.Italic, TMPro.TextAlignmentOptions.Center);
             UICanvasUtil.Stretch(_hintText.rectTransform);
 
             // "MODEL COMING SOON" overlay (centered in preview, hidden when prefab present)
             _previewMissingNote = UICanvasUtil.NewEyebrow("MissingNote", previewBg.transform,
-                Hollowfen.Localization.Get("journal.field.model_pending"), 14f, HollowfenPalette.PaperMutedInk, TMPro.TextAlignmentOptions.Center);
+                Hollowfen.Localization.Get("journal.field.model_pending"), 18f, HollowfenPalette.PaperMutedInk, TMPro.TextAlignmentOptions.Center);
             UICanvasUtil.Stretch(_previewMissingNote.rectTransform);
             _previewMissingNote.gameObject.SetActive(false);
 
@@ -756,7 +756,7 @@ namespace Hollowfen.Foraging
             scRT.anchoredPosition = new Vector2(previewLeft + previewSize, infoTopY);
             _selectedCount.richText = true;
 
-            _selectedLatin = UICanvasUtil.NewBody("SelectedLatin", _populatedState.transform, "", 16f,
+            _selectedLatin = UICanvasUtil.NewBody("SelectedLatin", _populatedState.transform, "", 18f,
                 HollowfenPalette.PaperMutedInk, TMPro.FontStyles.Italic, TMPro.TextAlignmentOptions.TopLeft);
             var slRT = _selectedLatin.rectTransform;
             slRT.anchorMin = new Vector2(0f, 1f); slRT.anchorMax = new Vector2(0f, 1f);

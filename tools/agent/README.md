@@ -2,7 +2,7 @@
 Scripts that make agent sessions faster and more reliable. Policy: when you find yourself repeating a multi-step incantation (driving the bridge, resetting state, capturing screenshots), turn it into a script here, document it below, and keep this list current.
 Everything here must run with system python3/bash — no venv, no pip installs.
 Committed to the repo on purpose: /tmp gets wiped (we lost the original unitymcp.py that way).
-Status: updated 2026-07-21 (Batch 121).
+Status: updated 2026-07-21 (Batch 125).
 
 ---
 
@@ -17,6 +17,7 @@ Status: updated 2026-07-21 (Batch 121).
 | `smoke_play.py` | Play-mode smoke: activate Unity (App Nap!), play, ≥240 frames, no new console errors, state sample, stop. | `python3 tools/agent/smoke_play.py [--min-frames N]` |
 | `unity_pipeline.py` | Structured JSON client for the pinned native Unity CLI/Pipeline connection. It preserves exact command argument names (including underscores), supports commands with a `name` parameter, and never reads or emits Unity startup logs. | Import `UnityPipeline`, or run the baseline script below. Set `UNITY_CLI` only when the CLI is not at `~/.unity/bin/unity`. |
 | `capture_visual_baseline.py` | Run audit preflight + data integrity, capture eight gate-checked 1280×800 UI states, and sample the five-stop village Editor diagnostic route using isolated temporary saves. Existing evidence is immutable unless `--replace` is explicit. | `python3 tools/agent/capture_visual_baseline.py [--replace] [--samples-per-stop 8] [--timed-frames 60]` |
+| `capture_full_ui_audit.py` | Run production preflight + owned save isolation, then capture and measure the complete 43-route UI catalog at 1280×800 under both 100% and maximum 115% accessibility profiles. Uses the existing production UI verifier and never reads startup logs. | `python3 tools/agent/capture_full_ui_audit.py [--replace]` |
 
 **Pre-commit gate**: `.githooks/pre-commit` runs lint always + integrity when the bridge is up. Enable per clone: `git config core.hooksPath .githooks`.
 

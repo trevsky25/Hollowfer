@@ -132,7 +132,7 @@ namespace Hollowfen.UI
             strokeImg.type = Image.Type.Sliced;
             UICanvasUtil.Stretch((RectTransform)stroke.transform);
 
-            _eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", _card, "", 13f,
+            _eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", _card, "", 18f,
                 HollowfenPalette.GoldGlow, TextAlignmentOptions.TopLeft);
             _eyebrow.fontStyle = FontStyles.Bold;
             var eRT = _eyebrow.rectTransform;

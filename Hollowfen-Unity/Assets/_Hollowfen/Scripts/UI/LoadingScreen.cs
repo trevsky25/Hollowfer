@@ -101,6 +101,12 @@ namespace Hollowfen.UI
             var scaler = canvas.GetComponent<CanvasScaler>();
             if (scaler == null) scaler = canvas.gameObject.AddComponent<CanvasScaler>();
             scaler.Init1080();
+
+            // Plain (non-cinematic) loading is scene-authored against the legacy 1280×800
+            // composition. Keep its small eyebrow above the production 12 px rendered floor
+            // after the shared 1080p scaler is applied.
+            foreach (TMP_Text text in canvas.GetComponentsInChildren<TMP_Text>(true))
+                if (text.name == "Eyebrow") text.fontSize = Mathf.Max(text.fontSize, 18f);
         }
 
         public override void OnOpen()

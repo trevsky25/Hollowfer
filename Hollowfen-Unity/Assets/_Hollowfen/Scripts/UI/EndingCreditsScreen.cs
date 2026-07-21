@@ -174,7 +174,7 @@ namespace Hollowfen.UI
             column.pivot = new Vector2(0f, 0.5f); column.sizeDelta = new Vector2(930f, -120f);
             column.anchoredPosition = new Vector2(100f, 0f);
 
-            var eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", column, Localization.Get("ending.credits.eyebrow"), 15f,
+            var eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", column, Localization.Get("ending.credits.eyebrow"), 18f,
                 HollowfenPalette.Gold, TextAlignmentOptions.Left);
             UICanvasUtil.SetRect(eyebrow.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, 1f), new Vector2(0f, 28f), new Vector2(0f, -28f));
 
@@ -191,7 +191,7 @@ namespace Hollowfen.UI
             _note.lineSpacing = 8f;
             UICanvasUtil.SetRect(_note.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, 1f), new Vector2(-80f, 176f), new Vector2(0f, -258f));
 
-            var saved = UICanvasUtil.NewEyebrow("Saved", column, Localization.Get("ending.credits.saved"), 13f,
+            var saved = UICanvasUtil.NewEyebrow("Saved", column, Localization.Get("ending.credits.saved"), 18f,
                 HollowfenPalette.Sage, TextAlignmentOptions.Left);
             UICanvasUtil.SetRect(saved.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0f, 0f), new Vector2(0f, 28f), new Vector2(0f, 214f));
 
@@ -207,7 +207,7 @@ namespace Hollowfen.UI
                 Localization.Get("credits.fonts"),
                 Localization.Get("credits.thanks"),
             });
-            var credits = UICanvasUtil.NewBody("Credits", column, creditCopy, 16f,
+            var credits = UICanvasUtil.NewBody("Credits", column, creditCopy, 20f,
                 new Color(HollowfenPalette.Cream.r, HollowfenPalette.Cream.g, HollowfenPalette.Cream.b, 0.70f),
                 FontStyles.Normal, TextAlignmentOptions.TopLeft);
             credits.lineSpacing = 6f;
@@ -223,7 +223,7 @@ namespace Hollowfen.UI
             var remainNav = _remainButton.navigation; remainNav.mode = Navigation.Mode.Explicit;
             remainNav.selectOnLeft = _returnButton; remainNav.selectOnRight = _returnButton; _remainButton.navigation = remainNav;
 
-            var hint = UICanvasUtil.NewBody("Hint", root, Localization.Get("ending.credits.hint"), 14f,
+            var hint = UICanvasUtil.NewBody("Hint", root, Localization.Get("ending.credits.hint"), 18f,
                 new Color(HollowfenPalette.Cream.r, HollowfenPalette.Cream.g, HollowfenPalette.Cream.b, 0.62f),
                 FontStyles.Italic, TextAlignmentOptions.BottomRight);
             UICanvasUtil.SetRect(hint.rectTransform, new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(620f, 24f), new Vector2(-80f, 28f));

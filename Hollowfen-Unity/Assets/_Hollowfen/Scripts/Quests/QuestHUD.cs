@@ -116,7 +116,7 @@ namespace Hollowfen.Quests
 
             _eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", rt,
                 string.Format(Hollowfen.Localization.Get("quest.hud.eyebrow"), "I"),
-                18f, HollowfenPalette.Gold, TextAlignmentOptions.TopLeft);
+                20f, HollowfenPalette.Gold, TextAlignmentOptions.TopLeft);
             _eyebrow.fontStyle = FontStyles.Bold;
             var eRT = _eyebrow.rectTransform;
             eRT.anchorMin = new Vector2(0f, 1f); eRT.anchorMax = new Vector2(1f, 1f);
@@ -131,7 +131,7 @@ namespace Hollowfen.Quests
             nRT.sizeDelta = new Vector2(-36f, 30f);
             nRT.anchoredPosition = new Vector2(18f, -35f);
 
-            _objective = UICanvasUtil.NewBody("Objective", rt, "", 18f, HollowfenPalette.Parchment, FontStyles.Italic, TextAlignmentOptions.TopLeft);
+            _objective = UICanvasUtil.NewBody("Objective", rt, "", 20f, HollowfenPalette.Parchment, FontStyles.Italic, TextAlignmentOptions.TopLeft);
             _objective.textWrappingMode = TextWrappingModes.Normal;
             var oRT = _objective.rectTransform;
             oRT.anchorMin = new Vector2(0f, 1f); oRT.anchorMax = new Vector2(1f, 1f);

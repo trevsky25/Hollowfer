@@ -263,7 +263,7 @@ namespace Hollowfen.Cultivation
             UICanvasUtil.AddShadow(card, 22, 30, 0.5f, -10f);
 
             var eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", card, Localization.Get("cultivation.eyebrow"),
-                14f, HollowfenPalette.PaperAccentInk, TextAlignmentOptions.Center);
+                18f, HollowfenPalette.PaperAccentInk, TextAlignmentOptions.Center);
             UICanvasUtil.SetRect(eyebrow.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f),
                 new Vector2(0.5f, 1f), new Vector2(-100f, 24f), new Vector2(0f, -36f));
             var title = UICanvasUtil.NewHeading("Title", card, Localization.Get("cultivation.title"),

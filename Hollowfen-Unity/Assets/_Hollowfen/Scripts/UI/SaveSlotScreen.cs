@@ -77,7 +77,11 @@ namespace Hollowfen.UI
             foreach (TMP_Text label in canvas.GetComponentsInChildren<TMP_Text>(true))
             {
                 if (label.name == "Title") label.text = Localization.Get("save.title");
-                else if (label.name == "Footer") label.text = Localization.Get("save.footer");
+                else if (label.name == "Footer")
+                {
+                    label.text = Localization.Get("save.footer");
+                    label.fontSize = 18f;
+                }
             }
         }
 

@@ -4,7 +4,7 @@ Run: `tools/agent/lint_hollowfen.py` (always) · `tools/agent/run_integrity.py` 
 Checker code: `Assets/_Hollowfen/Scripts/Editor/DataIntegrity.cs` — an editor utility, NOT a Unity Test Framework assembly, because game code compiles into Assembly-CSharp (coupled to no-asmdef third-party sources) and test assemblies can't reference it.
 Philosophy: checks target failures that are SILENT at runtime (Localization.Get returns the raw id on a miss; PickDialog skips null entries; extra relationship ids are ignored). Loud failures don't need tests — the console already catches them.
 Waiver policy: lint waivers in `tools/agent/lint_waivers.txt`, each pointing at the TODOS item that owns the fix. A waiver is a debt marker, not a dismissal; Batch 123 resolves the final current waiver, so the expected baseline is `WAIVED=0`.
-Status: all three layers verified through 2026-07-21. Focused verifiers cover save-file integrity, durable inventory batches, endings, presentation ownership, repeatable gameplay, village requests, Living Restoration, the apothecary, day/night, dynamic weather, NPC schedules, relationship memory/personal arcs, regional feedback, audio/voice, and active production UI. Batch 120 adds a gated visual/performance baseline; Batch 121 exposes the synchronous checks through a safe native Pipeline allowlist; Batch 122 proves the world audit can drive a bounded scene-collision cleanup; Batch 123 removes obsolete Player-compiling debug paths and reaches a zero-waiver lint baseline; Batch 124 makes save-slot quest rendering ID-authoritative while retaining explicit schema-zero compatibility. Destructive state verifiers use an isolated temporary save directory where supported.
+Status: all three layers verified through 2026-07-21. Focused verifiers cover save-file integrity, durable inventory batches, endings, presentation ownership, repeatable gameplay, village requests, Living Restoration, the apothecary, day/night, dynamic weather, NPC schedules, relationship memory/personal arcs, regional feedback, audio/voice, and active production UI. Batch 120 adds a gated visual/performance baseline; Batch 121 exposes the synchronous checks through a safe native Pipeline allowlist; Batch 122 proves the world audit can drive a bounded scene-collision cleanup; Batch 123 removes obsolete Player-compiling debug paths and reaches a zero-waiver lint baseline; Batch 124 makes save-slot quest rendering ID-authoritative while retaining explicit schema-zero compatibility; Batch 125 expands UI coverage to 43 routes under both standard and maximum accessibility profiles. Destructive state verifiers use an isolated temporary save directory where supported.
 
 > Self-healing doc: adding a check? Document it here. Hitting a new failure class? Add a check AND a row here in the same batch.
 
@@ -67,6 +67,27 @@ With the pinned Unity Editor stopped and scenes clean, run `python3 tools/agent/
 Both UI and gameplay phases arm unique temporary save directories and clear their overrides in `finally`; the runner also restores the starting scene and stops Play Mode. Existing evidence is not overwritten unless `--replace` is explicit. The report records exact gate output, dimensions, and performance samples under `Docs/screenshots/batch-NN/`.
 
 The five-stop route records 60 wall-time samples around `EditorApplication.Step()` plus Pipeline triangle, SetPass, and allocated-memory snapshots. This includes Editor overhead and is CPU-side only: it is a regression reference for later batches, **not** a standalone-player, GPU, 60fps, or Steam Deck certification result. Captures are reviewed manually; the harness does not yet claim tolerant pixel-diff automation.
+
+## Full-game UI audit (`tools/agent/capture_full_ui_audit.py`)
+
+With the pinned Editor stopped and scenes clean, run `python3 tools/agent/capture_full_ui_audit.py`.
+The Editor-only harness stages 43 menu, HUD, modal, journal, inspection, map, dialogue, request,
+cultivation, apothecary, toast, narration, and cutting presentations at 1280×800. The runner repeats
+the entire catalogue at standard 100% and maximum 115% Interface Size with Reduced Motion and
+Caption Backing enabled: 86 captures total.
+
+Every route must pass `ProductionUIVerifier`, expose visible text, settle with the expected screen
+ownership and focus, produce a valid 1280×800 PNG, and report rendered text size, paragraph size,
+TMP clipping, and screen-bound intersections. Text outside a masked scroll viewport is retained as
+diagnostic evidence rather than treated as clipping. Stable routes use real Pipeline autotick for
+layout/fade settling; short region/restoration notices are sampled during their visible hold. The
+runner never batches `EditorApplication.Step`, because doing so prevents Unity from retiring
+temporary frame allocations and creates false Editor-console diagnostics.
+
+The run is bracketed by production preflight and command-owned save isolation, restores all three
+accessibility preferences plus the starting scene, stops Play Mode, disables autotick, and refuses
+to overwrite evidence unless `--replace` is explicit. Batch-125 evidence and the machine-readable
+report live in `Docs/screenshots/batch-125-ui-audit/`.
 
 ## Native Pipeline command layer
 
@@ -208,8 +229,9 @@ While the presentation under test is fully open, run `Tools > Hollowfen > Verify
 or call `ProductionUIVerifier.VerifyActiveForAutomation()`. It checks the shared accessible canvas
 contract projected through the current Interface Size preference, invisible raycast blockers, TMP font/readability/clipping, minimum hit targets, missing UI components, and cutting-shadow containment. It also validates current focus ownership for both `UIManager` screens and standalone modal canvases, and proves the adaptive quest objective remains inside its rounded card. Runtime focus recovery restores the first valid control when mouse input, a destroyed dynamic row, or a presentation transition clears EventSystem selection. Batch 87 exercised the main
 menu, all journal pages, save/load/settings/modal flows, gameplay HUD, pause, inventory, inspect,
-map, requests, cultivation, NPC dialogue, and the mushroom-cutting kneel at 1280×800; every settled
-presentation returned `0 critical / 0 advisory`. This is structural presentation lint, not a pixel-
+map, requests, cultivation, NPC dialogue, and the mushroom-cutting kneel at 1280×800. Batch 125
+extended that verification to 43 routes at both 100% and 115% Interface Size; all 86 settled
+presentations returned `0 critical / 0 advisory`. This is structural presentation lint, not a pixel-
 golden visual test, so screenshots remain part of the handoff evidence.
 
 ## Focused economy/progression verifier
@@ -231,6 +253,6 @@ Expected result: `NARRATIVE COPY — PASS: 145 dialogues, 26 quest cards, 16 vil
 - **Playtime cadence/lifecycle callbacks**: `SaveIntegrityVerifier` proves playtime normalization and disk round-trip, but it does not wait through the 60-second focused timer or synthesize application pause/quit. Verify those hooks in a Play Mode lifecycle check before release.
 - **Derived content translation coverage** — journal fields are routed through stable IDs with English SO fallbacks, but the checker does not yet require an English/Chinese LUT row for every derived Story/mushroom/character key.
 - **Full controller traversal** — batch-63 live QA asserts explicit navigation, locked-focus skipping, and return focus for the journal family; a device-driven automated traversal is still a candidate PlayMode test.
-- **Visual composition** — batch-120 adds the repeatable gate-checked eight-screen 1280×800 baseline; batch-84 adds the in-world Old Wood arrival title; batch-83 adds day/night Crooked Pintle routine evidence; batch-82 adds fixed-view day/dusk/night village evidence plus a ground-level night-practical shot; batch-71 covers Wren's character study; batches 69–70 cover model lighting/controls/framing. Screenshot judgment remains manual rather than tolerant pixel-diff automation.
+- **Visual composition** — batch-125 adds the complete 86-capture standard/accessible UI catalogue and batch-120 retains the performance/world baseline; batch-84 adds the in-world Old Wood arrival title; batch-83 adds day/night Crooked Pintle routine evidence; batch-82 adds fixed-view day/dusk/night village evidence plus a ground-level night-practical shot; batch-71 covers Wren's character study; batches 69–70 cover model lighting/controls/framing. Screenshot judgment remains manual rather than tolerant pixel-diff automation.
 - **Hardcoded display strings** — needs the dialogue localization restructure first; the linter can't distinguish display strings from ids reliably today.
 - **False-confidence audit**: every ~10 batches, re-verify checks still catch planted faults. The isolated save verifier now owns parseable corruption, checksum tamper, temp/backup revision choice, future-version refusal, and recovered-rewrite quarantine.

@@ -20,7 +20,7 @@ namespace Hollowfen.Map
         [SerializeField] private float _iconSize = 18f;
         [SerializeField, Range(0f, 1f)] private float _undiscoveredAlpha = 0.4f;
         [SerializeField] private bool _showLabels;
-        [SerializeField] private float _labelFontSize = 13.5f;
+        [SerializeField] private float _labelFontSize = 18f;
         [SerializeField] private float _labelOffsetY = -8f;
         [SerializeField] private bool _hideOutsideRect = true;
         [SerializeField] private bool _includeUndiscovered = true;
@@ -118,9 +118,9 @@ namespace Hollowfen.Map
                         }
                         // Re-measure every frame — TMP preferred sizes are unreliable on the frame
                         // the text is set, so a one-shot measure can bake in garbage. Self-heals.
-                        float w = Mathf.Max(34f, icon.label.preferredWidth + 22f);
+                        float w = Mathf.Max(40f, icon.label.preferredWidth + 24f);
                         if (Mathf.Abs(icon.chip.sizeDelta.x - w) > 0.5f)
-                            icon.chip.sizeDelta = new Vector2(w, 24f);
+                            icon.chip.sizeDelta = new Vector2(w, 28f);
                         icon.chipFill.color = isFocused
                             ? new Color(0.05f, 0.04f, 0.02f, 0.96f)
                             : new Color(0.05f, 0.04f, 0.02f, 0.78f);
@@ -246,7 +246,7 @@ namespace Hollowfen.Map
                 chip.anchorMin = new Vector2(0.5f, 0f);
                 chip.anchorMax = new Vector2(0.5f, 0f);
                 chip.pivot = new Vector2(0.5f, 1f);
-                chip.sizeDelta = new Vector2(80f, 24f);
+                chip.sizeDelta = new Vector2(120f, 28f);
                 chip.anchoredPosition = new Vector2(0f, _labelOffsetY);
                 chipFill = chipGO.AddComponent<Image>();
                 chipFill.sprite = UICanvasUtil.RoundedRect(9);

@@ -358,7 +358,8 @@ namespace Hollowfen.EditorTools
             float alpha = 1f;
             foreach (CanvasGroup group in text.GetComponentsInParent<CanvasGroup>(true))
                 alpha *= group.alpha;
-            return alpha * text.color.a > 0.03f;
+            Canvas canvas = text.GetComponentInParent<Canvas>();
+            return alpha * text.color.a > 0.03f && canvas != null && canvas.enabled;
         }
 
         private static bool IsDecorativeMicrocopy(TMP_Text text)

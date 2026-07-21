@@ -288,7 +288,7 @@ namespace Hollowfen.UI
             _questName = UICanvasUtil.NewHeading("QuestName", _card, "", 27f, HollowfenPalette.Cream,
                 FontStyles.Normal, TextAlignmentOptions.TopLeft);
             Place(_questName.rectTransform, MarginX + 66f, -300f, InnerW - 66f, 34f);
-            _questObjective = UICanvasUtil.NewBody("QuestObjective", _card, "", 18f,
+            _questObjective = UICanvasUtil.NewBody("QuestObjective", _card, "", 20f,
                 new Color(HollowfenPalette.Parchment.r, HollowfenPalette.Parchment.g, HollowfenPalette.Parchment.b, 0.76f),
                 FontStyles.Normal, TextAlignmentOptions.TopLeft);
             Place(_questObjective.rectTransform, MarginX + 66f, -337f, InnerW - 66f, 30f);

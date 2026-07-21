@@ -1608,7 +1608,7 @@ namespace Hollowfen.Foraging
             string goldHex = ColorUtility.ToHtmlStringRGB(HollowfenPalette.PaperAccentInk);
             string inkHex = ColorUtility.ToHtmlStringRGB(InkSoftDark);
             t.richText = true;
-            t.text = $"<size=11><color=#{goldHex}><b>{label}</b></color></size>\n<color=#{inkHex}>{value}</color>";
+            t.text = $"<size=18><color=#{goldHex}><b>{label}</b></color></size>\n<color=#{inkHex}>{value}</color>";
         }
 
         private static readonly Color InkSoftDark = new Color(0.20f, 0.16f, 0.12f, 1f);
@@ -1648,7 +1648,7 @@ namespace Hollowfen.Foraging
 
             // Eyebrow strip at the very top: "FIELD JOURNAL — SPECIMEN"
             var topEyebrow = UICanvasUtil.NewEyebrow("TopEyebrow", panel.transform,
-                Hollowfen.Localization.Get("inspect.eyebrow"), 13f, HollowfenPalette.PaperAccentInk, TMPro.TextAlignmentOptions.Center);
+                Hollowfen.Localization.Get("inspect.eyebrow"), 18f, HollowfenPalette.PaperAccentInk, TMPro.TextAlignmentOptions.Center);
             var teRT = topEyebrow.rectTransform;
             teRT.anchorMin = new Vector2(0f, 1f);
             teRT.anchorMax = new Vector2(1f, 1f);
@@ -1697,7 +1697,7 @@ namespace Hollowfen.Foraging
             hsRT.anchoredPosition = Vector2.zero;
             var hint = UICanvasUtil.NewBody("Hint", hintScrim.transform,
                 Hollowfen.Localization.Get("inspect.preview.hint"),
-                14.5f, HollowfenPalette.Cream,
+                18f, HollowfenPalette.Cream,
                 TMPro.FontStyles.Italic, TMPro.TextAlignmentOptions.Center);
             UICanvasUtil.Stretch(hint.rectTransform);
 
@@ -1713,7 +1713,7 @@ namespace Hollowfen.Foraging
             float y = 0f;
 
             // Eyebrow (edibility category, gold uppercase, letter-spaced)
-            _eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", col, "", 14f, HollowfenPalette.PaperAccentInk);
+            _eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", col, "", 18f, HollowfenPalette.PaperAccentInk);
             var eRT = _eyebrow.rectTransform;
             eRT.anchorMin = new Vector2(0f, 1f); eRT.anchorMax = new Vector2(1f, 1f);
             eRT.pivot = new Vector2(0f, 1f);
@@ -1770,7 +1770,7 @@ namespace Hollowfen.Foraging
             dotRT.anchoredPosition = new Vector2(12f, 0f);
             _edibilityDot = dotGO.GetComponent<Image>();
 
-            _edibilityLabel = UICanvasUtil.NewEyebrow("EdibilityLabel", _edibilityChip, "", 14f, HollowfenPalette.InkDeep);
+            _edibilityLabel = UICanvasUtil.NewEyebrow("EdibilityLabel", _edibilityChip, "", 18f, HollowfenPalette.InkDeep);
             var elRT = _edibilityLabel.rectTransform;
             elRT.anchorMin = new Vector2(0f, 0.5f); elRT.anchorMax = new Vector2(1f, 0.5f);
             elRT.pivot = new Vector2(0f, 0.5f);
@@ -1813,7 +1813,7 @@ namespace Hollowfen.Foraging
             y -= statStripH + 12f;
 
             // Forager's note — italic gold pull-quote
-            _foragerNote = UICanvasUtil.NewBody("ForagerNote", col, "", 18f, HollowfenPalette.PaperAccentInk,
+            _foragerNote = UICanvasUtil.NewBody("ForagerNote", col, "", 20f, HollowfenPalette.PaperAccentInk,
                 TMPro.FontStyles.Italic, TMPro.TextAlignmentOptions.TopLeft);
             var fnRT = _foragerNote.rectTransform;
             fnRT.anchorMin = new Vector2(0f, 1f); fnRT.anchorMax = new Vector2(1f, 1f);
@@ -1879,7 +1879,7 @@ namespace Hollowfen.Foraging
             JournalChrome.AddStructuralBorder(referenceRT, 16, 0.12f);
 
             _quizReferenceEyebrow = UICanvasUtil.NewEyebrow("ReferenceEyebrow", referenceRT,
-                Hollowfen.Localization.Get("inspect.study.reference_eyebrow"), 12f,
+                Hollowfen.Localization.Get("inspect.study.reference_eyebrow"), 18f,
                 HollowfenPalette.PaperAccentInk, TextAlignmentOptions.Center);
             UICanvasUtil.SetRect(_quizReferenceEyebrow.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f),
                 new Vector2(0.5f, 1f), new Vector2(-44f, 22f), new Vector2(0f, -20f));
@@ -1936,7 +1936,7 @@ namespace Hollowfen.Foraging
             }
             _quizInkMarksRoot.SetActive(false);
 
-            _quizPageCounter = UICanvasUtil.NewEyebrow("PageCounter", referenceRT, "", 13f,
+            _quizPageCounter = UICanvasUtil.NewEyebrow("PageCounter", referenceRT, "", 18f,
                 HollowfenPalette.PaperAccentInk, TextAlignmentOptions.Center);
             UICanvasUtil.SetRect(_quizPageCounter.rectTransform,
                 new Vector2(0f, 0.5f), new Vector2(1f, 0.5f), new Vector2(0.5f, 0.5f),
@@ -1963,15 +1963,13 @@ namespace Hollowfen.Foraging
             ConfigureReferenceButton(_quizNextPage, 132f, 58f);
             _quizNextPage.onClick.AddListener(() => ChangeQuizCandidatePage(1));
 
-            _quizPageHint = UICanvasUtil.NewBody("PageHint", referenceRT, "", 17f,
+            _quizPageHint = UICanvasUtil.NewBody("PageHint", referenceRT, "", 18f,
                 BodyInk, FontStyles.Italic, TextAlignmentOptions.Center);
             UICanvasUtil.SetRect(_quizPageHint.rectTransform,
                 new Vector2(0f, 0.5f), new Vector2(1f, 0.5f), new Vector2(0.5f, 0.5f),
                 new Vector2(-80f, 92f), new Vector2(0f, -238f));
             _quizPageHint.textWrappingMode = TextWrappingModes.Normal;
-            _quizPageHint.enableAutoSizing = true;
-            _quizPageHint.fontSizeMin = 13f;
-            _quizPageHint.fontSizeMax = 17f;
+            _quizPageHint.enableAutoSizing = false;
 
             _quizDiscoveryAnnotationRoot = UICanvasUtil.NewImage("WrenFieldNote", referenceRT,
                 new Color(0.88f, 0.82f, 0.69f, 1f), false);
@@ -2011,13 +2009,14 @@ namespace Hollowfen.Foraging
             questionRT.sizeDelta = new Vector2(690f, 720f);
             questionRT.anchoredPosition = new Vector2(365f, 0f);
 
-            _quizProgress = UICanvasUtil.NewBody("Progress", questionRT, "", 13f,
+            _quizProgress = UICanvasUtil.NewBody("Progress", questionRT, "", 20f,
                 HollowfenPalette.Cream, FontStyles.Bold, TextAlignmentOptions.Center);
             _quizProgress.richText = true;
+            _quizProgress.textWrappingMode = TextWrappingModes.NoWrap;
             UICanvasUtil.SetRect(_quizProgress.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f),
                 new Vector2(0.5f, 1f), new Vector2(-16f, 24f), new Vector2(0f, 0f));
 
-            _quizEyebrow = UICanvasUtil.NewEyebrow("Eyebrow", questionRT, "", 14f,
+            _quizEyebrow = UICanvasUtil.NewEyebrow("Eyebrow", questionRT, "", 18f,
                 HollowfenPalette.Gold, TextAlignmentOptions.Left);
             UICanvasUtil.SetRect(_quizEyebrow.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f),
                 new Vector2(0f, 1f), new Vector2(-28f, 24f), new Vector2(14f, -48f));
@@ -2062,7 +2061,7 @@ namespace Hollowfen.Foraging
                 new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f),
                 new Vector2(0f, 34f), Vector2.zero);
             var silhouetteLabelText = UICanvasUtil.NewEyebrow("Text", silhouetteLabelRT,
-                Hollowfen.Localization.Get("inspect.browser.silhouette"), 12f,
+                Hollowfen.Localization.Get("inspect.browser.silhouette"), 18f,
                 HollowfenPalette.Cream, TextAlignmentOptions.Center);
             UICanvasUtil.Stretch(silhouetteLabelText.rectTransform);
             var silhouetteFocus = _quizSilhouetteFrame.AddComponent<FocusHighlight>();
@@ -2117,16 +2116,14 @@ namespace Hollowfen.Foraging
             UICanvasUtil.RoundifyOutline(feedbackOutline.GetComponent<Image>(), 12, 1.25f);
             UICanvasUtil.Stretch((RectTransform)feedbackOutline.transform);
 
-            _quizFeedback = UICanvasUtil.NewBody("Feedback", feedbackRT, "", 17f,
+            _quizFeedback = UICanvasUtil.NewBody("Feedback", feedbackRT, "", 20f,
                 HollowfenPalette.Gold, FontStyles.Italic, TextAlignmentOptions.Center);
             UICanvasUtil.Stretch(_quizFeedback.rectTransform);
             _quizFeedback.rectTransform.offsetMin = new Vector2(24f, 10f);
             _quizFeedback.rectTransform.offsetMax = new Vector2(-24f, -10f);
             _quizFeedback.textWrappingMode = TextWrappingModes.Normal;
             _quizFeedback.overflowMode = TextOverflowModes.Ellipsis;
-            _quizFeedback.enableAutoSizing = true;
-            _quizFeedback.fontSizeMin = 12.5f;
-            _quizFeedback.fontSizeMax = 17f;
+            _quizFeedback.enableAutoSizing = false;
 
             BuildQuizSuccessPresentation(questionRT);
 
@@ -2156,9 +2153,8 @@ namespace Hollowfen.Foraging
             if (label == null) return;
             label.rectTransform.offsetMin = new Vector2(10f, 0f);
             label.rectTransform.offsetMax = new Vector2(-10f, 0f);
-            label.enableAutoSizing = true;
-            label.fontSizeMin = 11f;
-            label.fontSizeMax = 16f;
+            label.enableAutoSizing = false;
+            label.fontSize = 18f;
         }
 
         private void BuildQuizSpecimenOverlay(RectTransform quizRT)
@@ -2559,7 +2555,7 @@ namespace Hollowfen.Foraging
 
         private static TMP_Text MakeStatColumn(RectTransform parent, float anchorX)
         {
-            var t = UICanvasUtil.NewBody("Stat", parent, "", 14f, BodyInk,
+            var t = UICanvasUtil.NewBody("Stat", parent, "", 20f, BodyInk,
                 TMPro.FontStyles.Normal, TMPro.TextAlignmentOptions.TopLeft);
             var rt = t.rectTransform;
             rt.anchorMin = new Vector2(anchorX, 0f); rt.anchorMax = new Vector2(anchorX + 1f / 3f, 1f);

@@ -88,13 +88,13 @@ namespace Hollowfen.UI
             header.pivot = new Vector2(0.5f, 1f);
             header.sizeDelta = new Vector2(0f, 170f);
 
-            var eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", header, Localization.Get("journal.eyebrow"), 13f, HollowfenPalette.Gold);
+            var eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", header, Localization.Get("journal.eyebrow"), 18f, HollowfenPalette.Gold);
             UICanvasUtil.SetRect(eyebrow.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, 1f), new Vector2(0f, 24f), Vector2.zero);
 
             var heading = UICanvasUtil.NewHeading("Title", header, title, 76f, HollowfenPalette.Cream, FontStyles.Normal, TextAlignmentOptions.TopLeft);
             UICanvasUtil.SetRect(heading.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, 1f), new Vector2(0f, 86f), new Vector2(0f, -28f));
 
-            summaryText = UICanvasUtil.NewBody("Summary", header, summary, 19f, new Color(HollowfenPalette.Cream.r, HollowfenPalette.Cream.g, HollowfenPalette.Cream.b, 0.72f), FontStyles.Italic);
+            summaryText = UICanvasUtil.NewBody("Summary", header, summary, 20f, new Color(HollowfenPalette.Cream.r, HollowfenPalette.Cream.g, HollowfenPalette.Cream.b, 0.72f), FontStyles.Italic);
             UICanvasUtil.SetRect(summaryText.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, 1f), new Vector2(0f, 28f), new Vector2(0f, -116f));
 
             var rule = UICanvasUtil.NewImage("Rule", header, new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0.22f), false);

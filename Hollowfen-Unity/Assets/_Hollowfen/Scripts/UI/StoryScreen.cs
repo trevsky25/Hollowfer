@@ -153,7 +153,7 @@ namespace Hollowfen.UI
             horizontal.childForceExpandWidth = false;
             horizontal.childForceExpandHeight = false;
 
-            var title = UICanvasUtil.NewEyebrow("Label", row, act, 14f, Gold);
+            var title = UICanvasUtil.NewEyebrow("Label", row, act, 18f, Gold);
             var titleLayout = title.gameObject.AddComponent<LayoutElement>();
             titleLayout.preferredHeight = 22f;
             var rule = UICanvasUtil.NewImage("Rule", row, new Color(Gold.r, Gold.g, Gold.b, 0.34f), false);
@@ -161,7 +161,7 @@ namespace Hollowfen.UI
             ruleLayout.preferredHeight = 1f;
             ruleLayout.flexibleWidth = 1f;
             var countLabel = UICanvasUtil.NewEyebrow("Count", row,
-                string.Format(Localization.Get("journal.story.cards"), count), 13f, Faint, TextAlignmentOptions.Right);
+                string.Format(Localization.Get("journal.story.cards"), count), 18f, Faint, TextAlignmentOptions.Right);
             var countLayout = countLabel.gameObject.AddComponent<LayoutElement>();
             countLayout.preferredWidth = 130f;
             countLayout.preferredHeight = 20f;
@@ -197,7 +197,7 @@ namespace Hollowfen.UI
 
             var body = UICanvasUtil.NewRect("Body", root.transform);
             UICanvasUtil.SetRect(body, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(-48f, 156f), new Vector2(0f, -234f));
-            var scene = UICanvasUtil.NewEyebrow("Eyebrow", body, JournalText.StoryScene(card), 12f, Gold);
+            var scene = UICanvasUtil.NewEyebrow("Eyebrow", body, JournalText.StoryScene(card), 18f, Gold);
             UICanvasUtil.SetRect(scene.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, 1f), new Vector2(0f, 20f), Vector2.zero);
             var title = UICanvasUtil.NewHeading("Title", body, JournalText.StoryTitle(card), 34f, Cream, FontStyles.Normal, TextAlignmentOptions.TopLeft);
             UICanvasUtil.SetRect(title.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, 1f), new Vector2(0f, 48f), new Vector2(0f, -32f));
@@ -208,7 +208,7 @@ namespace Hollowfen.UI
             title.fontSizeMax = 34f;
             title.textWrappingMode = TextWrappingModes.NoWrap;
             title.overflowMode = TextOverflowModes.Truncate;
-            var subtitle = UICanvasUtil.NewBody("Subtitle", body, JournalText.StorySubtitle(card), 17f, Subtle);
+            var subtitle = UICanvasUtil.NewBody("Subtitle", body, JournalText.StorySubtitle(card), 20f, Subtle);
             UICanvasUtil.SetRect(subtitle.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, 1f), new Vector2(0f, 58f), new Vector2(0f, -90f));
             subtitle.overflowMode = TextOverflowModes.Truncate;
 

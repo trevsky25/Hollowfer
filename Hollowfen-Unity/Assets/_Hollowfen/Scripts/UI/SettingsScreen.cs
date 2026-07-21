@@ -214,7 +214,7 @@ namespace Hollowfen.UI
             UICanvasUtil.Stretch((RectTransform)grad.transform);
 
             // Header — the main menu's column grammar: eyebrow, serif title, gold rule.
-            var eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", transform, Localization.Get("settings.eyebrow"), 16f, HollowfenPalette.Sage);
+            var eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", transform, Localization.Get("settings.eyebrow"), 18f, HollowfenPalette.Sage);
             UICanvasUtil.SetRect(eyebrow.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(ColW, 24f), new Vector2(ColX, HeaderEyebrowY));
 
             var title = UICanvasUtil.NewHeading("Title", transform, Localization.Get("settings.title"), 62f, HollowfenPalette.Cream, FontStyles.Normal, TextAlignmentOptions.TopLeft);
@@ -248,7 +248,7 @@ namespace Hollowfen.UI
             BuildAccessibilityPanel(_panels[(int)Tab.Accessibility].transform);
             BuildCreditsPanel(_panels[(int)Tab.Credits].transform);
 
-            var hint = UICanvasUtil.NewBody("Hint", transform, Localization.Get("settings.hint"), 15f,
+            var hint = UICanvasUtil.NewBody("Hint", transform, Localization.Get("settings.hint"), 18f,
                 new Color(HollowfenPalette.Moss.r, HollowfenPalette.Moss.g, HollowfenPalette.Moss.b, 0.95f),
                 FontStyles.Italic, TextAlignmentOptions.Center);
             UICanvasUtil.SetRect(hint.rectTransform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(900f, 20f), new Vector2(0f, 26f));
@@ -264,7 +264,7 @@ namespace Hollowfen.UI
             float x = ColX;
             for (int i = 0; i < TabCount; i++)
             {
-                var label = UICanvasUtil.NewEyebrow("Tab_" + (Tab)i, transform, Localization.Get(keys[i]), 15f, HollowfenPalette.Moss);
+                var label = UICanvasUtil.NewEyebrow("Tab_" + (Tab)i, transform, Localization.Get(keys[i]), 18f, HollowfenPalette.Moss);
                 label.rectTransform.anchorMin = new Vector2(0f, 1f);
                 label.rectTransform.anchorMax = new Vector2(0f, 1f);
                 label.rectTransform.pivot = new Vector2(0f, 1f);
@@ -539,7 +539,7 @@ namespace Hollowfen.UI
             });
 
             var note = UICanvasUtil.NewBody("AccessibilityNote", parent,
-                Localization.Get("settings.accessibility.note"), 17f,
+                Localization.Get("settings.accessibility.note"), 20f,
                 HollowfenPalette.Moss, FontStyles.Italic, TextAlignmentOptions.TopLeft);
             note.textWrappingMode = TextWrappingModes.Normal;
             UICanvasUtil.SetRect(note.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f),
@@ -567,13 +567,13 @@ namespace Hollowfen.UI
         {
             if (header)
             {
-                var t = UICanvasUtil.NewEyebrow("H", parent, Localization.Get(key), 13.5f,
+                var t = UICanvasUtil.NewEyebrow("H", parent, Localization.Get(key), 18f,
                     new Color(HollowfenPalette.Moss.r, HollowfenPalette.Moss.g, HollowfenPalette.Moss.b, 0.9f));
                 UICanvasUtil.SetRect(t.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(w, 18f), new Vector2(x, y));
             }
             else
             {
-                var t = UICanvasUtil.NewBody("C", parent, Localization.Get(key), 16.5f, color ?? HollowfenPalette.Parchment, FontStyles.Normal, TextAlignmentOptions.TopLeft);
+                var t = UICanvasUtil.NewBody("C", parent, Localization.Get(key), 18f, color ?? HollowfenPalette.Parchment, FontStyles.Normal, TextAlignmentOptions.TopLeft);
                 t.textWrappingMode = TextWrappingModes.NoWrap;
                 UICanvasUtil.SetRect(t.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(w, 20f), new Vector2(x, y));
             }
@@ -585,7 +585,7 @@ namespace Hollowfen.UI
             // final credits copy remains Trevor's open backlog item).
             float y = -4f;
 
-            var eyebrow = UICanvasUtil.NewEyebrow("Heading", parent, Localization.Get("credits.heading"), 15f, HollowfenPalette.Gold);
+            var eyebrow = UICanvasUtil.NewEyebrow("Heading", parent, Localization.Get("credits.heading"), 20f, HollowfenPalette.Gold);
             UICanvasUtil.SetRect(eyebrow.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(ColW, 22f), new Vector2(0f, y));
             y -= 34f;
 
@@ -597,7 +597,7 @@ namespace Hollowfen.UI
             UICanvasUtil.SetRect((RectTransform)rule.transform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(300f, 1.5f), new Vector2(0f, y));
             y -= 26f;
 
-            var build = UICanvasUtil.NewBody("Build", parent, Localization.Get("credits.build"), 15f,
+            var build = UICanvasUtil.NewBody("Build", parent, Localization.Get("credits.build"), 20f,
                 new Color(HollowfenPalette.Moss.r, HollowfenPalette.Moss.g, HollowfenPalette.Moss.b, 0.95f),
                 FontStyles.Italic, TextAlignmentOptions.TopLeft);
             UICanvasUtil.SetRect(build.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(ColW, 24f), new Vector2(0f, y));
@@ -606,9 +606,9 @@ namespace Hollowfen.UI
             string[] lineKeys = { "credits.copyright", "credits.photos", "credits.wren", "credits.engine", "credits.fonts" };
             foreach (var key in lineKeys)
             {
-                var line = UICanvasUtil.NewBody("Line", parent, Localization.Get(key), 17f, HollowfenPalette.Parchment, FontStyles.Normal, TextAlignmentOptions.TopLeft);
-                UICanvasUtil.SetRect(line.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(ColW, 26f), new Vector2(0f, y));
-                y -= 40f;
+                var line = UICanvasUtil.NewBody("Line", parent, Localization.Get(key), 20f, HollowfenPalette.Parchment, FontStyles.Normal, TextAlignmentOptions.TopLeft);
+                UICanvasUtil.SetRect(line.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(ColW, 30f), new Vector2(0f, y));
+                y -= 42f;
             }
             y -= 30f;
 
@@ -620,10 +620,10 @@ namespace Hollowfen.UI
 
         private Slider BuildSliderRow(Transform parent, ref float y, string labelKey, float min, float max, bool whole, out TMP_Text valueText)
         {
-            var label = UICanvasUtil.NewEyebrow("Label", parent, Localization.Get(labelKey), 15f, HollowfenPalette.Parchment);
+            var label = UICanvasUtil.NewEyebrow("Label", parent, Localization.Get(labelKey), 18f, HollowfenPalette.Parchment);
             UICanvasUtil.SetRect(label.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(ColW - 120f, 22f), new Vector2(0f, y));
 
-            valueText = UICanvasUtil.NewBody("Value", parent, "", 16f, HollowfenPalette.Gold, FontStyles.Normal, TextAlignmentOptions.TopRight);
+            valueText = UICanvasUtil.NewBody("Value", parent, "", 18f, HollowfenPalette.Gold, FontStyles.Normal, TextAlignmentOptions.TopRight);
             UICanvasUtil.SetRect(valueText.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(120f, 22f), new Vector2(ColW, y));
 
             float sy = y - 32f;
@@ -702,7 +702,7 @@ namespace Hollowfen.UI
             btn.transition = Selectable.Transition.None;
             btn.targetGraphic = fill;
 
-            var label = UICanvasUtil.NewEyebrow("Label", row, Localization.Get(labelKey), 15f, HollowfenPalette.Parchment);
+            var label = UICanvasUtil.NewEyebrow("Label", row, Localization.Get(labelKey), 18f, HollowfenPalette.Parchment);
             UICanvasUtil.SetRect(label.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(320f, 22f), new Vector2(8f, 11f));
 
             // ‹ value › cluster, right-aligned.

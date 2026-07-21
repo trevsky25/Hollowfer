@@ -198,7 +198,7 @@ namespace Hollowfen.UI
                 new Vector2(.82f, 1f), new Vector2(.5f, 1f), new Vector2(0f, 2f), Vector2.zero);
 
             var eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", _panel,
-                Localization.Get("region.arrival.eyebrow"), 13f, HollowfenPalette.Gold,
+                Localization.Get("region.arrival.eyebrow"), 18f, HollowfenPalette.Gold,
                 TextAlignmentOptions.Center);
             UICanvasUtil.SetRect(eyebrow.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f),
                 new Vector2(.5f, 1f), new Vector2(-40f, 18f), new Vector2(0f, -15f));
@@ -208,7 +208,7 @@ namespace Hollowfen.UI
             UICanvasUtil.SetRect(_title.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f),
                 new Vector2(.5f, 1f), new Vector2(-40f, 40f), new Vector2(0f, -34f));
 
-            _subtitle = UICanvasUtil.NewBody("Subtitle", _panel, "", 14.5f,
+            _subtitle = UICanvasUtil.NewBody("Subtitle", _panel, "", 18f,
                 new Color(HollowfenPalette.Parchment.r, HollowfenPalette.Parchment.g,
                     HollowfenPalette.Parchment.b, .72f), FontStyles.Italic,
                 TextAlignmentOptions.Center);

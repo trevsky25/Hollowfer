@@ -326,7 +326,7 @@ namespace Hollowfen.Requests
             var content = UICanvasUtil.NewRect("Content", card);
             UICanvasUtil.SetRect(content, new Vector2(0f, 0f), new Vector2(1f, 1f),
                 new Vector2(0.5f, 0.5f), new Vector2(-620f, -80f), new Vector2(280f, 0f));
-            _eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", content, "", 14f,
+            _eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", content, "", 18f,
                 HollowfenPalette.PaperAccentInk, TextAlignmentOptions.TopLeft);
             PlaceTop(_eyebrow.rectTransform, 0f, 0f, 700f, 26f);
             _title = UICanvasUtil.NewHeading("Title", content, "", 44f,
@@ -337,14 +337,14 @@ namespace Hollowfen.Requests
                 new Color(0.20f, 0.17f, 0.12f, 0.88f), FontStyles.Normal, TextAlignmentOptions.TopLeft);
             _description.textWrappingMode = TextWrappingModes.Normal;
             PlaceTop(_description.rectTransform, 0f, -116f, 700f, 90f);
-            _requesterLine = UICanvasUtil.NewBody("RequesterLine", content, "", 18f,
+            _requesterLine = UICanvasUtil.NewBody("RequesterLine", content, "", 20f,
                 HollowfenPalette.PaperAccentInk,
                 FontStyles.Italic, TextAlignmentOptions.TopLeft);
             _requesterLine.textWrappingMode = TextWrappingModes.Normal;
             PlaceTop(_requesterLine.rectTransform, 0f, -210f, 700f, 66f);
 
             var reqHeader = UICanvasUtil.NewEyebrow("RequirementsHeader", content,
-                Localization.Get("request.requirements"), 14.5f, HollowfenPalette.PaperAccentInk, TextAlignmentOptions.TopLeft);
+                Localization.Get("request.requirements"), 18f, HollowfenPalette.PaperAccentInk, TextAlignmentOptions.TopLeft);
             PlaceTop(reqHeader.rectTransform, 0f, -292f, 700f, 22f);
             for (int i = 0; i < _requirementNames.Length; i++) BuildRequirementRow(content, i);
 
@@ -391,7 +391,7 @@ namespace Hollowfen.Requests
             image.sprite = UICanvasUtil.RoundedRect(13);
             image.type = Image.Type.Sliced;
             image.color = accent ? HollowfenPalette.Gold : new Color(0.18f, 0.15f, 0.10f, 0.09f);
-            label = UICanvasUtil.NewHeading("Label", rt, "", 17f,
+            label = UICanvasUtil.NewHeading("Label", rt, "", 18f,
                 accent ? HollowfenPalette.InkDeep : HollowfenPalette.InkDeep,
                 FontStyles.Italic, TextAlignmentOptions.Center);
             UICanvasUtil.Stretch(label.rectTransform);

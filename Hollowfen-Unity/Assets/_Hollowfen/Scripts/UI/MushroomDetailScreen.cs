@@ -208,7 +208,7 @@ namespace Hollowfen.UI
             UICanvasUtil.SetRect(statusRt, new Vector2(0f, 1f), new Vector2(0f, 1f),
                 new Vector2(0f, 1f), new Vector2(440f, 46f), new Vector2(34f, 66f));
             UICanvasUtil.Roundify(statusBg.GetComponent<Image>(), 8);
-            _journalStatus = UICanvasUtil.NewEyebrow("Label", statusRt, "", 13f, Gold,
+            _journalStatus = UICanvasUtil.NewEyebrow("Label", statusRt, "", 18f, Gold,
                 TextAlignmentOptions.Center);
             UICanvasUtil.Stretch(_journalStatus.rectTransform);
 
@@ -225,7 +225,7 @@ namespace Hollowfen.UI
             prevRt.offsetMin = Vector2.zero;
             prevRt.offsetMax = Vector2.zero;
             _illustratedPrevButton.onClick.AddListener(GoPrev);
-            _illustratedPageNumber = UICanvasUtil.NewBody("Page", nav, "", 15f, Subtle,
+            _illustratedPageNumber = UICanvasUtil.NewBody("Page", nav, "", 18f, Subtle,
                 FontStyles.Italic, TextAlignmentOptions.Center);
             UICanvasUtil.SetRect(_illustratedPageNumber.rectTransform, new Vector2(0.42f, 0f),
                 new Vector2(0.58f, 1f), new Vector2(0.5f, 0.5f), Vector2.zero, Vector2.zero);
@@ -258,7 +258,7 @@ namespace Hollowfen.UI
             _fieldAnnotationName.enableAutoSizing = true;
             _fieldAnnotationName.fontSizeMin = 19f;
             _fieldAnnotationName.fontSizeMax = 27f;
-            _fieldAnnotationMeta = UICanvasUtil.NewBody("Context", annotationRT, "", 15f,
+            _fieldAnnotationMeta = UICanvasUtil.NewBody("Context", annotationRT, "", 18f,
                 new Color(0.27f, 0.19f, 0.13f, 0.86f), FontStyles.Italic,
                 TextAlignmentOptions.Center);
             UICanvasUtil.SetRect(_fieldAnnotationMeta.rectTransform,
@@ -297,7 +297,7 @@ namespace Hollowfen.UI
             _viewToggle = rt.gameObject.AddComponent<Button>();
             _viewToggle.transition = Selectable.Transition.None;
             _viewToggle.targetGraphic = image;
-            _viewToggleLabel = UICanvasUtil.NewEyebrow("Label", rt, "", 13f, Cream,
+            _viewToggleLabel = UICanvasUtil.NewEyebrow("Label", rt, "", 18f, Cream,
                 TextAlignmentOptions.Center);
             UICanvasUtil.Stretch(_viewToggleLabel.rectTransform);
             _viewToggle.onClick.AddListener(() => SetView(!_showIllustratedPage));
@@ -305,10 +305,10 @@ namespace Hollowfen.UI
             focus.Configure(_viewToggleLabel, rt, Gold, 1.025f);
 
             _safetyDisclaimer = UICanvasUtil.NewBody("SafetyDisclaimer", transform,
-                Localization.Get("journal.field.safety_disclaimer"), 12.5f, Faint,
+                Localization.Get("journal.field.safety_disclaimer"), 20f, Faint,
                 FontStyles.Italic, TextAlignmentOptions.Center);
             UICanvasUtil.SetRect(_safetyDisclaimer.rectTransform, new Vector2(0.5f, 0f),
-                new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(1200f, 24f),
+                new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(1200f, 32f),
                 new Vector2(0f, 50f));
         }
 
@@ -590,7 +590,7 @@ namespace Hollowfen.UI
             prevRt.offsetMin = Vector2.zero;
             prevRt.offsetMax = Vector2.zero;
             _prevButton.onClick.AddListener(GoPrev);
-            _page = UICanvasUtil.NewBody("Page", nav, "", 15f, Subtle, FontStyles.Italic, TextAlignmentOptions.Center);
+            _page = UICanvasUtil.NewBody("Page", nav, "", 18f, Subtle, FontStyles.Italic, TextAlignmentOptions.Center);
             UICanvasUtil.SetRect(_page.rectTransform, new Vector2(0.42f, 0f), new Vector2(0.58f, 1f), new Vector2(0.5f, 0.5f), Vector2.zero, Vector2.zero);
             _nextButton = BuildNavButton(nav, false, out _nextLabel);
             var nextRt = (RectTransform)_nextButton.transform;
@@ -609,17 +609,17 @@ namespace Hollowfen.UI
             var button = rt.gameObject.AddComponent<Button>();
             button.transition = Selectable.Transition.None;
             button.targetGraphic = image;
-            var direction = UICanvasUtil.NewEyebrow("Direction", rt, Localization.Get(previous ? "journal.previous" : "journal.next"), 12.5f, Subtle,
+            var direction = UICanvasUtil.NewEyebrow("Direction", rt, Localization.Get(previous ? "journal.previous" : "journal.next"), 18f, Subtle,
                 previous ? TextAlignmentOptions.Left : TextAlignmentOptions.Right);
             UICanvasUtil.SetRect(direction.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f),
                 new Vector2(previous ? 0f : 1f, 1f), new Vector2(0f, 16f), new Vector2(0f, -5f));
-            label = UICanvasUtil.NewHeading("Label", rt, "", 17f, Cream, FontStyles.Italic,
+            label = UICanvasUtil.NewHeading("Label", rt, "", 18f, Cream, FontStyles.Italic,
                 previous ? TextAlignmentOptions.BottomLeft : TextAlignmentOptions.BottomRight);
             UICanvasUtil.SetRect(label.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f),
                 new Vector2(previous ? 0f : 1f, 0f), new Vector2(0f, 24f), new Vector2(0f, 5f));
             label.enableAutoSizing = true;
-            label.fontSizeMin = 13f;
-            label.fontSizeMax = 17f;
+            label.fontSizeMin = 17f;
+            label.fontSizeMax = 18f;
             var focus = rt.gameObject.AddComponent<FocusHighlight>();
             focus.Configure(label, rt, Gold, 1.035f);
             return button;

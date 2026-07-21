@@ -198,7 +198,7 @@ namespace Hollowfen.UI
             name.enableAutoSizing = true;
             name.fontSizeMin = 21f;
             name.fontSizeMax = 30f;
-            var latin = UICanvasUtil.NewBody("Latin", body, JournalText.MushroomLatin(entry), 15.5f,
+            var latin = UICanvasUtil.NewBody("Latin", body, JournalText.MushroomLatin(entry), 18f,
                 Faint, FontStyles.Italic);
             UICanvasUtil.SetRect(latin.rectTransform, new Vector2(0f, 1f), new Vector2(0.62f, 1f),
                 new Vector2(0f, 1f), new Vector2(0f, 21f), new Vector2(0f, -35f));
@@ -211,7 +211,7 @@ namespace Hollowfen.UI
             dot.color = HollowfenPalette.Edibility(entry.Edibility);
             dot.raycastTarget = false;
             var edibility = UICanvasUtil.NewEyebrow("Edibility", body,
-                JournalText.MushroomEdibility(entry), 12.5f,
+                JournalText.MushroomEdibility(entry), 18f,
                 HollowfenPalette.Edibility(entry.Edibility), TextAlignmentOptions.Right);
             UICanvasUtil.SetRect(edibility.rectTransform, new Vector2(0.66f, 1f), new Vector2(1f, 1f),
                 new Vector2(1f, 1f), new Vector2(0f, 24f), new Vector2(0f, -10f));

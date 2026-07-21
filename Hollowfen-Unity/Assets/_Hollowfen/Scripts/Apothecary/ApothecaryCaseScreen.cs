@@ -200,7 +200,7 @@ namespace Hollowfen.Apothecary
                 bool sealedCase = state.Stage == ApothecaryCaseStage.Unstarted &&
                                   !ApothecaryCases.IsUnlocked(data);
                 TMP_Text number = UICanvasUtil.NewEyebrow("Number", row, (i + 1).ToString("00"),
-                    18f, Muted);
+                    20f, Muted);
                 SetFixed(number.rectTransform, new Vector2(46f, 22f), new Vector2(-142f, 24f));
                 TMP_Text label = UICanvasUtil.NewHeading("Title", row,
                     data != null && !sealedCase
@@ -208,7 +208,7 @@ namespace Hollowfen.Apothecary
                         : Localization.Get("apothecary.case.sealed"), 21f, Ink,
                     FontStyles.Italic, TextAlignmentOptions.Left);
                 SetFixed(label.rectTransform, new Vector2(265f, 35f), new Vector2(30f, 20f));
-                TMP_Text status = UICanvasUtil.NewBody("Status", row, CaseStatus(data, state), 18f,
+                TMP_Text status = UICanvasUtil.NewBody("Status", row, CaseStatus(data, state), 20f,
                     state.Stage == ApothecaryCaseStage.Resolved ? Success : Muted,
                     FontStyles.Bold, TextAlignmentOptions.Left);
                 SetFixed(status.rectTransform, new Vector2(265f, 25f), new Vector2(30f, -24f));
@@ -322,10 +322,10 @@ namespace Hollowfen.Apothecary
         private void BuildInvestigation(ApothecaryCaseData data)
         {
             TMP_Text evidenceHead = UICanvasUtil.NewEyebrow("EvidenceHead", _pageRoot,
-                Localization.Get("apothecary.case.observe"), 16f, HollowfenPalette.PaperAccentInk);
+                Localization.Get("apothecary.case.observe"), 20f, HollowfenPalette.PaperAccentInk);
             SetFixed(evidenceHead.rectTransform, new Vector2(410f, 28f), new Vector2(-238f, 175f));
             TMP_Text interviewHead = UICanvasUtil.NewEyebrow("InterviewHead", _pageRoot,
-                Localization.Get("apothecary.case.ask"), 16f, HollowfenPalette.PaperAccentInk);
+                Localization.Get("apothecary.case.ask"), 20f, HollowfenPalette.PaperAccentInk);
             SetFixed(interviewHead.rectTransform, new Vector2(410f, 28f), new Vector2(238f, 175f));
 
             for (int i = 0; i < data.Clues.Length; i++)
@@ -382,7 +382,7 @@ namespace Hollowfen.Apothecary
                 SetFixed(product.rectTransform, new Vector2(240f, 72f), new Vector2(0f, 66f));
                 int stock = ApothecaryRuntime.ProductCount(decision.preparation.ResultId);
                 TMP_Text countText = UICanvasUtil.NewBody("Stock", card,
-                    string.Format(Localization.Get("apothecary.case.stock"), stock), 18f,
+                    string.Format(Localization.Get("apothecary.case.stock"), stock), 20f,
                     stock > 0 ? Success : Warning, FontStyles.Bold, TextAlignmentOptions.Center);
                 SetFixed(countText.rectTransform, new Vector2(230f, 30f), new Vector2(0f, 5f));
                 Button choose = MakeButton("Choose", card, new Vector2(230f, 55f),
@@ -441,13 +441,13 @@ namespace Hollowfen.Apothecary
             SetFixed(body.rectTransform, new Vector2(860f, 150f), new Vector2(0f, -5f));
             TMP_Text grade = UICanvasUtil.NewEyebrow("Grade", _pageRoot,
                 Localization.Get("apothecary.case.grade." +
-                                 selected.Value.grade.ToString().ToLowerInvariant()), 16f,
+                                 selected.Value.grade.ToString().ToLowerInvariant()), 20f,
                 selected.Value.grade == ApothecaryCaseGrade.Careful ? Success : Gold,
                 TextAlignmentOptions.Center);
             SetFixed(grade.rectTransform, new Vector2(600f, 30f), new Vector2(0f, -125f));
             TMP_Text day = UICanvasUtil.NewBody("ResolvedDay", _pageRoot,
                 string.Format(Localization.Get("apothecary.case.resolved_day"), record.ResolvedDay),
-                17f, Muted, FontStyles.Italic, TextAlignmentOptions.Center);
+                20f, Muted, FontStyles.Italic, TextAlignmentOptions.Center);
             SetFixed(day.rectTransform, new Vector2(500f, 28f), new Vector2(0f, -170f));
         }
 
@@ -537,7 +537,7 @@ namespace Hollowfen.Apothecary
                     i == active ? new Color(.85f, .69f, .31f, .34f) :
                     new Color(.27f, .24f, .19f, .09f);
                 TMP_Text text = UICanvasUtil.NewEyebrow("Label", item, Localization.Get(labels[i]),
-                    18f, i <= active ? Ink : Muted, TextAlignmentOptions.Center);
+                    20f, i <= active ? Ink : Muted, TextAlignmentOptions.Center);
                 UICanvasUtil.Stretch(text.rectTransform);
             }
         }
@@ -640,7 +640,7 @@ namespace Hollowfen.Apothecary
             UICanvasUtil.MakeRoundedPanel(card, Paper, 28, .64f);
             UICanvasUtil.AddShadow(card, 24, 32, .50f, -10f);
             TMP_Text eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", card,
-                Localization.Get("apothecary.case.eyebrow"), 18f,
+                Localization.Get("apothecary.case.eyebrow"), 20f,
                 HollowfenPalette.PaperAccentInk, TextAlignmentOptions.Center);
             SetFixed(eyebrow.rectTransform, new Vector2(900f, 28f), new Vector2(0f, 420f));
             TMP_Text heading = UICanvasUtil.NewHeading("Heading", card,
@@ -652,7 +652,7 @@ namespace Hollowfen.Apothecary
                 new Vector2(-562f, -52f));
             UICanvasUtil.MakeRoundedPanel(left, new Color(.85f, .81f, .71f, 1f), 20, .45f);
             TMP_Text cases = UICanvasUtil.NewEyebrow("CasesLabel", left,
-                Localization.Get("apothecary.case.appointments"), 18f,
+                Localization.Get("apothecary.case.appointments"), 20f,
                 HollowfenPalette.PaperAccentInk, TextAlignmentOptions.Center);
             SetFixed(cases.rectTransform, new Vector2(350f, 30f), new Vector2(0f, 330f));
             _caseList = NewFixed("CaseList", left, new Vector2(360f, 590f), new Vector2(0f, 0f));
@@ -670,7 +670,7 @@ namespace Hollowfen.Apothecary
             RectTransform portrait = NewFixed("Portrait", portraitPlate, new Vector2(235f, 225f), Vector2.zero);
             _portrait = portrait.gameObject.AddComponent<Image>();
             _portrait.raycastTarget = false;
-            _patient = UICanvasUtil.NewEyebrow("Patient", detail, "", 18f,
+            _patient = UICanvasUtil.NewEyebrow("Patient", detail, "", 20f,
                 HollowfenPalette.PaperAccentInk);
             SetFixed(_patient.rectTransform, new Vector2(680f, 28f), new Vector2(128f, 314f));
             _title = UICanvasUtil.NewHeading("CaseTitle", detail, "", 38f, Ink,
@@ -681,7 +681,7 @@ namespace Hollowfen.Apothecary
             SetFixed(_complaint.rectTransform, new Vector2(680f, 130f), new Vector2(128f, 145f));
             _stageRail = NewFixed("StageRail", detail, new Vector2(960f, 48f), new Vector2(0f, 55f));
             _pageRoot = NewFixed("PageContent", detail, new Vector2(990f, 410f), new Vector2(0f, -160f));
-            _feedback = UICanvasUtil.NewBody("Feedback", detail, "", 17f, Warning,
+            _feedback = UICanvasUtil.NewBody("Feedback", detail, "", 20f, Warning,
                 FontStyles.Italic, TextAlignmentOptions.Center);
             SetFixed(_feedback.rectTransform, new Vector2(900f, 35f), new Vector2(0f, -316f));
             TMP_Text disclaimer = UICanvasUtil.NewBody("Disclaimer", detail,
@@ -695,7 +695,7 @@ namespace Hollowfen.Apothecary
         {
             Button button = MakeButton(name, parent, size, position, text, background, foreground);
             TMP_Text label = button.GetComponentInChildren<TMP_Text>();
-            label.fontSize = 18f;
+            label.fontSize = 20f;
             label.fontStyle = FontStyles.Normal;
             label.alignment = TextAlignmentOptions.Center;
             label.margin = new Vector4(18f, 10f, 18f, 10f);
@@ -710,7 +710,7 @@ namespace Hollowfen.Apothecary
             image.sprite = UICanvasUtil.RoundedRect(14);
             image.type = Image.Type.Sliced;
             image.color = background;
-            TMP_Text label = UICanvasUtil.NewBody("Label", rt, text, 19f, foreground,
+            TMP_Text label = UICanvasUtil.NewBody("Label", rt, text, 20f, foreground,
                 FontStyles.Bold, TextAlignmentOptions.Center);
             UICanvasUtil.Stretch(label.rectTransform);
             Button button = rt.gameObject.AddComponent<Button>();

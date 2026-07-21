@@ -339,7 +339,7 @@ namespace Hollowfen.UI
             innerRt.offsetMax = new Vector2(-14f, -14f);
 
             var eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", panel, Localization.Get("purse.eyebrow"),
-                14f, HollowfenPalette.PaperAccentInk, TextAlignmentOptions.Left);
+                18f, HollowfenPalette.PaperAccentInk, TextAlignmentOptions.Left);
             UICanvasUtil.SetRect(eyebrow.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f),
                 new Vector2(0f, 1f), new Vector2(680f, 20f), new Vector2(62f, -42f));
 
@@ -359,7 +359,7 @@ namespace Hollowfen.UI
             BuildLedgerCard(panel);
             BuildPouchCard(panel);
 
-            var hint = UICanvasUtil.NewBody("Hint", panel, Localization.Get("purse.hint"), 15f,
+            var hint = UICanvasUtil.NewBody("Hint", panel, Localization.Get("purse.hint"), 18f,
                 InkMuted, FontStyles.Italic, TextAlignmentOptions.Center);
             UICanvasUtil.SetRect(hint.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f),
                 new Vector2(0.5f, 0f), new Vector2(0f, 22f), new Vector2(0f, 24f));
@@ -373,7 +373,7 @@ namespace Hollowfen.UI
             UICanvasUtil.MakeRoundedPanel(card, new Color(0.09f, 0.14f, 0.095f, 0.96f), 20, 0.22f);
 
             var label = UICanvasUtil.NewEyebrow("BalanceLabel", card,
-                Localization.Get("purse.balance_heading"), 13f,
+                Localization.Get("purse.balance_heading"), 18f,
                 HollowfenPalette.Gold, TextAlignmentOptions.Left);
             UICanvasUtil.SetRect(label.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f),
                 new Vector2(0.5f, 1f), new Vector2(-56f, 20f), new Vector2(0f, -34f));
@@ -390,7 +390,7 @@ namespace Hollowfen.UI
             UICanvasUtil.SetRect(_totalValue.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f),
                 new Vector2(0.5f, 0f), new Vector2(-48f, 26f), new Vector2(0f, 44f));
 
-            var conversion = UICanvasUtil.NewBody("Conversion", card, Localization.Get("purse.conversion"), 14f,
+            var conversion = UICanvasUtil.NewBody("Conversion", card, Localization.Get("purse.conversion"), 18f,
                 HollowfenPalette.Moss, FontStyles.Italic, TextAlignmentOptions.Center);
             UICanvasUtil.SetRect(conversion.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f),
                 new Vector2(0.5f, 0f), new Vector2(-48f, 22f), new Vector2(0f, 18f));
@@ -402,7 +402,7 @@ namespace Hollowfen.UI
                 FontStyles.Normal, TextAlignmentOptions.Center);
             UICanvasUtil.SetRect(value.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f),
                 new Vector2(0.5f, 1f), new Vector2(150f, 90f), new Vector2(x, -78f));
-            var label = UICanvasUtil.NewEyebrow(name + "Label", card, Localization.Get(labelId), 13f,
+            var label = UICanvasUtil.NewEyebrow(name + "Label", card, Localization.Get(labelId), 18f,
                 HollowfenPalette.Gold, TextAlignmentOptions.Center);
             UICanvasUtil.SetRect(label.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f),
                 new Vector2(0.5f, 1f), new Vector2(150f, 20f), new Vector2(x, -180f));
@@ -417,7 +417,7 @@ namespace Hollowfen.UI
             UICanvasUtil.MakeRoundedPanel(card, new Color(1f, 1f, 1f, 0.17f), 20, 0.20f);
 
             var heading = UICanvasUtil.NewEyebrow("ActivityHeading", card, Localization.Get("purse.activity"),
-                13f, HollowfenPalette.PaperAccentInk, TextAlignmentOptions.Left);
+                18f, HollowfenPalette.PaperAccentInk, TextAlignmentOptions.Left);
             UICanvasUtil.SetRect(heading.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f),
                 new Vector2(0.5f, 1f), new Vector2(-52f, 20f), new Vector2(0f, -28f));
 
@@ -438,11 +438,11 @@ namespace Hollowfen.UI
                         new Vector2(0.5f, 1f), new Vector2(0f, 1f), Vector2.zero);
                 }
 
-                var reason = UICanvasUtil.NewBody("Reason", row, "", 17f, Ink, FontStyles.Normal,
+                var reason = UICanvasUtil.NewBody("Reason", row, "", 18f, Ink, FontStyles.Normal,
                     TextAlignmentOptions.Left);
                 UICanvasUtil.SetRect(reason.rectTransform, Vector2.zero, Vector2.one, new Vector2(0f, 0.5f),
                     new Vector2(-530f, 0f), new Vector2(10f, 0f));
-                var balance = UICanvasUtil.NewBody("Balance", row, "", 13f, InkMuted, FontStyles.Italic,
+                var balance = UICanvasUtil.NewBody("Balance", row, "", 18f, InkMuted, FontStyles.Italic,
                     TextAlignmentOptions.Right);
                 UICanvasUtil.SetRect(balance.rectTransform, new Vector2(0.5f, 0f), Vector2.one,
                     new Vector2(1f, 0.5f), new Vector2(-230f, 0f), new Vector2(-118f, 0f));
@@ -463,7 +463,7 @@ namespace Hollowfen.UI
             UICanvasUtil.MakeRoundedPanel(card, new Color(1f, 1f, 1f, 0.14f), 20, 0.20f);
 
             var heading = UICanvasUtil.NewEyebrow("PouchHeading", card, Localization.Get("purse.pouch"),
-                13f, HollowfenPalette.PaperAccentInk, TextAlignmentOptions.Left);
+                18f, HollowfenPalette.PaperAccentInk, TextAlignmentOptions.Left);
             UICanvasUtil.SetRect(heading.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f),
                 new Vector2(0f, 1f), new Vector2(300f, 20f), new Vector2(30f, -25f));
             _pouchCount = UICanvasUtil.NewHeading("PouchCount", card, "", 28f, Ink,
@@ -471,11 +471,11 @@ namespace Hollowfen.UI
             UICanvasUtil.SetRect(_pouchCount.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f),
                 new Vector2(0f, 1f), new Vector2(370f, 42f), new Vector2(30f, -55f));
 
-            _marraQuote = UICanvasUtil.NewBody("MarraQuote", card, "", 16f, InkMuted,
+            _marraQuote = UICanvasUtil.NewBody("MarraQuote", card, "", 18f, InkMuted,
                 FontStyles.Normal, TextAlignmentOptions.Left);
             UICanvasUtil.SetRect(_marraQuote.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f),
                 new Vector2(0f, 1f), new Vector2(500f, 28f), new Vector2(30f, -106f));
-            _theoQuote = UICanvasUtil.NewBody("TheoQuote", card, "", 16f, InkMuted,
+            _theoQuote = UICanvasUtil.NewBody("TheoQuote", card, "", 18f, InkMuted,
                 FontStyles.Normal, TextAlignmentOptions.Left);
             UICanvasUtil.SetRect(_theoQuote.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f),
                 new Vector2(0f, 1f), new Vector2(500f, 28f), new Vector2(30f, -142f));
@@ -484,7 +484,7 @@ namespace Hollowfen.UI
             UICanvasUtil.SetRect((RectTransform)divider.transform, new Vector2(0f, 0f), new Vector2(0f, 1f),
                 new Vector2(0f, 0.5f), new Vector2(1f, -52f), new Vector2(566f, 0f));
 
-            _tradeStatus = UICanvasUtil.NewBody("TradeStatus", card, "", 17f, InkMuted,
+            _tradeStatus = UICanvasUtil.NewBody("TradeStatus", card, "", 20f, InkMuted,
                 FontStyles.Italic, TextAlignmentOptions.TopLeft);
             UICanvasUtil.SetRect(_tradeStatus.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f),
                 new Vector2(0f, 1f), new Vector2(660f, 74f), new Vector2(602f, -34f));
@@ -511,7 +511,7 @@ namespace Hollowfen.UI
             button.targetGraphic = image;
             button.onClick.AddListener(onClick);
 
-            labelText = UICanvasUtil.NewEyebrow("Label", rt, label, accent ? 15f : 13f,
+            labelText = UICanvasUtil.NewEyebrow("Label", rt, label, 18f,
                 accent ? HollowfenPalette.Cream : Ink, TextAlignmentOptions.Center);
             UICanvasUtil.Stretch(labelText.rectTransform);
 

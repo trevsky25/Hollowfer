@@ -10,6 +10,7 @@ using Hollowfen.Save;
 using Hollowfen.UI;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
@@ -738,6 +739,11 @@ namespace Hollowfen.Dialogue
                     : available ? HollowfenPalette.Cream : new Color(HollowfenPalette.Cream.r, HollowfenPalette.Cream.g, HollowfenPalette.Cream.b, 0.42f);
             }
 
+            if (EventSystem.current != null && _choiceIndex >= 0 &&
+                _choiceIndex < _choicePills.Count && _choicePills[_choiceIndex].Root.activeSelf &&
+                _choicePills[_choiceIndex].Button.interactable)
+                EventSystem.current.SetSelectedGameObject(_choicePills[_choiceIndex].Button.gameObject);
+
             if (_endingChoiceMode && _activeChoices != null && _choiceIndex >= 0 && _choiceIndex < _activeChoices.Length)
             {
                 var ending = _activeChoices[_choiceIndex].ending;
@@ -921,7 +927,7 @@ namespace Hollowfen.Dialogue
             psImg.type = Image.Type.Sliced;
             UICanvasUtil.Stretch((RectTransform)plateStroke.transform);
 
-            _speakerLabel = UICanvasUtil.NewEyebrow("Speaker", _namePlateRT, "", 14f, HollowfenPalette.GoldGlow, TextAlignmentOptions.Center);
+            _speakerLabel = UICanvasUtil.NewEyebrow("Speaker", _namePlateRT, "", 20f, HollowfenPalette.GoldGlow, TextAlignmentOptions.Center);
             _speakerLabel.fontStyle = FontStyles.Bold;
             UICanvasUtil.Stretch(_speakerLabel.rectTransform);
 
@@ -936,7 +942,7 @@ namespace Hollowfen.Dialogue
             btRT.offsetMax = new Vector2(-56f, -48f);
 
             // Hint (bottom-right, quiet)
-            _hintText = UICanvasUtil.NewBody("Hint", pRT, Localization.Get("dialogue.hint.line.keyboard"), 15.5f,
+            _hintText = UICanvasUtil.NewBody("Hint", pRT, Localization.Get("dialogue.hint.line.keyboard"), 20f,
                 HollowfenPalette.PaperMutedInk,
                 FontStyles.Italic, TextAlignmentOptions.BottomRight);
             var hRT = _hintText.rectTransform;

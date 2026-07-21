@@ -288,7 +288,7 @@ namespace Hollowfen.UI
             tRT.sizeDelta = new Vector2(textWidth, 66f);
             tRT.anchoredPosition = new Vector2(textLeft, -62f);
 
-            _subtitle = UICanvasUtil.NewBody("CardSubtitle", _card, "", 18f,
+            _subtitle = UICanvasUtil.NewBody("CardSubtitle", _card, "", 20f,
                 new Color(HollowfenPalette.Parchment.r, HollowfenPalette.Parchment.g, HollowfenPalette.Parchment.b, 0.76f),
                 FontStyles.Italic, TextAlignmentOptions.TopLeft);
             _subtitle.textWrappingMode = TextWrappingModes.Normal;

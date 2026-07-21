@@ -72,7 +72,7 @@ namespace Hollowfen.Restoration
                 HollowfenPalette.Cream, FontStyles.Normal, TextAlignmentOptions.Left);
             UICanvasUtil.SetRect(_title.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f),
                 new Vector2(0f, 1f), new Vector2(-142f, 38f), new Vector2(96f, -42f));
-            _benefit = UICanvasUtil.NewBody("Benefit", _panel, "", 18f,
+            _benefit = UICanvasUtil.NewBody("Benefit", _panel, "", 20f,
                 HollowfenPalette.Moss, FontStyles.Italic, TextAlignmentOptions.Left);
             UICanvasUtil.SetRect(_benefit.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f),
                 new Vector2(0f, 0f), new Vector2(-142f, 24f), new Vector2(96f, 18f));

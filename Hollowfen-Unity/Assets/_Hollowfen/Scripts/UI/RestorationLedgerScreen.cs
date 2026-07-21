@@ -369,7 +369,7 @@ namespace Hollowfen.UI
             ((RectTransform)inner.transform).offsetMax = new Vector2(-15f, -15f);
 
             var eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", ledger,
-                Localization.Get("restoration.eyebrow"), 13f, HollowfenPalette.PaperAccentInk,
+                Localization.Get("restoration.eyebrow"), 18f, HollowfenPalette.PaperAccentInk,
                 TextAlignmentOptions.Left);
             UICanvasUtil.SetRect(eyebrow.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f),
                 new Vector2(0f, 1f), new Vector2(650f, 22f), new Vector2(58f, -40f));
@@ -385,9 +385,9 @@ namespace Hollowfen.UI
             BuildProjectContent(ledger);
 
             var hint = UICanvasUtil.NewBody("Hint", ledger, Localization.Get("restoration.hint"),
-                15f, MutedInk, FontStyles.Italic, TextAlignmentOptions.Center);
+                20f, MutedInk, FontStyles.Italic, TextAlignmentOptions.Center);
             UICanvasUtil.SetRect(hint.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f),
-                new Vector2(0.5f, 0f), new Vector2(-100f, 22f), new Vector2(0f, 23f));
+                new Vector2(0.5f, 0f), new Vector2(-100f, 30f), new Vector2(0f, 19f));
         }
 
         private void BuildProjectRail(RectTransform ledger)
@@ -398,7 +398,7 @@ namespace Hollowfen.UI
             UICanvasUtil.MakeRoundedPanel(rail, new Color(0.08f, 0.13f, 0.085f, 0.965f), 22, 0.20f);
 
             var title = UICanvasUtil.NewEyebrow("RailTitle", rail, Localization.Get("restoration.projects"),
-                13f, HollowfenPalette.Gold, TextAlignmentOptions.Left);
+                18f, HollowfenPalette.Gold, TextAlignmentOptions.Left);
             UICanvasUtil.SetRect(title.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f),
                 new Vector2(0.5f, 1f), new Vector2(-50f, 20f), new Vector2(0f, -32f));
 
@@ -632,7 +632,7 @@ namespace Hollowfen.UI
             button.transition = Selectable.Transition.None;
             button.targetGraphic = surface;
             button.onClick.AddListener(action);
-            var text = UICanvasUtil.NewEyebrow("Label", rt, label, 12f,
+            var text = UICanvasUtil.NewEyebrow("Label", rt, label, 18f,
                 accent ? HollowfenPalette.Cream : Ink, TextAlignmentOptions.Center);
             UICanvasUtil.Stretch(text.rectTransform);
             rt.gameObject.AddComponent<FocusHighlight>().Configure(surface, rt,

@@ -129,36 +129,36 @@ namespace Hollowfen.UI
             dayImage.type = Image.Type.Sliced;
             Place((RectTransform)dayBadge.transform, new Vector2(-112f, 19f),
                 new Vector2(68f, 25f));
-            _dayLabel = UICanvasUtil.NewEyebrow("Day", dayBadge.transform, "", 11f,
+            _dayLabel = UICanvasUtil.NewEyebrow("Day", dayBadge.transform, "", 18f,
                 HollowfenPalette.GoldGlow, TextAlignmentOptions.Center);
             UICanvasUtil.Stretch(_dayLabel.rectTransform);
-            Bound(_dayLabel, 9f, 11f, 3f);
+            Bound(_dayLabel, 17.5f, 18f, 1f);
 
             _timeIcon = NewIcon("TimeIcon", root, HollowfenPalette.GoldGlow,
                 new Vector2(-65f, 19f), 22f);
-            _timeLabel = UICanvasUtil.NewHeading("TimeOfDay", root, "", 15f,
+            _timeLabel = UICanvasUtil.NewHeading("TimeOfDay", root, "", 18f,
                 HollowfenPalette.Cream, FontStyles.Normal, TextAlignmentOptions.Left);
             Place(_timeLabel.rectTransform, new Vector2(32f, 19f), new Vector2(164f, 27f));
-            Bound(_timeLabel, 11f, 15f, 1f);
+            Bound(_timeLabel, 17.5f, 18f, 1f);
 
             _weatherIcon = NewIcon("WeatherIcon", root, HollowfenPalette.Parchment,
                 new Vector2(-132f, -19f), 23f);
-            _weatherLabel = UICanvasUtil.NewEyebrow("Weather", root, "", 11.5f,
+            _weatherLabel = UICanvasUtil.NewEyebrow("Weather", root, "", 18f,
                 HollowfenPalette.Cream, TextAlignmentOptions.Left);
             Place(_weatherLabel.rectTransform, new Vector2(-72f, -19f),
                 new Vector2(96f, 25f));
-            Bound(_weatherLabel, 10f, 11.5f, 2f);
+            Bound(_weatherLabel, 17.5f, 18f, 1f);
 
-            _forecastArrow = UICanvasUtil.NewBody("ForecastArrow", root, "", 12f,
+            _forecastArrow = UICanvasUtil.NewBody("ForecastArrow", root, "", 18f,
                 HollowfenPalette.Gold, FontStyles.Normal, TextAlignmentOptions.Center);
             Place(_forecastArrow.rectTransform, new Vector2(-15f, -19f), new Vector2(18f, 24f));
-            Bound(_forecastArrow, 10f, 12f, 0f);
+            Bound(_forecastArrow, 17.5f, 18f, 0f);
 
-            _forecastLabel = UICanvasUtil.NewBody("Forecast", root, "", 11.5f,
+            _forecastLabel = UICanvasUtil.NewBody("Forecast", root, "", 18f,
                 HollowfenPalette.Parchment, FontStyles.Italic, TextAlignmentOptions.Left);
             Place(_forecastLabel.rectTransform, new Vector2(65f, -19f),
                 new Vector2(150f, 25f));
-            Bound(_forecastLabel, 9.5f, 11.5f, 0f);
+            Bound(_forecastLabel, 17.5f, 18f, 0f);
         }
 
         private static Image NewIcon(string name, Transform parent, Color color,
