@@ -31,6 +31,10 @@ namespace Hollowfen.EditorTools
             "Unity.VisualScripting",
             "Unity.Multiplayer.Center",
             "Newtonsoft.Json",
+            "Unity.Pipeline",
+            "Microsoft.CodeAnalysis",
+            "System.Collections.Immutable",
+            "System.Reflection.Metadata",
         };
 
         private const BuildOptions ForbiddenOptions =

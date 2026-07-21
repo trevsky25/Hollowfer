@@ -20,3 +20,9 @@
 *.pdf filter=lfs diff=lfs merge=lfs -text
 *.mp4 filter=lfs diff=lfs merge=lfs -text
 *.mov filter=lfs diff=lfs merge=lfs -text
+
+# Preserve embedded Unity package snapshots byte-for-byte; upstream metadata,
+# generated XML, and sample scenes contain intentional whitespace.
+Hollowfen-Unity/Packages/com.coplaydev.unity-mcp/** -whitespace
+Hollowfen-Unity/Packages/com.unity.pipeline/** -whitespace
+Hollowfen-Unity/Packages/com.unity.nuget.newtonsoft-json/** -whitespace

@@ -1,24 +1,27 @@
 # Embedded MCP for Unity
 
 This package is a source-controlled snapshot of the `MCPForUnity` subtree from
-CoplayDev/unity-mcp. It is embedded so Hollowfen can keep its editor automation
-while guaranteeing that MCP and its JSON dependency cannot enter a player build.
+CoplayDev/unity-mcp. It is embedded so Hollowfen can keep its proven Coplay bridge
+while sharing Unity's supported Newtonsoft package with Unity Pipeline.
 
 - Upstream: https://github.com/CoplayDev/unity-mcp
-- Commit: `b92c05a25820cfc9f59ce4094eb46aaec8632ea2`
-- Upstream version: `9.6.8`
-- Git archive SHA-256: `702133f23dbc93747d75e76c0ffcaba2501743f4cd657f42365b5404f9f21431`
-- Local version: `9.6.8-hollowfen.1`
+- Commit: `c14de1e6dc01ab42d2bb358730cff954bce0ce6b`
+- Tag / upstream version: `v10.1.0`
+- Upstream source-tree aggregate SHA-256: `cbc7f24493367c02bc9bbe997b2ca28064835a47b9a46cdf14aa8f4e69e881d2`
+- Local identity: upstream version `10.1.0`, embedded with the patches below.
+
+The version string must remain exactly `10.1.0`: Coplay uses it to select the
+matching `mcpforunityserver` Python distribution at launch.
 
 ## Local release-safety patches
 
 - `MCPForUnity.Runtime` is Editor-only, explicitly referenced, and not automatically
   referenced by player assemblies.
-- Newtonsoft.Json `3.2.2` is embedded as an Editor-only explicit plugin. Its DLL
-  SHA-256 is `7292d3eb508652d14726749dd27094f2d481aeccf2db6427b62f68a71460897e`.
-- The package dependency on `com.unity.nuget.newtonsoft-json` is removed so Unity's
-  AOT/player DLL is not pulled into release builds.
-- Coplay's MIT license and Newtonsoft's license/notices are retained in this package.
+- The upstream dependency on `com.unity.nuget.newtonsoft-json` is retained so Coplay
+  and Unity Pipeline bind the same assembly instead of embedding duplicate DLLs.
+- Hollowfen embeds and hardens that Newtonsoft package separately so only its Editor
+  DLL is importable; its AOT/player DLL is disabled on every target.
 
-Do not replace this package with a floating `#main` dependency. Review upstream
-changes, refresh the commit and hashes above, and reapply the release-safety patches.
+Coplay, Unity Pipeline, and Newtonsoft form one dependency set in Hollowfen. Review
+and test them together when updating any member. Do not replace this package with a
+floating `#main` dependency.

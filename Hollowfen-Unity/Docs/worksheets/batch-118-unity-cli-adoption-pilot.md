@@ -1,6 +1,6 @@
 # Batch 118 — Unity CLI Adoption Pilot
 
-**Date:** 2026-07-21 · **Status:** standalone adoption verified; Pipeline compatibility-blocked
+**Date:** 2026-07-21 · **Status:** standalone adoption verified; original Pipeline trial superseded by Batch 119
 
 ## Goal
 Evaluate Unity's native CLI and experimental Pipeline package beside the existing Coplay MCP bridge, adopting only the parts that can be introduced without destabilizing Hollowfen. This is a reversible pilot: Coplay remains installed, no Player-runtime Pipeline component is added, and incompatible package changes are rolled back.
@@ -84,6 +84,13 @@ The safe adoption boundary is now explicit:
 
 The accumulated production state through batch 118 is checkpointed at `1acaa2c`. The standalone verification record is a documentation-only follow-up; no implementation wrapper or CI integration has been added yet.
 
+Batch 119 subsequently resolved the collision by upgrading Coplay and embedding a
+single shared, Editor-only Newtonsoft dependency alongside an Editor-only Pipeline
+fork. This worksheet remains the record of the original failed trial and rollback.
+
 ## Feedback to Trevor
 
-The standalone Unity CLI is now proven useful for Hollowfen's headless integrity and gated audit-build workflows. Coplay remains the only live Editor surface, because the current experimental Pipeline package is not side-by-side compatible with Hollowfen's hardened embedded Coplay package. The adoption split is evidence-backed: standalone automation passes, Pipeline automation remains parked.
+At Batch 118 closure, the standalone Unity CLI was proven useful for Hollowfen's
+headless integrity and gated audit-build workflows, while Coplay remained the only
+live Editor surface. Batch 119 supersedes that temporary boundary with a verified
+Editor-only coexistence setup.
