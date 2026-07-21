@@ -121,28 +121,24 @@ namespace Hollowfen.Save
             var active = QuestManager.ActiveQuest;
             if (GameScores.HasFlag("game_complete"))
             {
-                meta.CurrentQuest = Localization.Get("ending.save.complete");
-                meta.CurrentQuestId = "game_complete";
+                SaveQuestIdentity.Set(meta, SaveQuestIdentity.GameCompleteId);
                 meta.CurrentAct = 4;
             }
             else if (active != null)
             {
-                meta.CurrentQuest = Localization.Get(active.DisplayNameId);
-                meta.CurrentQuestId = active.Id;
+                SaveQuestIdentity.Set(meta, active.Id);
                 meta.CurrentAct = active.Act;
             }
             else if (QuestManager.IsCompleted("meetAldric"))
             {
                 // The linear quest chain deliberately ends before the four-way decision.
                 // Keep the slot identity truthful during that recoverable terminal fork.
-                meta.CurrentQuest = Localization.Get("ending.save.choose");
-                meta.CurrentQuestId = "final_choice_available";
+                SaveQuestIdentity.Set(meta, SaveQuestIdentity.FinalChoiceAvailableId);
                 meta.CurrentAct = 4;
             }
             else if (quests.Length > 0)
             {
-                meta.CurrentQuest = Localization.Get("save.act1_complete");
-                meta.CurrentQuestId = "";
+                SaveQuestIdentity.Set(meta, SaveQuestIdentity.ActOneCompleteId);
             }
 
             if (playerPosition.HasValue)

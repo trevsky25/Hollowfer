@@ -433,7 +433,6 @@ namespace Hollowfen.EditorTools
             });
             var meta = new SaveSlotMeta
             {
-                CurrentQuest = "Apothecary verifier",
                 CurrentQuestId = "apothecary-verifier",
                 CurrentAct = 4,
                 Inventory = InventoryRuntime.ToSnapshot(),

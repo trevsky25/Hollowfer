@@ -175,16 +175,7 @@ namespace Hollowfen.UI
 
         private static string ResolveQuestLabel(SaveSlotMeta meta)
         {
-            if (meta == null) return "—";
-            if (meta.CurrentQuestId == "game_complete") return Localization.Get("ending.save.complete");
-            if (meta.CurrentQuestId == "final_choice_available") return Localization.Get("ending.save.choose");
-            if (!string.IsNullOrEmpty(meta.CurrentQuestId))
-            {
-                string key = "quest." + meta.CurrentQuestId + ".name";
-                string localized = Localization.Get(key);
-                if (localized != key) return localized;
-            }
-            return string.IsNullOrEmpty(meta.CurrentQuest) ? "—" : meta.CurrentQuest;
+            return SaveQuestIdentity.ResolveDisplayName(meta);
         }
 
         private const string GameplaySceneName = "Scene_Hollowfen";

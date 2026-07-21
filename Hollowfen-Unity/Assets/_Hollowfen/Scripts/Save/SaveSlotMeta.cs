@@ -7,6 +7,9 @@ namespace Hollowfen.Save
     {
         public int SlotNumber;
         public long TimestampUnix;
+        // Historical display cache. Retained only so schema-zero/id-less journals can still
+        // show their saved chapter until the next full save establishes CurrentQuestId.
+        // Current code must never treat or write this text as quest identity.
         public string CurrentQuest;
         public string CurrentQuestId;
         public int CurrentAct;

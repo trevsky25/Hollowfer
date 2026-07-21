@@ -133,7 +133,6 @@ namespace Hollowfen.EditorTools
 
             var pending = new SaveSlotMeta
             {
-                CurrentQuest = "Choose Hollowfen's future",
                 CurrentQuestId = "meetAldric",
                 CurrentAct = 4,
                 CompletedQuestIds = new[] { "meetAldric" },
@@ -259,8 +258,8 @@ namespace Hollowfen.EditorTools
 
         private static void VerifyAtomicRecovery()
         {
-            var first = new SaveSlotMeta { CurrentQuest = "atomic-a", CurrentQuestId = "atomic-a", TimestampUnix = 1 };
-            var second = new SaveSlotMeta { CurrentQuest = "atomic-b", CurrentQuestId = "atomic-b", TimestampUnix = 2 };
+            var first = new SaveSlotMeta { CurrentQuestId = "atomic-a", TimestampUnix = 1 };
+            var second = new SaveSlotMeta { CurrentQuestId = "atomic-b", TimestampUnix = 2 };
             SaveManager.WriteSlot(3, first);
             SaveManager.WriteSlot(3, second);
             Require(File.Exists(SaveManager.SlotPath(3) + ".bak"), "atomic replacement produced no backup");

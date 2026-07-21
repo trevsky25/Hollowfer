@@ -364,7 +364,6 @@ namespace Hollowfen.EditorTools
             var active = QuestManager.ActiveQuest;
             var meta = new SaveSlotMeta
             {
-                CurrentQuest = active != null ? active.Id : "Inventory transaction verifier",
                 CurrentQuestId = active != null ? active.Id : "inventory-transaction-verifier",
                 CurrentAct = active != null ? active.Act : 2,
                 GameDay = Math.Max(1, day),

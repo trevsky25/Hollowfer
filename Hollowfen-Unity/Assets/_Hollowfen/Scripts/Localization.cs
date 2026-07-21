@@ -51,6 +51,7 @@ namespace Hollowfen
             { "save.newer_version",    "Journal requires a newer game version" },
             { "save.new_game",         "New Game" },
             { "save.act1_complete",    "Act I complete" },
+            { "save.quest.unknown",     "Unknown chapter" },
             { "save.unavailable.title",   "Journal Unavailable" },
             { "save.unavailable.newer",   "This journal was written by a newer version of Hollowfen. It has not been changed." },
             { "save.unavailable.corrupt", "This journal and its recovery copies are damaged. It has not been changed; press Delete if you want to remove it." },
@@ -1427,6 +1428,16 @@ namespace Hollowfen
         {
             if (string.IsNullOrEmpty(stringId)) return stringId;
             return _table.TryGetValue(stringId, out var s) ? s : stringId;
+        }
+
+        public static bool TryGet(string stringId, out string value)
+        {
+            if (string.IsNullOrEmpty(stringId))
+            {
+                value = null;
+                return false;
+            }
+            return _table.TryGetValue(stringId, out value);
         }
 
         // Incremental localization seam for data-authored copy. Every displayed

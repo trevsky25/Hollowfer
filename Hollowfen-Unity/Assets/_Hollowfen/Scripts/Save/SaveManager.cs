@@ -197,7 +197,6 @@ namespace Hollowfen.Save
             WriteJsonAtomically(slot, new SaveSlotMeta
             {
                 SlotNumber = slot,
-                CurrentQuest = Localization.Get("quest.arrive.name"),
                 CurrentQuestId = "arrive",
                 CurrentAct = 1,
                 TotalPlayTimeSeconds = 0f,
@@ -499,6 +498,7 @@ namespace Hollowfen.Save
             long nowMilliseconds = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             meta.SlotNumber = slot;
             meta.TimestampUnix = nowMilliseconds / 1000L;
+            SaveQuestIdentity.PrepareForWrite(meta);
             string json = SaveFileFormat.Encode(meta, highestRevision + 1L, nowMilliseconds);
             bool committed = false;
 

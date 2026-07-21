@@ -4,7 +4,7 @@ Run: `tools/agent/lint_hollowfen.py` (always) · `tools/agent/run_integrity.py` 
 Checker code: `Assets/_Hollowfen/Scripts/Editor/DataIntegrity.cs` — an editor utility, NOT a Unity Test Framework assembly, because game code compiles into Assembly-CSharp (coupled to no-asmdef third-party sources) and test assemblies can't reference it.
 Philosophy: checks target failures that are SILENT at runtime (Localization.Get returns the raw id on a miss; PickDialog skips null entries; extra relationship ids are ignored). Loud failures don't need tests — the console already catches them.
 Waiver policy: lint waivers in `tools/agent/lint_waivers.txt`, each pointing at the TODOS item that owns the fix. A waiver is a debt marker, not a dismissal; Batch 123 resolves the final current waiver, so the expected baseline is `WAIVED=0`.
-Status: all three layers verified through 2026-07-21. Focused verifiers cover save-file integrity, durable inventory batches, endings, presentation ownership, repeatable gameplay, village requests, Living Restoration, the apothecary, day/night, dynamic weather, NPC schedules, relationship memory/personal arcs, regional feedback, audio/voice, and active production UI. Batch 120 adds a gated visual/performance baseline; Batch 121 exposes the synchronous checks through a safe native Pipeline allowlist; Batch 122 proves the world audit can drive a bounded scene-collision cleanup; Batch 123 removes obsolete Player-compiling debug paths and reaches a zero-waiver lint baseline. Destructive state verifiers use an isolated temporary save directory where supported.
+Status: all three layers verified through 2026-07-21. Focused verifiers cover save-file integrity, durable inventory batches, endings, presentation ownership, repeatable gameplay, village requests, Living Restoration, the apothecary, day/night, dynamic weather, NPC schedules, relationship memory/personal arcs, regional feedback, audio/voice, and active production UI. Batch 120 adds a gated visual/performance baseline; Batch 121 exposes the synchronous checks through a safe native Pipeline allowlist; Batch 122 proves the world audit can drive a bounded scene-collision cleanup; Batch 123 removes obsolete Player-compiling debug paths and reaches a zero-waiver lint baseline; Batch 124 makes save-slot quest rendering ID-authoritative while retaining explicit schema-zero compatibility. Destructive state verifiers use an isolated temporary save directory where supported.
 
 > Self-healing doc: adding a check? Document it here. Hitting a new failure class? Add a check AND a row here in the same batch.
 
@@ -31,6 +31,7 @@ Runs inside the editor (menu / bridge / batchmode `-executeMethod …DataIntegri
 | Category | Severity | Proves |
 |---|---|---|
 | `quest-id` | ERROR | Quest ids non-empty + unique. |
+| `quest-save-identity` | ERROR | Every canonical quest's `DisplayNameId` is exactly `quest.<id>.name`, so a persisted quest ID resolves through authored localization without a saved display cache. |
 | `quest-chain` | ERROR/WARN | No `NextQuest` cycles; exactly one chain root; no unreachable quests. |
 | `localization` | ERROR | Every fixed id consumed by live UI, including `journal.*` and `ending.*` chrome, exists in `Localization._table`. |
 | `relationships` | ERROR | Parallel id/delta arrays same length; every id is a bible cast id (catches typos — extras are silently ignored at runtime). |
@@ -107,7 +108,9 @@ Call `SaveIntegrityVerifier.RunAll()` through the editor bridge. It redirects `S
 
 It proves: historical flat schema-0 loading and upgrade to a schema-1 envelope while retaining the legacy backup; `{}` parseable-corruption fallback; checksum-tamper fallback; higher-revision flushed-temp selection and lower-revision-temp rejection; corrupt primary+backup load isolation; targeted-autosave refusal for a damaged active slot; an authoritative future-schema barrier instead of downgrade to an older backup; timestamp/playtime/currency/transform/parallel-array normalization; non-ASCII/full-payload round-trip including playtime, flags, inventory, and transform; and recovered rewrite to a valid primary while preserving a backup and quarantining the damaged primary.
 
-Expected result: `SAVE INTEGRITY — PASS: legacy upgrade, semantic corruption, checksum, temp/backup revision recovery, future-version barrier, load isolation, normalization, full round-trip, recovered rewrite`.
+It also proves save-slot identity semantics: a canonical quest ID overrides stale cached text, an unknown non-empty ID renders the localized unknown-chapter state instead of reviving that cache, an id-less historical journal retains its legacy label, and current round-trips contain the stable ID without a display cache.
+
+Expected result: `SAVE INTEGRITY — PASS: legacy upgrade, authoritative quest identity, semantic corruption, checksum, temp/backup revision recovery, future-version barrier, load isolation, normalization, full round-trip, recovered rewrite`.
 
 ## Focused inventory-transaction verifier
 

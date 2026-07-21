@@ -3,7 +3,7 @@ Player-facing strings resolve through `Localization.Get`; never add literal disp
 Key script: `Assets/_Hollowfen/Scripts/Localization.cs`; `Get(id)` reports the raw id on a miss, while batch-63 `Get(id, englishFallback)` keeps SO-backed content readable until its translation row exists.
 ID conventions: `story.<id>.<field>`, `mushroom.<id>.<field>`, `character.<id>.<field>`, `prompt.<context>.verb`, plus fixed `journal.*` and `ending.*` chrome IDs.
 Localized/routed today: quest/objective text, prompt verbs/NPC names, map/location content and chrome, modal copy, loading/save-slot presentation, the journal family (including candidate-page browsing and enlarged-spread controls), mushroom content outside the journal, ending decisions/epilogues/credits, quest HUD chrome, the six-beat homecoming opening, and live text painted onto story-moment pages.
-Known unrouted areas: dialogue lines and choices, plus the Act I completion captions in StoryBeats. Dialogue still has no stable per-line or per-choice localization IDs. `CurrentQuestId` is now preferred over the slot row's cached English display string.
+Known unrouted areas: dialogue lines and choices, plus the Act I completion captions in StoryBeats. Dialogue still has no stable per-line or per-choice localization IDs. Save-slot quest copy now resolves authoritatively from `CurrentQuestId`; cached English survives only as an id-less historical-save fallback.
 Status: infrastructure live; journal routing is complete, the hidden-journal letter resolves as localized live page text in its dedicated cursive role, and voiced story moments cannot hide their matching caption. Simplified Chinese is not yet shippable: there is no language store/selector, translated table, or CJK-capable TMP fallback, and several runtime surfaces still contain English literals.
 
 > Self-healing doc: if you change this system, update this doc (including the 7-line header) in the same batch, and note the change in the batch worksheet.
@@ -18,6 +18,7 @@ Status: infrastructure live; journal routing is complete, the hidden-journal let
 - Stable derived examples: `story.homecoming.title`, `mushroom.flyAgaric.name`, `mushroom.flyAgaric.feature.0`, `character.wrenTobin.kit.0.name`.
 - Array members use their canonical index in the ID. Reordering beats/features/kit items changes the semantic key and must be treated as a content migration.
 - `IInteractable.PromptVerb` returns a localization key, not display text; the HUD resolves it.
+- Save-slot quest rows resolve canonical `CurrentQuestId` values through `quest.<id>.name`; Data Integrity requires each `QuestData.DisplayNameId` to match that convention. Unknown non-empty IDs show localized `save.quest.unknown` and never revive stale cached text.
 - `StoryMomentData.PageText` resolves `_pageTextId` with `_pageTextFallback`; the cinematic overlay draws that result on the authored image rect rather than baking English into the art. Optional paragraph reveal beats keep the localized writing synchronized with its caption and VO, while `_useCursivePageText` changes typography without changing the localized string.
 - Target languages at EA: English and Simplified Chinese.
 

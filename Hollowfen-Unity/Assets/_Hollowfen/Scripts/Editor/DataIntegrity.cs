@@ -94,9 +94,14 @@ namespace Hollowfen.EditorTools
 
         private static readonly string[] ConsumedEndingIds =
         {
-            "ending.choice.speaker", "ending.save.complete", "ending.credits.eyebrow",
+            "ending.choice.speaker", "ending.credits.eyebrow",
             "ending.credits.saved", "ending.credits.heading", "ending.credits.return",
             "ending.credits.remain", "ending.credits.hint"
+        };
+
+        private static readonly string[] ConsumedSaveIds =
+        {
+            "ending.save.complete", "ending.save.choose", "save.act1_complete", "save.quest.unknown"
         };
 
         private static readonly string[] ConsumedRequestIds =
@@ -190,6 +195,12 @@ namespace Hollowfen.EditorTools
                     issues.Add(New(Severity.Error, "quest-id", path, "empty _id"));
                 else if (!seen.Add(q.Id))
                     issues.Add(New(Severity.Error, "quest-id", path, $"duplicate quest id '{q.Id}'"));
+
+                string expectedSaveLabel = Save.SaveQuestIdentity.QuestNameKey(q.Id);
+                if (!string.IsNullOrWhiteSpace(q.Id) &&
+                    !string.Equals(q.DisplayNameId, expectedSaveLabel, System.StringComparison.Ordinal))
+                    issues.Add(New(Severity.Error, "quest-save-identity", path,
+                        $"DisplayNameId '{q.DisplayNameId}' must be '{expectedSaveLabel}' so save-slot IDs resolve through authored localization"));
 
                 RequireLoc(issues, loc, q.DisplayNameId, path, "DisplayNameId (rendered by QuestHUD)");
                 RequireLoc(issues, loc, q.ObjectiveTextId, path, "ObjectiveTextId (rendered by QuestHUD)");
@@ -1331,6 +1342,8 @@ namespace Hollowfen.EditorTools
                 issues.Add(New(Severity.Error, "localization", "Localization.cs", $"journal id '{id}' missing from _table"));
             foreach (var id in ConsumedEndingIds.Where(id => !loc.ContainsKey(id)))
                 issues.Add(New(Severity.Error, "localization", "Localization.cs", $"ending id '{id}' missing from _table"));
+            foreach (var id in ConsumedSaveIds.Where(id => !loc.ContainsKey(id)))
+                issues.Add(New(Severity.Error, "localization", "Localization.cs", $"save id '{id}' missing from _table"));
             foreach (var id in ConsumedRequestIds.Where(id => !loc.ContainsKey(id)))
                 issues.Add(New(Severity.Error, "localization", "Localization.cs", $"request id '{id}' missing from _table"));
             foreach (var id in ConsumedAccessibilityIds.Where(id => !loc.ContainsKey(id)))

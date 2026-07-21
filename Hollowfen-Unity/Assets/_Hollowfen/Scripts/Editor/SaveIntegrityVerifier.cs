@@ -39,9 +39,10 @@ namespace Hollowfen.EditorTools
                 VerifyInvalidLoadIsolation();
                 VerifyFutureVersionBarrier();
                 VerifyNormalization();
+                VerifyQuestIdentityPresentation();
                 VerifyFullRoundTrip();
                 VerifyRecoveredRewrite();
-                return "SAVE INTEGRITY — PASS: legacy upgrade, semantic corruption, checksum, temp/backup revision recovery, future-version barrier, load isolation, normalization, full round-trip, recovered rewrite";
+                return "SAVE INTEGRITY — PASS: legacy upgrade, authoritative quest identity, semantic corruption, checksum, temp/backup revision recovery, future-version barrier, load isolation, normalization, full round-trip, recovered rewrite";
             }
             finally
             {
@@ -168,12 +169,11 @@ namespace Hollowfen.EditorTools
         private static void VerifyFullRoundTrip()
         {
             ResetSlot(0);
-            var source = SampleMeta("round-trip-å", 3661);
-            source.CurrentQuest = "Hollowfen — Wren's journal";
+            var source = SampleMeta("arrive", 3661);
             source.KeyItemIds = new[] { "item.mill_key" };
             source.CompletedQuestIds = new[] { "arrive", "speakBram" };
             source.UnlockedStoryCardIds = new[] { "homecoming" };
-            source.GameFlagIds = new[] { "act1_started", "ending_free_hollow" };
+            source.GameFlagIds = new[] { "act1_started", "ending_free_hollow_å" };
             source.Inventory = new InventorySnapshot { Ids = new[] { "fieldCap" }, Counts = new[] { 3 } };
             source.VillagerRelationships = new VillagerRelationshipSnapshot
             {
@@ -191,12 +191,33 @@ namespace Hollowfen.EditorTools
             SaveManager.WriteSlot(0, source);
             var loaded = SaveManager.InspectSlot(0).Meta;
             Require(loaded != null && loaded.CurrentQuestId == source.CurrentQuestId &&
-                    loaded.CurrentQuest == source.CurrentQuest && loaded.TotalPlayTimeSeconds == 3661f &&
+                    string.IsNullOrEmpty(loaded.CurrentQuest) && loaded.TotalPlayTimeSeconds == 3661f &&
                     loaded.Inventory.Counts[0] == 3 && loaded.GameFlagIds.Length == 2 && loaded.HasPlayerTransform &&
                     loaded.VillagerRelationships != null && loaded.VillagerRelationships.MemoryDays[0] == 4 &&
                     loaded.VillagerRelationships.BondValues[0] == 2 &&
                     loaded.VillagerRelationships.FavorStages[0] == 1,
                 "full save payload did not round-trip");
+        }
+
+        private static void VerifyQuestIdentityPresentation()
+        {
+            var current = new SaveSlotMeta { CurrentQuestId = "arrive", CurrentQuest = "Stale cached title" };
+            Require(SaveQuestIdentity.ResolveDisplayName(current) == Localization.Get("quest.arrive.name"),
+                "stable quest id did not override stale cached display text");
+
+            var unknown = new SaveSlotMeta { CurrentQuestId = "removed-or-future-quest", CurrentQuest = "Stale cached title" };
+            Require(SaveQuestIdentity.ResolveDisplayName(unknown) == Localization.Get("save.quest.unknown"),
+                "unknown stable quest id fell back to cached display text");
+
+            var legacy = new SaveSlotMeta { CurrentQuest = "Legacy chapter title" };
+            Require(SaveQuestIdentity.ResolveDisplayName(legacy) == "Legacy chapter title",
+                "id-less historical journal lost its cached compatibility label");
+
+            SaveQuestIdentity.Set(current, SaveQuestIdentity.FinalChoiceAvailableId);
+            Require(current.CurrentQuestId == SaveQuestIdentity.FinalChoiceAvailableId &&
+                    string.IsNullOrEmpty(current.CurrentQuest) &&
+                    SaveQuestIdentity.ResolveDisplayName(current) == Localization.Get("ending.save.choose"),
+                "terminal quest identity did not retire cached display text");
         }
 
         private static void VerifyRecoveredRewrite()
@@ -222,7 +243,6 @@ namespace Hollowfen.EditorTools
             {
                 SlotNumber = 0,
                 TimestampUnix = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                CurrentQuest = "Verifier quest",
                 CurrentQuestId = questId,
                 CurrentAct = 2,
                 TotalPlayTimeSeconds = playTime,
