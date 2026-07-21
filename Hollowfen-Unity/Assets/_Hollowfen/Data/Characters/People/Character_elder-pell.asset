@@ -1,0 +1,70 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b4e19f76957446acb794b6622b288e2, type: 3}
+  m_Name: Character_elder-pell
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.CharacterProfileData
+  _id: elder-pell
+  _characterName: Elder Pell
+  _role: Village elder / record keeper
+  _age: Seventies
+  _home: Hollowfen
+  _work: Village records and restoration accounts
+  _keepsake: Leather-bound village ledger
+  _tagline: The memory of Hollowfen made visible in pencil, ink, and careful arithmetic.
+  _leadParagraph: Elder Pell is stooped, narrow, and slow-moving, with a ledger under
+    one arm and a pencil ready for whatever the village becomes next.
+  _backgroundParagraph: He keeps the restoration account at the village well, prices
+    boards and hinges, and records changes only when they have become real enough
+    to deserve ink.
+  _perspectiveParagraph: Pell distrusts hope as a claim but respects it as evidence.
+    One shutter is not a village; two shutters may be a sentence beginning.
+  _kitItems: []
+  _heroPortrait: {fileID: 0}
+  _pullquote: Two shutters is a sentence beginning.
+  _displayNameId: character.elder_pell.name
+  _descriptionId: character.elder_pell.lead
+  _sortOrder: 10
+  _category: 0
+  _edition: 11 / ELDER PELL
+  _previewScale: 1
+  _tPosePlate: {fileID: 0}
+  _characterSheet: {fileID: 0}
+  _missions:
+  - Act: 2
+    QuestId: cottagesReopen
+    Title: Two Boards Come Down
+    Summary: Keep the restoration ledger and fund the first new shutters.
+  - Act: 3
+    QuestId: festivalHosted
+    Title: The First Festival in Three Years
+    Summary: Record the season's public turning point.
+  _quotes:
+  - Text: The Wenmar house wants shutters more than it wants sympathy.
+    Context: Explaining the next restoration cost.
+  - Text: Two shutters is a sentence beginning.
+    Context: Recording the first reopened cottages.
+  - Text: This year's page may need more ink.
+    Context: Watching the festival preparations.
+  _heroPortraitResourcePath: People/Art/elder-pell_hero
+  _tPosePlateResourcePath: People/Art/elder-pell_tpose
+  _characterSheetResourcePath: People/Art/elder-pell_hero
+  _journalModelResourcePath: People/Models/elder-pell
+  _journalTriangleBudget: 90000
+  _journalTextureSize: 2048
+  _journalModelPrefab: {fileID: 0}
+  _journalIdleClip: {fileID: 0}
+  _journalExposure: 0.15
+  _studySheet: {fileID: 0}
+  _figureFront: {fileID: 0}
+  _figureBack: {fileID: 0}
+  _figureThreeQuarter: {fileID: 0}
+  _knifePlate: {fileID: 0}

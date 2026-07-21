@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00c9c9bb92b3b44fb84ca335c48467d8, type: 3}
+  m_Name: Dialogue_Ending_FreeHollow
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Dialogue.DialogueData
+  _id: ending.free_hollow.resolution
+  _lines:
+  - speaker: Wren
+    text: No.
+    isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: ea9935ac9735e42fcbdc46456551e3e5, type: 3}
+  - speaker: Aldric
+    text: That is rarely the first word in a negotiation.
+    isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: 2ffe1d9b7243a45209cac34c1b846302, type: 3}
+  - speaker: Wren
+    text: It is the last word in this one.
+    isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: 4605086c2f6034ec5a0b6766e63934a5, type: 3}
+  - speaker: Aldric
+    text: You may regret refusing protection.
+    isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: 72b5c2ab8683a497fae791feabc3b767, type: 3}
+  - speaker: Wren
+    text: I expect to. That does not make it wrong.
+    isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: 8d1ef596081fc438aa06cf526ab2da73, type: 3}
+  _mushroomHandoff:
+    beforeLineIndex: 0
+    recipientSpeaker: 
+    mushroom: {fileID: 0}
+    presentationHeight: 0
+  _unlockStoryCard: {fileID: 0}
+  _completeQuest: {fileID: 0}
+  _giveItemId: 
+  _grantCoinsCopper: 0
+  _spendsCoinsCopper: 0
+  _sellsForageBasket: 0
+  _basketCopperPerItem: 0
+  _basketBuyer: 0
+  _grantForage: {fileID: 0}
+  _grantForageCount: 1
+  _consumeForage: {fileID: 0}
+  _consumeForageCount: 1
+  _setFlagIds: []
+  _villageHopeDelta: 0
+  _knowledgeDelta: 0
+  _relationshipNpcIds: []
+  _relationshipDeltas: 
+  _memoryOutcomes: []
+  _bondOutcomes: []
+  _favorOutcomes: []
+  _advanceMinutes: 0
+  _transitionMoment: {fileID: 11400000, guid: f13ae77121c06486fa3bffb35b230529, type: 2}
+  _nextDialog: {fileID: 0}
+  _choices: []

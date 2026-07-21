@@ -17,19 +17,40 @@ MonoBehaviour:
   _latinName: Psilocybe semilanceata
   _edibility: 2
   _edibilityLabel: Psychoactive
-  _description: 'Sable''s seedbook name for the Liberty Cap (Psilocybe semilanceata) — a small, slender mushroom of damp pasture, potent with psilocybin. The old hand called it Wendlight for the thin watery shine of its cap in low autumn light; it favours the wet ground a river leaves behind.'
+  _description: "Sable's seedbook name for the Liberty Cap (Psilocybe semilanceata)
+    \u2014 a small, slender mushroom of damp pasture, potent with psilocybin. The
+    old hand called it Wendlight for the thin watery shine of its cap in low autumn
+    light; it favours the wet ground a river leaves behind."
   _idFeatures:
   - Bell or conical cap with a sharp pointed nipple (umbo) at the top
   - Cap small (5 to 25mm), tan to chestnut when moist, paler when dry
   - Dark brown to purple-black gills
   - Long, slender, pale, often slightly wavy stem
-  - Bruises blue or blue-green where handled — diagnostic for psilocybin
-  _habitat: Damp grassy meadows and pastures, especially grazed land. Never directly on dung.
+  - "Bruises blue or blue-green where handled \u2014 diagnostic for psilocybin"
+  _habitat: Damp grassy meadows and pastures, especially grazed land. Never directly
+    on dung.
   _season: Autumn, typically September through November in temperate regions
-  _lookalikes: Deadly Galerina species contain the same liver toxins as the Death Cap and do NOT bruise blue. Conocybe and Pholiotina species can also be deadly. The blue-bruise reaction is the safest single indicator, confirmed with other features.
-  _notes: 'Psychoactive and, in many places, illegal to possess. Easy to confuse with deadly Galerina when it is not bruised — never collect by appearance alone. Sable''s hand underlines the habitat once: where water had been betrayed.'
+  _lookalikes: Deadly Galerina species contain the same liver toxins as the Death
+    Cap and do NOT bruise blue. Conocybe and Pholiotina species can also be deadly.
+    The blue-bruise reaction is the safest single indicator, confirmed with other
+    features.
+  _notes: "Psychoactive and, in many places, illegal to possess. Easy to confuse
+    with deadly Galerina when it is not bruised \u2014 never collect by appearance
+    alone. Sable's hand underlines the habitat once: where water had been betrayed."
   _photo: {fileID: 21300000, guid: 2ee3be24c4dae4c2180158e9f017bd0d, type: 3}
-  _photoCredit: Wikimedia Commons
+  _photoCredit: Generated with OpenAI gpt-image
+  _journalPage: {fileID: 21300000, guid: 896f29b847ff04770b4948d1d1d48797, type: 3}
   _worldPrefab: {fileID: 5716283212947672387, guid: cadc54d2a332f4134876f80e70efbdcf, type: 3}
+  _journalPreviewPrefab: {fileID: 2607102179713991365, guid: b6f061faa67c7413d887c18b1b02f1b9, type: 3}
+  _journalExposure: 0.41
   _displayNameId: mushroom.wendlight.name
   _descriptionId: mushroom.wendlight.description
+  _forageTier: 3
+  _requiredForageFlagId: tier4_mushrooms_unlocked
+  _wildRespawnDays: 4
+  _marraValueCopper: 0
+  _theoValueCopper: 0
+  _cultivable: 0
+  _cultivationHours: 6
+  _cultivationYield: 3
+  _cultivationUnlockFlagId:

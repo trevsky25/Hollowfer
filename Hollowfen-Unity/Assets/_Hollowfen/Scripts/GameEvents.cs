@@ -1,4 +1,5 @@
 using System;
+using Hollowfen.Save;
 
 namespace Hollowfen
 {
@@ -9,7 +10,13 @@ namespace Hollowfen
         public static void TriggerAchievement(string achievementId)
         {
             if (string.IsNullOrEmpty(achievementId)) return;
-            OnAchievementTrigger?.Invoke(achievementId);
+            var handlers = OnAchievementTrigger;
+            if (handlers == null) return;
+            foreach (Action<string> handler in handlers.GetInvocationList())
+            {
+                var callback = handler;
+                SaveManager.PublishAfterAtomicCommit(() => callback(achievementId));
+            }
         }
     }
 }

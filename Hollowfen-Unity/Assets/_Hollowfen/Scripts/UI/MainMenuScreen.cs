@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,10 +19,13 @@ namespace Hollowfen.UI
 
         public override GameObject DefaultSelected =>
             _newGameButton != null ? _newGameButton.gameObject : base.DefaultSelected;
+        public override bool IsRootScreen => true;
 
         protected override void OnInitialize()
         {
             base.OnInitialize();
+            LocalizeSceneCopy();
+            NormalizePointerTargets();
             if (_newGameButton  != null) _newGameButton.onClick.AddListener(OnForage);
             if (_settingsButton != null) _settingsButton.onClick.AddListener(OnSettings);
             if (_creditsButton  != null) _creditsButton.onClick.AddListener(OnCredits);
@@ -29,6 +33,62 @@ namespace Hollowfen.UI
             if (_storyButton      != null) _storyButton.onClick.AddListener(OnStory);
             if (_wrenButton       != null) _wrenButton.onClick.AddListener(OnWren);
             if (_fieldGuideButton != null) _fieldGuideButton.onClick.AddListener(OnFieldGuide);
+        }
+
+        private void LocalizeSceneCopy()
+        {
+            SetSceneText("Canvas/TextCard/Text_Eyebrow", "ui.menu.eyebrow");
+            SetSceneText("Canvas/TextCard/Text_Title", "ui.menu.title");
+            SetSceneText("Canvas/TextCard/Text_Subtitle", "ui.menu.subtitle");
+            SetSceneText("Canvas/TextCard/Text_Tagline", "ui.menu.tagline");
+            SetButtonText(_newGameButton, "ui.menu.forage");
+            SetButtonText(_storyButton, "ui.menu.story");
+            SetButtonText(_wrenButton, "ui.menu.wren");
+            SetButtonText(_fieldGuideButton, "ui.menu.field_guide");
+            SetButtonText(_settingsButton, "ui.menu.settings");
+            SetButtonText(_creditsButton, "ui.menu.credits");
+            SetButtonText(_quitButton, "ui.menu.quit");
+        }
+
+        private void SetSceneText(string path, string key)
+        {
+            Transform node = transform.Find(path);
+            TMP_Text label = node != null ? node.GetComponent<TMP_Text>() : null;
+            if (label != null) label.text = Localization.Get(key);
+        }
+
+        private static void SetButtonText(Button button, string key)
+        {
+            TMP_Text label = button != null ? button.GetComponentInChildren<TMP_Text>(true) : null;
+            if (label != null) label.text = Localization.Get(key);
+        }
+
+        // The editorial navigation labels used to look generous but their actual raycast rects
+        // collapsed to roughly six reference pixels because NavRow reserved 24 px of top padding
+        // inside a 30 px layout slot. Give every label a production-sized pointer target while
+        // preserving the same restrained text treatment.
+        private void NormalizePointerTargets()
+        {
+            var navRow = transform.Find("Canvas/TextCard/NavRow");
+            if (navRow != null)
+            {
+                var rowLayout = navRow.GetComponent<HorizontalLayoutGroup>();
+                if (rowLayout != null) rowLayout.padding = new RectOffset(0, 0, 4, 4);
+                var rowSize = navRow.GetComponent<LayoutElement>();
+                if (rowSize != null) rowSize.preferredHeight = 56f;
+
+                foreach (Button button in navRow.GetComponentsInChildren<Button>(true))
+                {
+                    foreach (LayoutElement size in button.GetComponents<LayoutElement>())
+                    {
+                        size.minHeight = Mathf.Max(size.minHeight, 48f);
+                        size.preferredHeight = Mathf.Max(size.preferredHeight, 48f);
+                    }
+                }
+            }
+
+            if (_quitButton != null && _quitButton.transform is RectTransform quitRect)
+                quitRect.sizeDelta = new Vector2(quitRect.sizeDelta.x, Mathf.Max(48f, quitRect.sizeDelta.y));
         }
 
         private void OnStory()
@@ -51,6 +111,13 @@ namespace Hollowfen.UI
             // A queued Credits handoff that never consumed (e.g. OpenScreen dropped during
             // a transition) must not redirect the NEXT plain Settings open.
             SettingsScreen.NextOpenTab = null;
+        }
+
+        public override void OnBack()
+        {
+            // Circle/Escape at the application's root should offer the same safe exit path as the
+            // authored Quit button. UIManager also refuses direct attempts to pop a root screen.
+            OnQuit();
         }
 
         // Hero action: open the journal picker. Choose a saved journal to continue, or an empty slot

@@ -1,45 +1,45 @@
 # Cultivation System
-Grow beds (Almy's garden, Act II): plant a mushroom from inventory as spawn → nodes grow on the game clock (scale-lerped, non-harvestable) → at maturity the normal foraging path takes over (nodes are standard MushroomNodes). State store `GrowBeds` (static dict keyed by `_bedId`) persists planted day/hour + remaining count — growth RE-DERIVES from the clock, no timers serialized, so in-progress grows survive save/load and time skips fast-forward them automatically.
-Key scripts: `Assets/_Hollowfen/Scripts/Cultivation/` — GrowBed (scene component, IInteractable), GrowBeds (static store). Namespace `Hollowfen.Cultivation`.
-Unlock gating (in `GrowBed.CanInteract`): `almyTeach` completed, OR active + flag `act2_started` (lesson dialogue must precede planting); plus bed empty + species in inventory. First planting completes `almyTeach`.
-Grow recipe lives ON THE SCENE COMPONENT (not the species SO): `_bedId`, `_species`, `_mushroomPrefab`, `_matureGameHours` (6), `_yield` (3), `_clusterRadius`, `_matureScale` (2.2). No recipe asset yet — Tier-1 Wood Ear only for v1.
-Biggest gotchas: `GrowthFactor` returns 1 (instantly mature) when no TimeManager in scene; harvest sync is per-frame `activeSelf` POLLING of spawned nodes (anything else deactivating a node reads as a harvest); unlock gating logic is duplicated here, not shared with quest content.
-Status: Batch 11, verified against code 2026-07-11.
+Grow beds (Almy's garden, Act II): choose an eligible known species from the basket → consume one specimen as spawn → grow a data-authored flush on the game clock → harvest mature nodes through the normal inspect/cutting flow. Growth re-derives from persisted planting time, so save/load and rest both advance crops correctly.
+Key scripts: `Assets/_Hollowfen/Scripts/Cultivation/` — GrowBed, GrowBeds, CultivationScreen. Shared policy: `Foraging/MushroomRules.cs`; recipe data: `MushroomFieldGuideData`.
+Unlock gating: Almy's lesson completed (or its active Act-II teaching window), species discovered, optional species unlock flag satisfied, bed empty, and at least one specimen in inventory.
+Recipes live on species data: `Cultivable`, `CultivationHours`, `CultivationYield`, `CultivationUnlockFlagId`, and `WorldPrefab`. Current foundation recipes: Wood Ear, Lacewig, Brightspore, and Oyster.
+Biggest gotchas: no `TimeManager` means instantly mature; scene fields `_species/_mushroomPrefab/_matureGameHours/_yield` remain legacy fallbacks for old saves/components, not the primary recipe source; scaled spawn anchors compound specimen scale; restoration benefits are projections from Occupied project stages and must not be copied into bed saves.
+Status: generalized four-recipe picker, planting, clock growth, partial-flush persistence, collider safety, three restored beds, 25% faster chapel growth, and +1 mill-workshop yield play-mode verified 2026-07-18.
 
 > Self-healing doc: if you change this system, update this doc (including the 7-line header) in the same batch, and note the change in the batch worksheet.
 
 ---
 
-## GrowBed (scene component)
+## State flow
 
-`[DisallowMultipleComponent]`, implements `IInteractable`. States are DERIVED, no enum:
-**Empty** (`GrowBeds.Get(_bedId) == null`, plantable) → **Growing** (record exists, `GrowthFactor < 1`; nodes visible but scaled down, trigger colliders disabled) → **Mature** (`GrowthFactor >= 1`; node triggers enabled → normal inspect/forage flow) → back to **Empty** when the last node is picked.
+**Empty** (`GrowBeds.Get(_bedId) == null`) → **Recipe picker** → **Growing** (`GrowthFactor < 1`, visible but not interactive) → **Mature** (authored interaction colliders restored) → **Empty** when the last node is harvested.
 
-- **Prompts**: `PromptVerb => "prompt.plant.verb"`, `PromptTarget => Localization.Get("growbed.name")`.
-- **Interact** (plant): `InventoryRuntime.Remove(_species, 1)` (one mushroom = spawn) → `GrowBeds.Plant(bedId, speciesId, TimeManager.Day, TimeManager.Hour, _yield)` (fallback day1/12h without TimeManager) → spawn nodes at growth 0 → if `almyTeach` active, `CompleteQuest("almyTeach")` (first planting is the lesson climax).
-- **Growth math**: `GrowthFactor = Clamp01(((Day - PlantedDay)*24 + (Hour - PlantedHour)) / _matureGameHours)` — recomputed from the clock each Update; `SetTime` skips mature beds instantly.
-- **Visuals**: nodes in a ring (`_clusterRadius` 0.38m, staggered yaw) under `_spawnAnchor`; `localScale = prefabScale × Lerp(0.3, 1, growth) × _matureScale`; re-applied only when growth delta > 0.01.
-- **Harvest**: NOT handled here. Mature nodes are standard `MushroomNode`s (Foraging-layer trigger) — inspect → forage → `Harvest()` deactivates the node. GrowBed's Update polls `activeSelf` across `_nodes`, mirrors the live count via `GrowBeds.SetRemaining`, and `ClearBed()` at 0.
-- **Restore**: `Start()` reads the store record, respawns `Remaining` nodes; growth re-derives from clock.
+- `GrowBed.Interact` opens the shared `CultivationScreen`; every bed reads the same eligible recipe list.
+- `GrowBed.Plant(species)` validates `MushroomRules.CanCultivate`, consumes one inventory item, persists species/day/hour/yield, and spawns the selected species' world prefab. The Chapel Garden's Occupied benefit multiplies maturity hours by 0.75; Tobin's Workshop adds one to the collected yield. Both derive at runtime through `RestorationBenefits`.
+- First planting still completes `almyTeach` when that quest is active.
+- `GrowthFactor = Clamp01(((Day - PlantedDay) * 24 + Hour - PlantedHour) / species.CultivationHours)`.
+- Mature child `MushroomNode`s are configured as cultivated: they do not enter the wild-node respawn store. Their authored collider defaults are cached; growing disables interaction without enabling dormant physics/helper colliders at maturity.
+- `MushroomNode.IsHarvested` drives the remaining-flush count. The lifecycle host stays active while its renderers/colliders hide, so visual deactivation cannot be mistaken for an unrelated destroyed object.
 
-## GrowBeds (static store)
+## CultivationScreen
 
-`Dictionary<string, BedRecord>` — `BedRecord { SpeciesId, PlantedDay, PlantedHour, Remaining }`. Same persistence recipe as InventoryRuntime/KeyItems: lazy `EnsureHydrated()` from active slot; `Persist()` (→ `SaveManager.AutoSaveGrowBeds`) on EVERY mutation; `HydrateFrom(snapshot)` / `ToSnapshot()` for SaveCoordinator; `OnChanged(bedId)` event; `ResetOnLoad` (SubsystemRegistration) clears dict + event — domain-reload-off safe.
+Runtime-built parchment recipe picker, created lazily on first bed interaction. It loads `Resources/MushroomFieldGuideDatabase`, filters to known/unlocked/cultivable species with basket stock and a world prefab, sorts by forage tier/name, and shows basket count, growth hours, and yield. Mouse, keyboard, and explicit controller navigation are supported; opening pauses time and player input and closing restores the previous state.
 
-Save shape: `SaveSlotMeta.GrowBeds` = `GrowBedSnapshot` parallel arrays (`Ids/SpeciesIds/PlantedDays/PlantedHours/Remaining`).
+Adding a recipe requires no UI or bed code:
 
-## Adding a new grow bed / species (checklist)
+1. Set the species SO's cultivation fields and ensure `WorldPrefab` is assigned.
+2. Choose an optional progression flag; discovery and Almy's lesson remain global requirements.
+3. Run `Hollowfen/Gameplay Foundation/Apply Profiles and Scene Wiring` if the profile belongs in the canonical importer.
+4. Run data integrity, then verify plant → rest/save → partial harvest → reload → clear bed.
 
-1. Scene: GameObject with `GrowBed`, unique `_bedId` (stable save key, e.g. `millyard_bed_2`), species SO + its world prefab, tune `_matureGameHours`/`_yield`.
-2. Species must be obtainable (inventory is the seed source).
-3. Verify: plant → save → reload → growth continues from clock; harvest each node → bed returns to Empty; count survives partial-harvest reload.
-4. If future species need different rates per-species, consider promoting the recipe to an SO before duplicating beds (noted design debt).
+## GrowBeds persistence
+
+`Dictionary<string, BedRecord>` keyed by stable scene `_bedId`; each record stores `SpeciesId`, `PlantedDay`, `PlantedHour`, and `Remaining`. Every mutation targets the active slot through `AutoSaveGrowBeds`; `SaveCoordinator` also captures/hydrates the full snapshot. Json shape: parallel `Ids/SpeciesIds/PlantedDays/PlantedHours/Remaining` arrays.
 
 ## Gotchas
 
-- **No TimeManager = instantly mature** (`GrowthFactor` → 1f) — convenient in tests, surprising anywhere else.
-- **Polling harvest detection**: culling or scripts deactivating a node counts as harvested.
-- **3-node harvest = 3 slot-file writes** (Persist on every SetRemaining change) — fine at scale, noted.
-- **Per-frame `GrowBeds.Get(_bedId)`** per bed — fine now, revisit for many-bed futures.
-- **Scaled `_spawnAnchor` compounds node scale** — keep anchors unit-scale.
-- Unlock gating duplicated in `CultivationUnlocked()` (quest + `act2_started` flag) — keep in sync with quest content.
+- No `TimeManager` returns growth 1 immediately; useful for isolated tests, dangerous in a gameplay scene.
+- Each partial-flush count change writes the active slot; current scale is tiny, but many future beds may need batching.
+- Keep `_bedId` stable and unique forever after shipping a save.
+- Keep `_spawnAnchor` at unit scale.
+- The recipe picker currently shows at most six options; paginate before adding a seventh simultaneous recipe.

@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b4e19f76957446acb794b6622b288e2, type: 3}
+  m_Name: Character_villager-06
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.CharacterProfileData
+  _id: villager-06
+  _characterName: Villager 06
+  _role: Shepherd
+  _age: Adult
+  _home: Hollowfen
+  _work: Flock tending
+  _keepsake: Shepherd's crook
+  _tagline: A weathered flock tender for Hollowfen's pasture edges and road approaches.
+  _leadParagraph: An adult shepherd in weather-ready rural layers, intended for pasture
+    boundaries, lanes, and returning-at-dusk routines.
+  _backgroundParagraph: Use this villager with flock, staff, bundle, or gate activity
+    wherever the village needs pastoral labor.
+  _perspectiveParagraph: The design should communicate exposure to wind and distance
+    through posture and clothing rather than invented history.
+  _kitItems: []
+  _heroPortrait: {fileID: 0}
+  _pullquote: 
+  _displayNameId: character.villager_06.name
+  _descriptionId: character.villager_06.lead
+  _sortOrder: 21
+  _category: 2
+  _edition: 22 / VILLAGER 06
+  _previewScale: 1
+  _tPosePlate: {fileID: 0}
+  _characterSheet: {fileID: 0}
+  _missions: []
+  _quotes: []
+  _heroPortraitResourcePath: People/Art/villager-06_tpose
+  _tPosePlateResourcePath: People/Art/villager-06_tpose
+  _characterSheetResourcePath: People/Art/villager-06_tpose
+  _journalModelResourcePath: People/Models/villager-06
+  _journalTriangleBudget: 50000
+  _journalTextureSize: 1024
+  _journalModelPrefab: {fileID: 0}
+  _journalIdleClip: {fileID: 0}
+  _journalExposure: 0.15
+  _studySheet: {fileID: 0}
+  _figureFront: {fileID: 0}
+  _figureBack: {fileID: 0}
+  _figureThreeQuarter: {fileID: 0}
+  _knifePlate: {fileID: 0}

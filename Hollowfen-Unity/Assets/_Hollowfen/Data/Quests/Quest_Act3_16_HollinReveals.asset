@@ -18,6 +18,7 @@ MonoBehaviour:
   _act: 3
   _order: 16
   _unlockStoryCardOnComplete: {fileID: 11400000, guid: 785afd320013a4285a1a02cc2f4f3b6d, type: 2}
+  _storyMoment: {fileID: 11400000, guid: b3f3e68d737a946968bb6a88585e067e, type: 2}
   _nextQuest: {fileID: 11400000, guid: 8e2a42f4ab104161ad2bb1d2b62ad7c3, type: 2}
   _waypointLocation: {fileID: 11400000, guid: 68150875e462d46d993c04ae1b636395, type: 2}
   _villageHopeDelta: 0
@@ -25,6 +26,4 @@ MonoBehaviour:
   _relationshipNpcIds:
   - hollin
   - almy
-  _relationshipDeltas:
-  - 15
-  - 10
+  _relationshipDeltas: 0f0000000a000000

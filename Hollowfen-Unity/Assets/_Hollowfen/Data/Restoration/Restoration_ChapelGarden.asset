@@ -1,0 +1,99 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b71ffd66f0a5441d5af5ee26c3fa2d26, type: 3}
+  m_Name: Restoration_ChapelGarden
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Restoration.RestorationProjectData
+  _id: chapel_garden
+  _titleId: restoration.garden.title
+  _summaryId: restoration.garden.summary
+  _locationId: restoration.garden.location
+  _promptTargetId: restoration.garden.site
+  _benefitId: restoration.garden.benefit
+  _villageHopeReward: 4
+  _knowledgeReward: 3
+  _activeQuestId: 
+  _completedQuestId: 
+  _stageRules:
+  - _condition: 2
+    _valueId: caldenReconcile
+    _stage: 1
+  - _condition: 3
+    _valueId: chapel_garden_supplies_ready
+    _stage: 2
+  - _condition: 3
+    _valueId: chapel_garden_work_started
+    _stage: 3
+  - _condition: 3
+    _valueId: chapel_garden_restored
+    _stage: 4
+  - _condition: 3
+    _valueId: chapel_garden_in_use
+    _stage: 5
+  _stageCopy:
+  - _stage: 1
+    _titleId: restoration.garden.stage.surveyed.title
+    _bodyId: restoration.garden.stage.surveyed.body
+    _shortId: restoration.garden.stage.surveyed.short
+  - _stage: 2
+    _titleId: restoration.garden.stage.supplies.title
+    _bodyId: restoration.garden.stage.supplies.body
+    _shortId: restoration.garden.stage.supplies.short
+  - _stage: 3
+    _titleId: restoration.garden.stage.work.title
+    _bodyId: restoration.garden.stage.work.body
+    _shortId: restoration.garden.stage.work.short
+  - _stage: 4
+    _titleId: restoration.garden.stage.restored.title
+    _bodyId: restoration.garden.stage.restored.body
+    _shortId: restoration.garden.stage.restored.short
+  - _stage: 5
+    _titleId: restoration.garden.stage.occupied.title
+    _bodyId: restoration.garden.stage.occupied.body
+    _shortId: restoration.garden.stage.occupied.short
+  _milestones:
+  - _labelId: restoration.garden.milestone.unlock
+    _detailId: restoration.garden.milestone.unlock.detail
+    _condition: 2
+    _valueId: caldenReconcile
+    _requiredStage: 0
+  - _labelId: restoration.garden.milestone.first
+    _detailId: restoration.garden.milestone.first.detail
+    _condition: 3
+    _valueId: chapel_garden_first_funded
+    _requiredStage: 0
+  - _labelId: restoration.garden.milestone.second
+    _detailId: restoration.garden.milestone.second.detail
+    _condition: 3
+    _valueId: chapel_garden_second_funded
+    _requiredStage: 0
+  - _labelId: restoration.garden.milestone.work
+    _detailId: restoration.garden.milestone.work.detail
+    _condition: 3
+    _valueId: chapel_garden_work_started
+    _requiredStage: 0
+  - _labelId: restoration.garden.milestone.use
+    _detailId: restoration.garden.milestone.use.detail
+    _condition: 3
+    _valueId: chapel_garden_in_use
+    _requiredStage: 0
+  _contributions:
+  - _labelId: restoration.garden.contribution.first
+    _detailId: restoration.garden.contribution.first.detail
+    _fundedFlagId: chapel_garden_first_funded
+    _costCopper: 12
+    _availableFromStage: 1
+  - _labelId: restoration.garden.contribution.second
+    _detailId: restoration.garden.contribution.second.detail
+    _fundedFlagId: chapel_garden_second_funded
+    _costCopper: 10
+    _availableFromStage: 1
+  _contributionsCompleteFlagId: chapel_garden_supplies_ready

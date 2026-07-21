@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00c9c9bb92b3b44fb84ca335c48467d8, type: 3}
+  m_Name: Dialogue_Ending_Capital
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Dialogue.DialogueData
+  _id: ending.capital.resolution
+  _lines:
+  - speaker: Theo
+    text: Last chance to decide I am a terrible idea.
+    isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: 0575cdc6f6c0e46d69692468b22c2baa, type: 3}
+  - speaker: Wren
+    text: You are a terrible idea.
+    isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: feafcc2dd47ae4955b02a6c067d64688, type: 3}
+  - speaker: Theo
+    text: And?
+    isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: d563e49b8b3d047e383857933c3626ff, type: 3}
+  - speaker: Wren
+    text: And the road is open.
+    isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: 6c4dafae374fd46a6a50c202ce05f66e, type: 3}
+  - speaker: Edda
+    text: Will you write?
+    isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: 73fe98a8fb7f54311ac641ff847496d9, type: 3}
+  - speaker: Wren
+    text: Yes. And if I stop, come be angry at me.
+    isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: acbd40837cf634610b7b668a284586f3, type: 3}
+  _mushroomHandoff:
+    beforeLineIndex: 0
+    recipientSpeaker: 
+    mushroom: {fileID: 0}
+    presentationHeight: 0
+  _unlockStoryCard: {fileID: 0}
+  _completeQuest: {fileID: 0}
+  _giveItemId: 
+  _grantCoinsCopper: 0
+  _spendsCoinsCopper: 0
+  _sellsForageBasket: 0
+  _basketCopperPerItem: 0
+  _basketBuyer: 0
+  _grantForage: {fileID: 0}
+  _grantForageCount: 1
+  _consumeForage: {fileID: 0}
+  _consumeForageCount: 1
+  _setFlagIds: []
+  _villageHopeDelta: 0
+  _knowledgeDelta: 0
+  _relationshipNpcIds: []
+  _relationshipDeltas: 
+  _memoryOutcomes: []
+  _bondOutcomes: []
+  _favorOutcomes: []
+  _advanceMinutes: 0
+  _transitionMoment: {fileID: 11400000, guid: b5dbf48feb7c643f98a69eb80d68504f, type: 2}
+  _nextDialog: {fileID: 0}
+  _choices: []

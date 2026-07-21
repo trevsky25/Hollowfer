@@ -44,21 +44,28 @@ Status: standing constraints — change only with an explicit product decision.
 ## Performance floor
 
 - 60fps on Steam Deck for the village scene; Old Wood may target 40fps if needed.
-- Profile early + often (profiler MCP tooling). Known debt: 414k-vert Field Mushroom mesh needs decimation before EA.
+- `ProductionPerformancePolicy` (batch-89) enforces the 60fps target in players: hardware VSync at clean
+  60Hz multiples, a software 60fps fallback on non-multiple refresh displays, and live re-evaluation after
+  display/fullscreen/quality changes. The tagged gameplay camera runs native scale with HDR, SMAA High,
+  dithering, and occlusion culling. Its post pipeline remains active for those camera-quality passes while a
+  zero volume mask prevents the legacy vendor demo profile from recoloring Hollowfen's day/night palette.
+- Profile early + often (profiler MCP tooling). Batch-68 resolved the 414k-vertex Field Mushroom debt: shipping world/journal derivatives are 15.8k/47.4k vertices, and all delivered mushroom models use separate 12k–16k / 60k–75k triangle budgets.
 
-## Known ship blockers (tracked in TODOS.md)
+## Known ship blockers
 
-- **Georgia SDF font stripped at build — font CONFIG fixed batch-32; player-boot verification pending (item 15b).**
-  Root cause was not `AssetDatabase` but `atlasPopulationMode: Dynamic` + `m_ClearDynamicDataOnBuild: 1` —
-  the build wiped the baked glyph table and relied on fragile runtime FreeType SDF generation (also the
-  source of the recurring play-mode git churn). Now **Static**, full Latin-1 + punctuation baked (Georgia
-  **201** glyphs / 2 atlas pages; `LiberationSans SDF - Fallback` **204**, incl. → ← ○ • that Georgia's
-  serif source lacks), both `ClearDynamicDataOnBuild: false`, and `m_SourceFontFile` nulled so the
-  Microsoft-licensed `Georgia.ttf` is NOT redistributed in the player (the baked SDF atlas ships instead).
-  Georgia carries the fallback in its own table. Proven churn-immune (byte-identical asset hash across a
-  play/render/stop cycle). All 3 project TMP fonts are now Static. A dev Mac build compiled all scripts
-  with **zero errors** and reached the BuildPlayer phase before the backgrounded editor App-Nap-stalled —
-  so the actual `.app` boot (and build-scene-list cleanup) is **item 15b**, which also confirms Georgia.ttf
-  is absent from the build report. **Font rule in conventions.md — keep these Static; re-bake there.**
-- Steamworks SDK not wired.
-- Localization LUT English-only and partially wired.
+Full evidence and exit criteria: [2026-07-17 production audit](review/production-audit-2026-07-17.md).
+
+- **Font player-boot verification is resolved.** The optimized non-development macOS player completed the
+  real main-menu-to-gameplay flow with the Static Georgia/LiberationSans atlases intact and no player-log
+  errors. Keep the fonts Static and re-bake them according to `conventions.md`.
+- Shipping identity is still placeholder (`DefaultCompany`, `Hollowfen-Unity`, `0.1.0`, Unity template
+  identifier); the production build gate intentionally blocks release builds until approved values exist.
+- Windows Build Support for Unity 6000.4.4f1 is not installed, so the declared Windows target is unbuilt.
+- Steamworks/App ID, SteamPipe depots, partner-branch installation, and any advertised Achievements, Cloud,
+  or native Steam Input integration are not complete.
+- Simplified Chinese is not implemented: the project has no locale selector/storage, translated table, or
+  CJK font fallback. Either complete it or remove it from the EA language commitment until ready.
+- Physical Steam Deck performance, controller-only access, suspend/resume, offline, glyph, and readability
+  verification remain required for the declared Verified goal.
+- The final NPC character-model pass and Aldermark/canonical Maitake visual gap remain content work.
+- macOS Developer ID signing/notarization and visual/audio/vendor/AI provenance records must be completed.

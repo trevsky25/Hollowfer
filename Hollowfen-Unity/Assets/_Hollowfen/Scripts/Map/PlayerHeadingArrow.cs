@@ -13,6 +13,12 @@ namespace Hollowfen.Map
         [SerializeField] private Camera _mapCamera;
         [SerializeField] private RectTransform _container;
         [SerializeField] private bool _hideWhenOffMap = true;
+        [SerializeField, Tooltip("Optional child that rotates with Wren's heading. When omitted, the whole marker rotates (legacy mini-map behavior).")]
+        private RectTransform _headingGlyph;
+        [SerializeField, Tooltip("Optional ring that pulses independently of the directional glyph.")]
+        private RectTransform _pulseRing;
+        [SerializeField] private float _pulseAmount = 0.1f;
+        [SerializeField] private float _pulseSpeed = 3.8f;
 
         private RectTransform _rt;
         private CanvasGroup _cg;
@@ -22,10 +28,13 @@ namespace Hollowfen.Map
             _rt = GetComponent<RectTransform>();
         }
 
-        public void Configure(Camera mapCamera, RectTransform container)
+        public void Configure(Camera mapCamera, RectTransform container,
+                              RectTransform headingGlyph = null, RectTransform pulseRing = null)
         {
             _mapCamera = mapCamera;
             _container = container;
+            _headingGlyph = headingGlyph;
+            _pulseRing = pulseRing;
         }
 
         private Transform ResolveTarget()
@@ -42,7 +51,19 @@ namespace Hollowfen.Map
             var t = ResolveTarget();
             if (t == null || _rt == null) return;
 
-            _rt.localRotation = Quaternion.Euler(0f, 0f, -t.eulerAngles.y);
+            // Full-map current-location markers keep their plate, pulse, and label upright; only
+            // the nested arrow rotates. Existing mini-map arrows omit _headingGlyph and retain the
+            // legacy whole-rect behavior.
+            RectTransform rotatingPart = _headingGlyph != null ? _headingGlyph : _rt;
+            rotatingPart.localRotation = Quaternion.Euler(0f, 0f, -t.eulerAngles.y);
+            if (_headingGlyph != null && _rt.localRotation != Quaternion.identity)
+                _rt.localRotation = Quaternion.identity;
+
+            if (_pulseRing != null)
+            {
+                float scale = 1f + _pulseAmount * (0.5f + 0.5f * Mathf.Sin(Time.unscaledTime * _pulseSpeed));
+                _pulseRing.localScale = new Vector3(scale, scale, 1f);
+            }
 
             if (_mapCamera == null || _container == null) return;
 

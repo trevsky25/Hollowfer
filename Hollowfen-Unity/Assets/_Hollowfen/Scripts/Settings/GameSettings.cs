@@ -5,6 +5,9 @@ namespace Hollowfen.Settings
     public static class GameSettings
     {
         private const string PrefLookSensitivity = "controls.lookSensitivity";
+        private const string PrefInterfaceScale = "accessibility.interfaceScale";
+        private const string PrefReducedMotion = "accessibility.reducedMotion";
+        private const string PrefCaptionBacking = "accessibility.captionBacking";
         public const float DefaultLookSensitivity = 1f;
         public const float MinLookSensitivity = 0.75f;
         public const float MaxLookSensitivity = 1.25f;
@@ -32,13 +35,81 @@ namespace Hollowfen.Settings
         }
 
         private static float _lookSensitivity = -1f;
+        private static int _interfaceScaleIndex = -1;
+        private static int _reducedMotion = -1;
+        private static int _captionBacking = -1;
+
+        public const int InterfaceScaleOptionCount = 3;
+
+        public static int InterfaceScaleIndex
+        {
+            get
+            {
+                if (_interfaceScaleIndex < 0)
+                    _interfaceScaleIndex = Mathf.Clamp(
+                        PlayerPrefs.GetInt(PrefInterfaceScale, 0), 0,
+                        InterfaceScaleOptionCount - 1);
+                return _interfaceScaleIndex;
+            }
+            set
+            {
+                _interfaceScaleIndex = Mathf.Clamp(value, 0, InterfaceScaleOptionCount - 1);
+                PlayerPrefs.SetInt(PrefInterfaceScale, _interfaceScaleIndex);
+                AccessibilityPresentationPolicy.RequestRefresh();
+            }
+        }
+
+        public static float InterfaceScale
+        {
+            get
+            {
+                switch (InterfaceScaleIndex)
+                {
+                    case 1: return 1.08f;
+                    case 2: return 1.15f;
+                    default: return 1f;
+                }
+            }
+        }
+
+        public static bool ReducedMotion
+        {
+            get
+            {
+                if (_reducedMotion < 0)
+                    _reducedMotion = PlayerPrefs.GetInt(PrefReducedMotion, 0) == 1 ? 1 : 0;
+                return _reducedMotion == 1;
+            }
+            set
+            {
+                _reducedMotion = value ? 1 : 0;
+                PlayerPrefs.SetInt(PrefReducedMotion, _reducedMotion);
+            }
+        }
+
+        public static bool CaptionBacking
+        {
+            get
+            {
+                if (_captionBacking < 0)
+                    _captionBacking = PlayerPrefs.GetInt(PrefCaptionBacking, 0) == 1 ? 1 : 0;
+                return _captionBacking == 1;
+            }
+            set
+            {
+                _captionBacking = value ? 1 : 0;
+                PlayerPrefs.SetInt(PrefCaptionBacking, _captionBacking);
+            }
+        }
 
         public static float LookSensitivity
         {
             get
             {
                 if (_lookSensitivity < 0f)
-                    _lookSensitivity = PlayerPrefs.GetFloat(PrefLookSensitivity, DefaultLookSensitivity);
+                    _lookSensitivity = Mathf.Clamp(
+                        PlayerPrefs.GetFloat(PrefLookSensitivity, DefaultLookSensitivity),
+                        MinLookSensitivity, MaxLookSensitivity);
                 return _lookSensitivity;
             }
             set

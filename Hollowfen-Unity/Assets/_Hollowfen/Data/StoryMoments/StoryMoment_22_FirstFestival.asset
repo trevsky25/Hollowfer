@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d0fced8610445dd87f9c05997c7c4b4, type: 3}
+  m_Name: StoryMoment_22_FirstFestival
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.StoryMomentData
+  _id: story.first_festival.illustrated
+  _presentation: 0
+  _trigger: 0
+  _storyCard: {fileID: 11400000, guid: 82d14f4b2c516462c927270accfad75d, type: 2}
+  _captionIds:
+  - story.first_festival.beat.0
+  - story.first_festival.beat.1
+  - story.first_festival.beat.2
+  _captionFallbacks:
+  - Hollowfen holds its first proper festival in three years.
+  - Pell formally records the season as a turning point.
+  - The village publicly recognises Wren as the cause.
+  _voiceClips:
+  - {fileID: 8300000, guid: d678da3c674b846e08b8fdc77a4745ac, type: 3}
+  - {fileID: 8300000, guid: f6b173b74fd6e4dd1a3bf229eb56719a, type: 3}
+  - {fileID: 8300000, guid: a837915f2d8504241990e237c4b0dc83, type: 3}
+  _images:
+  - {fileID: 21300000, guid: 79fc42d545d014eb181b5de0ad7a515b, type: 3}
+  - {fileID: 21300000, guid: b4e0766dd47c145fe994c61c600bd6f0, type: 3}
+  - {fileID: 21300000, guid: 527a2adc225544a26a1b6c9dc951f785, type: 3}
+  _beatImages: 000000000100000002000000
+  _showStoryCardTitle: 0
+  _showCaptions: 1
+  _fadeIn: 1
+  _holdSeconds: 0
+  _pageTextId: 
+  _pageTextFallback: 
+  _pageTextImageIndex: -1
+  _pageTextStartBeat: 0
+  _pageTextParagraphRevealBeats: 
+  _pageTextRect:
+    serializedVersion: 2
+    x: 0.2
+    y: 0.2
+    width: 0.6
+    height: 0.6
+  _pageTextRotation: 0
+  _pageTextFontSize: 30
+  _pageTextColor: {r: 0.16, g: 0.1, b: 0.05, a: 0.86}
+  _focusContext: 0
+  _focusDistance: 0.4
+  _focusHeight: 0.05
+  _focusFov: 30
+  _focusPushSeconds: 1.2
+  _focusHoldSeconds: 1.6
+  _focusRestoreSeconds: 0.2

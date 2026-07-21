@@ -1,4 +1,5 @@
 using TMPro;
+using Hollowfen.Settings;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,9 +11,11 @@ namespace Hollowfen.UI
     {
         private static TMP_FontAsset _heading;
         private static TMP_FontAsset _body;
+        private static TMP_FontAsset _cursive;
 
         public static void SetHeadingFont(TMP_FontAsset f) { if (f != null) _heading = f; }
         public static void SetBodyFont(TMP_FontAsset f)    { if (f != null) _body = f; }
+        public static void SetCursiveFont(TMP_FontAsset f) { if (f != null) _cursive = f; }
 
         public static TMP_FontAsset HeadingFont
         {
@@ -37,6 +40,24 @@ namespace Hollowfen.UI
                 _body = TMP_Settings.defaultFontAsset;
                 if (_body == null) _body = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
                 return _body;
+            }
+        }
+
+        public static TMP_FontAsset CursiveFont
+        {
+            get
+            {
+                if (_cursive != null) return _cursive;
+                // This font is deliberately a Resources asset: NarrationOverlay is created at
+                // runtime and has no scene-authored font reference for Tobin's live journal page.
+                _cursive = Resources.Load<TMP_FontAsset>("Fonts/CedarvilleCursive SDF");
+#if UNITY_EDITOR
+                if (_cursive == null)
+                    _cursive = UnityEditor.AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(
+                        "Assets/_Hollowfen/Resources/Fonts/CedarvilleCursive SDF.asset");
+#endif
+                if (_cursive == null) _cursive = HeadingFont;
+                return _cursive;
             }
         }
 
@@ -74,7 +95,7 @@ namespace Hollowfen.UI
             text.color = color;
             text.fontStyle = TranslateFontStyle(style);
             text.alignment = TranslateAnchor(anchor);
-            text.enableWordWrapping = true;
+            text.textWrappingMode = TextWrappingModes.Normal;
             text.overflowMode = TextOverflowModes.Truncate;
             text.raycastTarget = false;
             return text;
@@ -91,7 +112,7 @@ namespace Hollowfen.UI
             t.color = color;
             t.fontStyle = style;
             t.alignment = align;
-            t.enableWordWrapping = true;
+            t.textWrappingMode = TextWrappingModes.Normal;
             t.overflowMode = TextOverflowModes.Overflow;
             t.raycastTarget = false;
             // IM Fell English is a narrow, calligraphic old-style face — it needs far less
@@ -114,7 +135,7 @@ namespace Hollowfen.UI
             t.fontStyle = TMPro.FontStyles.Bold;
             t.alignment = align;
             t.characterSpacing = 24f;     // ~0.32em letter-spacing feel
-            t.enableWordWrapping = false;
+            t.textWrappingMode = TextWrappingModes.NoWrap;
             t.overflowMode = TextOverflowModes.Overflow;
             t.raycastTarget = false;
             return t;
@@ -131,7 +152,7 @@ namespace Hollowfen.UI
             t.color = color;
             t.fontStyle = style;
             t.alignment = align;
-            t.enableWordWrapping = true;
+            t.textWrappingMode = TextWrappingModes.Normal;
             t.overflowMode = TextOverflowModes.Overflow;
             t.lineSpacing = 4f;
             t.raycastTarget = false;
@@ -187,7 +208,7 @@ namespace Hollowfen.UI
         public static CanvasScaler Init1080(this CanvasScaler scaler)
         {
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1920f, 1080f);
+            scaler.referenceResolution = AccessibilityPresentationPolicy.ReferenceResolution;
             scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
             scaler.matchWidthOrHeight = 0.5f;
             return scaler;
@@ -376,6 +397,32 @@ namespace Hollowfen.UI
             {
                 float d = Mathf.Sqrt((x + 0.5f - c) * (x + 0.5f - c) + (y + 0.5f - c) * (y + 0.5f - c));
                 float a = Mathf.Clamp01(0.75f - Mathf.Abs(d - r) + thickness * 0.5f);
+                tex.SetPixel(x, y, new Color(1f, 1f, 1f, a));
+            }
+            tex.Apply(false, false);
+            var sp = Sprite.Create(tex, new Rect(0, 0, diameter, diameter), new Vector2(0.5f, 0.5f), 100f, 0u, SpriteMeshType.FullRect);
+            _shapeCache[key] = sp;
+            return sp;
+        }
+
+        // Soft radial alpha falloff. Stretching the sprite produces a clean model
+        // halo or contact shadow without introducing a rectangular backing panel.
+        public static Sprite RadialGlow(int diameter = 128)
+        {
+            string key = "rg" + diameter;
+            if (_shapeCache.TryGetValue(key, out var cached) && cached != null) return cached;
+            var tex = new Texture2D(diameter, diameter, TextureFormat.RGBA32, false);
+            tex.wrapMode = TextureWrapMode.Clamp;
+            tex.filterMode = FilterMode.Bilinear;
+            float center = diameter * 0.5f;
+            float radius = Mathf.Max(1f, center - 1f);
+            for (int y = 0; y < diameter; y++)
+            for (int x = 0; x < diameter; x++)
+            {
+                float dx = (x + 0.5f - center) / radius;
+                float dy = (y + 0.5f - center) / radius;
+                float t = Mathf.Clamp01(1f - Mathf.Sqrt(dx * dx + dy * dy));
+                float a = t * t * (3f - 2f * t);
                 tex.SetPixel(x, y, new Color(1f, 1f, 1f, a));
             }
             tex.Apply(false, false);

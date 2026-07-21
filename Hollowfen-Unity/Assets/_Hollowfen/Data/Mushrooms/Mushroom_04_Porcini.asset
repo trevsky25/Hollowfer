@@ -37,6 +37,19 @@ MonoBehaviour:
     not stain at all, while several toxic species do. When in doubt: cut the stem
     and watch the flesh for 30 seconds before deciding."
   _photo: {fileID: 21300000, guid: 94baad1baac334010926d72404a5b8d1, type: 3}
-  _photoCredit: Wikimedia Commons
+  _photoCredit: Generated with OpenAI gpt-image
+  _journalPage: {fileID: 21300000, guid: 83eff4bf4ff4845209d6554ec31bedf5, type: 3}
+  _worldPrefab: {fileID: 1485290995390349622, guid: 47423f2f4e9314355aa04386ca94d737, type: 3}
+  _journalPreviewPrefab: {fileID: 5931416020475868174, guid: 8c5d25c0e904c4521a30a3c812a2fdf3, type: 3}
+  _journalExposure: 0.35
   _displayNameId: mushroom.porcini.name
   _descriptionId: mushroom.porcini.description
+  _forageTier: 3
+  _requiredForageFlagId: foraging_knife_unlocked
+  _wildRespawnDays: 3
+  _marraValueCopper: 9
+  _theoValueCopper: 13
+  _cultivable: 0
+  _cultivationHours: 6
+  _cultivationYield: 3
+  _cultivationUnlockFlagId:

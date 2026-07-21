@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d0fced8610445dd87f9c05997c7c4b4, type: 3}
+  m_Name: StoryMoment_Act1_MarraKitchen
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.StoryMomentData
+  _id: act1.marra_kitchen.preparation
+  _presentation: 1
+  _trigger: 0
+  _storyCard: {fileID: 11400000, guid: cf19cd8806b76499fbcad7f7d47f272b, type: 2}
+  _captionIds:
+  - story.marra_kitchen.interstitial
+  - story.marra_kitchen.washing
+  - story.marra_kitchen.supper
+  _captionFallbacks:
+  - An hour later, the inn smelled like Wren's mother. Not exactly. Nothing was exact
+    after enough years.
+  - Marra washed the basket in cold water, trimmed each stem, and taught Wren to
+    listen for grit against the bowl.
+  - By dusk, the first basket had become supper. For one crowded hour, Hollowfen
+    remembered what plenty sounded like.
+  _voiceClips:
+  - {fileID: 8300000, guid: 907f0eaa84fd54eb3b83c55f5dabdc5e, type: 3}
+  - {fileID: 8300000, guid: 17a85505b48f2490da861138d9249b4b, type: 3}
+  - {fileID: 8300000, guid: 5f6606f7316d4459a994d998702f351b, type: 3}
+  _images:
+  - {fileID: 21300000, guid: 6d7f22bc8092648beade1be4926ea3e2, type: 3}
+  - {fileID: 21300000, guid: 1498fc890e557491ab65c8b45435fb40, type: 3}
+  - {fileID: 21300000, guid: f04508413b7cc41ce8fc467241d5b2de, type: 3}
+  _beatImages: 000000000100000002000000
+  _showStoryCardTitle: 0
+  _showCaptions: 1
+  _fadeIn: 1
+  _holdSeconds: 0
+  _preserveFullFrameImages: 0
+  _pageTextId:
+  _pageTextFallback:
+  _pageTextImageIndex: -1
+  _pageTextStartBeat: 0
+  _pageTextParagraphRevealBeats:
+  _pageTextRect:
+    serializedVersion: 2
+    x: 0.2
+    y: 0.2
+    width: 0.6
+    height: 0.6
+  _pageTextRotation: 0
+  _pageTextFontSize: 30
+  _pageTextColor: {r: 0.16, g: 0.1, b: 0.05, a: 0.86}
+  _useCursivePageText: 0
+  _focusContext: 0
+  _focusDistance: 0.4
+  _focusHeight: 0.05
+  _focusFov: 30
+  _focusPushSeconds: 1.2
+  _focusHoldSeconds: 1.6
+  _focusRestoreSeconds: 0.2

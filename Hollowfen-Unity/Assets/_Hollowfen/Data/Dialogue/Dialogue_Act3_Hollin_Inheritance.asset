@@ -15,30 +15,42 @@ MonoBehaviour:
   _id: act3.hollin.inheritance
   _lines:
   - speaker: Hollin
-    text: 'My grandmother was named Sable.'
+    text: My grandmother was named Sable.
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: 50929fdaef01d4c6488f37e811805a4d, type: 3}
   - speaker: Almy
-    text: 'Do not say that name carelessly.'
+    text: Do not say that name carelessly.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 1bdb86c9db37a4a979bf3ddf677323c1, type: 3}
   - speaker: Wren
-    text: 'You knew her.'
+    text: You knew her.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 24a75a692ae224224971fa6e4bd6ae6d, type: 3}
   - speaker: Almy
-    text: 'I failed her. That is not the same thing.'
+    text: I failed her. That is not the same thing.
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: 8bb1e8ad421964c028ab3f72df6ae05a, type: 3}
   - speaker: Hollin
-    text: 'She left me half a story.'
+    text: She left me half a story.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 0302fb5acfb034de0a8600eaa67e54a5, type: 3}
   - speaker: Wren
-    text: 'Then we find the other half.'
+    text: Then we find the other half.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: fe440d8c3e56e4a619235e4c56d82138, type: 3}
+  _mushroomHandoff:
+    beforeLineIndex: 0
+    recipientSpeaker: 
+    mushroom: {fileID: 0}
+    presentationHeight: 0
   _unlockStoryCard: {fileID: 0}
   _completeQuest: {fileID: 11400000, guid: c8b623b595564fc4a01f2c3648cf865e, type: 2}
-  _giveItemId:
+  _giveItemId: 
   _grantCoinsCopper: 0
   _spendsCoinsCopper: 0
   _sellsForageBasket: 0
   _basketCopperPerItem: 0
+  _basketBuyer: 0
   _grantForage: {fileID: 0}
   _grantForageCount: 1
   _consumeForage: {fileID: 0}
@@ -47,6 +59,11 @@ MonoBehaviour:
   _villageHopeDelta: 0
   _knowledgeDelta: 0
   _relationshipNpcIds: []
-  _relationshipDeltas: []
+  _relationshipDeltas: 
+  _memoryOutcomes: []
+  _bondOutcomes: []
+  _favorOutcomes: []
+  _advanceMinutes: 0
+  _transitionMoment: {fileID: 11400000, guid: b3f3e68d737a946968bb6a88585e067e, type: 2}
   _nextDialog: {fileID: 0}
   _choices: []

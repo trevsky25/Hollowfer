@@ -1,4 +1,6 @@
 using System.Collections;
+using Hollowfen.Audio;
+using Hollowfen.Cinematics;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -7,10 +9,10 @@ using UnityEngine.UI;
 
 namespace Hollowfen.UI
 {
-    // First-steps journal page (batch-30): shown once per save after the homecoming intro
-    // narration. Not a tutorial toast — a parchment journal card in Wren's voice framing the
-    // first task, with the LIVE quest pulled from QuestManager, orientation hints, a compact
-    // controls line, and a single "Set out →" action. Voiced via the batch-29 VO pipeline.
+    // First playable story/objective card: shown once per save after the homecoming intro.
+    // A cinematic ink-glass handoff keeps the world visible, foregrounds the LIVE quest,
+    // teaches only the controls needed for the next action, and hands play back through one
+    // clear "Set out →" action. Voiced via the homecoming VO pipeline.
     // Scene-local singleton on _IntroGuide; builds programmatically on first Show.
     public class IntroGuide : MonoBehaviour
     {
@@ -20,27 +22,27 @@ namespace Hollowfen.UI
 
         [SerializeField, Tooltip("Narrator read of the journal passage (optional).")]
         private AudioClip _voiceClip;
-        [SerializeField, Tooltip("Mixer group for the voice read (SFX until the Voice group exists).")]
+        [SerializeField, Tooltip("Mixer reference used to resolve the Master route for independently adjustable voice-over.")]
         private UnityEngine.Audio.AudioMixerGroup _voiceOutput;
         [SerializeField] private float _fadeSeconds = 0.4f;
         [SerializeField, Tooltip("Grace period before dismiss input is accepted — the keypress that ended the narration must not also eat this card.")]
         private float _inputGraceSeconds = 0.7f;
 
-        // Paper-surface palette (parchment card, walnut ink — the pause/dialogue paper family).
-        private static readonly Color Paper     = new Color(0.902f, 0.867f, 0.788f, 0.985f);
-        private static readonly Color Ink       = new Color(0.160f, 0.130f, 0.095f, 1f);
-        private static readonly Color InkSoft   = new Color(0.160f, 0.130f, 0.095f, 0.82f);
-        private static readonly Color Bronze    = new Color(0.520f, 0.385f, 0.110f, 1f);
-        private static readonly Color MossDark  = new Color(0.365f, 0.365f, 0.290f, 1f);
-
         private bool _built;
         private Canvas _canvas;
         private CanvasGroup _group;
+        private RectTransform _card;
+        private Vector2 _cardRestingPosition;
         private Button _button;
         private AudioSource _voiceSource;
         private Coroutine _running;
         private float _openedAt;
         private bool _closing;
+        private NarrativePresentationSession.Lease _presentationLease;
+        private TMP_Text _moveKeys;
+        private TMP_Text _interactKeys;
+        private TMP_Text _dismissHint;
+        private TMP_Text _journalHint;
 
         public bool IsShowing => _canvas != null && _canvas.gameObject.activeSelf;
 
@@ -52,12 +54,8 @@ namespace Hollowfen.UI
 
         private void OnDestroy()
         {
-            // Scene unload while showing must not leak the static suspend flags.
-            if (IsShowing)
-            {
-                Foraging.PlayerInteractor.Suspended = false;
-                Foraging.PlayerInteractor.SetPlayerInputEnabled(true);
-            }
+            VoiceAudio.Unregister(_voiceSource);
+            ReleasePresentation();
             if (Instance == this) Instance = null;
         }
 
@@ -67,9 +65,12 @@ namespace Hollowfen.UI
         {
             if (Quests.GameScores.HasFlag(SeenFlag)) return;
             if (Quests.QuestManager.IsCompleted("arrive")) return;
-            if (IsShowing) return;
+            if (IsShowing || _running != null || _presentationLease != null) return;
             BuildIfNeeded();
-            if (_running != null) StopCoroutine(_running);
+            _presentationLease = NarrativePresentationSession.Acquire(
+                this,
+                NarrativePresentationSession.InteractiveNoPause
+                    .With(NarrativePresentationSession.Claim.HideGameplayHud));
             _running = StartCoroutine(Run());
         }
 
@@ -90,12 +91,12 @@ namespace Hollowfen.UI
             // A held breath after the narration fade before the page turns up.
             yield return new WaitForSecondsRealtime(0.35f);
 
-            Foraging.PlayerInteractor.Suspended = true;
-            Foraging.PlayerInteractor.SetPlayerInputEnabled(false);
-
             RefreshQuestBlock();
+            RefreshDeviceHints();
             _canvas.gameObject.SetActive(true);
             _group.alpha = 0f;
+            _card.anchoredPosition = _cardRestingPosition + new Vector2(-42f, 0f);
+            _card.localScale = Vector3.one * 0.985f;
             _openedAt = Time.unscaledTime;
 
             if (_voiceClip != null)
@@ -106,8 +107,8 @@ namespace Hollowfen.UI
                     _voiceSource.playOnAwake = false;
                     _voiceSource.spatialBlend = 0f;
                     _voiceSource.priority = 0;   // speech: never virtualized (the vendored world carries ~50 ambient sources)
-                    _voiceSource.outputAudioMixerGroup = _voiceOutput;
                 }
+                VoiceAudio.Configure(_voiceSource, _voiceOutput);
                 _voiceSource.clip = _voiceClip;
                 _voiceSource.Play();
             }
@@ -122,10 +123,16 @@ namespace Hollowfen.UI
             float t0 = Time.unscaledTime;
             while (Time.unscaledTime - t0 < _fadeSeconds)
             {
-                _group.alpha = Mathf.Clamp01((Time.unscaledTime - t0) / _fadeSeconds);
+                float u = Mathf.Clamp01((Time.unscaledTime - t0) / _fadeSeconds);
+                float ease = 1f - Mathf.Pow(1f - u, 3f);
+                _group.alpha = ease;
+                _card.anchoredPosition = Vector2.Lerp(_cardRestingPosition + new Vector2(-42f, 0f), _cardRestingPosition, ease);
+                _card.localScale = Vector3.one * Mathf.Lerp(0.985f, 1f, ease);
                 yield return null;
             }
             _group.alpha = 1f;
+            _card.anchoredPosition = _cardRestingPosition;
+            _card.localScale = Vector3.one;
 
             // The first Play() can whiff when the clip finished importing this session
             // (observed in batch-30 verification: source primed, time 0, not playing).
@@ -139,6 +146,7 @@ namespace Hollowfen.UI
         private void Update()
         {
             if (!IsShowing) return;
+            RefreshDeviceHints();
             if (Time.unscaledTime - _openedAt < _inputGraceSeconds) return;
             // Backstop poll — the button's EventSystem Submit is primary; this catches
             // clicks-elsewhere/space when focus was stolen. Same device set as narration.
@@ -155,15 +163,20 @@ namespace Hollowfen.UI
             float from = _group.alpha;
             while (Time.unscaledTime - t0 < 0.25f)
             {
-                _group.alpha = Mathf.Lerp(from, 0f, (Time.unscaledTime - t0) / 0.25f);
+                float u = Mathf.Clamp01((Time.unscaledTime - t0) / 0.25f);
+                float ease = u * u;
+                _group.alpha = Mathf.Lerp(from, 0f, ease);
+                _card.anchoredPosition = Vector2.Lerp(_cardRestingPosition, _cardRestingPosition + new Vector2(-24f, 0f), ease);
+                _card.localScale = Vector3.one * Mathf.Lerp(1f, 0.99f, ease);
                 yield return null;
             }
             _canvas.gameObject.SetActive(false);
+            _card.anchoredPosition = _cardRestingPosition;
+            _card.localScale = Vector3.one;
             _closing = false;
 
             Quests.GameScores.SetFlag(SeenFlag);   // persists with the save's score store
-            Foraging.PlayerInteractor.Suspended = false;
-            Foraging.PlayerInteractor.SetPlayerInputEnabled(true);
+            ReleasePresentation();
         }
 
         // Live quest block — always current, never a hardcoded copy of the objective.
@@ -178,15 +191,13 @@ namespace Hollowfen.UI
         }
 
         // ------------------------------------------------------------------- build
-        //
-        // Batch-31 restyle: an offset-LEFT journal page — the east road and Wren stay
-        // visible on the right (the card invites the player INTO the world, it shouldn't
-        // hide it). Paper grain + inset gold frame + ledger double-rule + the task as an
-        // inset entry + keycap chips for controls. Behavior/flow untouched from batch-30.
+        // The first playable beat is a story handoff, not a settings sheet. Keep the
+        // world visible, clear the normal HUD, and present one strong objective with
+        // only the two controls needed to act on it.
 
-        private const float CardW = 760f;
-        private const float CardH = 660f;
-        private const float MarginX = 60f;
+        private const float CardW = 900f;
+        private const float CardH = 520f;
+        private const float MarginX = 58f;
         private const float InnerW = CardW - MarginX * 2f;
 
         private void BuildIfNeeded()
@@ -203,132 +214,100 @@ namespace Hollowfen.UI
             canvasGo.AddComponent<GraphicRaycaster>();
             _group = canvasGo.AddComponent<CanvasGroup>();
 
-            // Left-weighted scrim: dark under the page, nearly clear over the world.
+            // A cinematic left-weighted wash quiets the world without replacing it.
             var scrim = UICanvasUtil.NewImage("Scrim", canvasGo.transform, Color.white, true);
             var scrimImg = scrim.GetComponent<Image>();
             scrimImg.sprite = UICanvasUtil.MakeHorizontalGradient(new[]
             {
-                new UICanvasUtil.GradientStop(0f,    new Color(0.03f, 0.027f, 0.024f, 0.62f)),
-                new UICanvasUtil.GradientStop(0.52f, new Color(0.03f, 0.027f, 0.024f, 0.26f)),
-                new UICanvasUtil.GradientStop(1f,    new Color(0.03f, 0.027f, 0.024f, 0.08f)),
+                new UICanvasUtil.GradientStop(0f,    new Color(0.015f, 0.022f, 0.016f, 0.92f)),
+                new UICanvasUtil.GradientStop(0.48f, new Color(0.015f, 0.022f, 0.016f, 0.64f)),
+                new UICanvasUtil.GradientStop(0.78f, new Color(0.015f, 0.022f, 0.016f, 0.24f)),
+                new UICanvasUtil.GradientStop(1f,    new Color(0.015f, 0.022f, 0.016f, 0.10f)),
             });
             UICanvasUtil.Stretch((RectTransform)scrim.transform);
 
-            // The journal page, held up on the left.
-            var card = UICanvasUtil.NewRect("Card", canvasGo.transform);
-            card.anchorMin = new Vector2(0f, 0.5f);
-            card.anchorMax = new Vector2(0f, 0.5f);
-            card.pivot = new Vector2(0f, 0.5f);
-            card.sizeDelta = new Vector2(CardW, CardH);
-            card.anchoredPosition = new Vector2(110f, 0f);
-            UICanvasUtil.AddShadow(card, 24, 34, 0.5f, -12f);
-            UICanvasUtil.MakeRoundedPanel(card, Paper, 24, 0.55f);
+            // Quiet ink-glass surface: one rounded silhouette, one accent rail, no frame stack.
+            _card = UICanvasUtil.NewRect("StoryObjectiveCard", canvasGo.transform);
+            _card.anchorMin = new Vector2(0f, 0.5f);
+            _card.anchorMax = new Vector2(0f, 0.5f);
+            _card.pivot = new Vector2(0f, 0.5f);
+            _card.sizeDelta = new Vector2(CardW, CardH);
+            _cardRestingPosition = new Vector2(96f, 0f);
+            _card.anchoredPosition = _cardRestingPosition;
+            // Do not add a generated sibling shadow or a full-rect depth wash here. Both reveal
+            // rectangular bounds around the rounded card against the live world. The left scrim,
+            // opaque ink surface, and gold rail already provide the intended depth and hierarchy.
+            var cardFill = _card.gameObject.AddComponent<Image>();
+            cardFill.sprite = UICanvasUtil.RoundedRect(26);
+            cardFill.type = Image.Type.Sliced;
+            cardFill.color = new Color(HollowfenPalette.SurfaceBase.r, HollowfenPalette.SurfaceBase.g,
+                HollowfenPalette.SurfaceBase.b, 0.965f);
+            cardFill.raycastTarget = false;
 
-            // Paper materiality: grain speckle + a faint top-light gradient.
-            var grain = UICanvasUtil.NewImage("Grain", card, new Color(Ink.r, Ink.g, Ink.b, 1f), false);
-            var grainImg = grain.GetComponent<Image>();
-            grainImg.sprite = UICanvasUtil.PaperGrain();
-            grainImg.type = Image.Type.Simple;
-            UICanvasUtil.Stretch((RectTransform)grain.transform);
-            var sheen = UICanvasUtil.NewImage("Sheen", card, Color.white, false);
-            var sheenImg = sheen.GetComponent<Image>();
-            sheenImg.sprite = UICanvasUtil.MakeVerticalGradient(new[]
-            {
-                new UICanvasUtil.GradientStop(0f, new Color(0.16f, 0.13f, 0.095f, 0.05f)),   // faint ink pooling at the foot
-                new UICanvasUtil.GradientStop(0.4f, new Color(1f, 1f, 1f, 0f)),
-                new UICanvasUtil.GradientStop(1f, new Color(1f, 1f, 1f, 0.16f)),             // light from the top
-            });
-            UICanvasUtil.Stretch((RectTransform)sheen.transform);
+            var rail = UICanvasUtil.NewImage("ChapterRail", _card, HollowfenPalette.FocusRail, false);
+            var railImg = rail.GetComponent<Image>();
+            railImg.sprite = UICanvasUtil.RoundedRect(2);
+            railImg.type = Image.Type.Sliced;
+            UICanvasUtil.SetRect((RectTransform)rail.transform, new Vector2(0f, 0f), new Vector2(0f, 1f),
+                new Vector2(0f, 0.5f), new Vector2(4f, -52f), new Vector2(0f, 0f));
 
-            // Inset gold frame — a hairline sitting just inside the page edge.
-            var frame = UICanvasUtil.NewImage("InnerFrame", card, new Color(Bronze.r, Bronze.g, Bronze.b, 0.4f), false);
-            var frameImg = frame.GetComponent<Image>();
-            frameImg.sprite = UICanvasUtil.RoundedOutline(16, 1.4f);
-            frameImg.type = Image.Type.Sliced;
-            var frameRt = (RectTransform)frame.transform;
-            frameRt.anchorMin = Vector2.zero; frameRt.anchorMax = Vector2.one;
-            frameRt.offsetMin = new Vector2(14f, 14f); frameRt.offsetMax = new Vector2(-14f, -14f);
+            var eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", _card, Localization.Get("guide.eyebrow"), 18f, HollowfenPalette.Gold);
+            Place(eyebrow.rectTransform, MarginX, -42f, 480f, 20f);
+            var status = UICanvasUtil.NewEyebrow("Status", _card, Localization.Get("guide.status"), 18f,
+                new Color(HollowfenPalette.Cream.r, HollowfenPalette.Cream.g, HollowfenPalette.Cream.b, 0.52f),
+                TextAlignmentOptions.TopRight);
+            Place(status.rectTransform, CardW - MarginX - 250f, -44f, 250f, 18f);
 
-            // Header.
-            var eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", card, Localization.Get("guide.eyebrow"), 13f, Bronze);
-            Place(eyebrow.rectTransform, MarginX, -46f, InnerW, 20f);
+            var title = UICanvasUtil.NewHeading("Title", _card, Localization.Get("guide.title"), 48f,
+                HollowfenPalette.Cream, FontStyles.Normal, TextAlignmentOptions.TopLeft);
+            Place(title.rectTransform, MarginX, -72f, InnerW, 60f);
 
-            var title = UICanvasUtil.NewHeading("Title", card, Localization.Get("guide.title"), 38f, Ink, FontStyles.Normal, TextAlignmentOptions.TopLeft);
-            Place(title.rectTransform, MarginX, -70f, InnerW, 50f);
+            var passage = UICanvasUtil.NewBody("Passage", _card, Localization.Get("guide.passage"), 20.5f,
+                new Color(HollowfenPalette.Parchment.r, HollowfenPalette.Parchment.g, HollowfenPalette.Parchment.b, 0.86f),
+                FontStyles.Italic, TextAlignmentOptions.TopLeft);
+            passage.lineSpacing = 8f;
+            Place(passage.rectTransform, MarginX, -142f, InnerW - 28f, 92f);
 
-            // Ledger double-rule: gold over ink hairline.
-            var ruleGold = UICanvasUtil.NewImage("RuleGold", card, new Color(Bronze.r, Bronze.g, Bronze.b, 0.55f), false);
-            Place((RectTransform)ruleGold.transform, MarginX, -128f, InnerW, 1.6f);
-            var ruleInk = UICanvasUtil.NewImage("RuleInk", card, new Color(Ink.r, Ink.g, Ink.b, 0.22f), false);
-            Place((RectTransform)ruleInk.transform, MarginX, -132.5f, InnerW, 0.9f);
+            var divider = UICanvasUtil.NewImage("Divider", _card, HollowfenPalette.DividerLine, false);
+            Place((RectTransform)divider.transform, MarginX, -252f, InnerW, 1f);
 
-            // Wren's journal passage.
-            var passage = UICanvasUtil.NewBody("Passage", card, Localization.Get("guide.passage"), 17f, InkSoft, FontStyles.Italic, TextAlignmentOptions.TopLeft);
-            passage.lineSpacing = 10f;
-            Place(passage.rectTransform, MarginX, -148f, InnerW, 112f);
+            var taskLabel = UICanvasUtil.NewEyebrow("TaskLabel", _card, Localization.Get("guide.task_label"), 18f,
+                HollowfenPalette.Gold);
+            Place(taskLabel.rectTransform, MarginX, -276f, 260f, 18f);
 
-            // The task, as an inset ledger entry.
-            var task = UICanvasUtil.NewRect("TaskPanel", card);
-            Place(task, MarginX, -268f, InnerW, 96f);
-            var taskFill = task.gameObject.AddComponent<Image>();
-            taskFill.sprite = UICanvasUtil.RoundedRect(12);
-            taskFill.type = Image.Type.Sliced;
-            taskFill.color = new Color(Ink.r, Ink.g, Ink.b, 0.06f);
-            taskFill.raycastTarget = false;
-            var taskStroke = UICanvasUtil.NewImage("Stroke", task, new Color(Ink.r, Ink.g, Ink.b, 0.14f), false);
-            var taskStrokeImg = taskStroke.GetComponent<Image>();
-            taskStrokeImg.sprite = UICanvasUtil.RoundedOutline(12, 1.1f);
-            taskStrokeImg.type = Image.Type.Sliced;
-            UICanvasUtil.Stretch((RectTransform)taskStroke.transform);
+            var step = UICanvasUtil.NewImage("Step", _card, new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g,
+                HollowfenPalette.Gold.b, 0.14f), false);
+            var stepImg = step.GetComponent<Image>();
+            stepImg.sprite = UICanvasUtil.Circle();
+            UICanvasUtil.SetRect((RectTransform)step.transform, new Vector2(0f, 1f), new Vector2(0f, 1f),
+                new Vector2(0f, 1f), new Vector2(48f, 48f), new Vector2(MarginX, -304f));
+            var stepNumber = UICanvasUtil.NewEyebrow("Number", step.transform, "01", 18f, HollowfenPalette.Gold,
+                TextAlignmentOptions.Center);
+            UICanvasUtil.Stretch(stepNumber.rectTransform);
 
-            var taskLabel = UICanvasUtil.NewEyebrow("TaskLabel", task, Localization.Get("guide.task_label"), 11.5f, Bronze);
-            Place(taskLabel.rectTransform, 22f, -14f, InnerW - 44f, 16f);
-            _questName = UICanvasUtil.NewHeading("QuestName", task, "", 25f, Ink, FontStyles.Normal, TextAlignmentOptions.TopLeft);
-            Place(_questName.rectTransform, 22f, -32f, InnerW - 44f, 32f);
-            _questObjective = UICanvasUtil.NewBody("QuestObjective", task, "", 15.5f, InkSoft, FontStyles.Normal, TextAlignmentOptions.TopLeft);
-            Place(_questObjective.rectTransform, 22f, -64f, InnerW - 44f, 24f);
+            _questName = UICanvasUtil.NewHeading("QuestName", _card, "", 27f, HollowfenPalette.Cream,
+                FontStyles.Normal, TextAlignmentOptions.TopLeft);
+            Place(_questName.rectTransform, MarginX + 66f, -300f, InnerW - 66f, 34f);
+            _questObjective = UICanvasUtil.NewBody("QuestObjective", _card, "", 20f,
+                new Color(HollowfenPalette.Parchment.r, HollowfenPalette.Parchment.g, HollowfenPalette.Parchment.b, 0.76f),
+                FontStyles.Normal, TextAlignmentOptions.TopLeft);
+            Place(_questObjective.rectTransform, MarginX + 66f, -337f, InnerW - 66f, 30f);
 
-            // Orientation hints.
-            string[] hintKeys = { "guide.hint.compass", "guide.hint.ribbon", "guide.hint.journal" };
-            float hy = -380f;
-            foreach (var key in hintKeys)
-            {
-                var dot = UICanvasUtil.NewBody("Dot", card, "\u00b7", 17f, Bronze, FontStyles.Bold, TextAlignmentOptions.TopLeft);
-                Place(dot.rectTransform, MarginX, hy, 14f, 22f);
-                var hint = UICanvasUtil.NewBody("Hint", card, Localization.Get(key), 14.5f, InkSoft, FontStyles.Normal, TextAlignmentOptions.TopLeft);
-                Place(hint.rectTransform, MarginX + 18f, hy, InnerW - 18f, 22f);
-                hy -= 27f;
-            }
+            _moveKeys = BuildControlCue(_card, MarginX, -382f, "", Localization.Get("guide.ctl.move"));
+            _interactKeys = BuildControlCue(_card, MarginX + 260f, -382f, "",
+                Localization.Get("guide.ctl.interact"));
 
-            // Controls as keycap chips, three rows of two groups.
-            float ky = hy - 12f;
-            ky = KeycapRow(card, ky, new[]
-            {
-                new KeyGroup("guide.ctl.move",     new[] { "guide.key.wasd", "guide.key.lstick" }),
-                new KeyGroup("guide.ctl.look",     new[] { "guide.key.mouse", "guide.key.rstick" }),
-            });
-            ky = KeycapRow(card, ky, new[]
-            {
-                new KeyGroup("guide.ctl.interact", new[] { "guide.key.e", "guide.key.y" }),
-                new KeyGroup("guide.ctl.satchel",  new[] { "guide.key.j", "guide.key.x" }),
-            });
-            KeycapRow(card, ky, new[]
-            {
-                new KeyGroup("guide.ctl.map",      new[] { "guide.key.m", "guide.key.select" }),
-                new KeyGroup("guide.ctl.journal",  new[] { "guide.key.esc", "guide.key.start" }),
-            });
-
-            // "Set out →" — the main menu's action grammar.
-            var btnRt = UICanvasUtil.NewRect("SetOutButton", card);
-            btnRt.anchorMin = new Vector2(0.5f, 0f); btnRt.anchorMax = new Vector2(0.5f, 0f);
-            btnRt.pivot = new Vector2(0.5f, 0f);
-            btnRt.sizeDelta = new Vector2(320f, 52f);
-            btnRt.anchoredPosition = new Vector2(0f, 30f);
+            // A single, unmistakable action hands control back to the player.
+            var btnRt = UICanvasUtil.NewRect("SetOutButton", _card);
+            btnRt.anchorMin = new Vector2(0f, 0f); btnRt.anchorMax = new Vector2(0f, 0f);
+            btnRt.pivot = new Vector2(0f, 0f);
+            btnRt.sizeDelta = new Vector2(300f, 58f);
+            btnRt.anchoredPosition = new Vector2(MarginX, 34f);
 
             var btnFill = btnRt.gameObject.AddComponent<Image>();
-            btnFill.sprite = UICanvasUtil.RoundedRect(12);
+            btnFill.sprite = UICanvasUtil.RoundedRect(14);
             btnFill.type = Image.Type.Sliced;
-            btnFill.color = new Color(Bronze.r, Bronze.g, Bronze.b, 0.13f);
+            btnFill.color = HollowfenPalette.Gold;
             btnFill.raycastTarget = true;
 
             _button = btnRt.gameObject.AddComponent<Button>();
@@ -337,96 +316,78 @@ namespace Hollowfen.UI
             _button.onClick.AddListener(Dismiss);
             var nav = _button.navigation; nav.mode = Navigation.Mode.None; _button.navigation = nav;
 
-            var btnStroke = UICanvasUtil.NewImage("BtnStroke", btnRt, new Color(Bronze.r, Bronze.g, Bronze.b, 0.5f), false);
-            var btnStrokeImg = btnStroke.GetComponent<Image>();
-            btnStrokeImg.sprite = UICanvasUtil.RoundedOutline(12, 1.3f);
-            btnStrokeImg.type = Image.Type.Sliced;
-            UICanvasUtil.Stretch((RectTransform)btnStroke.transform);
-
-            var btnLabel = UICanvasUtil.NewHeading("Label", btnRt, Localization.Get("guide.button"), 25f, Ink, FontStyles.Italic, TextAlignmentOptions.Center);
+            var btnLabel = UICanvasUtil.NewHeading("Label", btnRt, Localization.Get("guide.button"), 24f,
+                HollowfenPalette.InkDeep, FontStyles.Normal, TextAlignmentOptions.Center);
             UICanvasUtil.Stretch(btnLabel.rectTransform);
 
-            var glowGo = UICanvasUtil.NewImage("FocusGlow", btnRt, new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0f), false);
+            var glowGo = UICanvasUtil.NewImage("FocusGlow", btnRt, new Color(1f, 1f, 1f, 0.16f), false);
             var glowImg = glowGo.GetComponent<Image>();
-            glowImg.sprite = UICanvasUtil.RoundedRect(12);
+            glowImg.sprite = UICanvasUtil.RoundedRect(14);
             glowImg.type = Image.Type.Sliced;
             UICanvasUtil.Stretch((RectTransform)glowGo.transform);
+            glowGo.transform.SetSiblingIndex(0); // wash under the dark label, never over it
 
             var fh = btnRt.gameObject.AddComponent<FocusHighlight>();
-            var fhT = typeof(FocusHighlight);
-            System.Action<string, object> setF = (n, v) =>
-            {
-                var f = fhT.GetField(n, System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-                if (f != null) f.SetValue(fh, v);
-            };
-            setF("_targetGraphic", glowImg);
-            setF("_baseColor", new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0f));
-            setF("_focusedColor", new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0.24f));
-            setF("_focusedScale", 1.03f);
-            setF("_swapColor", true);
-            setF("_swapScale", true);
+            fh.Configure(glowImg, btnRt, new Color(1f, 1f, 1f, 0.28f), 1.025f, true, true);
 
-            var hint2 = UICanvasUtil.NewBody("DismissHint", card, Localization.Get("guide.dismiss_hint"), 11.5f, MossDark, FontStyles.Italic, TextAlignmentOptions.Center);
-            var h2 = hint2.rectTransform;
-            h2.anchorMin = new Vector2(0.5f, 0f); h2.anchorMax = new Vector2(0.5f, 0f);
-            h2.pivot = new Vector2(0.5f, 0f);
-            h2.sizeDelta = new Vector2(400f, 16f);
-            h2.anchoredPosition = new Vector2(0f, 12f);
+            _dismissHint = UICanvasUtil.NewEyebrow("DismissHint", _card, "", 18f,
+                new Color(HollowfenPalette.Cream.r, HollowfenPalette.Cream.g, HollowfenPalette.Cream.b, 0.52f));
+            PlaceBottom(_dismissHint.rectTransform, MarginX + 322f, 49f, 160f, 18f);
+            _journalHint = UICanvasUtil.NewBody("JournalHint", _card, "", 18f,
+                new Color(HollowfenPalette.Cream.r, HollowfenPalette.Cream.g, HollowfenPalette.Cream.b, 0.55f),
+                FontStyles.Italic, TextAlignmentOptions.Right);
+            PlaceBottom(_journalHint.rectTransform, CardW - MarginX - 280f, 48f, 280f, 22f);
+
+            RefreshDeviceHints();
 
             _canvas.gameObject.SetActive(false);
         }
 
-        private struct KeyGroup
+        private void RefreshDeviceHints()
         {
-            public string LabelKey;
-            public string[] KeyKeys;
-            public KeyGroup(string labelKey, string[] keyKeys) { LabelKey = labelKey; KeyKeys = keyKeys; }
+            if (!_built) return;
+            bool gamepad = ControllerGlyphs.IsGamepadActive;
+            string move = Localization.Get(gamepad ? "guide.key.lstick" : "guide.key.wasd");
+            string interact = gamepad
+                ? ControllerGlyphs.For(ControllerGlyphs.Face.North)
+                : Localization.Get("guide.key.e");
+            string dismiss = gamepad
+                ? string.Format(Localization.Get("guide.dismiss_hint.gamepad"),
+                    ControllerGlyphs.For(ControllerGlyphs.Face.South))
+                : Localization.Get("guide.dismiss_hint.keyboard");
+            string journal = Localization.Get(gamepad ? "guide.footer.gamepad" : "guide.footer.keyboard");
+
+            if (_moveKeys != null && _moveKeys.text != move) _moveKeys.text = move;
+            if (_interactKeys != null && _interactKeys.text != interact) _interactKeys.text = interact;
+            if (_dismissHint != null && _dismissHint.text != dismiss) _dismissHint.text = dismiss;
+            if (_journalHint != null && _journalHint.text != journal) _journalHint.text = journal;
         }
 
-        // One row of [label  [chip][chip]] groups; the second group starts at the row midpoint
-        // so the columns align down the card. Returns the y for the next row.
-        private float KeycapRow(RectTransform card, float y, KeyGroup[] groups)
+        private static TMP_Text BuildControlCue(RectTransform parent, float x, float y, string keys, string label)
         {
-            for (int g = 0; g < groups.Length; g++)
-            {
-                float x = MarginX + g * (InnerW * 0.5f);
-                var label = UICanvasUtil.NewEyebrow("CtlLabel", card, Localization.Get(groups[g].LabelKey), 10.5f, MossDark);
-                label.ForceMeshUpdate();
-                float lw = label.preferredWidth + 4f;
-                Place(label.rectTransform, x, y - 6f, lw, 16f);
-                x += lw + 10f;
-                foreach (var keyKey in groups[g].KeyKeys)
-                {
-                    x += Keycap(card, x, y, Localization.Get(keyKey)) + 5f;
-                }
-            }
-            return y - 34f;
+            var cue = UICanvasUtil.NewRect("ControlCue", parent);
+            Place(cue, x, y, 238f, 42f);
+            var bg = cue.gameObject.AddComponent<Image>();
+            bg.sprite = UICanvasUtil.RoundedRect(11);
+            bg.type = Image.Type.Sliced;
+            bg.color = HollowfenPalette.SurfaceQuiet;
+            bg.raycastTarget = false;
+
+            var keyText = UICanvasUtil.NewBody("Keys", cue, keys, 18f, HollowfenPalette.Gold,
+                FontStyles.Normal, TextAlignmentOptions.Left);
+            keyText.textWrappingMode = TextWrappingModes.NoWrap;
+            Place(keyText.rectTransform, 14f, -9f, 112f, 24f);
+            var action = UICanvasUtil.NewEyebrow("Action", cue, label, 18f,
+                new Color(HollowfenPalette.Cream.r, HollowfenPalette.Cream.g, HollowfenPalette.Cream.b, 0.76f),
+                TextAlignmentOptions.Right);
+            Place(action.rectTransform, 128f, -9f, 96f, 24f);
+            return keyText;
         }
 
-        // A single key chip: rounded fill + hairline + centered label. Returns its width.
-        private float Keycap(RectTransform card, float x, float y, string text)
+        private void ReleasePresentation()
         {
-            var label = UICanvasUtil.NewBody("Key", card, text, 12f, Ink, FontStyles.Normal, TextAlignmentOptions.Center);
-            label.enableWordWrapping = false;
-            label.ForceMeshUpdate();
-            float w = Mathf.Max(26f, label.preferredWidth + 16f);
-
-            var chip = UICanvasUtil.NewRect("Chip", card);
-            Place(chip, x, y, w, 25f);
-            var fill = chip.gameObject.AddComponent<Image>();
-            fill.sprite = UICanvasUtil.RoundedRect(6);
-            fill.type = Image.Type.Sliced;
-            fill.color = new Color(Ink.r, Ink.g, Ink.b, 0.07f);
-            fill.raycastTarget = false;
-            var stroke = UICanvasUtil.NewImage("Stroke", chip, new Color(Ink.r, Ink.g, Ink.b, 0.3f), false);
-            var strokeImg = stroke.GetComponent<Image>();
-            strokeImg.sprite = UICanvasUtil.RoundedOutline(6, 1.1f);
-            strokeImg.type = Image.Type.Sliced;
-            UICanvasUtil.Stretch((RectTransform)stroke.transform);
-
-            label.rectTransform.SetParent(chip, false);
-            UICanvasUtil.Stretch(label.rectTransform);
-            return w;
+            _presentationLease?.Dispose();
+            _presentationLease = null;
         }
 
         private static void Place(RectTransform rt, float x, float y, float w, float h)
@@ -434,6 +395,15 @@ namespace Hollowfen.UI
             rt.anchorMin = new Vector2(0f, 1f);
             rt.anchorMax = new Vector2(0f, 1f);
             rt.pivot = new Vector2(0f, 1f);
+            rt.sizeDelta = new Vector2(w, h);
+            rt.anchoredPosition = new Vector2(x, y);
+        }
+
+        private static void PlaceBottom(RectTransform rt, float x, float y, float w, float h)
+        {
+            rt.anchorMin = new Vector2(0f, 0f);
+            rt.anchorMax = new Vector2(0f, 0f);
+            rt.pivot = new Vector2(0f, 0f);
             rt.sizeDelta = new Vector2(w, h);
             rt.anchoredPosition = new Vector2(x, y);
         }

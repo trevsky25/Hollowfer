@@ -1,0 +1,89 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b71ffd66f0a5441d5af5ee26c3fa2d26, type: 3}
+  m_Name: Restoration_Cottages
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Restoration.RestorationProjectData
+  _id: cottages
+  _titleId: restoration.cottages.title
+  _summaryId: restoration.cottages.summary
+  _locationId: restoration.cottages.location
+  _promptTargetId: restoration.site.unknown
+  _benefitId: restoration.cottages.benefit
+  _villageHopeReward: 0
+  _knowledgeReward: 0
+  _activeQuestId: cottagesReopen
+  _completedQuestId: cottagesReopen
+  _stageRules:
+  - _condition: 1
+    _valueId: cottagesReopen
+    _stage: 1
+  - _condition: 3
+    _valueId: shutters_funded
+    _stage: 2
+  - _condition: 3
+    _valueId: cottages_reopened_1
+    _stage: 3
+  - _condition: 3
+    _valueId: cottages_reopened_2
+    _stage: 4
+  - _condition: 2
+    _valueId: cottagesReopen
+    _stage: 5
+  _stageCopy:
+  - _stage: 1
+    _titleId: restoration.cottages.stage.surveyed.title
+    _bodyId: restoration.cottages.stage.surveyed.body
+    _shortId: 
+  - _stage: 2
+    _titleId: restoration.cottages.stage.supplies.title
+    _bodyId: restoration.cottages.stage.supplies.body
+    _shortId: 
+  - _stage: 3
+    _titleId: restoration.cottages.stage.work.title
+    _bodyId: restoration.cottages.stage.work.body
+    _shortId: 
+  - _stage: 4
+    _titleId: restoration.cottages.stage.restored.title
+    _bodyId: restoration.cottages.stage.restored.body
+    _shortId: 
+  - _stage: 5
+    _titleId: restoration.cottages.stage.occupied.title
+    _bodyId: restoration.cottages.stage.occupied.body
+    _shortId: 
+  _milestones:
+  - _labelId: restoration.cottages.milestone.tax
+    _detailId: restoration.cottages.milestone.tax.detail
+    _condition: 2
+    _valueId: firstTax
+    _requiredStage: 0
+  - _labelId: restoration.cottages.milestone.shutters
+    _detailId: restoration.cottages.milestone.shutters.detail
+    _condition: 3
+    _valueId: shutters_funded
+    _requiredStage: 0
+  - _labelId: restoration.cottages.milestone.wenmar
+    _detailId: restoration.cottages.milestone.wenmar.detail
+    _condition: 3
+    _valueId: cottages_reopened_1
+    _requiredStage: 0
+  - _labelId: restoration.cottages.milestone.north
+    _detailId: restoration.cottages.milestone.north.detail
+    _condition: 3
+    _valueId: cottages_reopened_2
+    _requiredStage: 0
+  - _labelId: restoration.cottages.milestone.record
+    _detailId: restoration.cottages.milestone.record.detail
+    _condition: 2
+    _valueId: cottagesReopen
+    _requiredStage: 0
+  _contributions: []
+  _contributionsCompleteFlagId: 

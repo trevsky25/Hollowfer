@@ -37,6 +37,19 @@ MonoBehaviour:
     reaction, do not collect any small brown mushroom. Several deaths each year are
     attributed to this species being mistaken for psilocybes.
   _photo: {fileID: 21300000, guid: 9538ddabd4cb849f6805e524876cc2de, type: 3}
-  _photoCredit: Wikimedia Commons
+  _photoCredit: Generated with OpenAI gpt-image
+  _journalPage: {fileID: 21300000, guid: 3b7fc7e116cb84071b629cd24d9e5777, type: 3}
+  _worldPrefab: {fileID: 5941648217420018872, guid: fa1e0dc9680fe467e88a99eaaf66a27e, type: 3}
+  _journalPreviewPrefab: {fileID: 6847284412517491273, guid: 5e2c6a081fb8447a9bb2828207f97c7f, type: 3}
+  _journalExposure: 0.85
   _displayNameId: mushroom.deadlyGalerina.name
   _descriptionId: mushroom.deadlyGalerina.description
+  _forageTier: 3
+  _requiredForageFlagId: tier4_mushrooms_unlocked
+  _wildRespawnDays: 4
+  _marraValueCopper: 0
+  _theoValueCopper: 0
+  _cultivable: 0
+  _cultivationHours: 6
+  _cultivationYield: 3
+  _cultivationUnlockFlagId:

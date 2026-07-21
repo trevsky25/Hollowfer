@@ -14,24 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.CharacterProfileData
   _id: wren-tobin
   _characterName: Wren Tobin
-  _role: Protagonist
+  _role: Protagonist / forager
   _age: Late twenties
-  _home: Hollowfen
-  _work: Forager
+  _home: Tobin's mill, Hollowfen
+  _work: Foraging, cultivation, and village trade
   _keepsake: Tobin's journal
   _tagline: The miller's daughter who came home with a forager's eye.
   _leadParagraph: Wren returns to Hollowfen after three winters away and finds the
     mill silent, the village hungry, and her father's hidden journal waiting in a
-    drawer. She can read damp bark, shadow, season, and soil. The woods have not
-    forgotten her family, even if the village nearly has.
+    drawer.
   _backgroundParagraph: Born above Tobin's mill on the River Wend, Wren grew up among
     grain dust, ledgers, and the quiet habits of a father who knew more about mushrooms
-    than he ever admitted aloud. She left for kitchen work in Veyrwick and came back
-    to a village smaller than memory, with boarded windows and a dead mill wheel.
-  _perspectiveParagraph: Wren reads habitat the way other people read faces. A damp
-    birch log tells her what season it is, what will fruit next, and whether the
-    woods are safe to trust. She is patient with mushrooms, less patient with people
-    who pretend Hollowfen is doing fine.
+    than he ever admitted aloud.
+  _perspectiveParagraph: Wren reads habitat the way other people read faces. Damp
+    bark, shadow, season, and soil tell her what will fruit next and whether the
+    woods are safe to trust.
   _kitItems:
   - Name: Knife
     OneLine: Horn-handled, sharp enough for clean cuts.
@@ -46,6 +43,133 @@ MonoBehaviour:
     like opening a door no one has touched in years.
   _displayNameId: character.wren_tobin.name
   _descriptionId: character.wren_tobin.lead
+  _sortOrder: 0
+  _category: 0
+  _edition: 01 / WREN TOBIN
+  _previewScale: 1
+  _tPosePlate: {fileID: 0}
+  _characterSheet: {fileID: 0}
+  _missions:
+  - Act: 1
+    QuestId: arrive
+    Title: Homecoming
+    Summary: Return to Hollowfen and reach the village square.
+  - Act: 1
+    QuestId: speakBram
+    Title: The Crooked Pintle
+    Summary: Meet Bram and recover the key to the mill.
+  - Act: 1
+    QuestId: searchMill
+    Title: Your Father's Mill
+    Summary: Enter her childhood home and search the silent mill.
+  - Act: 1
+    QuestId: findJournal
+    Title: The Hidden Journal
+    Summary: Find Tobin's hidden mushroom journal.
+  - Act: 1
+    QuestId: firstForage
+    Title: The First Forage
+    Summary: Gather the safe basics and a gold-stemmed find at the Old Wood edge.
+  - Act: 1
+    QuestId: firstSale
+    Title: Marra's Kitchen
+    Summary: Bring the first basket to the Crooked Pintle.
+  - Act: 1
+    QuestId: meetAlmy
+    Title: A Knock at the Door
+    Summary: Hear what Sister Almy knows about Wren's family.
+  - Act: 2
+    QuestId: almyTeach
+    Title: The Vine-Tender's Lessons
+    Summary: Learn cultivation and plant Wood Ear at the mill.
+  - Act: 2
+    QuestId: forgeKnife
+    Title: Joren's Forge
+    Summary: Commission a proper foraging knife from Joren.
+  - Act: 2
+    QuestId: firstTax
+    Title: Twelve Silver by Yule
+    Summary: Raise twelve silver before the Wenmar cottage is seized.
+  - Act: 2
+    QuestId: theoTrade
+    Title: The Trader's Ledger
+    Summary: Open a regular trade route with Theo.
+  - Act: 2
+    QuestId: edsGrandfather
+    Title: Brightspore at the Bedside
+    Summary: Find Brightspore and carry Marra's tonic to Edda's grandfather.
+  - Act: 2
+    QuestId: meetHollin
+    Title: A Stranger at the Inn
+    Summary: Meet the quiet traveler who asked for Wren by name.
+  - Act: 2
+    QuestId: cottagesReopen
+    Title: Two Boards Come Down
+    Summary: Fund repairs and see two cottages reopen.
+  - Act: 2
+    QuestId: caldenWarning
+    Title: Father Calden's Doubt
+    Summary: Hear Calden's warning and visit the chapel garden gate.
+  - Act: 3
+    QuestId: hollinReveals
+    Title: Hollin's Inheritance
+    Summary: Compare the page Hollin carries with Tobin's journal.
+  - Act: 3
+    QuestId: findWitchCottage
+    Title: The Witch's Cottage
+    Summary: Follow the old path into the Deep Wood.
+  - Act: 3
+    QuestId: wendlightFound
+    Title: The Wend's True Course
+    Summary: Use Wendlight to trace the river's old course.
+  - Act: 3
+    QuestId: caldenReconcile
+    Title: The Chapel Garden Opens
+    Summary: Bring the Wendlight truth to Father Calden.
+  - Act: 3
+    QuestId: eddaApprentice
+    Title: Edda Asks
+    Summary: Hear Edda's carefully practiced request.
+  - Act: 3
+    QuestId: theoCapitalOffer
+    Title: Theo's Capital
+    Summary: Listen to Theo's offer and weigh what it would cost.
+  - Act: 3
+    QuestId: festivalHosted
+    Title: The First Festival in Three Years
+    Summary: Gather four ingredients for Marra's festival dishes.
+  - Act: 3
+    QuestId: aldricLetter
+    Title: A Sealed Letter
+    Summary: Receive the letter Voss was ordered to deliver in person.
+  - Act: 4
+    QuestId: aldricOfferRead
+    Title: The Lord's Offer
+    Summary: Read Lord Aldric's sealed offer at the mill.
+  - Act: 4
+    QuestId: wendSource
+    Title: The Source of the Wend
+    Summary: Follow the old river line upstream.
+  - Act: 4
+    QuestId: meetAldric
+    Title: The Meeting
+    Summary: Take the evidence to Aldric's manor and answer his offer.
+  _quotes:
+  - Text: Near trees.
+    Context: Dryly answering Theo's question about Goldfoot.
+  - Text: I concede arithmetic.
+    Context: Meeting Lord Aldric at the manor.
+  - Text: The question is what you think prosperous is allowed to cost.
+    Context: Testing Aldric's definition of prosperity.
+  _heroPortraitResourcePath: People/Art/wren-tobin_hero
+  _tPosePlateResourcePath: People/Art/wren-tobin_tpose
+  _characterSheetResourcePath: People/Art/wren-tobin_hero
+  _journalModelResourcePath: People/Models/wren-tobin
+  _journalTriangleBudget: 90000
+  _journalTextureSize: 2048
+  _journalModelPrefab: {fileID: 0}
+  _journalIdleClip: {fileID: 0}
+  _journalExposure: 0.1
   _studySheet: {fileID: 21300000, guid: 8a04705318fd74256bb8d04b3fcedc0e, type: 3}
   _figureFront: {fileID: 21300000, guid: d4005f3298ef44ecb9718a25bd97b40a, type: 3}
   _figureBack: {fileID: 21300000, guid: 764ab9f7ae81f462eb6d3f432bc49d94, type: 3}

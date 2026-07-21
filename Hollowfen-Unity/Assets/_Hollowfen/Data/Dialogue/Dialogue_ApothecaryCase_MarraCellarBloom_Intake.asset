@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00c9c9bb92b3b44fb84ca335c48467d8, type: 3}
+  m_Name: Dialogue_ApothecaryCase_MarraCellarBloom_Intake
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Dialogue.DialogueData
+  _id: apothecary_case_marra_cellar_bloom_intake
+  _lines:
+  - speaker: Marra
+    text: Three pantry jars have taken the same pale bloom. I will not feed a guess
+      to the village.
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 1cf15af9cba5c4ead906f142469af7fa, type: 3}
+  - speaker: Wren
+    text: We will mark the affected shelf and trace what all three jars shared.
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: e2900d11831534895aab414892d8b9f5, type: 3}
+  - speaker: Edda
+    text: Care begins before anyone swallows a remedy. Sometimes it begins with refusing
+      a risky meal.
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 589428692c43d437584754716cedc46d, type: 3}
+  _mushroomHandoff:
+    beforeLineIndex: 0
+    recipientSpeaker: 
+    mushroom: {fileID: 0}
+    presentationHeight: 0
+  _unlockStoryCard: {fileID: 0}
+  _completeQuest: {fileID: 0}
+  _giveItemId: 
+  _grantCoinsCopper: 0
+  _spendsCoinsCopper: 0
+  _sellsForageBasket: 0
+  _basketCopperPerItem: 0
+  _basketBuyer: 0
+  _grantForage: {fileID: 0}
+  _grantForageCount: 0
+  _consumeForage: {fileID: 0}
+  _consumeForageCount: 0
+  _setFlagIds:
+  - apothecary_case_intake_marra_cellar_bloom
+  _villageHopeDelta: 0
+  _knowledgeDelta: 0
+  _relationshipNpcIds: []
+  _relationshipDeltas: 
+  _memoryOutcomes: []
+  _bondOutcomes: []
+  _favorOutcomes: []
+  _advanceMinutes: 0
+  _transitionMoment: {fileID: 0}
+  _nextDialog: {fileID: 0}
+  _choices: []

@@ -1,0 +1,99 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b71ffd66f0a5441d5af5ee26c3fa2d26, type: 3}
+  m_Name: Restoration_TobinWorkshop
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Restoration.RestorationProjectData
+  _id: tobin_workshop
+  _titleId: restoration.mill.title
+  _summaryId: restoration.mill.summary
+  _locationId: restoration.mill.location
+  _promptTargetId: restoration.mill.site
+  _benefitId: restoration.mill.benefit
+  _villageHopeReward: 6
+  _knowledgeReward: 4
+  _activeQuestId: 
+  _completedQuestId: 
+  _stageRules:
+  - _condition: 2
+    _valueId: almyTeach
+    _stage: 1
+  - _condition: 3
+    _valueId: tobin_workshop_supplies_ready
+    _stage: 2
+  - _condition: 3
+    _valueId: tobin_workshop_work_started
+    _stage: 3
+  - _condition: 3
+    _valueId: tobin_workshop_restored
+    _stage: 4
+  - _condition: 3
+    _valueId: tobin_workshop_in_use
+    _stage: 5
+  _stageCopy:
+  - _stage: 1
+    _titleId: restoration.mill.stage.surveyed.title
+    _bodyId: restoration.mill.stage.surveyed.body
+    _shortId: restoration.mill.stage.surveyed.short
+  - _stage: 2
+    _titleId: restoration.mill.stage.supplies.title
+    _bodyId: restoration.mill.stage.supplies.body
+    _shortId: restoration.mill.stage.supplies.short
+  - _stage: 3
+    _titleId: restoration.mill.stage.work.title
+    _bodyId: restoration.mill.stage.work.body
+    _shortId: restoration.mill.stage.work.short
+  - _stage: 4
+    _titleId: restoration.mill.stage.restored.title
+    _bodyId: restoration.mill.stage.restored.body
+    _shortId: restoration.mill.stage.restored.short
+  - _stage: 5
+    _titleId: restoration.mill.stage.occupied.title
+    _bodyId: restoration.mill.stage.occupied.body
+    _shortId: restoration.mill.stage.occupied.short
+  _milestones:
+  - _labelId: restoration.mill.milestone.unlock
+    _detailId: restoration.mill.milestone.unlock.detail
+    _condition: 2
+    _valueId: almyTeach
+    _requiredStage: 0
+  - _labelId: restoration.mill.milestone.first
+    _detailId: restoration.mill.milestone.first.detail
+    _condition: 3
+    _valueId: tobin_workshop_first_funded
+    _requiredStage: 0
+  - _labelId: restoration.mill.milestone.second
+    _detailId: restoration.mill.milestone.second.detail
+    _condition: 3
+    _valueId: tobin_workshop_second_funded
+    _requiredStage: 0
+  - _labelId: restoration.mill.milestone.work
+    _detailId: restoration.mill.milestone.work.detail
+    _condition: 3
+    _valueId: tobin_workshop_work_started
+    _requiredStage: 0
+  - _labelId: restoration.mill.milestone.use
+    _detailId: restoration.mill.milestone.use.detail
+    _condition: 3
+    _valueId: tobin_workshop_in_use
+    _requiredStage: 0
+  _contributions:
+  - _labelId: restoration.mill.contribution.first
+    _detailId: restoration.mill.contribution.first.detail
+    _fundedFlagId: tobin_workshop_first_funded
+    _costCopper: 20
+    _availableFromStage: 1
+  - _labelId: restoration.mill.contribution.second
+    _detailId: restoration.mill.contribution.second.detail
+    _fundedFlagId: tobin_workshop_second_funded
+    _costCopper: 18
+    _availableFromStage: 1
+  _contributionsCompleteFlagId: tobin_workshop_supplies_ready

@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95267338c201c4c76b2d6ee20a231830, type: 3}
+  m_Name: Request_Apothecary_Edda_TonicStory
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Requests.VillageRequestData
+  _id: apothecary_edda_tonic_story
+  _npcId: edda
+  _kind: 1
+  _titleId: request.apothecary.edda_tonic.title
+  _descriptionId: request.apothecary.edda_tonic.body
+  _requesterLineId: request.apothecary.edda_tonic.line
+  _heroImage: {fileID: 21300000, guid: eea468fe5a83d49e0b94c3999e71c7a3, type: 3}
+  _requiredSpecies: []
+  _requiredCounts: 
+  _requiredPreparations:
+  - {fileID: 11400000, guid: 05d02b2a37a3b4002a9a8e42d5701fd7, type: 2}
+  _requiredPreparationCounts: 01000000
+  _rewardCopper: 26
+  _wetWeatherBonusCopper: 0
+  _firstCompletionRelationshipDelta: 3
+  _firstCompletionKnowledgeDelta: 2
+  _requiredFlagIds:
+  - apothecary_goldfoot_delivered
+  - apothecary_prepared_brightspore_tonic
+  - apprentice_system_unlocked
+  _requiredCompletedQuestIds: []
+  _activeQuestId: 
+  _oneShot: 1
+  _completionFlagIds:
+  - apothecary_tonic_delivered
+  - apothecary_story_complete
+  _completeQuest: {fileID: 0}
+  _completionDialogue: {fileID: 11400000, guid: 07eec5286945d47edb4f8760b70c0615, type: 2}

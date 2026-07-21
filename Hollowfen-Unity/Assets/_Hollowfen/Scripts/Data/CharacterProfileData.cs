@@ -7,10 +7,34 @@ namespace Hollowfen.Data
     public class CharacterProfileData : ScriptableObject
     {
         [Serializable]
+        public enum CharacterCategory
+        {
+            Story,
+            Family,
+            Villager,
+        }
+
+        [Serializable]
         public struct KitItem
         {
             public string Name;
             [TextArea(1, 3)] public string OneLine;
+        }
+
+        [Serializable]
+        public struct MissionEntry
+        {
+            public int Act;
+            public string QuestId;
+            public string Title;
+            [TextArea(2, 6)] public string Summary;
+        }
+
+        [Serializable]
+        public struct QuoteEntry
+        {
+            [TextArea(2, 6)] public string Text;
+            public string Context;
         }
 
         [SerializeField] private string _id;
@@ -29,6 +53,29 @@ namespace Hollowfen.Data
         [SerializeField, TextArea(2, 6)] private string _pullquote;
         [SerializeField] private string _displayNameId;
         [SerializeField] private string _descriptionId;
+
+        [Header("People of Hollowfen")]
+        [SerializeField] private int _sortOrder;
+        [SerializeField] private CharacterCategory _category = CharacterCategory.Villager;
+        [SerializeField] private string _edition;
+        [SerializeField] private float _previewScale = 1f;
+        [SerializeField] private Sprite _tPosePlate;
+        [SerializeField] private Sprite _characterSheet;
+        [SerializeField] private MissionEntry[] _missions;
+        [SerializeField] private QuoteEntry[] _quotes;
+
+        [Header("Lazy-loaded gallery assets")]
+        [SerializeField] private string _heroPortraitResourcePath;
+        [SerializeField] private string _tPosePlateResourcePath;
+        [SerializeField] private string _characterSheetResourcePath;
+        [SerializeField] private string _journalModelResourcePath;
+        [SerializeField] private int _journalTriangleBudget;
+        [SerializeField] private int _journalTextureSize;
+
+        [Header("Interactive journal study")]
+        [SerializeField] private GameObject _journalModelPrefab;
+        [SerializeField] private AnimationClip _journalIdleClip;
+        [SerializeField, Range(0f, 0.4f)] private float _journalExposure = 0.15f;
 
         [Header("Field study plates (batch-61 Wren dossier)")]
         [SerializeField] private Sprite _studySheet;
@@ -49,14 +96,33 @@ namespace Hollowfen.Data
         public string BackgroundParagraph => _backgroundParagraph;
         public string PerspectiveParagraph => _perspectiveParagraph;
         public KitItem[] KitItems => _kitItems;
-        public Sprite HeroPortrait => _heroPortrait;
+        public Sprite HeroPortrait => LoadResource(_heroPortrait, _heroPortraitResourcePath);
         public string Pullquote => _pullquote;
         public string DisplayNameId => _displayNameId;
         public string DescriptionId => _descriptionId;
+        public int SortOrder => _sortOrder;
+        public CharacterCategory Category => _category;
+        public string Edition => _edition;
+        public float PreviewScale => _previewScale;
+        public Sprite TPosePlate => LoadResource(_tPosePlate, _tPosePlateResourcePath);
+        public Sprite CharacterSheet => LoadResource(_characterSheet, _characterSheetResourcePath);
+        public MissionEntry[] Missions => _missions;
+        public QuoteEntry[] Quotes => _quotes;
+        public int JournalTriangleBudget => _journalTriangleBudget;
+        public int JournalTextureSize => _journalTextureSize;
+        public GameObject JournalModelPrefab => LoadResource(_journalModelPrefab, _journalModelResourcePath);
+        public AnimationClip JournalIdleClip => _journalIdleClip;
+        public float JournalExposure => _journalExposure;
         public Sprite StudySheet => _studySheet;
         public Sprite FigureFront => _figureFront;
         public Sprite FigureBack => _figureBack;
         public Sprite FigureThreeQuarter => _figureThreeQuarter;
         public Sprite KnifePlate => _knifePlate;
+
+        private static T LoadResource<T>(T directReference, string resourcePath) where T : UnityEngine.Object
+        {
+            if (directReference != null) return directReference;
+            return string.IsNullOrWhiteSpace(resourcePath) ? null : Resources.Load<T>(resourcePath);
+        }
     }
 }

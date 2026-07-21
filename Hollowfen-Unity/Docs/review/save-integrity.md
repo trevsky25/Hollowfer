@@ -22,8 +22,8 @@ persistence · new gameplay state that must survive a reload · static events/st
   new game doesn't carry stale subscribers/state. `TimeManager`'s static events currently LACK this (backlog) —
   if the batch adds a static event, require the reset; flag if it relies on TimeManager's gap.
 - **Schema compatibility.** A new `SaveSlotMeta` field must not break loading an older save (default/migrate,
-  don't throw). `SaveSlotMeta.CurrentQuest` stores localized TEXT not an ID today (debt) — don't propagate that
-  pattern; new persisted identifiers are IDs.
+  don't throw). `SaveSlotMeta.CurrentQuest` is retained only as an id-less schema-zero presentation fallback;
+  `CurrentQuestId` is authoritative and current writers clear the old cache. New persisted identifiers are IDs.
 - **Save hygiene during verification.** The reviewer confirms the batch backed up `saves/` before state-mutating
   play runs and restored after (night-shift rule) — a batch that dirtied the tester's real saves is a process
   miss to call out.

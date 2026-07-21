@@ -1,0 +1,76 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00c9c9bb92b3b44fb84ca335c48467d8, type: 3}
+  m_Name: Dialogue_encounter_forge_ledger
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Dialogue.DialogueData
+  _id: encounter.forge_ledger
+  _lines:
+  - speaker: Pell
+    text: You have written 'hinges' where the ledger asks for public benefit.
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 17d2cf1842e3a459a920769a9f072a56, type: 3}
+  - speaker: Joren
+    text: Doors that open are a public benefit.
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 655e8e0f38f274001a71f07de9486375, type: 3}
+  - speaker: Wren
+    text: Write 'doors opened,' then keep the hinges in the margin.
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: ad77f0988679a4b5197af02039063b6d, type: 3}
+  - speaker: Pell
+    text: Imprecise, but defensible.
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 237e85e788b0a4eb69be42dbcd095c04, type: 3}
+  - speaker: Joren
+    text: That is the warmest thing he has ever said about my work.
+    isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: db43065188fee4b6fae8bfec423f5e20, type: 3}
+  _mushroomHandoff:
+    beforeLineIndex: 0
+    recipientSpeaker: 
+    mushroom: {fileID: 0}
+    presentationHeight: 0
+  _unlockStoryCard: {fileID: 0}
+  _completeQuest: {fileID: 0}
+  _giveItemId: 
+  _grantCoinsCopper: 0
+  _spendsCoinsCopper: 0
+  _sellsForageBasket: 0
+  _basketCopperPerItem: 0
+  _basketBuyer: 0
+  _grantForage: {fileID: 0}
+  _grantForageCount: 1
+  _consumeForage: {fileID: 0}
+  _consumeForageCount: 1
+  _setFlagIds:
+  - encounter.forge_ledger_seen
+  _villageHopeDelta: 1
+  _knowledgeDelta: 0
+  _relationshipNpcIds:
+  - joren
+  - pell
+  _relationshipDeltas: 0100000001000000
+  _memoryOutcomes:
+  - npcId: joren
+    memoryId: joren.settled_forge_ledger
+  - npcId: pell
+    memoryId: pell.settled_forge_ledger
+  _bondOutcomes:
+  - firstNpcId: joren
+    secondNpcId: pell
+    delta: 2
+  _favorOutcomes: []
+  _advanceMinutes: 25
+  _atomicSocialOutcomes: 1
+  _transitionMoment: {fileID: 0}
+  _nextDialog: {fileID: 0}
+  _choices: []

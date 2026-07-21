@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hollowfen — An Illustrated Storybook</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍄</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --peat:#0f0d0a;
+  --peat-2:#171310;
+  --ink:#262016;
+  --ink-soft:#4a4033;
+  --paper:#e6d9bf;
+  --paper-dim:#d8c9ab;
+  --bone:#d5c6a6;
+  --amber:#c99a4b;
+  --rust:#9a5a33;
+  --moss:#6d7352;
+  --wax:#7d2b1f;
+  --plum:#5d4457;
+  --line:rgba(38,32,22,.35);
+  --line-lt:rgba(230,217,191,.25);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--peat);
+  color:var(--paper);
+  font-family:"EB Garamond",Georgia,serif;
+  font-size:19px;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+img{max-width:100%;display:block}
+::selection{background:var(--wax);color:var(--paper)}
+
+/* ============ fixed chrome ============ */
+#progress{position:fixed;left:0;top:0;bottom:0;width:4px;background:rgba(230,217,191,.08);z-index:60}
+#progress .fill{position:absolute;left:0;top:0;width:100%;height:0%;background:linear-gradient(var(--amber),var(--rust));transition:height .1s linear}
+#chapterLabel{
+  position:fixed;left:22px;bottom:20px;z-index:60;
+  font-family:"IM Fell English SC",serif;font-size:13px;letter-spacing:.22em;
+  color:rgba(230,217,191,.55);writing-mode:vertical-rl;transform:rotate(180deg);
+  pointer-events:none;transition:opacity .5s;
+}
+#tocBtn{
+  position:fixed;top:20px;right:22px;z-index:70;
+  background:rgba(15,13,10,.78);
+  border:1px solid var(--line-lt);color:var(--bone);
+  font-family:"IM Fell English SC",serif;font-size:14px;letter-spacing:.24em;
+  padding:9px 18px 7px;cursor:pointer;transition:.3s;
+}
+#tocBtn:hover{border-color:var(--amber);color:var(--amber)}
+#seal{
+  position:fixed;top:16px;left:22px;z-index:60;width:44px;height:44px;border-radius:50%;
+  background:radial-gradient(circle at 38% 32%, #96392a, #5f1e14 70%);
+  box-shadow:0 2px 10px rgba(0,0,0,.6), inset 0 0 0 3px rgba(0,0,0,.18), inset 2px 3px 6px rgba(255,255,255,.14);
+  display:flex;align-items:center;justify-content:center;
+  font-family:"IM Fell English",serif;font-size:22px;color:rgba(230,217,191,.85);
+  user-select:none;pointer-events:none;
+}
+/* ============ contents overlay ============ */
+#toc{
+  position:fixed;inset:0;z-index:80;background:rgba(10,8,6,.96);
+  overflow-y:auto;opacity:0;pointer-events:none;transition:opacity .4s;
+}
+#toc.open{opacity:1;pointer-events:auto}
+#toc .toc-inner{max-width:1080px;margin:0 auto;padding:90px 32px 80px}
+#toc h2{font-family:"IM Fell English SC",serif;font-weight:400;font-size:clamp(28px,4vw,44px);letter-spacing:.18em;text-align:center;color:var(--bone);margin-bottom:8px}
+#toc .toc-sub{text-align:center;font-style:italic;color:rgba(230,217,191,.5);margin-bottom:50px}
+#toc .toc-acts{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:44px}
+#toc h3{font-family:"IM Fell English SC",serif;font-weight:400;font-size:17px;letter-spacing:.2em;color:var(--amber);border-bottom:1px solid var(--line-lt);padding-bottom:8px;margin-bottom:14px}
+#toc a{display:flex;gap:10px;align-items:baseline;color:rgba(230,217,191,.78);text-decoration:none;padding:5px 0;font-size:17px;transition:.2s}
+#toc a:hover{color:var(--amber);transform:translateX(4px)}
+#toc a .n{font-family:"IM Fell English",serif;font-style:italic;font-size:14px;color:rgba(230,217,191,.4);min-width:30px}
+#tocClose{position:absolute;top:20px;right:26px;background:none;border:none;color:var(--bone);font-size:34px;cursor:pointer;font-family:Georgia,serif}
+#tocClose:hover{color:var(--amber)}
+
+/* ============ cover ============ */
+.cover{position:relative;height:100vh;min-height:640px;overflow:hidden;display:flex;align-items:flex-end}
+.cover .bg{position:absolute;inset:-4%;background:url("img/cover.jpg") center 30%/cover no-repeat;animation:kenburns 46s ease-in-out infinite alternate}
+@keyframes kenburns{from{transform:scale(1) translateY(0)}to{transform:scale(1.07) translateY(-1.4%)}}
+.cover::after{content:"";position:absolute;inset:0;background:
+  linear-gradient(to top, rgba(15,13,10,.92) 0%, rgba(15,13,10,.25) 38%, rgba(15,13,10,.35) 100%);}
+.cover .cover-content{position:relative;z-index:2;width:100%;max-width:1200px;margin:0 auto;padding:0 32px 13vh;text-align:center}
+@media (max-height:600px){.scrollcue{display:none}.cover .cover-content{padding-bottom:8vh}}
+.cover .over-title{font-family:"IM Fell English SC",serif;letter-spacing:.5em;font-size:clamp(11px,1.4vw,15px);color:var(--amber);text-transform:uppercase;margin-bottom:18px;text-indent:.5em}
+.cover h1{
+  font-family:"IM Fell English",serif;font-weight:400;
+  font-size:clamp(64px,12.5vw,168px);line-height:.92;letter-spacing:.045em;
+  color:#ecdfc2;text-shadow:0 4px 40px rgba(0,0,0,.65);
+}
+.cover .subtitle{font-family:"IM Fell English",serif;font-style:italic;font-size:clamp(20px,2.6vw,32px);color:rgba(236,223,194,.85);margin-top:14px}
+.cover .rule{display:flex;align-items:center;gap:16px;justify-content:center;margin:26px auto 0;max-width:520px}
+.cover .rule::before,.cover .rule::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,transparent,rgba(230,217,191,.5))}
+.cover .rule::after{background:linear-gradient(90deg,rgba(230,217,191,.5),transparent)}
+.cover .rule span{font-family:"IM Fell English SC",serif;letter-spacing:.34em;font-size:13px;color:rgba(236,223,194,.7);text-indent:.34em}
+.cover .byline{margin-top:16px;font-size:16px;font-style:italic;color:rgba(236,223,194,.55)}
+.scrollcue{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);z-index:3;color:rgba(236,223,194,.6);font-family:"IM Fell English SC",serif;font-size:12px;letter-spacing:.3em;text-indent:.3em;animation:bob 2.6s ease-in-out infinite}
+.scrollcue::after{content:"";display:block;width:1px;height:34px;background:linear-gradient(rgba(236,223,194,.7),transparent);margin:8px auto 0}
+@keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,7px)}}
+
+/* ============ paper pages ============ */
+.paper{
+  position:relative;background:#ede3cb url("img/paper.webp");background-size:900px;
+  color:var(--ink);
+}
+.paper::before,.paper::after{content:"";position:absolute;left:0;right:0;height:14px;z-index:3;pointer-events:none}
+.paper::before{top:0;background:linear-gradient(rgba(15,13,10,.55),transparent)}
+.paper::after{bottom:0;background:linear-gradient(transparent,rgba(15,13,10,.55))}
+
+/* half title */
+.halftitle{padding:15vh 32px 14vh;text-align:center}
+.halftitle .orn{margin:0 auto 34px}
+.halftitle h2{font-family:"IM Fell English",serif;font-weight:400;font-size:clamp(44px,7vw,86px);letter-spacing:.06em;color:var(--ink)}
+.halftitle .tag{font-family:"IM Fell English SC",serif;letter-spacing:.3em;text-indent:.3em;font-size:15px;color:var(--rust);margin-top:10px}
+.epigraph{max-width:520px;margin:52px auto 0;font-family:"IM Fell English",serif;font-style:italic;font-size:clamp(21px,2.4vw,27px);line-height:1.5;color:var(--ink-soft)}
+.epigraph .src{display:block;margin-top:14px;font-family:"IM Fell English SC",serif;font-style:normal;font-size:13px;letter-spacing:.26em;color:var(--rust)}
+
+/* title spread */
+.titlespread{display:grid;grid-template-columns:1.1fr .9fr;min-height:88vh}
+.titlespread .plateimg{position:relative;overflow:hidden}
+.titlespread .plateimg img{width:100%;height:100%;object-fit:cover;min-height:420px}
+.titlespread .plateimg::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 90px rgba(15,13,10,.55)}
+.titlespread .tp{display:flex;flex-direction:column;justify-content:center;padding:9vh 7% 9vh;text-align:center}
+.titlespread .tp .small{font-family:"IM Fell English SC",serif;letter-spacing:.3em;text-indent:.3em;font-size:13px;color:var(--rust)}
+.titlespread .tp h2{font-family:"IM Fell English",serif;font-weight:400;font-size:clamp(48px,5.6vw,84px);line-height:1;margin:20px 0 6px;color:var(--ink)}
+.titlespread .tp .sub{font-family:"IM Fell English",serif;font-style:italic;font-size:clamp(20px,2vw,27px);color:var(--ink-soft)}
+.titlespread .tp .desc{margin:34px auto 0;max-width:400px;font-size:17px;line-height:1.7;color:var(--ink-soft);font-style:italic}
+.titlespread .tp .press{margin-top:44px;font-family:"IM Fell English SC",serif;font-size:13px;letter-spacing:.28em;text-indent:.28em;color:var(--ink-soft)}
+.titlespread .tp .press b{display:block;font-weight:400;color:var(--rust);margin-top:4px}
+
+/* ornament */
+.orn{width:190px;height:34px;display:block;color:var(--rust)}
+.orn.center{margin:0 auto}
+.orn-light{color:rgba(230,217,191,.55)}
+
+/* ============ map ============ */
+.mapspread{position:relative;background:var(--peat-2);padding:9vh 0 10vh}
+.mapspread .map-head{text-align:center;margin-bottom:6vh;padding:0 32px}
+.mapspread .map-head .k{font-family:"IM Fell English SC",serif;letter-spacing:.34em;text-indent:.34em;font-size:13px;color:var(--amber)}
+.mapspread h2{font-family:"IM Fell English",serif;font-weight:400;font-size:clamp(34px,4.6vw,58px);color:var(--bone);margin-top:12px}
+.mapspread .mapframe{max-width:1280px;margin:0 auto;padding:0 32px}
+.mapspread .mapframe .inner{border:1px solid rgba(213,198,166,.35);outline:6px solid rgba(15,13,10,.6);box-shadow:0 30px 80px rgba(0,0,0,.55)}
+.mapspread .mapframe img{width:100%;aspect-ratio:2400/1962;object-fit:cover;background:#161310}
+.pathcard .pimg img{aspect-ratio:auto}
+.mapspread .maplegend{max-width:760px;margin:5vh auto 0;text-align:center;font-style:italic;color:rgba(230,217,191,.62);padding:0 32px;font-size:17px}
+
+/* ============ act dividers ============ */
+.act{position:relative;min-height:100vh;display:flex;align-items:flex-end;overflow:hidden}
+.act .bg{position:absolute;inset:0}
+.act .bg img{width:100%;height:100%;object-fit:cover;object-position:center 28%}
+.act::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(15,13,10,.94) 4%,rgba(15,13,10,.34) 46%,rgba(15,13,10,.42));}
+.act .act-content{position:relative;z-index:2;width:100%;max-width:1160px;margin:0 auto;padding:0 32px 10vh}
+.act .act-no{font-family:"IM Fell English",serif;font-style:italic;font-size:clamp(20px,2.4vw,28px);color:var(--amber);letter-spacing:.08em}
+.act h2{font-family:"IM Fell English",serif;font-weight:400;font-size:clamp(58px,9vw,124px);line-height:1;color:#ecdfc2;margin:6px 0 18px;text-shadow:0 4px 34px rgba(0,0,0,.6)}
+.act .act-sum{max-width:560px;font-style:italic;font-size:clamp(18px,1.7vw,22px);color:rgba(236,223,194,.82);line-height:1.6}
+.act .act-chapters{margin-top:26px;font-family:"IM Fell English SC",serif;font-size:13px;letter-spacing:.22em;color:rgba(236,223,194,.5);max-width:720px;line-height:2}
+
+/* ============ chapters ============ */
+.chapter{position:relative}
+.plate{position:relative;background:var(--peat)}
+.plate img{width:100%;aspect-ratio:1.898;max-height:94vh;object-fit:cover;object-position:center 34%;background:#161310}
+.plate::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 60px rgba(0,0,0,.38);pointer-events:none}
+.plate figcaption{
+  position:absolute;left:clamp(18px,4vw,58px);bottom:0;transform:translateY(50%);z-index:5;
+  background:#ede3cb url("img/paper.webp");background-size:640px;
+  color:var(--ink);padding:12px 26px 10px;box-shadow:0 14px 30px rgba(0,0,0,.5);
+  display:flex;align-items:baseline;gap:16px;border:1px solid rgba(38,32,22,.25);
+}
+.plate figcaption .pn{font-family:"IM Fell English SC",serif;font-size:12px;letter-spacing:.26em;color:var(--wax);white-space:nowrap}
+.plate figcaption .pt{font-family:"IM Fell English",serif;font-style:italic;font-size:clamp(17px,1.8vw,22px);white-space:nowrap}
+.chapter .page{padding:calc(4vh + 44px) 32px 9vh}
+.chapter .page-inner{max-width:1060px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:clamp(30px,5vw,74px);align-items:start}
+.chapter.alt .page-inner{grid-template-columns:minmax(0,1fr) minmax(0,1.55fr)}
+.chapter.alt .page-inner .prose{order:2}
+.chapter.alt .page-inner .margin{order:1}
+.ch-head{grid-column:1/-1;margin-bottom:6px}
+.ch-head .kicker{font-family:"IM Fell English SC",serif;font-size:13px;letter-spacing:.3em;color:var(--rust)}
+.ch-head h3{font-family:"IM Fell English",serif;font-weight:400;font-size:clamp(32px,4.4vw,52px);line-height:1.05;color:var(--ink);margin-top:8px}
+.ch-head .headrule{width:64px;height:2px;background:var(--wax);margin-top:16px;opacity:.6}
+.prose p{margin-bottom:1.15em;text-align:justify;hyphens:auto}
+.prose p:last-child{margin-bottom:0}
+.prose .drop::first-letter{
+  font-family:"IM Fell English",serif;float:left;font-size:4.6em;line-height:.78;
+  padding:.06em .09em 0 0;color:var(--wax);
+}
+.margin{position:relative;padding-top:6px}
+.dialogue{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:20px 4px;margin-bottom:26px}
+.dialogue p{font-family:"IM Fell English",serif;font-style:italic;font-size:19px;line-height:1.55;margin-bottom:12px;color:var(--ink)}
+.dialogue p:last-child{margin-bottom:0}
+.dialogue .sp{font-family:"IM Fell English SC",serif;font-style:normal;font-size:13px;letter-spacing:.2em;color:var(--rust);margin-right:8px}
+.notecard{
+  position:relative;background:rgba(255,250,235,.5);border:1px solid var(--line);
+  padding:22px 22px 18px;box-shadow:3px 5px 0 rgba(38,32,22,.08);
+}
+.notecard::after{content:"";position:absolute;right:14px;bottom:12px;width:44px;height:44px;border-radius:50%;
+  background:radial-gradient(circle,rgba(74,64,51,.35),rgba(74,64,51,.12) 55%,transparent 72%);filter:blur(1px)}
+.notecard .nk{font-family:"IM Fell English SC",serif;font-size:12px;letter-spacing:.26em;color:var(--wax);display:block;margin-bottom:10px}
+.notecard p{font-family:"IM Fell English",serif;font-style:italic;font-size:18px;line-height:1.6;color:var(--ink-soft)}
+.notecard p+p{margin-top:.6em}
+.shroomrow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:26px}
+.shroom{border:1px solid var(--line);padding:12px 14px 10px;background:rgba(255,250,235,.35)}
+.shroom .sn{font-family:"IM Fell English SC",serif;font-size:14px;letter-spacing:.12em;color:var(--ink)}
+.shroom .sl{font-style:italic;font-size:13.5px;color:var(--ink-soft);display:block;margin-top:2px}
+.companion{margin:7vh auto 0;max-width:1060px}
+.companion img{width:100%;aspect-ratio:1.5;object-fit:cover;background:#161310;border:1px solid rgba(38,32,22,.35);outline:8px solid rgba(15,13,10,.06);box-shadow:0 18px 44px rgba(38,32,22,.28)}
+.companion .cap{margin-top:12px;font-family:"IM Fell English",serif;font-style:italic;font-size:16px;color:var(--ink-soft);text-align:center}
+
+/* act-break journal page */
+.journalbreak{padding:11vh 32px;text-align:center}
+.journalbreak .jb-inner{max-width:640px;margin:0 auto}
+.journalbreak .nk{font-family:"IM Fell English SC",serif;letter-spacing:.3em;font-size:13px;color:var(--wax)}
+.journalbreak p{font-family:"IM Fell English",serif;font-style:italic;font-size:clamp(19px,2vw,23px);line-height:1.7;color:var(--ink-soft);margin-top:22px}
+
+/* ============ four paths ============ */
+.fourpaths{background:var(--peat-2);padding:12vh 32px;position:relative}
+.fourpaths::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(201,154,75,.08),transparent)}
+.fourpaths .fp-inner{position:relative;max-width:1180px;margin:0 auto;text-align:center}
+.fourpaths .k{font-family:"IM Fell English SC",serif;letter-spacing:.34em;text-indent:.34em;font-size:13px;color:var(--amber)}
+.fourpaths h2{font-family:"IM Fell English",serif;font-weight:400;font-size:clamp(38px,5.4vw,72px);color:#ecdfc2;margin:14px 0 20px}
+.fourpaths .fp-lede{max-width:640px;margin:0 auto 7vh;font-style:italic;font-size:clamp(18px,1.8vw,22px);color:rgba(236,223,194,.75);line-height:1.65}
+.pathgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:22px}
+.pathcard{position:relative;display:block;text-decoration:none;border:1px solid var(--line-lt);background:var(--peat);overflow:hidden;transition:transform .35s ease,border-color .35s;cursor:pointer}
+.pathcard:hover{transform:translateY(-8px);border-color:var(--amber)}
+.pathcard .pimg{height:190px;overflow:hidden}
+.pathcard .pimg img{width:100%;height:100%;object-fit:cover;filter:saturate(.85) brightness(.9);transition:transform .8s ease}
+.pathcard:hover .pimg img{transform:scale(1.06)}
+.pathcard .pbody{padding:20px 20px 24px;text-align:left}
+.pathcard .pno{font-family:"IM Fell English",serif;font-style:italic;font-size:15px;color:var(--amber)}
+.pathcard .pname{font-family:"IM Fell English",serif;font-size:24px;color:#ecdfc2;margin:4px 0 8px}
+.pathcard .pline{font-style:italic;font-size:15.5px;color:rgba(236,223,194,.6);line-height:1.5}
+
+/* ending chapters */
+.ending .page{background:var(--peat-2)}
+.ending .plate figcaption{background:#1d1712;color:var(--bone);border-color:rgba(213,198,166,.25)}
+.ending .plate figcaption .pt{color:var(--bone)}
+.ending .page{padding:calc(4vh + 44px) 32px 10vh;color:rgba(236,223,194,.85)}
+.ending .page-inner{max-width:760px;margin:0 auto;display:block}
+.ending .ch-head .kicker{color:var(--amber)}
+.ending .ch-head h3{color:#ecdfc2}
+.ending .prose p{color:rgba(236,223,194,.85)}
+.ending .prose .drop::first-letter{color:var(--amber)}
+.ending .dialogue{border-color:var(--line-lt);margin-top:34px;margin-bottom:0}
+.ending .dialogue p{color:rgba(236,223,194,.85)}
+.ending .dialogue .sp{color:var(--amber)}
+.finis{margin-top:44px;text-align:center;font-family:"IM Fell English SC",serif;font-size:13px;letter-spacing:.3em;text-indent:.3em;color:rgba(236,223,194,.45)}
+
+/* ============ epilogue ============ */
+.epilogue{position:relative;min-height:96vh;display:flex;align-items:flex-end;overflow:hidden}
+.epilogue .bg{position:absolute;inset:0}
+.epilogue .bg img{width:100%;height:100%;object-fit:cover}
+.epilogue::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(15,13,10,.94) 0%,rgba(15,13,10,.55) 40%,rgba(15,13,10,.18) 80%)}
+.epilogue h2,.epilogue p,.epilogue .k{text-shadow:0 2px 18px rgba(0,0,0,.75)}
+.epilogue .ep-content{position:relative;z-index:2;width:100%;max-width:860px;margin:0 auto;padding:0 32px 9vh;text-align:center}
+.epilogue .k{font-family:"IM Fell English SC",serif;letter-spacing:.32em;text-indent:.32em;font-size:13px;color:var(--amber)}
+.epilogue h2{font-family:"IM Fell English",serif;font-weight:400;font-size:clamp(36px,5vw,64px);color:#ecdfc2;margin:12px 0 20px}
+.epilogue p{font-style:italic;font-size:clamp(18px,1.9vw,22px);color:rgba(236,223,194,.85);line-height:1.7}
+.epilogue .ledger{margin-top:26px;font-family:"IM Fell English",serif;font-style:italic;color:var(--amber);font-size:clamp(19px,2vw,24px)}
+
+/* ============ back matter ============ */
+.backmatter{padding:10vh 32px}
+.backmatter .bm-inner{max-width:1080px;margin:0 auto}
+.bm-head{text-align:center;margin-bottom:7vh}
+.bm-head .k{font-family:"IM Fell English SC",serif;letter-spacing:.3em;text-indent:.3em;font-size:13px;color:var(--rust)}
+.bm-head h2{font-family:"IM Fell English",serif;font-weight:400;font-size:clamp(34px,4.6vw,56px);color:var(--ink);margin-top:10px}
+.castgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(400px,100%),1fr));gap:30px}
+.castcard{border:1px solid var(--line);background:rgba(255,250,235,.45);box-shadow:0 12px 28px rgba(38,32,22,.15)}
+.castcard .ci{aspect-ratio:1.5;overflow:hidden}
+.castcard .ci img{width:100%;height:100%;object-fit:cover;display:block}
+.castcard .cc{padding:14px 18px 16px;border-top:1px solid var(--line)}
+.castcard .cc b{font-family:"IM Fell English",serif;font-weight:400;font-size:21px;color:var(--ink)}
+.castcard .cc span{display:block;font-style:italic;font-size:15px;color:var(--ink-soft);margin-top:3px;line-height:1.5}
+.castcard.ghost .ci{display:flex;align-items:center;justify-content:center;background:rgba(38,32,22,.05)}
+.castcard.ghost .ci .g{font-family:"IM Fell English",serif;font-style:italic;font-size:18px;color:var(--ink-soft);text-align:center;padding:0 34px;line-height:1.6}
+.cast-note{max-width:640px;margin:-4vh auto 6vh;text-align:center;font-style:italic;color:var(--ink-soft)}
+.compendium{background:var(--peat-2)}
+.compendium .bm-head h2{color:#ecdfc2}
+.compendium .bm-head .k{color:var(--amber)}
+.compendium .comp-note{max-width:600px;margin:-4vh auto 6vh;text-align:center;font-style:italic;color:rgba(236,223,194,.6)}
+.comp-plate{max-width:920px;margin:0 auto 3vh;border:1px solid var(--line-lt);outline:6px solid rgba(0,0,0,.35)}
+.comp-plate img{width:100%;display:block;aspect-ratio:1.5;object-fit:cover;background:#161310}
+.comp-cap{max-width:720px;text-align:center;font-style:italic;color:rgba(236,223,194,.55);font-size:15.5px;margin:0 auto 7vh}
+.compgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.fungus{border:1px solid var(--line-lt);background:rgba(230,217,191,.03);transition:border-color .3s;display:flex;flex-direction:column}
+.fungus:hover{border-color:rgba(201,154,75,.6)}
+.fungus .fimg{aspect-ratio:1.3;overflow:hidden;border-bottom:1px solid var(--line-lt)}
+.fungus .fimg img{width:100%;height:100%;object-fit:cover;display:block;background:#161310}
+.fungus .fbody{padding:15px 18px 15px;display:flex;flex-direction:column;flex:1}
+.fungus .fbody .badge{margin-top:auto;align-self:flex-start}
+.fungus .f-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.fungus .fname{font-family:"IM Fell English",serif;font-size:20px;color:#ecdfc2}
+.fungus .fact{font-family:"IM Fell English",serif;font-style:italic;font-size:13px;color:rgba(236,223,194,.4);white-space:nowrap}
+.fungus .flatin{font-style:italic;font-size:14px;color:rgba(236,223,194,.5);margin:2px 0 10px}
+.fungus .fhab{font-size:14.5px;color:rgba(236,223,194,.65);line-height:1.5;margin-bottom:12px}
+.badge{display:inline-block;font-family:"IM Fell English SC",serif;font-size:11px;letter-spacing:.18em;padding:3px 10px 2px;border:1px solid}
+.b-ed{color:#9aa878;border-color:rgba(154,168,120,.5)}
+.b-med{color:var(--amber);border-color:rgba(201,154,75,.5)}
+.b-psy{color:#b08cab;border-color:rgba(176,140,171,.5)}
+.b-dead{color:#c96a55;border-color:rgba(201,106,85,.55)}
+.comp-rule{max-width:520px;margin:7vh auto 0;text-align:center;font-family:"IM Fell English",serif;font-style:italic;font-size:clamp(19px,2vw,23px);color:var(--amber)}
+.comp-rule .src{display:block;margin-top:10px;font-family:"IM Fell English SC",serif;font-style:normal;font-size:12px;letter-spacing:.26em;color:rgba(236,223,194,.45)}
+
+/* colophon */
+.colophon{background:var(--peat);padding:12vh 32px 14vh;text-align:center}
+.colophon .c-inner{max-width:560px;margin:0 auto}
+.colophon .orn{margin:0 auto 30px}
+.colophon p{font-size:16px;font-style:italic;color:rgba(236,223,194,.55);line-height:1.8;margin-bottom:1em}
+.colophon .fin{font-family:"IM Fell English SC",serif;font-size:14px;letter-spacing:.4em;text-indent:.4em;color:var(--amber);margin-top:34px}
+
+/* ============ reveal animations ============ */
+.rv{opacity:0;transform:translateY(26px);transition:opacity 1s ease,transform 1s ease}
+.rv.in{opacity:1;transform:none}
+.rv-d1{transition-delay:.12s}.rv-d2{transition-delay:.24s}.rv-d3{transition-delay:.36s}
+@media (prefers-reduced-motion:reduce){
+  .rv{opacity:1;transform:none;transition:none}
+  .cover .bg{animation:none}
+}
+
+/* ============ responsive ============ */
+@media (max-width:880px){
+  body{font-size:17.5px}
+  .titlespread{grid-template-columns:1fr}
+  .titlespread .plateimg img{max-height:52vh}
+  .chapter .page-inner,.chapter.alt .page-inner{grid-template-columns:1fr}
+  .chapter.alt .page-inner .prose{order:1}
+  .chapter.alt .page-inner .margin{order:2}
+  .plate figcaption{left:16px;right:16px;justify-content:center;flex-wrap:wrap;gap:6px 14px;text-align:center}
+  #chapterLabel{display:none}
+  .shroomrow{grid-template-columns:1fr}
+}
+@media print{
+  #tocBtn,#seal,#progress,#chapterLabel,.scrollcue,#toc{display:none!important}
+  .chapter,.act,.cover,.ending,.mapspread,.titlespread,.fourpaths,.epilogue,.halftitle,.journalbreak,.backmatter,.compendium{page-break-after:always}
+  .castcard,.fungus,.notecard,.dialogue,.companion,.shroom{break-inside:avoid}
+  .rv{opacity:1!important;transform:none!important}
+  .halftitle{padding:120px 32px}
+  .journalbreak{padding:90px 32px}
+  .chapter .page{padding:60px 32px 70px}
+  .backmatter{padding:70px 32px}
+  .mapspread{padding:70px 0 80px}
+  .fourpaths{padding:80px 32px}
+  .paper::before,.paper::after{display:none}
+  body{background:#fff}
+}
+</style>
+</head>
+<body>
+
+<div id="progress"><div class="fill"></div></div>
+<div id="seal">H</div>
+<div id="chapterLabel"></div>
+<button id="tocBtn" aria-label="Open contents">Contents</button>
+
+<!-- ==================== CONTENTS OVERLAY ==================== -->
+<nav id="toc" aria-label="Table of contents">
+  <button id="tocClose" aria-label="Close contents">×</button>
+  <div class="toc-inner">
+    <h2>Contents</h2>
+    <p class="toc-sub">Being the tale of Hollowfen in four acts, four endings, and an appendix of useful knowledge</p>
+    <div class="toc-acts">
+      <div>
+        <h3>Front Matter</h3>
+        <a href="#halftitle"><span class="n">·</span>Half Title &amp; Epigraph</a>
+        <a href="#titlepage"><span class="n">·</span>Frontispiece</a>
+        <a href="#map"><span class="n">·</span>A Map of the Hollow</a>
+      </div>
+      <div>
+        <h3>Act I — Arrival</h3>
+        <a href="#ch1"><span class="n">I</span>Homecoming</a>
+        <a href="#ch2"><span class="n">II</span>The Crooked Pintle</a>
+        <a href="#ch3"><span class="n">III</span>Your Father's Mill</a>
+        <a href="#ch4"><span class="n">IV</span>The Hidden Journal</a>
+        <a href="#ch5"><span class="n">V</span>The First Forage</a>
+        <a href="#ch6"><span class="n">VI</span>Marra's Kitchen</a>
+        <a href="#ch7"><span class="n">VII</span>A Knock at the Door</a>
+      </div>
+      <div>
+        <h3>Act II — Building</h3>
+        <a href="#ch8"><span class="n">VIII</span>The Vine-Tender's Lessons</a>
+        <a href="#ch9"><span class="n">IX</span>Joren's Forge</a>
+        <a href="#ch10"><span class="n">X</span>Twelve Silver by Yule</a>
+        <a href="#ch11"><span class="n">XI</span>The Trader's Ledger</a>
+        <a href="#ch12"><span class="n">XII</span>Brightspore at the Bedside</a>
+        <a href="#ch13"><span class="n">XIII</span>A Stranger at the Inn</a>
+        <a href="#ch14"><span class="n">XIV</span>Two Boards Come Down</a>
+        <a href="#ch15"><span class="n">XV</span>Father Calden's Doubt</a>
+      </div>
+      <div>
+        <h3>Act III — Discovery</h3>
+        <a href="#ch16"><span class="n">XVI</span>Hollin's Inheritance</a>
+        <a href="#ch17"><span class="n">XVII</span>The Witch's Cottage</a>
+        <a href="#ch18"><span class="n">XVIII</span>The Wend's True Course</a>
+        <a href="#ch19"><span class="n">XIX</span>The Chapel Garden Opens</a>
+        <a href="#ch20"><span class="n">XX</span>Edda Asks</a>
+        <a href="#ch21"><span class="n">XXI</span>Theo's Capital</a>
+        <a href="#ch22"><span class="n">XXII</span>The First Festival in Three Years</a>
+        <a href="#ch23"><span class="n">XXIII</span>A Sealed Letter</a>
+      </div>
+      <div>
+        <h3>Act IV — The Choice</h3>
+        <a href="#ch24"><span class="n">XXIV</span>The Lord's Offer</a>
+        <a href="#ch25"><span class="n">XXV</span>The Source of the Wend</a>
+        <a href="#ch26"><span class="n">XXVI</span>The Meeting</a>
+        <a href="#fourpaths"><span class="n">·</span>Four Paths Out of the Hollow</a>
+        <a href="#endA"><span class="n">1</span>The Free Hollow</a>
+        <a href="#endB"><span class="n">2</span>The Lordly Patronage</a>
+        <a href="#endC"><span class="n">3</span>The Capital</a>
+        <a href="#endD"><span class="n">4</span>The Witch's Path</a>
+      </div>
+      <div>
+        <h3>Back Matter</h3>
+        <a href="#epilogue"><span class="n">·</span>The Hollow, After</a>
+        <a href="#personae"><span class="n">·</span>Dramatis Personae</a>
+        <a href="#compendium"><span class="n">·</span>Tobin's Compendium</a>
+        <a href="#colophon"><span class="n">·</span>Colophon</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ==================== COVER ==================== -->
+<header class="cover" id="cover" data-label="Hollowfen">
+  <div class="bg"></div>
+  <div class="cover-content">
+    <p class="over-title">An Illustrated Tale in Four Acts</p>
+    <h1>HOLLOWFEN</h1>
+    <p class="subtitle">The Failing Village</p>
+    <div class="rule"><span>Being the story of Wren Tobin</span></div>
+    <p class="byline">who came home to a village the river had forgotten,<br>and found what her family had hidden in the woods</p>
+  </div>
+  <div class="scrollcue">Turn the page</div>
+</header>
+
+<!-- ==================== HALF TITLE ==================== -->
+<section class="paper halftitle" id="halftitle" data-label="Hollowfen">
+  <svg class="orn center rv" viewBox="0 0 190 34" fill="none" aria-hidden="true"><path d="M0 17h70" stroke="currentColor" stroke-width="1"/><path d="M120 17h70" stroke="currentColor" stroke-width="1"/><path d="M95 6c-7 0-13 4-13 9 0 1 .6 2 2 2h22c1.4 0 2-1 2-2 0-5-6-9-13-9Z" stroke="currentColor" stroke-width="1.4"/><path d="M95 17v9m-3 2c0-1.5 1-2 3-2s3 .5 3 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+  <h2 class="rv rv-d1">Hollowfen</h2>
+  <p class="tag rv rv-d2">The Failing Village</p>
+  <div class="epigraph rv rv-d3">
+    “Never eat what you cannot name twice.”
+    <span class="src">— Tobin's journal, underlined until the pencil tore the page</span>
+  </div>
+</section>
+
+<!-- ==================== TITLE SPREAD / FRONTISPIECE ==================== -->
+<section class="paper titlespread" id="titlepage" data-label="Frontispiece">
+  <div class="plateimg rv"><img src="img/frontispiece.jpg" alt="Tobin's journal lying open on the mill table beside an iron key, a foraging knife and a basket of mushrooms, the dead millwheel visible through the rain-streaked window." loading="lazy"></div>
+  <div class="tp">
+    <p class="small rv">The Crooked Pintle Press · Hollowfen</p>
+    <h2 class="rv rv-d1">Hollowfen</h2>
+    <p class="sub rv rv-d1">or, The Failing Village</p>
+    <p class="desc rv rv-d2">Told from the journals of the Tobin family, the ledgers of Elder Pell, and the seedbook of Sable the hedge-witch; set down with seventy-odd pictures made in the village style.</p>
+    <p class="press rv rv-d3">In four acts, with four endings<b>for no true story ends only once</b></p>
+  </div>
+</section>
+
+<!-- ==================== MAP ==================== -->
+<section class="mapspread" id="map" data-label="A Map of the Hollow">
+  <div class="map-head rv">
+    <p class="k">Drawn from Elder Pell's Survey</p>
+    <h2>A Map of the Hollow &amp; the Old Wood</h2>
+  </div>
+  <div class="mapframe rv rv-d1"><div class="inner"><img src="img/map.jpg" alt="A hand-drawn map of Hollowfen: the walled village with its chapel, square, mill and inn; Joren's forge on the south lane; Lord Aldric's manor to the south-west; the Witch's Cottage and First Forage Grove at the edge of the vast Old Wood." loading="lazy"></div></div>
+  <p class="maplegend rv rv-d2">The village keeps to its walls; the Old Wood keeps to its shadows. Between them run the lanes, the dry bed of the river Wend — and every path this story walks.</p>
+</section>
+
+<!-- ==================== ACT I ==================== -->
+<section class="act" id="act1" data-label="Act I — Arrival">
+  <div class="bg"><img src="img/act1.jpg" alt="Wren kneels on the forest floor cutting golden mushrooms while young Edda watches from the misty path behind her." loading="lazy"></div>
+  <div class="act-content">
+    <p class="act-no rv">Act the First</p>
+    <h2 class="rv rv-d1">Arrival</h2>
+    <p class="act-sum rv rv-d2">In which Wren Tobin walks home to a village that has nearly given up, unlocks her dead father's mill, and finds — wrapped in oilcloth, tied in a hesitating knot — one small useful thing that changes the air in every room it enters.</p>
+    <p class="act-chapters rv rv-d3">Homecoming · The Crooked Pintle · Your Father's Mill · The Hidden Journal · The First Forage · Marra's Kitchen · A Knock at the Door</p>
+  </div>
+</section>
+
+<!-- Chapter I -->
+<article class="chapter" id="ch1" data-label="I · Homecoming">
+  <figure class="plate rv"><img src="img/homecoming.jpg" alt="At dusk, Wren walks the east road into Hollowfen past boarded cottages, her pack on her shoulder, the village lanterns few and far between." loading="lazy">
+    <figcaption><span class="pn">Plate I</span><span class="pt">Homecoming</span></figcaption>
+  </figure>
+  <div class="page paper"><div class="page-inner">
+    <header class="ch-head rv"><span class="kicker">Act I · Chapter the First</span><h3>Homecoming</h3><div class="headrule"></div></header>
+    <div class="prose rv rv-d1">
+      <p class="drop">It had been three years since Wren Tobin walked the east road into Hollowfen. From the ridge the valley looked as it always had — low roofs tucked into the hollow, the dark shoulder of the Old Wood behind them, the pale line of the Wend cutting through the fields. Then the road dipped, and the old picture came apart. The river was wrong. It ran too far south, silvering fields where wheat should have stood. The millstream beside the lane was a bed of stones and pale grass. Two cottages near the well wore boards over their windows; a third had no door at all, only a grey blanket moving in the evening wind.</p>
+      <p>The village did not greet her. No children ran the lane, no cart rattled down from the Slatemoor road. The air smelled of damp thatch, cold ash, and the first green rot of autumn. At the inn, a man swept the same three leaves across the same patch of threshold without improving either one. Old Bram had once laughed hard enough to tremble the mugs on the bar. Now he leaned on the broom as if it had become a third leg. He looked up when her boots struck the packed earth of the square — and for half a breath he did not know her. Then his face changed. That was the first time anyone spoke her father's name without speaking it.</p>
+    </div>
+    <aside class="margin rv rv-d2">
+      <blockquote class="dialogue">
+        <p><span class="sp">Bram</span>“Wren? … Lord help me. You've got your father's height.”</p>
+        <p><span class="sp">Wren</span>“I came as soon as I could.”</p>
+        <p><span class="sp">Bram</span>“Aye. I know. I've got the key inside.”</p>
+      </blockquote>
+      <div class="notecard">
+        <span class="nk">From Pell's ledger</span>
+        <p>This autumn the Hollow counts nine hearths gone cold, the mill three winters still, and one arrival: Tobin's daughter, back from Veyrwick. No one comes back from Veyrwick.</p>
+      </div>
+    </aside>
+  </div></div>
+</article>
+
+<!-- Chapter II -->
+<article class="chapter alt" id="ch2" data-label="II · The Crooked Pintle">
+  <figure class="plate rv"><img src="img/crooked-pintle.jpg" alt="Inside the dim common room of the inn, Bram sets a black iron key on the scarred bar between himself and Wren." loading="lazy">
+    <figcaption><span class="pn">Plate II</span><span class="pt">The Crooked Pintle</span></figcaption>
+  </figure>
+  <div class="page paper"><div class="page-inner">
+    <header class="ch-head rv"><span class="kicker">Act I · Chapter the Second</span><h3>The Crooked Pintle</h3><div class="headrule"></div></header>
+    <div class="prose rv rv-d1">
+      <p class="drop">The common room was smaller than Wren remembered. That was impossible, of course — the beams had not lowered, the hearth had not crept inward — but half the tables were stacked in the corner, one window was boarded from the inside, and the copper pots above the kitchen door shone only where hands still touched them. Bram went behind the bar, bent low, and came up with a grey rag folded around something small. He did not hand it over at once. He held it in both palms, the way a man holds the last of anything.</p>
+      <p>The key inside was iron, black with age, the bow worn smooth where generations of Tobins had turned it in their fingers. <em>Your da left this with me when he took poorly.</em> The wheel hadn't turned, Bram said, since the Wend went and changed its mind about where it was going. Three winters ago. Father had written that the lower fields flooded. <em>He would have written it tidy.</em> Then Bram said the thing everyone would say, because there was no useful thing to say instead: I'm sorry, Wren. She closed her fingers around the key. So am I.</p>
+    </div>
+    <aside class="margin rv rv-d2">
+      <blockquote class="dialogue">
+        <p><span class="sp">Wren</span>“He knew?”</p>
+        <p><span class="sp">Bram</span>“He knew enough.”</p>
+        <p><span class="sp">Bram</span>“He was a good man, your da. Quiet. Fixed my hinge in spring and never sent a bill.”</p>
+        <p><span class="sp">Wren</span>“That sounds like him.”</p>
+      </blockquote>
+    </aside>
+  </div></div>
+</article>
+
+<!-- Chapter III -->
+<article class="chapter" id="ch3" data-label="III · Your Father's Mill">
+  <figure class="plate rv"><img src="img/fathers-mill.jpg" alt="Wren stands alone in the cold mill kitchen among her father's things: his coat on its peg, ledgers tied with cord, the dead millwheel through the window." loading="lazy">
+    <figcaption><span class="pn">Plate III</span><span class="pt">Your Father's Mill</span></figcaption>
+  </figure>
+  <div class="page paper"><div class="page-inner">
+    <header class="ch-head rv"><span class="kicker">Act I · Chapter the Third</span><h3>Your Father's Mill</h3><div class="headrule"></div></header>
+    <div class="prose rv rv-d1">
+      <p class="drop">The mill key stuck on the first turn. Wren had to lift the door by the latch, shoulder it gently, and turn again before the lock gave — a sound that went through her like a cough in an empty church. Inside, the air was cold and dry with old flour. The mill had not been abandoned in a hurry, and that made it worse. Tobin's boots stood under the bench, toes aligned. His coat hung on the peg nearest the hearth. The kettle sat black-bellied on the cold stones, tilted, as if someone had meant to fill it and lost the thought halfway across the room.</p>
+      <p>She moved through the house as carefully as if her father were asleep upstairs. Ledgers tied with cord. A spoon left in a bowl. Her mother's blue cup on the mantel, cracked and mended with yellow glue. Outside the back window the wheel hung over the dead streambed. When she was small it had filled the house with sound, a low wooden turning that made sleep easy. Now there was only wind in the dry grass below it. She took off her cloak, folded it once, then unfolded it — because there was no reason to be tidy for a dead man, and every reason. “All right, Da,” she said to the room. The room said nothing back.</p>
+    </div>
+    <aside class="margin rv rv-d2">
+      <blockquote class="dialogue">
+        <p><span class="sp">Wren</span>“It smells the same.”</p>
+        <p><span class="sp">Wren</span>“You never hung the coat there unless you meant to go out again.”</p>
+        <p><span class="sp">Wren</span>“Still tidy. Of course you were.”</p>
+      </blockquote>
+      <div class="notecard">
+        <span class="nk">Found in the kitchen</span>
+        <p>A stack of accounts, tied and dated, his hand neat to the end. Three onion skins curled by the cutting board, paper-thin and brown as old letters. And one drawer, low in the chest, sitting crooked in its frame — <em>that was never loose before.</em></p>
+      </div>
+    </aside>
+  </div></div>
+</article>
+
+<!-- Chapter IV -->
+<article class="chapter alt" id="ch4" data-label="IV · The Hidden Journal">
+  <figure class="plate rv"><img src="img/hidden-journal.jpg" alt="By candlelight, Wren sits on the mill floor with an oilcloth bundle opened across her knees, a worn brown leather journal in her hands." loading="lazy">
+    <figcaption><span class="pn">Plate IV</span><span class="pt">The Hidden Journal</span></figcaption>
+  </figure>
+  <div class="page paper"><div class="page-inner">
+    <header class="ch-head rv"><span class="kicker">Act I · Chapter the Fourth</span><h3>The Hidden Journal</h3><div class="headrule"></div></header>
+    <div class="prose rv rv-d1">
+      <p class="drop">The bottom drawer opened only halfway. Something inside scraped against the wood — not a tool, not crockery. Paper. Wren reached into the gap and found oilcloth, tied with butcher's string, the knot dark where fingers had worried it over and over. She knew her father's knots. This one had been tied in hesitation. She sat on the stone floor and untied it.</p>
+      <p>The journal was brown leather, soft at the corners, marked by rain and thumb oil. The first pages were recipes in her mother's hand, and for a moment Wren stopped breathing. Then Tobin's writing began. Field Cap. Wood Ear. Pinecrest. Each entry with a careful pencil sketch: cap shape, gills, stem, where found, what not to trust. One warning underlined so hard the pencil had torn the paper. Further in came names she half-remembered from childhood songs — Goldfoot, Lacewig, Bonepale — some pages full, some holding only a name, some blank except for pressed spores that had stained the paper like old smoke. And at the back, under a folded mill receipt, a note in a different hand. Not different letters. A different man.</p>
+    </div>
+    <aside class="margin rv rv-d2">
+      <div class="notecard">
+        <span class="nk">Tobin's note, at the back</span>
+        <p>If you're reading this, I never told you.</p>
+        <p>The forest was always our family's secret. Your grandmother knew. Your mother knew. I was waiting until you were old enough.</p>
+        <p>I am sorry I waited too long. — Da</p>
+      </div>
+      <blockquote class="dialogue" style="margin-top:26px">
+        <p><span class="sp">Wren</span>“Da.”</p>
+      </blockquote>
+    </aside>
+  </div></div>
+  <div class="page paper" style="padding-top:0">
+    <div class="companion rv">
+      <img src="img/cast/journal-object.jpg" alt="The journal itself: worn brown leather bound with a thong, shown closed, on its spine, and open to pencil studies of mushrooms." loading="lazy">
+      <p class="cap">The journal itself — leather gone soft at the corners, thong-tied, her mother's recipes in the front and her father's careful pencil behind.</p>
+    </div>
+  </div>
+</article>
+
+<!-- Chapter V -->
+<article class="chapter" id="ch5" data-label="V · The First Forage">
+  <figure class="plate rv"><img src="img/first-forage.jpg" alt="Morning light through birch trees as Wren crouches over a mossy log with her knife, the journal open on her knee, a careful basket beside her." loading="lazy">
+    <figcaption><span class="pn">Plate V</span><span class="pt">The First Forage</span></figcaption>
+  </figure>
+  <div class="page paper"><div class="page-inner">
+    <header class="ch-head rv"><span class="kicker">Act I · Chapter the Fifth</span><h3>The First Forage</h3><div class="headrule"></div></header>
+    <div class="prose rv rv-d1">
+      <p class="drop">The Edge Woods began where the last garden wall gave up. Villagers had always spoken of the trees as if they were a mouth: stay out of the Old Wood, don't follow lights, don't eat what grows where no one planted. As a child Wren had believed them, because children believe the shape fear takes when adults hand it down. Now she stepped under birch shade and found damp leaves, pine needles, and the soft ticking of last night's rain.</p>
+      <p>The first Field Caps grew in a ring through short grass, so ordinary she nearly missed them. The Wood Ear was easier once she stopped looking for a cap — it clung to a fallen branch like a folded scrap of brown leather. Pinecrest took longer: three brown caps under pine duff, two wrong, one right. She turned it over and found pores instead of gills, and only then did she cut it. The gold-stemmed ones were not in the first pages. They grew where the moss lay deep, beside brittle little liars two handspans away that seemed eager to be mistaken. <em>Name it twice</em>, her father had written. Goldfoot by the hollow stem; Goldfoot by the forked ridges. She cut only three. When she stood, a girl was watching from the path — thin from a hard year, an empty basket on one arm, deciding whether to run and deciding not to give anyone the satisfaction.</p>
+      <div class="shroomrow">
+        <div class="shroom"><span class="sn">Field Cap</span><span class="sl">by the ring, and by the stem</span></div>
+        <div class="shroom"><span class="sn">Wood Ear</span><span class="sl">no cap at all — trust the touch</span></div>
+        <div class="shroom"><span class="sn">Pinecrest</span><span class="sl">turn it over; pores, not gills</span></div>
+        <div class="shroom"><span class="sn">Goldfoot</span><span class="sl">hollow stem, forked ridges — cut three, leave the rest</span></div>
+      </div>
+    </div>
+    <aside class="margin rv rv-d2">
+      <blockquote class="dialogue">
+        <p><span class="sp">Edda</span>“You're not afraid of in there.”</p>
+        <p><span class="sp">Wren</span>“I might be. I'm being polite about it.”</p>
+        <p><span class="sp">Edda</span>“Most folk are.”</p>
+        <p><span class="sp">Wren</span>“Most folk don't have my father's book.”</p>
+        <p><span class="sp">Edda</span>“Edda.”</p>
+        <p><span class="sp">Wren</span>“Wren.”</p>
+        <p><span class="sp">Edda</span>“I know.”</p>
+      </blockquote>
+    </aside>
+  </div></div>
+</article>
+
+<!-- Chapter VI -->
+<article class="chapter alt" id="ch6" data-label="VI · Marra's Kitchen">
+  <figure class="plate rv"><img src="img/marra-kitchen.jpg" alt="In the inn kitchen, Marra lifts a small gold-stemmed mushroom from Wren's basket while Bram watches from the bar, firelight on the copper pots." loading="lazy">
+    <figcaption><span class="pn">Plate VI</span><span class="pt">Marra's Kitchen</span></figcaption>
+  </figure>
+  <div class="page paper"><div class="page-inner">
+    <header class="ch-head rv"><span class="kicker">Act I · Chapter the Sixth</span><h3>Marra's Kitchen</h3><div class="headrule"></div></header>
+    <div class="prose rv rv-d1">
+      <p class="drop">Bram was wiping the same mug when Wren came through the inn door — it was possible he had been wiping it since yesterday. He opened his mouth to ask the ordinary question, and saw the basket. For a moment the common room held still. Field Caps, he said. Wood Ear. His voice changed on the third: Pinecrest. Then he saw the three small gold-stemmed mushrooms tucked in the corner of the cloth, and called for Marra in a tone that brought her out of the kitchen with flour on one forearm and a knife-stopped silence behind her.</p>
+      <p>She looked at Bram first, annoyed; then at Wren; then at the basket. Her face did not soften — that would have been too easy. She lifted one of the gold-stemmed mushrooms, turned it, smelled it, and set it down with more care than she had picked it up. <em>Goldfoots.</em> In this kitchen, Bram said, after twenty years. An hour later the inn smelled like Wren's mother — not exactly, nothing was exact after enough years, but the steam off Marra's pot carried pepper, onion, woodsmoke, and the dark silk smell of mushrooms opening in broth. Two men came in from the lane and stayed. Then a woman. Then Elder Pell, who claimed he had only come about a hinge and left with a bowl in both hands. Bram counted three silver and two copper into Wren's palm. The coins were not heavy. They felt heavy.</p>
+    </div>
+    <aside class="margin rv rv-d2">
+      <blockquote class="dialogue">
+        <p><span class="sp">Marra</span>“You picked them yourself?”</p>
+        <p><span class="sp">Wren</span>“I checked them against Father's journal. Mostly.”</p>
+        <p><span class="sp">Marra</span>“Cold water. Not hot. Hot bruises them and makes liars of the texture. I'll tell you twice and not three times.”</p>
+        <p><span class="sp">Bram</span>“First proper bowl we've sold in a month.”</p>
+        <p><span class="sp">Marra</span>“Don't look grateful. Bring better ones next time.”</p>
+      </blockquote>
+    </aside>
+  </div></div>
+</article>
+
+<!-- Chapter VII -->
+<article class="chapter" id="ch7" data-label="VII · A Knock at the Door">
+  <figure class="plate rv"><img src="img/almy-doorway.jpg" alt="Before sunrise, Sister Almy stands at the mill threshold in a grey kerchief, a satchel over her shoulder and dried stems tied in red thread in her hand." loading="lazy">
+    <figcaption><span class="pn">Plate VII</span><span class="pt">A Knock at the Door</span></figcaption>
+  </figure>
+  <div class="page paper"><div class="page-inner">
+    <header class="ch-head rv"><span class="kicker">Act I · Chapter the Seventh</span><h3>A Knock at the Door</h3><div class="headrule"></div></header>
+    <div class="prose rv rv-d1">
+      <p class="drop">Someone knocked on the mill door before sunrise. Not Bram — Bram would have called through the door and apologized for waking her before he finished doing it. Not Marra, who would have knocked once and entered on principle. Sister Almy stood on the threshold with a leather satchel over one shoulder and a bundle of dried stems tied in red thread, smaller than Wren remembered and more difficult to look away from. Soil marked the edge of one sleeve.</p>
+      <p>“Good morning,” Wren said. “No,” said Almy. She looked past her into the kitchen, to where Tobin's journal lay closed beside the cold teacup. You picked goldfoots yesterday, she said. The true ones — and left the false ones standing beside them. Wren said she had used her father's journal, and the old woman's mouth pressed thin. <em>Your father couldn't have taught you that. He didn't know it.</em> The words landed harder than Wren expected. Almy stepped inside without asking, then stopped just far enough over the threshold to make it clear she knew she had been rude and had chosen it anyway. Outside, morning gathered slowly over the dry millstream.</p>
+    </div>
+    <aside class="margin rv rv-d2">
+      <blockquote class="dialogue">
+        <p><span class="sp">Almy</span>“Your grandmother taught me three things. She forbade me from teaching anyone else.”</p>
+        <p><span class="sp">Wren</span>“I don't remember my grandmother.”</p>
+        <p><span class="sp">Almy</span>“No. But your hands do.”</p>
+        <p><span class="sp">Almy</span>“Sit down, child. We need to talk about your grandmother.”</p>
+      </blockquote>
+    </aside>
+  </div></div>
+</article>
+
+<!-- Act I journal break -->
+<section class="paper journalbreak" data-label="Wren's Journal">
+  <div class="jb-inner rv">
+    <span class="nk">Wren's journal · Act I closes</span>
+    <p>“Bram gave me the key. Father's house is colder than I remembered. His journal was hidden in the bottom drawer, wrapped like a thing that could still be protected. I found Field Caps, Wood Ear, Pinecrest, and three Goldfoots I was not entirely brave enough to name until Marra did. This morning Sister Almy came to the door and said my grandmother's name like a key turning. I do not know what opens next.”</p>
+  </div>
+</section>
+
+<!-- ==================== ACT II ==================== -->
+<section class="act" id="act2" data-label="Act II — Building">
+  <div class="bg"><img src="img/act2.jpg" alt="Wren takes notes in her journal while Sister Almy demonstrates a mushroom's gills over a wattle-edged growing bed in her garden." loading="lazy"></div>
+  <div class="act-content">
+    <p class="act-no rv">Act the Second</p>
+    <h2 class="rv rv-d1">Building</h2>
+    <p class="act-sum rv rv-d2">In which one spark of usefulness becomes a livelihood; in which Wren learns to bargain with decay, buys back a family's roof, and becomes a person other people plan around — while the wider world begins, quietly, to take notice.</p>
+    <p class="act-chapters rv rv-d3">The Vine-Tender's Lessons · Joren's Forge · Twelve Silver by Yule · The Trader's Ledger · Brightspore at the Bedside · A Stranger at the Inn · Two Boards Come Down · Father Calden's Doubt</p>
+  </div>
+</section>
+
+<!-- Chapter VIII -->
+<article class="chapter" id="ch8" data-label="VIII · The Vine-Tender's Lessons">
+  <figure class="plate rv"><img src="img/almy-lessons.jpg" alt="In an old working garden behind a low stone wall, Almy kneels beside Wren and turns a mushroom to show its gills while Wren records the lesson." loading="lazy">
+    <figcaption><span class="pn">Plate VIII</span><span class="pt">The Vine-Tender's Lessons</span></figcaption>
+  </figure>
+  <div class="page paper"><div class="page-inner">
+    <header class="ch-head rv"><span class="kicker">Act II · Chapter the Eighth</span><h3>The Vine-Tender's Lessons</h3><div class="headrule"></div></header>
+    <div class="prose rv rv-d1">
+      <p class="drop">Almy's garden sat behind the chapel wall where the morning sun reached late and left early. Wren had passed the gate a hundred times as a child and never seen what grew behind it: raised beds in orderly rows — sage, comfrey, mugwort, three things she could not name — and a low wattle frame stacked with damp logs. Almy did not explain the garden as a tour. She pointed, named, corrected, and expected Wren to keep up.</p>
+      <p>“Your grandmother taught me three things,” she said, kneeling beside a soaked elder log. “How to read rot. How to feed it. How to leave enough behind.” Wren crouched with Tobin's journal open on a folded cloth; the pages looked younger in Almy's garden, less like relic and more like a tool waiting for dirt. Why teach me now? she asked. Almy pressed her thumb into the log until water welled dark around the bark. <em>Because you came back. Nobody else has, in twenty-six years.</em> By noon Wren had cut her first plug, packed it into the wood, sealed it with wax, and understood that cultivation was not farming in miniature. It was a bargain with decay. It was patience made visible.</p>
+    </div>
+    <aside class="margin rv rv-d2">
+      <blockquote class="dialogue">
+        <p><span class="sp">Wren</span>“That sounds less like a lesson and more like a warning.”</p>
+        <p><span class="sp">Almy</span>“Most useful lessons are.”</p>
+        <p><span class="sp">Almy</span>“Do not rush growth. Rushed mushrooms teach regret.”</p>
+      </blockquote>
+    </aside>
+  </div></div>
+</article>
+
+<!-- Chapter IX -->
+<article class="chapter alt" id="ch9" data-label="IX · Joren's Forge">
+  <figure class="plate rv"><img src="img/jorens-forge.jpg" alt="Joren, soot-armed in his leather apron, stands at his barely-lit forge as Wren lays coins and her father's worn kitchen knife on the workbench." loading="lazy">
+    <figcaption><span class="pn">Plate IX</span><span class="pt">Joren's Forge</span></figcaption>
+  </figure>
+  <div class="page paper"><div class="page-inner">
+    <header class="ch-head rv"><span class="kicker">Act II · Chapter the Ninth</span><h3>Joren's Forge</h3><div class="headrule"></div></header>
+    <div class="prose rv rv-d1">
+      <p class="drop">The forge was lit, but only just. Joren stood in the doorway with blackened forearms and the expression of a man interrupted during an argument with the world. Behind him the anvil waited under a skin of dust — a smith with no commissions keeps his fire low, and Hollowfen had taught him economy in humiliating ways. You want a foraging knife, he said. From me. “If you still make knives.” That earned her one look sharp enough to cut twine.</p>
+      <p>Wren put three coins on the workbench and Tobin's old kitchen knife beside them, its blade too broad, its handle split, its edge worn wrong from years of onions and bone. I need something thin, she said. Curved enough to cut clean at the base. Strong enough for bracket fungus. Easy to wipe. Not pretty. Joren looked at the knife again — then at her hands. Come back tomorrow, he said. The next morning the new knife lay on his anvil, horn-handled, dark-backed, and better than she had asked for.</p>
+    </div>
+    <aside class="margin rv rv-d2">
+      <blockquote class="dialogue">
+        <p><span class="sp">Joren</span>“Pretty costs extra and cuts worse.”</p>
+        <p><span class="sp">Joren</span>“Come back tomorrow. And don't tell anyone you commissioned it like charity.”</p>
+        <p><span class="sp">Wren</span>“I paid.”</p>
+        <p><span class="sp">Joren</span>“I know what I said.”</p>
+      </blockquote>
+    </aside>
+  </div></div>
+</article>
+
+<!-- Chapter X -->
+<article class="chapter" id="ch10" data-label="X · Twelve Silver by Yule">
+  <figure class="plate rv"><img src="img/voss-first-visit.jpg" alt="Master Voss sits dry-cuffed at an inn table with his small ledger while the Wenmar family waits by the cold hearth and Wren sets her coins on the table." loading="lazy">
+    <figcaption><span class="pn">Plate X</span><span class="pt">Twelve Silver by Yule</span></figcaption>
+  </figure>
+  <div class="page paper"><div class="page-inner">
+    <header class="ch-head rv"><span class="kicker">Act II · Chapter the Tenth</span><h3>Twelve Silver by Yule</h3><div class="headrule"></div></header>
+    <div class="prose rv rv-d1">
+      <p class="drop">Master Voss arrived in a clean coat on a muddy road, and that was the first thing Wren disliked about him. Hollowfen marked everyone who entered it — wet hems, road dust, smoke in the hair. Voss sat in The Crooked Pintle with dry cuffs, a small ledger, and the patience of a locked door. His Lordship requires twelve silver from this village, he said. I am aware your fields have not yielded. I am not unsympathetic. But I am also not paid to be sympathetic.</p>
+      <p>The Wenmar family sat on the bench nearest the hearth, where no fire had been lit. Their son looked at his boots as if memorizing them before they were taken too. Wren counted the coins in her pocket twice. Mushroom money. Knife money. Roof money — money that already belonged to three futures she had not named. Then she put it on the table. Voss counted more slowly than he needed to, and looked at her, for the first time, as if she were not part of the furniture. The Wenmar woman covered her mouth. Bram turned away before anyone could see his face.</p>
+    </div>
+    <aside class="margin rv rv-d2">
+      <blockquote class="dialogue">
+        <p><span class="sp">Voss</span>“This is not the village's account.”</p>
+        <p><span class="sp">Wren</span>“It is today.”</p>
+        <p><span class="sp">Voss</span>“Very well, Miss Tobin.”</p>
+      </blockquote>
+      <div class="notecard">
+        <span class="nk">Noted in Voss's ledger</span>
+        <p>Wenmar arrears — paid in full before sundown, by a third party. Query: source of coin. Query: Tobin, Miss W.</p>
+      </div>
+    </aside>
+  </div></div>
+</article>
+
+<!-- Chapter XI -->
+<article class="chapter alt" id="ch11" data-label="XI · The Trader's Ledger">
+  <figure class="plate rv"><img src="img/theo-trade.jpg" alt="Theo leans over the open ledger on his wagon board, examining Wren's goldfoots without touching them, his trim beard and better travel coat marking him a man of the road." loading="lazy">
+    <figcaption><span class="pn">Plate XI</span><span class="pt">The Trader's Ledger</span></figcaption>
+  </figure>
+  <div class="page paper"><div class="page-inner">
+    <header class="ch-head rv"><span class="kicker">Act II · Chapter the Eleventh</span><h3>The Trader's Ledger</h3><div class="headrule"></div></header>
+    <div class="prose rv rv-d1">
+      <p class="drop">Theo's wagon arrived every five to seven days, depending on rain, road, and profit. He came into Hollowfen smiling as if the village were doing better than it was — and that, Wren thought, was his trade: not lying, exactly, but letting people stand inside the better version of themselves long enough to buy something. He opened his ledger on the wagon board and examined the Goldfoots without touching them. Where did you find these? Wren said nothing. Theo's smile changed shape. <em>Good. Don't answer that too quickly. A secret is worth less every time it leaves your mouth.</em></p>
+      <p>He paid more than Bram could, less than the Capital would, and told her both facts plainly. That was the cleverness of him — he cheated by being honest in the places dishonest men would have hidden. Anything else you find that looks like it shouldn't be here, he said, I want first refusal. Don't sell to peddlers. They'll cheat you, and I won't.</p>
+    </div>
+    <aside class="margin rv rv-d2">
+      <blockquote class="dialogue">
+        <p><span class="sp">Wren</span>“That sounds like something a cheat would say.”</p>
+        <p><span class="sp">Theo</span>“It is. I am saying it with better boots.”</p>
+        <p><span class="sp">Theo</span>“Goldfoot. Where did you find these?”</p>
+        <p><span class="sp">Wren</span>“Near trees.”</p>
+        <p><span class="sp">Theo</span>“Cruel answer. I respect it.”</p>
+      </blockquote>
+    </aside>
+  </div></div>
+</article>
+
+<!-- Chapter XII -->
+<article class="chapter" id="ch12" data-label="XII · Brightspore at the Bedside">
+  <figure class="plate rv"><img src="img/edda-grandfather.jpg" alt="In a candlelit cottage, Edda's thin white-haired grandfather sits up in his quilted bed holding a bowl with both hands, Edda and Wren beside him." loading="lazy">
+    <figcaption><span class="pn">Plate XII</span><span class="pt">Brightspore at the Bedside</span></figcaption>
+  </figure>
+  <div class="page paper"><div class="page-inner">
+    <header class="ch-head rv"><span class="kicker">Act II · Chapter the Twelfth</span><h3>Brightspore at the Bedside</h3><div class="headrule"></div></header>
+    <div class="prose rv rv-d1">
+      <p class="drop">Edda did not ask for help as if she expected to receive it. She stood outside the mill at dusk with both hands on an empty basket and said, “Grandfather hasn't eaten since Monday.” The Brightspore grew where Almy said it might, at the foot of one old birch on ground soft enough to remember water. It was not beautiful the way market mushrooms were beautiful — lacquered, bitter-smelling, faintly bright at the edge, like firelight seen through horn. <em>Brightspore is medicine, not supper,</em> Almy said. <em>Take one. Leave two.</em></p>
+      <p>Marra made the broth. Almy measured the shavings. Wren carried the bottle. The old man took half a spoon the first night and frowned as if insulted by being alive. On the second evening he drank a whole bowl of soup and held it afterward with both hands. “Tastes like when I was small,” he said. Edda stood at the foot of the bed and did not cry. She looked, instead, as if the world had done something rude by becoming possible.</p>
+    </div>
+    <aside class="margin rv rv-d2">
+      <blockquote class="dialogue">
+        <p><span class="sp">Wren</span>“Why tell me?”</p>
+        <p><span class="sp">Edda</span>“You go where people don't.”</p>
+        <p><span class="sp">Edda</span>“He ate today. The whole bowl.”</p>
+        <p><span class="sp">Wren</span>“Good.”</p>
+        <p><span class="sp">Edda</span>“That is not a big enough word.”</p>
+        <p><span class="sp">Wren</span>“No.”</p>
+      </blockquote>
+    </aside>
+  </div></div>
+</article>
+
+<!-- Chapter XIII -->
+<article class="chapter alt" id="ch13" data-label="XIII · A Stranger at the Inn">
+  <figure class="plate rv"><img src="img/hollin-arrives.jpg" alt="A pale dark-haired traveler sits by the inn window with both hands around an untouched clay mug, a carefully mended satchel at her side." loading="lazy">
+    <figcaption><span class="pn">Plate XIII</span><span class="pt">A Stranger at the Inn</span></figcaption>
+  </figure>
+  <div class="page paper"><div class="page-inner">
+    <header class="ch-head rv"><span class="kicker">Act II · Chapter the Thirteenth</span><h3>A Stranger at the Inn</h3><div class="headrule"></div></header>
+    <div class="prose rv rv-d1">
+      <p class="drop">Hollin sat near the inn window with both hands around a clay mug she had not drunk from. Bram said she had asked for the goldfoot girl by name. Marra said that was not a name, and put her to peeling onions until Wren arrived. The stranger was Wren's age or near it, pale from travel, slight, with a satchel that had been mended by someone careful and not skilled. She looked at Wren once and did not look away too quickly. That, more than anything, made Wren sit.</p>
+      <p>I asked at three villages before someone said your name, Hollin said. Are you buying? No. Selling? No. The silence after that was easier than it should have been. Hollin looked toward the window, where the Edge Woods made a dark line above the village roofs. <em>I am walking,</em> she said at last. <em>And looking for a place my grandmother used to name when she thought no one was listening.</em> Wren felt the table become very still between them. What place? Hollin's fingers tightened around the mug. <em>Not yet.</em></p>
+    </div>
+    <aside class="margin rv rv-d2">
+      <blockquote class="dialogue">
+        <p><span class="sp">Wren</span>“Are you buying?”</p>
+        <p><span class="sp">Hollin</span>“No.”</p>
+        <p><span class="sp">Wren</span>“Selling?”</p>
+        <p><span class="sp">Hollin</span>“No.”</p>
+        <p><span class="sp">Wren</span>“What place?”</p>
+        <p><span class="sp">Hollin</span>“Not yet.”</p>
+      </blockquote>
+    </aside>
+  </div></div>
+</article>
+
+<!-- Chapter XIV -->
+<article class="chapter" id="ch14" data-label="XIV · Two Boards Come Down">
+  <figure class="plate rv"><img src="img/cottages-reopen.jpg" alt="On the cottage lane, villagers pry weathered boards from a window while smoke rises from a chimney that has been cold for three winters." loading="lazy">
+    <figcaption><span class="pn">Plate XIV</span><span class="pt">Two Boards Come Down</span></figcaption>
+  </figure>
+  <div class="page paper"><div class="page-inner">
+    <header class="ch-head rv"><span class="kicker">Act II · Chapter the Fourteenth</span><h3>Two Boards Come Down</h3><div class="headrule"></div></header>
+    <div class="prose rv rv-d1">
+      <p class="drop">By the autumn equinox, two boarded cottages had shutters again. The first came down from the Wenmar house — Joren made the hinges and complained about the old nails until someone reminded him he was being paid. The second was a smaller cottage on the north lane, empty since the second blight. A cousin from Veyrwick arrived with two children, one pot, and a rooster in a sack.</p>
+      <p>Elder Pell stood in the square with his ledger open. Do you write every shutter? Wren asked. “No,” he said. “Only the ones that mean something.” The village did not celebrate — Hollowfen had learned caution too well for that. But Marra made extra bread, Bram swept the inn step properly, and Edda carried water to the reopened house without being asked. Smoke rose from a chimney that had been cold for three winters. Pell wrote one line in pencil. Then, after a long moment, he traced it in ink.</p>
+    </div>
+    <aside class="margin rv rv-d2">
+      <blockquote class="dialogue">
+        <p><span class="sp">Pell</span>“Do not look pleased yet. One shutter is not a village.”</p>
+        <p><span class="sp">Wren</span>“Two shutters?”</p>
+        <p><span class="sp">Pell</span>“Two shutters is a sentence beginning.”</p>
+        <p><span class="sp">Marra</span>“If folk are moving in, they'll need bread. Don't stand there looking historical.”</p>
+      </blockquote>
+    </aside>
+  </div></div>
+</article>
+
+<!-- Chapter XV -->
+<article class="chapter alt" id="ch15" data-label="XV · Father Calden's Doubt">
+  <figure class="plate rv"><img src="img/caldens-doubt.jpg" alt="Father Calden stands just inside the mill door in his dark cassock, hat in both hands, a second cup of tea cooling untouched on the table." loading="lazy">
+    <figcaption><span class="pn">Plate XV</span><span class="pt">Father Calden's Doubt</span></figcaption>
+  </figure>
+  <div class="page paper"><div class="page-inner">
+    <header class="ch-head rv"><span class="kicker">Act II · Chapter the Fifteenth</span><h3>Father Calden's Doubt</h3><div class="headrule"></div></header>
+    <div class="prose rv rv-d1">
+      <p class="drop">Father Calden came to the mill and refused tea — and that was how Wren knew the visit would be serious. In Hollowfen, refusing tea was either illness, insult, or priesthood under strain. He stood inside the door with his hat in both hands, the second cup cooling untouched across from Wren. I knew your father, he said. I baptized you. So I will say this once and kindly: leave the deep wood alone.</p>
+      <p>Wren looked at the foraging basket on the table, where three Goldfoots sat ordinary as buttons if one did not know their worth. The old ways don't return because we've forgotten them, Calden said. <em>They were forgotten on purpose.</em> By whom? His mouth tightened. By people who believed they were protecting their own. That answer held more fear than certainty. When he left, he took the chapel garden key from its hook beside the vestry door, and by sundown the gate was locked. Almy said nothing when Wren told her. Her silence was old enough to have roots.</p>
+    </div>
+    <aside class="margin rv rv-d2">
+      <blockquote class="dialogue">
+        <p><span class="sp">Wren</span>“The Edge Woods fed your village this month.”</p>
+        <p><span class="sp">Calden</span>“The edge of a thing is not the thing.”</p>
+        <p><span class="sp">Wren</span>“What are you afraid of?”</p>
+        <p><span class="sp">Calden</span>“Being late to wisdom. Being early to harm.”</p>
+      </blockquote>
+    </aside>
+  </div></div>
+</article>
+
+<!-- ==================== ACT III ==================== -->
+<section class="act" id="act3" data-label="Act III — Discovery">
+  <div class="bg"><img src="img/act3.jpg" alt="In the reopened chapel garden, Wren shows Edda a mushroom's underside while Father Calden watches from the gate in the pale autumn morning." loading="lazy"></div>
+  <div class="act-content">
+    <p class="act-no rv">Act the Third</p>
+    <h2 class="rv rv-d1">Discovery</h2>
+    <p class="act-sum rv rv-d2">In which the trouble with Hollowfen is found to be neither weather nor God; in which two grand-daughters inherit different halves of the same broken thing, a cottage waits at the heart of the Deep Wood, and a river's dry bed glows faintly with the truth.</p>
+    <p class="act-chapters rv rv-d3">Hollin's Inheritance · The Witch's Cottage · The Wend's True Course · The Chapel Garden Opens · Edda Asks · Theo's Capital · The First Festival in Three Years · A Sealed Letter</p>
+  </div>
+</section>
+
+<!-- Chapter XVI -->
+<article class="chapter" id="ch16" data-label="XVI · Hollin's Inheritance">
+  <figure class="plate rv"><img src="img/hollin-inheritance.jpg" alt="Rain at the mill window as Wren and Hollin lean over a child's copy of an old map at the kitchen table, Almy standing by the hearth with her eyes closed." loading="lazy">
+    <figcaption><span class="pn">Plate XVI</span><span class="pt">Hollin's Inheritance</span></figcaption>
+  </figure>
+  <div class="page paper"><div class="page-inner">
+    <header class="ch-head rv"><span class="kicker">Act III · Chapter the Sixteenth</span><h3>Hollin's Inheritance</h3><div class="headrule"></div></header>
+    <div class="prose rv rv-d1">
+      <p class="drop">Rain found every weakness in the mill roof. Wren and Hollin sat at the kitchen table with mugs cooling between them while Almy stood by the hearth, one hand against the stone. Hollin had brought a page folded into oilcloth — not a map, not exactly, but a child's copy of an older drawing, all wrong distances and careful labels. “My grandmother was named Sable,” Hollin said. Almy closed her eyes. The name changed the room.</p>
+      <p>Sable had been the last hedge-witch of Hollowfen, though no one said the word witch in daylight without lowering their voice. She had taught Almy. She had known Wren's grandmother. She had gone into the Deep Wood one spring and returned with half her hair white and a seedbook no one was allowed to read. She was my grandmother, Hollin said, and she left me half a story. Wren looked at Tobin's journal, then at Hollin's folded page. We seem to have inherited different halves of the same broken thing. Almy turned toward the hearth before either young woman could see her face clearly. <em>Then stop admiring the break. Find the other pieces.</em></p>
+    </div>
+    <aside class="margin rv rv-d2">
+      <blockquote class="dialogue">
+        <p><span class="sp">Almy</span>“Do not say that name carelessly.”</p>
+        <p><span class="sp">Wren</span>“You knew her.”</p>
+        <p><span class="sp">Almy</span>“I failed her. That is not the same thing.”</p>
+        <p><span class="sp">Hollin</span>“She left me half a story.”</p>
+        <p><span class="sp">Wren</span>“Then we find the other half.”</p>
+      </blockquote>
+    </aside>
+  </div></div>
+</article>
+
+<!-- Chapter XVII -->
+<article class="chapter alt" id="ch17" data-label="XVII · The Witch's Cottage">
+  <figure class="plate rv"><img src="img/witch-cottage.jpg" alt="Deep in the old wood, a small stone-and-timber cottage with moss-thick thatch stands beside a spring, ivy grown over one shutter like a closed eye." loading="lazy">
+    <figcaption><span class="pn">Plate XVII</span><span class="pt">The Witch's Cottage</span></figcaption>
+  </figure>
+  <div class="page paper"><div class="page-inner">
+    <header class="ch-head rv"><span class="kicker">Act III · Chapter the Seventeenth</span><h3>The Witch's Cottage</h3><div class="headrule"></div></header>
+    <div class="prose rv rv-d1">
+      <p class="drop">The path did not appear until Almy stopped looking for it. That was how she explained it, though Wren suspected the path had been there all along, waiting for someone to stop forcing memory into a straight line. Hollin walked first, touching old trunks with two fingers. Wren followed with Tobin's journal under her coat. Almy came last, breathing hard and pretending not to.</p>
+      <p>The cottage stood where the Deep Wood gathered around a spring — smaller than Wren expected. One room. Stone below, timber above, moss thick on the thatch, ivy grown over one shutter like a closed eye. The door opened when Hollin lifted the latch. Inside, the air smelled of clay jars, old ash, and pages. The seedbook lay on the table. Almy made a sound so small Wren might have missed it if the forest had not gone quiet. The open page showed a mushroom drawn in pale ink beside a spring basin — <em>Witchwell</em> — and below it, in another hand, three names: Moonring. Hollowheart. Wendlight. Wren felt the story widen beneath her feet.</p>
+    </div>
+    <aside class="margin rv rv-d2">
+      <blockquote class="dialogue">
+        <p><span class="sp">Hollin</span>“I think the path remembers feet better than names.”</p>
+        <p><span class="sp">Wren</span>“That is either comforting or not.”</p>
+        <p><span class="sp">Almy</span>“Both. Usually both.”</p>
+        <p><span class="sp">Wren</span>“Is this it?”</p>
+        <p><span class="sp">Almy</span>“This is where I was young.”</p>
+        <p><span class="sp">Hollin</span>“Then we should enter kindly.”</p>
+      </blockquote>
+    </aside>
+  </div></div>
+</article>
+
+<!-- Chapter XVIII -->
+<article class="chapter" id="ch18" data-label="XVIII · The Wend's True Course">
+  <figure class="plate rv"><img src="img/wend-truth.jpg" alt="At dawn, Wren kneels in the dry riverbed among pale stones where small mushrooms glow with a thin watery shine, tracing the river's old course into the mist." loading="lazy">
+    <figcaption><span class="pn">Plate XVIII</span><span class="pt">The Wend's True Course</span></figcaption>
+  </figure>
+  <div class="page paper"><div class="page-inner">
+    <header class="ch-head rv"><span class="kicker">Act III · Chapter the Eighteenth</span><h3>The Wend's True Course</h3><div class="headrule"></div></header>
+    <div class="prose rv rv-d1">
+      <p class="drop"><em>Wendlight grew where water had been betrayed.</em> That was the line in Sable's book. Wren read it four times before dawn, then walked the dry riverbed with cold hands and no breakfast. The old Wend lay pale beneath her boots, all rounded stones and grass fingers, mist clinging low between the banks. At first she saw nothing. Then the light changed. Small mushrooms glowed faintly among the stones — not bright, not magical; a thin watery shine, like moonlight caught under skin. They followed the old course.</p>
+      <p>Wren walked until the village was behind her and the pattern was undeniable. The river had not wandered from age or weather. It had been loosened, hurried, stripped of the trees that held its banks upstream. At the bend she found a broken timber mark stamped with Lord Aldric's device. For three winters, Hollowfen had called the river's leaving an act of God. Wren knelt in the stones and closed her hand around nothing at all. “No,” she said.</p>
+    </div>
+    <aside class="margin rv rv-d2">
+      <blockquote class="dialogue">
+        <p><span class="sp">Wren</span>“Wendlight by the old stones. Wendlight where clean water ran.”</p>
+        <p><span class="sp">Wren</span>“Not weather. Not God. A line.”</p>
+        <p><span class="sp">Hollin</span>“Whose?”</p>
+        <p><span class="sp">Wren</span>“Aldric's.”</p>
+      </blockquote>
+    </aside>
+  </div></div>
+</article>
+
+<!-- Chapter XIX -->
+<article class="chapter alt" id="ch19" data-label="XIX · The Chapel Garden Opens">
+  <figure class="plate rv"><img src="img/chapel-garden.jpg" alt="Near sunset at the chapel garden gate, Father Calden holds out the iron key to Wren, the half-wild herb beds leaning through the fence behind him." loading="lazy">
+    <figcaption><span class="pn">Plate XIX</span><span class="pt">The Chapel Garden Opens</span></figcaption>
+  </figure>
+  <div class="page paper"><div class="page-inner">
+    <header class="ch-head rv"><span class="kicker">Act III · Chapter the Nineteenth</span><h3>The Chapel Garden Opens</h3><div class="headrule"></div></header>
+    <div class="prose rv rv-d1">
+      <p class="drop">Father Calden found the apology in church records before he found it in himself. He came to the chapel garden gate near sunset with a brown envelope under one arm and the iron key in his hand. The beds behind him had gone half-wild; Almy's herbs leaned through the fence as if listening. “The church helped bury this knowledge,” he said. Wren waited. “Not because it was sorcery. Because land held by women, widows, and common healers made poor men harder to frighten and rich men harder to obey.”</p>
+      <p>The key looked too heavy for the small thing it was. I will not bless what I do not understand, Calden said. But I will no longer stand in its way. Wren took the key. That is not the same as forgiveness, he said. “No,” Wren said. “But it is a gate opening.” For the first time since his warning, Calden looked her in the eye.</p>
+    </div>
+    <aside class="margin rv rv-d2">
+      <blockquote class="dialogue">
+        <p><span class="sp">Wren</span>“Because it was wicked?”</p>
+        <p><span class="sp">Calden</span>“Because it was useful to people who were not powerful.”</p>
+        <p><span class="sp">Calden</span>“I will not bless what I do not understand. But I will no longer stand in its way.”</p>
+      </blockquote>
+    </aside>
+  </div></div>
+  <div class="page paper" style="padding-top:0">
+    <div class="companion rv">
+      <img src="img/chapel-lesson.jpg" alt="Later, in the reopened garden: Wren and Edda compare a mushroom's gills over the herb beds while the chapel keeper watches from the gate, no longer objecting." loading="lazy">
+      <p class="cap">The garden, after. Lessons moved inside the chapel wall, and the old keeper watched from the gate — no longer objecting, not yet blessing.</p>
+    </div>
+  </div>
+</article>
+
+<!-- Chapter XX -->
+<article class="chapter" id="ch20" data-label="XX · Edda Asks">
+  <figure class="plate rv"><img src="img/edda-apprentice.jpg" alt="Before sunrise, Edda stands at the mill door with her hair braided too tightly and her hat held in both hands, mud on her scrubbed boots anyway." loading="lazy">
+    <figcaption><span class="pn">Plate XX</span><span class="pt">Edda Asks</span></figcaption>
+  </figure>
+  <div class="page paper"><div class="page-inner">
+    <header class="ch-head rv"><span class="kicker">Act III · Chapter the Twentieth</span><h3>Edda Asks</h3><div class="headrule"></div></header>
+    <div class="prose rv rv-d1">
+      <p class="drop">Edda arrived at the mill before sunrise with her hair braided too tightly and her hat held in both hands. Wren opened the door half asleep. Edda stood one step down, which made them nearly level. She had scrubbed her face. There was mud on her boots anyway. “I would like to be apprenticed,” she said. Properly. Not carrying baskets. Not watching from paths. I want to learn names, and false names, and where to cut, and when not to. Grandfather is well enough now — he said I should stop hovering over his soup and go become troublesome somewhere useful.</p>
+      <p>Wren leaned against the doorframe. Did you practice that? “Eleven times.” It was good. “Is that yes?” Wren looked at the dry streambed, the still wheel, the morning mist gathering where water used to be — at everything her father had left her, and everything he hadn't lived to hand over. “Yes,” she said. “But you start with cleaning the knife.” Edda's face did not smile. The rest of her did.</p>
+    </div>
+    <aside class="margin rv rv-d2">
+      <blockquote class="dialogue">
+        <p><span class="sp">Edda</span>“I would like to be apprenticed.”</p>
+        <p><span class="sp">Wren</span>“To whom?”</p>
+        <p><span class="sp">Edda</span>“Do not make me say the obvious part. I practiced the other part.”</p>
+        <p><span class="sp">Wren</span>“Yes. But you start with cleaning the knife.”</p>
+      </blockquote>
+    </aside>
+  </div></div>
+</article>
+
+<!-- Chapter XXI -->
+<article class="chapter alt" id="ch21" data-label="XXI · Theo's Capital">
+  <figure class="plate rv"><img src="img/theo-capital-offer.jpg" alt="In the empty inn at night, Theo sits across from Wren with a closed ledger between them, the hearth burned low, Bram pretending to sleep in a chair by the bar." loading="lazy">
+    <figcaption><span class="pn">Plate XXI</span><span class="pt">Theo's Capital</span></figcaption>
+  </figure>
+  <div class="page paper"><div class="page-inner">
+    <header class="ch-head rv"><span class="kicker">Act III · Chapter the Twenty-first</span><h3>Theo's Capital</h3><div class="headrule"></div></header>
+    <div class="prose rv rv-d1">
+      <p class="drop">Theo waited until the inn was empty. That was the kindness in it, Wren thought. Or the calculation — with Theo, the two often wore the same coat. He placed a closed ledger on the table between them and did not open it. I have a buyer in the Capital, he said. Not a buyer, really. A backer. Kitchen space. Proper signage. Staff within a year, if you do not insult everyone important. “I would insult half.” <em>That is within tolerance.</em></p>
+      <p>The hearth had burned low. Marra had gone to bed. Bram pretended to be asleep in a chair by the bar and fooled no one. Theo did not smile when he said the rest. <em>It would cost Hollowfen you.</em> Wren looked into her cup — dark wine, untouched. You think I do not know that? I think you know it better than I do, he said. I am saying it so the offer is clean. And that was the trouble. It was clean. It was generous. It was a door she had once wanted more than anything.</p>
+    </div>
+    <aside class="margin rv rv-d2">
+      <blockquote class="dialogue">
+        <p><span class="sp">Wren</span>“For mushrooms?”</p>
+        <p><span class="sp">Theo</span>“For you.”</p>
+        <p><span class="sp">Theo</span>“It would cost Hollowfen you.”</p>
+        <p><span class="sp">Wren</span>“You think I do not know that?”</p>
+      </blockquote>
+    </aside>
+  </div></div>
+</article>
+
+<!-- Chapter XXII -->
+<article class="chapter" id="ch22" data-label="XXII · The First Festival">
+  <figure class="plate rv"><img src="img/first-festival.jpg" alt="Lanterns hang low over the crowded village square at dusk; steam rises from Marra's pots as villagers gather for the first festival in three years." loading="lazy">
+    <figcaption><span class="pn">Plate XXII</span><span class="pt">The First Festival in Three Years</span></figcaption>
+  </figure>
+  <div class="page paper"><div class="page-inner">
+    <header class="ch-head rv"><span class="kicker">Act III · Chapter the Twenty-second</span><h3>The First Festival in Three Years</h3><div class="headrule"></div></header>
+    <div class="prose rv rv-d1">
+      <p class="drop">Hollowfen remembered festivals badly at first. Someone hung the lanterns too low. Someone else argued over whether there had once been music before or after the first bowl. Bram put a barrel outside the inn, moved it three times, and then stood beside it with the face of a man guarding a miracle from weather. Marra cooked four dishes by sundown — Goldfoot stew, Lacewig broth, Field Cap cakes, and a bitter Brightspore tonic for those who claimed they were too old for dancing. She threatened three helpers, praised none of them, and sent Wren to wash bowls whenever gratitude became too thick in the air.</p>
+      <p>The square filled before the lanterns were lit. Pell wrote by lamplight on the inn step, and when Wren passed with a stack of bowls she saw her own name in the ledger and pretended she had not. Halfway through the evening she escaped behind the inn. Edda found her there and said nothing. For once, that was exactly right.</p>
+    </div>
+    <aside class="margin rv rv-d2">
+      <blockquote class="dialogue">
+        <p><span class="sp">Marra</span>“Four dishes by sundown. If anyone calls it rustic, I will make them eat the garnish.”</p>
+        <p><span class="sp">Edda</span>“You are hiding.”</p>
+        <p><span class="sp">Wren</span>“I am washing bowls privately.”</p>
+        <p><span class="sp">Edda</span>“That is hiding with dishes.”</p>
+      </blockquote>
+      <div class="notecard">
+        <span class="nk">Pell's ledger, that night</span>
+        <p>Let this page be remembered as the year the Hollow turned. More ink than pencil, for once.</p>
+      </div>
+    </aside>
+  </div></div>
+</article>
+
+<!-- Chapter XXIII -->
+<article class="chapter alt" id="ch23" data-label="XXIII · A Sealed Letter">
+  <figure class="plate rv"><img src="img/sealed-letter.jpg" alt="In the rain at the mill threshold, Voss hands Wren a thick letter closed with dark red wax, the dead millwheel behind him." loading="lazy">
+    <figcaption><span class="pn">Plate XXIII</span><span class="pt">A Sealed Letter</span></figcaption>
+  </figure>
+  <div class="page paper"><div class="page-inner">
+    <header class="ch-head rv"><span class="kicker">Act III · Chapter the Twenty-third</span><h3>A Sealed Letter</h3><div class="headrule"></div></header>
+    <div class="prose rv rv-d1">
+      <p class="drop">Voss came between tax days. That alone brought Bram out from behind the bar and Marra to the kitchen door with a knife still in her hand. But Voss did not enter the inn. He walked to the mill in a coat dusted from the road and stood one step below Wren's threshold, looking tired in a way his ledgers usually forbade. “I am not here to collect,” he said.</p>
+      <p>The letter in his hand was folded thick and sealed with dark red wax. Lord Aldric asked that I deliver this personally. Wren took it with both hands. The seal bore a mark she had seen before — burned into broken timber at the Wend's old bend. Voss did not let go immediately. <em>Whatever it says, read it before the rumor reaches the inn.</em> Do you know what it says? “No.” For the first time, Wren believed him.</p>
+    </div>
+    <aside class="margin rv rv-d2">
+      <blockquote class="dialogue">
+        <p><span class="sp">Voss</span>“I am not here to collect.”</p>
+        <p><span class="sp">Wren</span>“That is new.”</p>
+        <p><span class="sp">Wren</span>“Do you want to know what it says?”</p>
+        <p><span class="sp">Voss</span>“No.”</p>
+      </blockquote>
+    </aside>
+  </div></div>
+</article>
+
+<!-- ==================== ACT IV ==================== -->
+<section class="act" id="act4" data-label="Act IV — The Choice">
+  <div class="bg"><img src="img/act4.jpg" alt="Wren stands at the edge of a vast clear-cut hillside of stumps and drag trails, pale mushrooms growing at the boundary where the living forest still holds." loading="lazy"></div>
+  <div class="act-content">
+    <p class="act-no rv">Act the Fourth</p>
+    <h2 class="rv rv-d1">The Choice</h2>
+    <p class="act-sum rv rv-d2">In which the antagonist is not a monster but a careful man with good manners and ledgers where other people keep guilt — and in which Hollowfen must decide what its future is allowed to cost.</p>
+    <p class="act-chapters rv rv-d3">The Lord's Offer · The Source of the Wend · The Meeting · and Four Paths out of the Hollow</p>
+  </div>
+</section>
+
+<!-- Chapter XXIV -->
+<article class="chapter" id="ch24" data-label="XXIV · The Lord's Offer">
+  <figure class="plate rv"><img src="img/aldric-offer.jpg" alt="By low candlelight at the mill table, Wren reads Lord Aldric's beautifully written letter, the broken red wax seal beside her father's closed journal." loading="lazy">
+    <figcaption><span class="pn">Plate XXIV</span><span class="pt">The Lord's Offer</span></figcaption>
+  </figure>
+  <div class="page paper"><div class="page-inner">
+    <header class="ch-head rv"><span class="kicker">Act IV · Chapter the Twenty-fourth</span><h3>The Lord's Offer</h3><div class="headrule"></div></header>
+    <div class="prose rv rv-d1">
+      <p class="drop">Lord Aldric wrote beautifully. That was the first danger. His letter did not threaten. It regretted. It admired. It confessed, with graceful restraint, that Hollowfen had been presumed finished in the ledgers of his house. It praised Miss Tobin's unusual enterprise. It proposed patronage, protection, expanded trade roads, tax relief, and a formal monopoly under Aldric's banner. The terms were generous.</p>
+      <p>Wren read them once as herself, once as Tobin's daughter, and once as if her grandmother sat across from her with flour on her sleeve and opinions in her eyebrows. On the third reading she found the hook. <em>All cultivation records, wild-harvest routes, medicinal preparations, and trade rights would be held in trust by Aldric's estate — for the protection of Hollowfen and surrounding villages.</em> Held in trust. Owned, in prettier clothes. The candle burned low. Tobin's journal lay closed at the corner of the table. Wren touched the broken red seal and wondered how many villages had been saved into obedience before anyone thought to call it loss.</p>
+    </div>
+    <aside class="margin rv rv-d2">
+      <div class="notecard">
+        <span class="nk">From the letter</span>
+        <p>“I had presumed, speaking honestly, that Hollowfen was finished. You have made that presumption incorrect, Miss Tobin.”</p>
+      </div>
+      <blockquote class="dialogue" style="margin-top:26px">
+        <p><span class="sp">Wren</span>“Held in trust. Owned, in prettier clothes.”</p>
+      </blockquote>
+    </aside>
+  </div></div>
+</article>
+
+<!-- Chapter XXV -->
+<article class="chapter alt" id="ch25" data-label="XXV · The Source of the Wend">
+  <figure class="plate rv"><img src="img/wend-source.jpg" alt="A hillside of stumps in rows under a hard sky; drag trails cut the earth like old wounds, an abandoned camp and rusted cookpot left where the profit stopped." loading="lazy">
+    <figcaption><span class="pn">Plate XXV</span><span class="pt">The Source of the Wend</span></figcaption>
+  </figure>
+  <div class="page paper"><div class="page-inner">
+    <header class="ch-head rv"><span class="kicker">Act IV · Chapter the Twenty-fifth</span><h3>The Source of the Wend</h3><div class="headrule"></div></header>
+    <div class="prose rv rv-d1">
+      <p class="drop">The source of the Wend was not a spring. Not anymore. Wren reached the hillside near midday and found stumps in rows. Drag trails cut the earth like old wounds. A collapsed canvas shelter lay beside a cold fire-ring; someone had left a cookpot to rust and a saw-horse tipped on its side, as if the work had stopped only when the profit did. Below the cleared slope, a thin trickle of water ran too fast over bare ground.</p>
+      <p>This was what had happened to the river. Not curse, not age, not divine correction. Trees gone. Soil loosened. Rain unheld. Water choosing the easiest wound. At the edge of the cut, where living forest still pressed its roots into the slope, Wren found Aldermark mushrooms growing pale and stubborn in the shade. Theo would know their price. Aldric would know it better. She did not cut them at first. She stood with her hands loose at her sides and let the anger become useful before she trusted herself with a knife.</p>
+    </div>
+    <aside class="margin rv rv-d2">
+      <blockquote class="dialogue">
+        <p><span class="sp">Wren</span>“This is where the river was broken.”</p>
+        <p><span class="sp">Hollin</span>“Not broken. Loosed.”</p>
+        <p><span class="sp">Wren</span>“That is worse.”</p>
+        <p><span class="sp">Hollin</span>“Yes.”</p>
+        <p><span class="sp">Wren</span>“Aldermark at the edge. Of course something useful grows where harm stops.”</p>
+      </blockquote>
+    </aside>
+  </div></div>
+</article>
+
+<!-- Chapter XXVI -->
+<article class="chapter" id="ch26" data-label="XXVI · The Meeting">
+  <figure class="plate rv"><img src="img/meeting-aldric.jpg" alt="In an oak-paneled study with tea already poured, Lord Aldric receives Wren across a polished table where she sets down a pale mushroom sample." loading="lazy">
+    <figcaption><span class="pn">Plate XXVI</span><span class="pt">The Meeting</span></figcaption>
+  </figure>
+  <div class="page paper"><div class="page-inner">
+    <header class="ch-head rv"><span class="kicker">Act IV · Chapter the Twenty-sixth</span><h3>The Meeting</h3><div class="headrule"></div></header>
+    <div class="prose rv rv-d1">
+      <p class="drop">Lord Aldric's manor was smaller than rumor and cleaner than kindness. He received Wren in an oak-paneled study with tea already poured — his first move: not command, not threat, but civility so complete it made refusal feel rude. He was not cruel. Wren had prepared for cruel and found, instead, a careful man with good manners and ledgers where other people kept guilt. He listened when she spoke of the Wend. He did not deny the woodcutters. He regretted the consequence as one might regret rain through a roof he had not personally patched.</p>
+      <p>“I can make Hollowfen prosperous,” he said. “Yes.” The answer surprised him. Wren set the Aldermark sample on the polished table between them. “The question is what you think prosperous is allowed to cost.” The room became very quiet around them.</p>
+    </div>
+    <aside class="margin rv rv-d2">
+      <blockquote class="dialogue">
+        <p><span class="sp">Aldric</span>“I should very much like to make your acquaintance, Miss Tobin.”</p>
+        <p><span class="sp">Wren</span>“You sent a letter.”</p>
+        <p><span class="sp">Aldric</span>“A letter is not an acquaintance. Merely an opening bid.”</p>
+        <p><span class="sp">Aldric</span>“You concede that I can make Hollowfen prosperous?”</p>
+        <p><span class="sp">Wren</span>“I concede arithmetic.”</p>
+      </blockquote>
+    </aside>
+  </div></div>
+</article>
+
+<!-- ==================== FOUR PATHS ==================== -->
+<section class="fourpaths" id="fourpaths" data-label="Four Paths">
+  <div class="fp-inner">
+    <p class="k rv">Here the one story becomes four</p>
+    <h2 class="rv rv-d1">Four Paths Out of the Hollow</h2>
+    <p class="fp-lede rv rv-d2">Every telling of Hollowfen agrees on the road in. No two agree on the road out. In the quiet after the meeting, with the letter unanswered on the table and the village waiting for word, Wren stood at a crossing no map could draw. The old tellers give the ending four ways, and swear each one is true. Choose a path — or walk them all.</p>
+    <div class="pathgrid">
+      <a class="pathcard rv" href="#endA">
+        <div class="pimg"><img src="img/ending-free-hollow.jpg" alt="" loading="lazy"></div>
+        <div class="pbody"><span class="pno">The First Path</span><div class="pname">The Free Hollow</div><p class="pline">She says no, and the saying takes a long time.</p></div>
+      </a>
+      <a class="pathcard rv rv-d1" href="#endB">
+        <div class="pimg"><img src="img/ending-lordly-patronage.jpg" alt="" loading="lazy"></div>
+        <div class="pbody"><span class="pno">The Second Path</span><div class="pname">The Lordly Patronage</div><p class="pline">She signs. The village eats. Neither fact becomes simple.</p></div>
+      </a>
+      <a class="pathcard rv rv-d2" href="#endC">
+        <div class="pimg"><img src="img/ending-capital.jpg" alt="" loading="lazy"></div>
+        <div class="pbody"><span class="pno">The Third Path</span><div class="pname">The Capital</div><p class="pline">She leaves in spring, which is kinder than winter and crueler than autumn.</p></div>
+      </a>
+      <a class="pathcard rv rv-d3" href="#endD">
+        <div class="pimg"><img src="img/ending-witchs-path.jpg" alt="" loading="lazy"></div>
+        <div class="pbody"><span class="pno">The Fourth Path</span><div class="pname">The Witch's Path</div><p class="pline">She takes the road no one had named clearly enough to count as a plan.</p></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Ending A -->
+<article class="chapter ending" id="endA" data-label="The Free Hollow">
+  <figure class="plate rv"><img src="img/ending-free-hollow.jpg" alt="A year on: the village square full at market, foragers from neighboring villages among the stalls, Hollowfen worn but alive and unbannered." loading="lazy">
+    <figcaption><span class="pn">The First Path</span><span class="pt">The Free Hollow</span></figcaption>
+  </figure>
+  <div class="page"><div class="page-inner">
+    <header class="ch-head rv"><span class="kicker">An Ending</span><h3>The Free Hollow</h3><div class="headrule"></div></header>
+    <div class="prose rv rv-d1">
+      <p class="drop">Wren said no, and the saying took a long time. She refused the monopoly, accepted a smaller tax relief, traded Aldermark knowledge for a written limit on upstream cutting, and returned to Hollowfen with no banner behind her. That was the part some villagers struggled with: prosperity under a lord had shape. Independence looked, at first, like more work.</p>
+      <p>A year later, the square was full. Not rich — full. Foragers came from neighboring villages to learn from Almy. Theo still bought what Wren chose to sell and complained cheerfully about her prices. Edda taught children to turn mushrooms over before trusting them. Marra's Goldfoot stew brought travelers in weather that would once have emptied the road. The mill wheel did not turn; the Wend had not come back. But Hollowfen no longer waited for the river to decide whether it deserved to live. Wren wrote the next page of Tobin's journal in her own hand.</p>
+    </div>
+    <blockquote class="dialogue rv rv-d2">
+      <p><span class="sp">Wren</span>“No.”</p>
+      <p><span class="sp">Aldric</span>“That is rarely the first word in a negotiation.”</p>
+      <p><span class="sp">Wren</span>“It is the last word in this one.”</p>
+      <p><span class="sp">Aldric</span>“You may regret refusing protection.”</p>
+      <p><span class="sp">Wren</span>“I expect to. That does not make it wrong.”</p>
+    </blockquote>
+    <p class="finis rv">Here ends one telling</p>
+  </div></div>
+</article>
+
+<!-- Ending B -->
+<article class="chapter ending" id="endB" data-label="The Lordly Patronage">
+  <figure class="plate rv"><img src="img/ending-lordly-patronage.jpg" alt="The village repaired in clean stone before winter, Aldric's banner small but visible near the chapel gate, a paid sluice turning the millwheel for show." loading="lazy">
+    <figcaption><span class="pn">The Second Path</span><span class="pt">The Lordly Patronage</span></figcaption>
+  </figure>
+  <div class="page"><div class="page-inner">
+    <header class="ch-head rv"><span class="kicker">An Ending</span><h3>The Lordly Patronage</h3><div class="headrule"></div></header>
+    <div class="prose rv rv-d1">
+      <p class="drop">Wren signed. The village ate. Those two facts stood beside each other and refused to become simple. Roofs were repaired before winter. The well was rebuilt in clean stone. A paid sluice brought enough water to turn the mill wheel for show and some grinding. Aldric's banner hung near the chapel gate, small but visible from the square. Marra had better copper pots. Bram hired help. Pell's ledger grew fat with deliveries, stipends, inspections, and fees waived by men who had discovered mercy after paperwork instructed them.</p>
+      <p>Theo left for the Capital alone. Edda asked to go with him, and Wren said yes — because saying no would have made the bargain worse than it already was. At the lane's edge, Edda looked back once. Wren lifted a hand and kept it lifted until the wagon disappeared. The village prospered. Wren lived with that. So did the village.</p>
+    </div>
+    <blockquote class="dialogue rv rv-d2">
+      <p><span class="sp">Aldric</span>“You are making the practical choice.”</p>
+      <p><span class="sp">Wren</span>“Do not make it smaller by praising it.”</p>
+      <p><span class="sp">Wren</span>“The village eats. That is the sentence I will use when I cannot sleep.”</p>
+    </blockquote>
+    <p class="finis rv">Here ends one telling</p>
+  </div></div>
+</article>
+
+<!-- Ending C -->
+<article class="chapter ending" id="endC" data-label="The Capital">
+  <figure class="plate rv"><img src="img/ending-capital.jpg" alt="Years later in a famous Capital kitchen, Wren stands alone after service at a copper-topped table with one bowl of golden stew and an unopened letter from home." loading="lazy">
+    <figcaption><span class="pn">The Third Path</span><span class="pt">The Capital</span></figcaption>
+  </figure>
+  <div class="page"><div class="page-inner">
+    <header class="ch-head rv"><span class="kicker">An Ending</span><h3>The Capital</h3><div class="headrule"></div></header>
+    <div class="prose rv rv-d1">
+      <p class="drop">Wren left in spring. That was kinder than winter and crueler than autumn — spring made departures look like beginnings whether they were or not. Theo's Capital kitchen became famous within a year, infamous within three. Wren cooked Goldfoot stew for people who had never seen mud except as inconvenience. She learned suppliers, knives, ledgers, staff, critics — hunger of a different sort. She sent money home until Hollowfen stopped needing it, and letters until Edda started answering with more confidence than spelling.</p>
+      <p>Hollin stayed. Almy gave her the seedbook before the first frost and pretended it was only because her eyes were tired. Years later, after service, Wren stood alone at a copper-topped table with one bowl of golden stew between her hands. An unopened letter from Hollowfen sat beside it. For a moment, she almost did what her father had done. Then she opened it.</p>
+    </div>
+    <blockquote class="dialogue rv rv-d2">
+      <p><span class="sp">Theo</span>“Last chance to decide I am a terrible idea.”</p>
+      <p><span class="sp">Wren</span>“You are a terrible idea.”</p>
+      <p><span class="sp">Theo</span>“And?”</p>
+      <p><span class="sp">Wren</span>“And the road is open.”</p>
+      <p><span class="sp">Edda</span>“Will you write?”</p>
+      <p><span class="sp">Wren</span>“Yes. And if I stop, come be angry at me.”</p>
+    </blockquote>
+    <p class="finis rv">Here ends one telling</p>
+  </div></div>
+</article>
+
+<!-- Ending D -->
+<article class="chapter ending" id="endD" data-label="The Witch's Path">
+  <figure class="plate rv"><img src="img/ending-witchs-path.jpg" alt="At first snow, Wren and Hollin walk the deep-wood path to the repaired cottage together, lantern light warm against the winter trees, neither leading." loading="lazy">
+    <figcaption><span class="pn">The Fourth Path</span><span class="pt">The Witch's Path</span></figcaption>
+  </figure>
+  <div class="page"><div class="page-inner">
+    <header class="ch-head rv"><span class="kicker">An Ending</span><h3>The Witch's Path</h3><div class="headrule"></div></header>
+    <div class="prose rv rv-d1">
+      <p class="drop">Wren refused Aldric and did not follow Theo. That left the path no one had named clearly enough to count as a plan. The Witch's Cottage was repaired by first snow. Joren patched the hinges. Edda hauled kindling and claimed not to be cold. Hollin trimmed the ivy back from the shutter and stood a long time before opening it. They did not call themselves witches. Almy laughed when Wren said so, and then coughed for long enough that no one laughed with her. <em>Names arrive after work,</em> she said.</p>
+      <p>So they worked. They walked the Deep Wood, named what was there, wrote what had not yet been written, and taught carefully. Hollowfen prospered more quietly than it might have under Aldric, less brightly than it might have under trade — but people came from Veyrwick with questions and left more thoughtful than they came. At first snow, Wren and Hollin walked the path to the cottage together, neither leading.</p>
+    </div>
+    <blockquote class="dialogue rv rv-d2">
+      <p><span class="sp">Hollin</span>“What do we call this?”</p>
+      <p><span class="sp">Wren</span>“Work.”</p>
+      <p><span class="sp">Hollin</span>“People prefer grander names.”</p>
+      <p><span class="sp">Wren</span>“Then people can be disappointed.”</p>
+      <p><span class="sp">Almy</span>“Names arrive after work.”</p>
+    </blockquote>
+    <p class="finis rv">Here ends one telling</p>
+  </div></div>
+</article>
+
+<!-- ==================== EPILOGUE ==================== -->
+<section class="epilogue" id="epilogue" data-label="The Hollow, After">
+  <div class="bg"><img src="img/endpaper.jpg" alt="Dawn down Hollowfen's main lane after recovery: open doors, chimney smoke, drying racks and garden plots, the inn lantern going out and the millwheel turning in the distance." loading="lazy"></div>
+  <div class="ep-content">
+    <p class="k rv">Epilogue</p>
+    <h2 class="rv rv-d1">The Hollow, After</h2>
+    <p class="rv rv-d2">However the telling ends, the tellers agree on this much: on a morning not long after, smoke rose from more chimneys than anyone had counted in years. The inn lantern went out at dawn because dawn had become worth waking for. Doors stood open. Racks of mushrooms dried in the lane. And the Old Wood stayed dark at the valley's edge — no longer a mouth, only a wood, keeping what it keeps.</p>
+    <p class="ledger rv rv-d3">“Two shutters is a sentence beginning.” — Elder Pell, traced in ink</p>
+  </div>
+</section>
+
+<!-- ==================== DRAMATIS PERSONAE ==================== -->
+<section class="paper backmatter" id="personae" data-label="Dramatis Personae">
+  <div class="bm-inner">
+    <div class="bm-head rv"><p class="k">Appendix the First</p><h2>Dramatis Personae</h2></div>
+    <p class="cast-note rv">The people of the Hollow, as recorded in the village sketchbook — likenesses, working clothes, and the things their hands would not put down.</p>
+    <div class="castgrid rv rv-d1">
+      <div class="castcard"><div class="ci"><img src="img/cast/wren.jpg" alt="Character sheet of Wren Tobin: turnaround studies, portrait, basket, knife and journal." loading="lazy"></div><div class="cc"><b>Wren Tobin</b><span>the miller's daughter, late of Veyrwick; forager, and keeper of her father's journal</span></div></div>
+      <div class="castcard"><div class="ci"><img src="img/cast/bram.jpg" alt="Character sheet of Old Bram: a broad white-bearded innkeeper with apron, broom, key and mug." loading="lazy"></div><div class="cc"><b>Old Bram</b><span>innkeeper of The Crooked Pintle, who apologizes when he is helpless</span></div></div>
+      <div class="castcard"><div class="ci"><img src="img/cast/marra.jpg" alt="Character sheet of Marra: a strong-armed cook in kerchief and apron with rolled sleeves." loading="lazy"></div><div class="cc"><b>Marra</b><span>cook of the Pintle, whose respect begins as standards</span></div></div>
+      <div class="castcard"><div class="ci"><img src="img/cast/almy.jpg" alt="Character sheet of Sister Almy: a wiry grey-haired woman in a dark dress and grey kerchief with satchel and herb bundles." loading="lazy"></div><div class="cc"><b>Sister Almy</b><span>vine-tender; taught three things by Wren's grandmother, and forbidden to teach them</span></div></div>
+      <div class="castcard"><div class="ci"><img src="img/cast/edda.jpg" alt="Character sheet of Edda: a thin fourteen-year-old in brown homespun with a basket and tightly braided hair." loading="lazy"></div><div class="cc"><b>Edda</b><span>fourteen; thin from a hard year; deciding not to give anyone the satisfaction</span></div></div>
+      <div class="castcard"><div class="ci"><img src="img/cast/joren.jpg" alt="Character sheet of Joren: a broad smith in a leather apron with soot-blackened forearms and tools." loading="lazy"></div><div class="cc"><b>Joren</b><span>smith with a low fire, whose work is better than asked for</span></div></div>
+      <div class="castcard"><div class="ci"><img src="img/cast/voss.jpg" alt="Character sheet of Master Voss: a gaunt tax collector in a drab clean coat with a small ledger." loading="lazy"></div><div class="cc"><b>Master Voss</b><span>Lord Aldric's collector; a clean coat on a muddy road</span></div></div>
+      <div class="castcard"><div class="ci"><img src="img/cast/theo.jpg" alt="Character sheet of Theo: a trim-bearded trader in a good travel coat with ledger and coin." loading="lazy"></div><div class="cc"><b>Theo</b><span>trader; honest in the places dishonest men would have hidden</span></div></div>
+      <div class="castcard"><div class="ci"><img src="img/cast/hollin.jpg" alt="Character sheet of Hollin: a pale dark-haired traveler in earth-toned clothes with a carefully mended satchel." loading="lazy"></div><div class="cc"><b>Hollin</b><span>a stranger walking; Sable's granddaughter, carrying half a story</span></div></div>
+      <div class="castcard"><div class="ci"><img src="img/cast/calden.jpg" alt="Character sheet of Father Calden: a white-haired priest in a dark cassock with a wooden cross." loading="lazy"></div><div class="cc"><b>Father Calden</b><span>priest of the Hollow; afraid of being late to wisdom and early to harm</span></div></div>
+      <div class="castcard"><div class="ci"><img src="img/cast/pell.jpg" alt="Character sheet of Elder Pell: a stooped village elder with ledger and pencil." loading="lazy"></div><div class="cc"><b>Elder Pell</b><span>record keeper, who writes only the shutters that mean something</span></div></div>
+      <div class="castcard"><div class="ci"><img src="img/cast/aldric.jpg" alt="Character sheet of Lord Aldric: a composed lord in dark wool with a velvet collar and signet ring." loading="lazy"></div><div class="cc"><b>Lord Aldric</b><span>a careful man with good manners and ledgers where other people keep guilt</span></div></div>
+      <div class="castcard"><div class="ci"><img src="img/cast/grandfather.jpg" alt="Character sheet of Edda's grandfather: a thin white-haired elder with a quilt and soup bowl." loading="lazy"></div><div class="cc"><b>Edda's Grandfather</b><span>who ate the whole bowl, and held it afterward with both hands</span></div></div>
+      <div class="castcard"><div class="ci"><img src="img/cast/wenmar.jpg" alt="Character sheet of the Wenmar family: a worn rural family of three." loading="lazy"></div><div class="cc"><b>The Wenmar Family</b><span>whose cottage was named in Voss's ledger, and kept out of it</span></div></div>
+      <div class="castcard"><div class="ci"><img src="img/cast/villagers.jpg" alt="Character sheet of Hollowfen villagers: workers, children and elders of the village." loading="lazy"></div><div class="cc"><b>The Villagers</b><span>who learned caution too well, and are learning something else now</span></div></div>
+      <div class="castcard"><div class="ci"><img src="img/cast/dog.jpg" alt="Character sheet of the village dog: a small scruffy cream-coated dog, studied from every angle." loading="lazy"></div><div class="cc"><b>The Dog</b><span>of the Hollow generally; employed by no one; appears wherever soup is</span></div></div>
+      <div class="castcard ghost"><div class="ci"><span class="g">No likeness survives. Half her hair went white in the Deep Wood; the rest of her went into the seedbook.</span></div><div class="cc"><b>Sable</b><span>the last hedge-witch of Hollowfen, remembered</span></div></div>
+      <div class="castcard ghost"><div class="ci"><span class="g">No likeness survives — only neat ledgers, a mended blue cup, and a journal wrapped in oilcloth.</span></div><div class="cc"><b>Tobin</b><span>the late miller, who kept accounts better than any lord's clerk, and one secret worse</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== COMPENDIUM ==================== -->
+<section class="backmatter compendium" id="compendium" data-label="Tobin's Compendium">
+  <div class="bm-inner">
+    <div class="bm-head rv"><p class="k">Appendix the Second</p><h2>Tobin's Compendium</h2></div>
+    <p class="comp-note rv">The sixteen species of the Hollow, as inked into the family journal — four to an act, from the five safe basics to the two final lessons Wren taught rather than learned.</p>
+    <div class="comp-plate rv"><img src="img/cast/specimens.jpg" alt="A specimen sheet: goldfoot chanterelles, field caps, a wood ear cluster and two slender mushrooms laid out for study." loading="lazy"></div>
+    <p class="comp-cap rv">Specimens laid out for the journal — goldfoots above, field caps below, a wood ear from the fallen willow, and something faintly green that Wren did not cut twice.</p>
+    <div class="compgrid rv rv-d1">
+      <div class="fungus"><div class="fimg"><img src="img/fungi/field_cap.jpg" alt="Field Cap mushrooms in short grass." loading="lazy"></div><div class="fbody"><div class="f-top"><span class="fname">Field Cap</span><span class="fact">Act I</span></div><p class="flatin">Marasmius oreades</p><p class="fhab">Fairy rings in short grass near the village. The first lesson: look.</p><span class="badge b-ed">Edible</span></div></div>
+      <div class="fungus"><div class="fimg"><img src="img/fungi/wood_ear.jpg" alt="Wood Ear fungus on a dead branch." loading="lazy"></div><div class="fbody"><div class="f-top"><span class="fname">Wood Ear</span><span class="fact">Act I</span></div><p class="flatin">Auricularia auricula-judae</p><p class="fhab">Damp dead willow and alder in the Edge Woods. Not every useful thing has a cap and stem.</p><span class="badge b-ed">Edible</span></div></div>
+      <div class="fungus"><div class="fimg"><img src="img/fungi/pinecrest.jpg" alt="Pinecrest bolete under pine duff." loading="lazy"></div><div class="fbody"><div class="f-top"><span class="fname">Pinecrest</span><span class="fact">Act I</span></div><p class="flatin">Suillus luteus</p><p class="fhab">Pine duff at the highland edge. Turn it over — pores, not gills.</p><span class="badge b-ed">Edible</span></div></div>
+      <div class="fungus"><div class="fimg"><img src="img/fungi/goldfoot.jpg" alt="Goldfoot chanterelles with hollow yellow stems in deep moss." loading="lazy"></div><div class="fbody"><div class="f-top"><span class="fname">Goldfoot</span><span class="fact">Act I</span></div><p class="flatin">Craterellus tubaeformis</p><p class="fhab">Mossy mixed woods by the First Forage Grove. Hollow stem, forked ridges; false ones grow two handspans away.</p><span class="badge b-ed">Edible · valuable</span></div></div>
+      <div class="fungus"><div class="fimg"><img src="img/fungi/field_mushroom.jpg" alt="Field Mushrooms in pasture grass." loading="lazy"></div><div class="fbody"><div class="f-top"><span class="fname">Field Mushroom</span><span class="fact">Act I → IV</span></div><p class="flatin">Agaricus campestris</p><p class="fhab">Pasture at the village edge. The gill-color rule that becomes lifesaving in Act IV.</p><span class="badge b-ed">Edible</span></div></div>
+      <div class="fungus"><div class="fimg"><img src="img/fungi/chanterelle.jpg" alt="Golden chanterelles among oak roots." loading="lazy"></div><div class="fbody"><div class="f-top"><span class="fname">Chanterelle</span><span class="fact">Act II</span></div><p class="flatin">Cantharellus cibarius</p><p class="fhab">Oak and beech roots, Edge Woods interior. The mushroom that opened Theo's ledger.</p><span class="badge b-ed">Edible · choice</span></div></div>
+      <div class="fungus"><div class="fimg"><img src="img/fungi/lacewig.jpg" alt="Lacewig oyster mushrooms shelving from a log." loading="lazy"></div><div class="fbody"><div class="f-top"><span class="fname">Lacewig</span><span class="fact">Act II</span></div><p class="flatin">Pleurotus ostreatus</p><p class="fhab">Grown on inoculated logs in the mill yard — Almy's bargain with decay.</p><span class="badge b-ed">Edible · choice</span></div></div>
+      <div class="fungus"><div class="fimg"><img src="img/fungi/coppercup.jpg" alt="Orange Coppercup fungus on bare soil." loading="lazy"></div><div class="fbody"><div class="f-top"><span class="fname">Coppercup</span><span class="fact">Act II</span></div><p class="flatin">Aleuria aurantia</p><p class="fhab">Path edges and bare soil between woods and meadow. Festival color.</p><span class="badge b-ed">Edible · delicate</span></div></div>
+      <div class="fungus"><div class="fimg"><img src="img/fungi/bonepale.jpg" alt="Bonepale birch polypore bracket on a birch trunk." loading="lazy"></div><div class="fbody"><div class="f-top"><span class="fname">Bonepale</span><span class="fact">Act II</span></div><p class="flatin">Fomitopsis betulina</p><p class="fhab">Living and fallen birch near the chapel grounds. Not for the pan.</p><span class="badge b-med">Medicinal</span></div></div>
+      <div class="fungus"><div class="fimg"><img src="img/fungi/brightspore.jpg" alt="Lacquered Brightspore reishi on a hardwood stump." loading="lazy"></div><div class="fbody"><div class="f-top"><span class="fname">Brightspore</span><span class="fact">Act II</span></div><p class="flatin">Ganoderma lucidum</p><p class="fhab">Hardwood stumps in damp sheltered edges. Lacquered, bitter, faintly bright. Take one; leave two.</p><span class="badge b-med">Medicinal · rare</span></div></div>
+      <div class="fungus"><div class="fimg"><img src="img/fungi/porcini.jpg" alt="Porcini with thick stems in mixed forest." loading="lazy"></div><div class="fbody"><div class="f-top"><span class="fname">Porcini</span><span class="fact">Act III</span></div><p class="flatin">Boletus edulis</p><p class="fhab">Mixed forest with beech and oak. Fetches Capital prices, says Theo.</p><span class="badge b-ed">Edible · choice</span></div></div>
+      <div class="fungus"><div class="fimg"><img src="img/fungi/liberty_cap.jpg" alt="Slender Liberty Caps in short grazed grass." loading="lazy"></div><div class="fbody"><div class="f-top"><span class="fname">Liberty Cap</span><span class="fact">Act III</span></div><p class="flatin">Psilocybe semilanceata</p><p class="fhab">Short grazed grass near the Witchwell Spring. Sable's knowledge; the inn does not buy it.</p><span class="badge b-psy">Psychoactive</span></div></div>
+      <div class="fungus"><div class="fimg"><img src="img/fungi/fly_agaric.jpg" alt="Red and white Fly Agaric in a birch grove." loading="lazy"></div><div class="fbody"><div class="f-top"><span class="fname">Fly Agaric</span><span class="fact">Act III</span></div><p class="flatin">Amanita muscaria</p><p class="fhab">Birch and pine groves of the Deep Wood. Journal it, gift it, never serve it.</p><span class="badge b-psy">Psychoactive · toxic</span></div></div>
+      <div class="fungus"><div class="fimg"><img src="img/fungi/deadly_galerina.jpg" alt="Deadly Galerina clustered on rotting wood." loading="lazy"></div><div class="fbody"><div class="f-top"><span class="fname">Deadly Galerina</span><span class="fact">Act III</span></div><p class="flatin">Galerina marginata</p><p class="fhab">Rotting wood throughout the Deep Wood — it shares ground with the Liberty Cap on purpose, as if eager to be mistaken.</p><span class="badge b-dead">Deadly</span></div></div>
+      <div class="fungus"><div class="fimg"><img src="img/fungi/death_cap.jpg" alt="Death Cap with pale olive cap near oak roots." loading="lazy"></div><div class="fbody"><div class="f-top"><span class="fname">Death Cap</span><span class="fact">Act IV</span></div><p class="flatin">Amanita phalloides</p><p class="fhab">Oak and beech roots near Aldric's manor woodland. Wren draws it for the chapel notice board.</p><span class="badge b-dead">Deadly</span></div></div>
+      <div class="fungus"><div class="fimg"><img src="img/fungi/destroying_angel.jpg" alt="Pure white Destroying Angel at a birch edge." loading="lazy"></div><div class="fbody"><div class="f-top"><span class="fname">Destroying Angel</span><span class="fact">Act IV</span></div><p class="flatin">Amanita virosa</p><p class="fhab">Birch edges between the chapel and the Deep Wood. Closes the gill-color lesson Bram opened in Act I.</p><span class="badge b-dead">Deadly</span></div></div>
+    </div>
+    <p class="comp-rule rv">“Never eat what you cannot name twice.”<span class="src">The rule. The whole rule.</span></p>
+  </div>
+</section>
+
+<!-- ==================== COLOPHON ==================== -->
+<footer class="colophon" id="colophon" data-label="Colophon">
+  <div class="c-inner rv">
+    <svg class="orn orn-light center" viewBox="0 0 190 34" fill="none" aria-hidden="true"><path d="M0 17h70" stroke="currentColor" stroke-width="1"/><path d="M120 17h70" stroke="currentColor" stroke-width="1"/><path d="M95 6c-7 0-13 4-13 9 0 1 .6 2 2 2h22c1.4 0 2-1 2-2 0-5-6-9-13-9Z" stroke="currentColor" stroke-width="1.4"/><path d="M95 17v9m-3 2c0-1.5 1-2 3-2s3 .5 3 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    <p>This edition of <em>Hollowfen — The Failing Village</em> was set in IM Fell English and EB Garamond upon digital paper, with more than seventy pictures made for the Hollowfen project: story plates, a village survey, sixteen field-guide studies, and the sketchbook of its people.</p>
+    <p>The story is drawn from the Hollowfen narrative design document: four acts, sixteen mushrooms, one village, and no overt magic — the wonder is ecological, inherited, and half-forgotten.</p>
+    <p class="fin">FINIS</p>
+  </div>
+</footer>
+
+<script>
+// ---------- print/export mode: ?print loads everything eagerly ----------
+if(location.search.indexOf('print')!==-1){
+  document.querySelectorAll('img[loading]').forEach(i=>i.loading='eager');
+  document.querySelectorAll('.rv').forEach(e=>e.classList.add('in'));
+}
+// ---------- reveal on scroll ----------
+const io = new IntersectionObserver((entries)=>{
+  for(const e of entries){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} }
+},{threshold:.12,rootMargin:'0px 0px -6% 0px'});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+// ---------- progress + chapter label ----------
+const fill=document.querySelector('#progress .fill');
+const label=document.getElementById('chapterLabel');
+const labeled=[...document.querySelectorAll('[data-label]')];
+function onScroll(){
+  const h=document.documentElement;
+  const p=h.scrollTop/(h.scrollHeight-h.clientHeight);
+  fill.style.height=(p*100)+'%';
+  let current='';
+  for(const s of labeled){ if(s.getBoundingClientRect().top<innerHeight*.5) current=s.dataset.label; }
+  if(label.textContent!==current) label.textContent=current;
+}
+addEventListener('scroll',onScroll,{passive:true}); onScroll();
+
+// ---------- table of contents ----------
+const toc=document.getElementById('toc');
+document.getElementById('tocBtn').addEventListener('click',()=>toc.classList.add('open'));
+document.getElementById('tocClose').addEventListener('click',()=>toc.classList.remove('open'));
+toc.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>toc.classList.remove('open')));
+addEventListener('keydown',e=>{ if(e.key==='Escape') toc.classList.remove('open'); });
+</script>
+</body>
+</html>

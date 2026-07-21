@@ -1,0 +1,88 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b4e19f76957446acb794b6622b288e2, type: 3}
+  m_Name: Character_lord-aldric
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.CharacterProfileData
+  _id: lord-aldric
+  _characterName: Lord Aldric
+  _role: Regional lord / final negotiator
+  _age: Fifties
+  _home: Lord Aldric's manor
+  _work: Estate management, taxation, and negotiation
+  _keepsake: Signet ring
+  _tagline: A polished landholder who treats every future as a set of negotiable
+    terms.
+  _leadParagraph: Lord Aldric is educated, well-fed, and composed, dressed in dark
+    wool and velvet with a signet ring always close to the business at hand.
+  _backgroundParagraph: His estate's taxes and upstream interests reach Hollowfen
+    long before he meets Wren, first through Voss's ledger and then through a carefully
+    written offer.
+  _perspectiveParagraph: Aldric believes prosperity can be arranged by ownership,
+    protection, and arithmetic. His danger lies in calm certainty rather than raised
+    voices.
+  _kitItems: []
+  _heroPortrait: {fileID: 0}
+  _pullquote: A letter is not an acquaintance. Merely an opening bid.
+  _displayNameId: character.lord_aldric.name
+  _descriptionId: character.lord_aldric.lead
+  _sortOrder: 11
+  _category: 0
+  _edition: 12 / LORD ALDRIC
+  _previewScale: 1
+  _tPosePlate: {fileID: 0}
+  _characterSheet: {fileID: 0}
+  _missions:
+  - Act: 2
+    QuestId: firstTax
+    Title: Twelve Silver by Yule
+    Summary: Apply estate pressure through Voss's tax demand.
+  - Act: 3
+    QuestId: wendlightFound
+    Title: The Wend's True Course
+    Summary: Enter the river story as the name behind the upstream works.
+  - Act: 3
+    QuestId: aldricLetter
+    Title: A Sealed Letter
+    Summary: Send Wren a letter through Master Voss.
+  - Act: 4
+    QuestId: aldricOfferRead
+    Title: The Lord's Offer
+    Summary: Set out terms for patronage and control of Hollowfen's trade.
+  - Act: 4
+    QuestId: wendSource
+    Title: The Source of the Wend
+    Summary: Stand behind the estate marks found at the clear-cut.
+  - Act: 4
+    QuestId: meetAldric
+    Title: The Meeting
+    Summary: Meet Wren at the manor and negotiate Hollowfen's future.
+  _quotes:
+  - Text: A letter is not an acquaintance. Merely an opening bid.
+    Context: Opening the manor negotiation.
+  - Text: I can make Hollowfen prosperous.
+    Context: Stating his offer in its simplest form.
+  - Text: That is rarely the first word in a negotiation.
+    Context: Answering Wren's refusal.
+  _heroPortraitResourcePath: People/Art/lord-aldric_hero
+  _tPosePlateResourcePath: People/Art/lord-aldric_tpose
+  _characterSheetResourcePath: People/Art/lord-aldric_hero
+  _journalModelResourcePath: People/Models/lord-aldric
+  _journalTriangleBudget: 90000
+  _journalTextureSize: 2048
+  _journalModelPrefab: {fileID: 0}
+  _journalIdleClip: {fileID: 0}
+  _journalExposure: 0.15
+  _studySheet: {fileID: 0}
+  _figureFront: {fileID: 0}
+  _figureBack: {fileID: 0}
+  _figureThreeQuarter: {fileID: 0}
+  _knifePlate: {fileID: 0}

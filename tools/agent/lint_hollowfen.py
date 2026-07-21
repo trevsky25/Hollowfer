@@ -75,6 +75,9 @@ def scan_cs(findings):
             if not name.endswith(".cs"):
                 continue
             path = os.path.join(root, name)
+            # Editor importers legitimately resolve project assets through Application.dataPath.
+            # The cloud-safety rule protects runtime save code, which cannot ship from an Editor folder.
+            editor_only = f"{os.sep}Editor{os.sep}" in path
             try:
                 with open(path, encoding="utf-8") as f:
                     lines = f.read().splitlines()
@@ -95,7 +98,7 @@ def scan_cs(findings):
                     type_stack.append((m.group(1), is_unity, depth))
                 if LEGACY_INPUT.search(line):
                     findings.append(("ERROR", "legacy-input", path, n, stripped[:90]))
-                if DATAPATH.search(line):
+                if DATAPATH.search(line) and not editor_only:
                     findings.append(("ERROR", "datapath-save", path, n, stripped[:90]))
                 if PUBLIC_FIELD.search(line) and type_stack and type_stack[-1][1]:
                     findings.append(("WARN", "public-field", path, n, stripped[:90]))

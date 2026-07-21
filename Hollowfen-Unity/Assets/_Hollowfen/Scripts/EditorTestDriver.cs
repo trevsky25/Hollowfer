@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System.Collections;
 using UnityEngine;
 
@@ -5,7 +6,7 @@ namespace Hollowfen
 {
     // Dev-only helper: walks a CharacterController in a direction over several frames so
     // physics trigger events fire the same way they do for real player movement. Used by
-    // automated play-mode verification through the MCP bridge; harmless in builds (never spawned).
+    // automated play-mode verification through the MCP bridge; excluded from player builds.
     public class EditorTestDriver : MonoBehaviour
     {
         public void Begin(CharacterController cc, Vector3 dir, float speed, float seconds)
@@ -25,3 +26,4 @@ namespace Hollowfen
         }
     }
 }
+#endif

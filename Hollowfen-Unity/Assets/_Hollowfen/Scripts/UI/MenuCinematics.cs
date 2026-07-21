@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Hollowfen.Settings;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -34,9 +35,6 @@ namespace Hollowfen.UI
         // The warm/gold tint now lives ONLY behind the left text column, cleanly fading out before the
         // hero — so Wren foraging shows the image's true colour (batch-54, Trevor's note).
         [SerializeField] private Color _leftWarmColor = new Color(0.32f, 0.22f, 0.09f, 1f); // warm amber
-        [SerializeField] private float _leftWarmStrength = 0.9f;   // alpha at the left edge
-        [SerializeField] private float _leftWarmWidth = 0.56f;     // fraction of screen width it spans
-
         [Header("Ken Burns")]
         [SerializeField] private float _kenBurnsScale = 1.06f;
         [SerializeField] private float _kenBurnsSeconds = 48f;
@@ -53,6 +51,13 @@ namespace Hollowfen.UI
         private readonly List<Mist> _mist = new List<Mist>();
         private float _t;
         private bool _built;
+        private GameObject _moteRoot;
+        private GameObject _mistRoot;
+        private bool _lastReducedMotion;
+        private readonly Dictionary<RectTransform, Vector2> _revealPositions =
+            new Dictionary<RectTransform, Vector2>();
+        private readonly Dictionary<RectTransform, Vector3> _revealScales =
+            new Dictionary<RectTransform, Vector3>();
 
         private static Sprite _dotSprite;
         private static Sprite _vignetteSprite;
@@ -68,14 +73,28 @@ namespace Hollowfen.UI
 
         private void OnEnable()
         {
-            if (_built) { StopAllCoroutines(); if (_playReveal) StartCoroutine(RevealRoutine()); return; }
+            if (_built)
+            {
+                StopAllCoroutines();
+                FinishRevealState();
+                ApplyMotionPreference();
+                if (_playReveal && !GameSettings.ReducedMotion) StartCoroutine(RevealRoutine());
+                return;
+            }
             _canvasRect = GetComponent<RectTransform>();
             if (_canvasRect == null) { var c = GetComponentInParent<Canvas>(); if (c != null) _canvasRect = c.GetComponent<RectTransform>(); }
             if (_canvasRect == null) return;
             EnsureSprites();
             Build();
             _built = true;
-            if (_playReveal) StartCoroutine(RevealRoutine());
+            ApplyMotionPreference();
+            if (_playReveal && !GameSettings.ReducedMotion) StartCoroutine(RevealRoutine());
+        }
+
+        private void OnDisable()
+        {
+            StopAllCoroutines();
+            FinishRevealState();
         }
 
         private void Build()
@@ -89,6 +108,7 @@ namespace Hollowfen.UI
 
             // ---- Mist container (just above the hero, below the legibility gradients) ----
             var mistRoot = NewLayer("Cinematic_Mist", 1);
+            _mistRoot = mistRoot.gameObject;
             for (int i = 0; i < _mistCount; i++)
             {
                 var m = new Mist();
@@ -107,6 +127,7 @@ namespace Hollowfen.UI
 
             // ---- Mote container (above mist) ----
             var moteRoot = NewLayer("Cinematic_Motes", 2);
+            _moteRoot = moteRoot.gameObject;
             for (int i = 0; i < _moteCount; i++)
             {
                 var go = new GameObject("Mote_" + i, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(CanvasGroup));
@@ -149,6 +170,16 @@ namespace Hollowfen.UI
         private void Update()
         {
             if (!_built) return;
+            if (_lastReducedMotion != GameSettings.ReducedMotion) ApplyMotionPreference();
+            if (GameSettings.ReducedMotion)
+            {
+                if (_bg != null)
+                {
+                    _bg.localScale = _bgBaseScale;
+                    _bg.anchoredPosition = _bgBasePos;
+                }
+                return;
+            }
             _t += Time.unscaledDeltaTime;
             float dt = Time.unscaledDeltaTime;
 
@@ -187,11 +218,26 @@ namespace Hollowfen.UI
             }
         }
 
+        private void ApplyMotionPreference()
+        {
+            _lastReducedMotion = GameSettings.ReducedMotion;
+            if (_moteRoot != null) _moteRoot.SetActive(!_lastReducedMotion);
+            if (_mistRoot != null) _mistRoot.SetActive(!_lastReducedMotion);
+            if (!_lastReducedMotion) return;
+            FinishRevealState();
+            if (_bg != null)
+            {
+                _bg.localScale = _bgBaseScale;
+                _bg.anchoredPosition = _bgBasePos;
+            }
+        }
+
         // ---- Ink-bleed staggered reveal of the title block ----
         private IEnumerator RevealRoutine()
         {
             var card = FindChild(_canvasRect, "TextCard");
             if (card == null) yield break;
+            FinishRevealState();
             string[] order = { "Text_Eyebrow", "Text_Title", "Divider", "Text_Subtitle", "Text_Tagline", "Btn_NewGame", "NavRow" };
             var groups = new List<CanvasGroup>();
             var rects = new List<RectTransform>();
@@ -200,10 +246,21 @@ namespace Hollowfen.UI
                 var t = FindChild(card, n);
                 if (t == null) continue;
                 var cg = t.GetComponent<CanvasGroup>(); if (cg == null) cg = t.gameObject.AddComponent<CanvasGroup>();
+                var rt = t.GetComponent<RectTransform>();
                 cg.alpha = 0f;
-                groups.Add(cg); rects.Add(t.GetComponent<RectTransform>());
+                cg.interactable = false;
+                cg.blocksRaycasts = false;
+                groups.Add(cg); rects.Add(rt);
             }
             yield return null; // let layout settle
+            // Cache the authored positions only after layout has resolved. Capturing them above
+            // this yield records every VerticalLayoutGroup child at its pre-layout origin and an
+            // interrupted reveal can then restore the whole menu off the left edge of the canvas.
+            foreach (RectTransform rt in rects)
+            {
+                if (!_revealPositions.ContainsKey(rt)) _revealPositions.Add(rt, rt.anchoredPosition);
+                if (!_revealScales.ContainsKey(rt)) _revealScales.Add(rt, rt.localScale);
+            }
             float stagger = 0.16f;
             for (int i = 0; i < groups.Count; i++)
             {
@@ -214,8 +271,10 @@ namespace Hollowfen.UI
 
         private IEnumerator FadeRise(CanvasGroup cg, RectTransform rt, float dur, bool inkBleed)
         {
-            Vector2 basePos = rt.anchoredPosition;
-            Vector3 baseScale = rt.localScale;
+            Vector2 basePos = _revealPositions.TryGetValue(rt, out Vector2 position)
+                ? position : rt.anchoredPosition;
+            Vector3 baseScale = _revealScales.TryGetValue(rt, out Vector3 scale)
+                ? scale : rt.localScale;
             float rise = 14f;
             float e = 0f;
             while (e < dur)
@@ -228,7 +287,35 @@ namespace Hollowfen.UI
                 if (inkBleed) rt.localScale = baseScale * Mathf.Lerp(1.035f, 1f, ease); // bloom-in
                 yield return null;
             }
-            cg.alpha = 1f; rt.anchoredPosition = basePos; rt.localScale = baseScale;
+            cg.alpha = 1f;
+            cg.interactable = true;
+            cg.blocksRaycasts = true;
+            rt.anchoredPosition = basePos;
+            rt.localScale = baseScale;
+        }
+
+        // Completes an interrupted reveal so invisible CanvasGroups can never retain input.
+        // The Editor-only audit harness also invokes this after deterministic frame stepping.
+        private void FinishRevealState()
+        {
+            if (_canvasRect == null) return;
+            var card = FindChild(_canvasRect, "TextCard");
+            if (card == null) return;
+            string[] order = { "Text_Eyebrow", "Text_Title", "Divider", "Text_Subtitle", "Text_Tagline", "Btn_NewGame", "NavRow" };
+            foreach (string name in order)
+            {
+                RectTransform rt = FindChild(card, name);
+                if (rt == null) continue;
+                CanvasGroup group = rt.GetComponent<CanvasGroup>();
+                if (group == null) group = rt.gameObject.AddComponent<CanvasGroup>();
+                group.alpha = 1f;
+                group.interactable = true;
+                group.blocksRaycasts = true;
+                if (_revealPositions.TryGetValue(rt, out Vector2 position))
+                    rt.anchoredPosition = position;
+                if (_revealScales.TryGetValue(rt, out Vector3 scale))
+                    rt.localScale = scale;
+            }
         }
 
         // ---- helpers ----

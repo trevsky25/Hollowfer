@@ -17,27 +17,45 @@ MonoBehaviour:
   - speaker: Wren
     text: Count it.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 38072356b62924a7b9ca997b4813dcf4, type: 3}
   - speaker: Voss
     text: This is not the village's account.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 694f4e974f1e1469e8d8456863c53bbd, type: 3}
   - speaker: Wren
     text: It is today.
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: 1a82ef3b535294f7fbf93a8542568a69, type: 3}
   - speaker: Voss
     text: Very well, Miss Tobin.
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: c29a021ae4590410a8d34e6e5dee5d57, type: 3}
+  _mushroomHandoff:
+    beforeLineIndex: 0
+    recipientSpeaker: 
+    mushroom: {fileID: 0}
+    presentationHeight: 0
   _unlockStoryCard: {fileID: 0}
   _completeQuest: {fileID: 11400000, guid: 130b3a3e411e43e6b8a8810a5ca6431d, type: 2}
-  _giveItemId:
+  _giveItemId: 
   _grantCoinsCopper: 0
   _spendsCoinsCopper: 144
   _sellsForageBasket: 0
   _basketCopperPerItem: 0
+  _basketBuyer: 0
   _grantForage: {fileID: 0}
   _grantForageCount: 1
+  _consumeForage: {fileID: 0}
+  _consumeForageCount: 1
   _setFlagIds: []
   _villageHopeDelta: 0
   _knowledgeDelta: 0
   _relationshipNpcIds: []
-  _relationshipDeltas: []
+  _relationshipDeltas: 
+  _memoryOutcomes: []
+  _bondOutcomes: []
+  _favorOutcomes: []
+  _advanceMinutes: 0
+  _transitionMoment: {fileID: 11400000, guid: 7ef9bd877fe324efe93164f49b11b010, type: 2}
   _nextDialog: {fileID: 0}
+  _choices: []

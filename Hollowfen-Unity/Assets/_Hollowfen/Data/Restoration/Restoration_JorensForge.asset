@@ -1,0 +1,99 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b71ffd66f0a5441d5af5ee26c3fa2d26, type: 3}
+  m_Name: Restoration_JorensForge
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Restoration.RestorationProjectData
+  _id: jorens_forge
+  _titleId: restoration.forge.title
+  _summaryId: restoration.forge.summary
+  _locationId: restoration.forge.location
+  _promptTargetId: restoration.forge.site
+  _benefitId: restoration.forge.benefit
+  _villageHopeReward: 3
+  _knowledgeReward: 0
+  _activeQuestId: 
+  _completedQuestId: 
+  _stageRules:
+  - _condition: 2
+    _valueId: forgeKnife
+    _stage: 1
+  - _condition: 3
+    _valueId: forge_supplies_ready
+    _stage: 2
+  - _condition: 3
+    _valueId: forge_work_started
+    _stage: 3
+  - _condition: 3
+    _valueId: forge_restored
+    _stage: 4
+  - _condition: 3
+    _valueId: forge_in_use
+    _stage: 5
+  _stageCopy:
+  - _stage: 1
+    _titleId: restoration.forge.stage.surveyed.title
+    _bodyId: restoration.forge.stage.surveyed.body
+    _shortId: restoration.forge.stage.surveyed.short
+  - _stage: 2
+    _titleId: restoration.forge.stage.supplies.title
+    _bodyId: restoration.forge.stage.supplies.body
+    _shortId: restoration.forge.stage.supplies.short
+  - _stage: 3
+    _titleId: restoration.forge.stage.work.title
+    _bodyId: restoration.forge.stage.work.body
+    _shortId: restoration.forge.stage.work.short
+  - _stage: 4
+    _titleId: restoration.forge.stage.restored.title
+    _bodyId: restoration.forge.stage.restored.body
+    _shortId: restoration.forge.stage.restored.short
+  - _stage: 5
+    _titleId: restoration.forge.stage.occupied.title
+    _bodyId: restoration.forge.stage.occupied.body
+    _shortId: restoration.forge.stage.occupied.short
+  _milestones:
+  - _labelId: restoration.forge.milestone.unlock
+    _detailId: restoration.forge.milestone.unlock.detail
+    _condition: 2
+    _valueId: forgeKnife
+    _requiredStage: 0
+  - _labelId: restoration.forge.milestone.first
+    _detailId: restoration.forge.milestone.first.detail
+    _condition: 3
+    _valueId: forge_first_funded
+    _requiredStage: 0
+  - _labelId: restoration.forge.milestone.second
+    _detailId: restoration.forge.milestone.second.detail
+    _condition: 3
+    _valueId: forge_second_funded
+    _requiredStage: 0
+  - _labelId: restoration.forge.milestone.work
+    _detailId: restoration.forge.milestone.work.detail
+    _condition: 3
+    _valueId: forge_work_started
+    _requiredStage: 0
+  - _labelId: restoration.forge.milestone.use
+    _detailId: restoration.forge.milestone.use.detail
+    _condition: 3
+    _valueId: forge_in_use
+    _requiredStage: 0
+  _contributions:
+  - _labelId: restoration.forge.contribution.first
+    _detailId: restoration.forge.contribution.first.detail
+    _fundedFlagId: forge_first_funded
+    _costCopper: 16
+    _availableFromStage: 1
+  - _labelId: restoration.forge.contribution.second
+    _detailId: restoration.forge.contribution.second.detail
+    _fundedFlagId: forge_second_funded
+    _costCopper: 14
+    _availableFromStage: 1
+  _contributionsCompleteFlagId: forge_supplies_ready

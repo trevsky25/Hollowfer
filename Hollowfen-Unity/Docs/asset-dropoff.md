@@ -4,7 +4,7 @@ Drop location: `Hollowfen-Unity/Assets/_Hollowfen/Models/Dropoff/<AssetName>/` (
 Characters swap ZERO-RISK: every NPC is a root (trigger + NPCInteractable + quest wiring) with a `Visual` capsule child — the model replaces the child only; quest logic is never touched.
 Mushrooms follow the proven 3-species recipe in systems/foraging.md (mask-map packing, 0.08-scale wrap, colliders, SO wiring) — same-day integration.
 Hard deadline: pre-EA store assets/trailer (~month 10–12) need the real cast; everything earlier is drop-in-when-ready.
-Status: spec written 2026-07-11; wants list is living — agents append when new content introduces models.
+Status: batch-68 integrated the full delivered mushroom set through a reusable two-budget optimization/import pipeline; Aldermark/Maitake remains the only mushroom model wanted.
 
 > Self-healing doc: update the wants list as species/characters/props enter the bible pipeline; check items off with the batch that integrated them.
 
@@ -29,7 +29,7 @@ Status: spec written 2026-07-11; wants list is living — agents append when new
 ## What the agent does with each drop (Trevor does none of this)
 
 Characters: import → avatar setup → URP materials (mask-map packing) → Animator with idle → swap the NPC's `Visual` child → scale/ground check → screenshot verify → integrity/smoke gates → commit.
-Mushrooms: import → material recipe → prefab wrap (pivot/scale/colliders per foraging.md) → `WorldPrefab` on the species SO → world node placement → inspect-screen preview verify → commit.
+Mushrooms: preserve the source drop → Blender-generate world/journal triangle budgets from the shared manifest → material/mask-map importer → normalized gameplay + dedicated journal prefabs → SO wiring → world/guide verification. Full recipe and commands live in `systems/foraging.md`.
 
 ## Wants list (priority order)
 
@@ -48,12 +48,13 @@ Mushrooms: import → material recipe → prefab wrap (pivot/scale/colliders per
 - [ ] Char_Hollin (Wren's age, pale from travel, dark-haired, slight, carefully-mended satchel — bible-specified look)
 - [ ] **Wren animation set** (idle/walk/run matched to her existing rig — clears the palms-up-run TODOS item)
 
-### P3 — Mushrooms (tinted variants standing in today)
-- [ ] Mushroom_Goldfoot (story-critical — "gold-stemmed", Theo's obsession)
-- [ ] Mushroom_Brightspore ("lacquered, faintly bright at the edge, like firelight seen through horn")
-- [ ] Mushroom_WoodEar (cultivation species — seen constantly in grow beds)
-- [ ] Mushroom_Wendlight (Act III — spec TBD from bible compendium when Act III A ships)
-- [ ] Mushroom_FieldCap, Mushroom_Pinecrest (Act I basics)
+### P3 — Mushrooms
+- [x] Mushroom_Goldfoot (story-critical — "gold-stemmed", Theo's obsession) — batch-68
+- [x] Mushroom_Brightspore ("lacquered, faintly bright at the edge, like firelight seen through horn") — batch-68
+- [x] Mushroom_WoodEar (cultivation species — seen constantly in grow beds) — batch-68
+- [x] Mushroom_Wendlight / real Liberty Cap — batch-68
+- [x] Mushroom_FieldCap, Mushroom_Pinecrest (Act I basics) — batch-68
+- [ ] Mushroom_Aldermark / Hen of the Woods (*Grifola frondosa*) — the sole remaining canonical model
 
 ### P4 — Hero items (no kitbash source exists — memory: packs have NO key/book models)
 - [ ] Prop_MillKey (Act I keepsake)

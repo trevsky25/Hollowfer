@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Audio;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 #endif
@@ -31,6 +32,8 @@ namespace StarterAssets
         public AudioClip LandingAudioClip;
         public AudioClip[] FootstepAudioClips;
         [Range(0, 1)] public float FootstepAudioVolume = 0.5f;
+        [Tooltip("Optional mixer override. If empty, Hollowfen's gameplay SFX output is used.")]
+        public AudioMixerGroup FootstepOutput;
 
         [Space(10)]
         [Tooltip("The height the player can jump")]
@@ -105,6 +108,16 @@ namespace StarterAssets
         private CharacterController _controller;
         private StarterAssetsInputs _input;
         private GameObject _mainCamera;
+        private AudioSource _footstepAudioSource;
+
+        public AudioSource FootstepSource
+        {
+            get
+            {
+                EnsureFootstepSource();
+                return _footstepAudioSource;
+            }
+        }
 
         private const float _threshold = 0.01f;
 
@@ -130,12 +143,48 @@ namespace StarterAssets
             {
                 _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
             }
+            EnsureFootstepSource();
+        }
+
+        private void EnsureFootstepSource()
+        {
+            if (_footstepAudioSource == null)
+            {
+                _footstepAudioSource = gameObject.AddComponent<AudioSource>();
+                _footstepAudioSource.playOnAwake = false;
+                _footstepAudioSource.spatialBlend = 1f;
+                _footstepAudioSource.dopplerLevel = 0f;
+                _footstepAudioSource.minDistance = 1f;
+                _footstepAudioSource.maxDistance = 14f;
+                _footstepAudioSource.priority = 80;
+            }
+            if (_footstepAudioSource.outputAudioMixerGroup == null)
+                _footstepAudioSource.outputAudioMixerGroup = FootstepOutput != null
+                    ? FootstepOutput
+                    : ResolveGameplaySfxOutput();
+        }
+
+        private static AudioMixerGroup ResolveGameplaySfxOutput()
+        {
+            // Starter Assets lives in its own assembly, so keep the vendored
+            // controller decoupled from Hollowfen's runtime assembly while
+            // still discovering the shared SFX mixer after UI bootstrap.
+            foreach (var assembly in System.AppDomain.CurrentDomain.GetAssemblies())
+            {
+                var registry = assembly.GetType("Hollowfen.Audio.GameplaySfx");
+                var output = registry?.GetProperty(
+                    "Output",
+                    System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+                if (output?.GetValue(null) is AudioMixerGroup mixerGroup)
+                    return mixerGroup;
+            }
+            return null;
         }
 
         private void Start()
         {
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
-            
+
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
             _input = GetComponent<StarterAssetsInputs>();
@@ -373,19 +422,21 @@ namespace StarterAssets
         {
             if (animationEvent.animatorClipInfo.weight > 0.5f)
             {
-                if (FootstepAudioClips.Length > 0)
+                if (FootstepAudioClips != null && FootstepAudioClips.Length > 0)
                 {
+                    EnsureFootstepSource();
                     var index = Random.Range(0, FootstepAudioClips.Length);
-                    AudioSource.PlayClipAtPoint(FootstepAudioClips[index], transform.TransformPoint(_controller.center), FootstepAudioVolume);
+                    _footstepAudioSource.PlayOneShot(FootstepAudioClips[index], FootstepAudioVolume);
                 }
             }
         }
 
         private void OnLand(AnimationEvent animationEvent)
         {
-            if (animationEvent.animatorClipInfo.weight > 0.5f)
+            if (animationEvent.animatorClipInfo.weight > 0.5f && LandingAudioClip != null)
             {
-                AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
+                EnsureFootstepSource();
+                _footstepAudioSource.PlayOneShot(LandingAudioClip, FootstepAudioVolume);
             }
         }
     }

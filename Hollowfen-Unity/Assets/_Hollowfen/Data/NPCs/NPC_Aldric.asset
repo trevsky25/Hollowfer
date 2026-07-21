@@ -18,6 +18,15 @@ MonoBehaviour:
   - activeQuest: {fileID: 11400000, guid: be1d1f6805f5410da490e633a51a491f, type: 2}
     requiresQuestCompleted: {fileID: 0}
     requiresFlagId:
+    blockedByFlagId:
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: d5931fa2b0b74aa2b72fd1ba8a9da871, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 11400000, guid: be1d1f6805f5410da490e633a51a491f, type: 2}
+    requiresFlagId: final_choice_available
+    blockedByFlagId: game_complete
     requiresCoinsCopper: 0
     requiresBasketNonEmpty: 0
     requiresForage: {fileID: 0}

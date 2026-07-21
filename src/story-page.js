@@ -243,6 +243,8 @@ function renderStory(model) {
   // text-based menu.
   const tocParts = [];
   tocParts.push(tocLeaf('title-card', 'Title Card'));
+  // External leaf: the illustrated picture-book edition, deployed at /book/.
+  tocParts.push('<a class="toc-link toc-link-act" href="/book/">Illustrated Picture Book ↗</a>');
   tocParts.push(tocLeaf('hollowfen-map', 'Hollowfen Map'));
 
   // Character Identity Cards — expandable, one child per character
@@ -507,6 +509,7 @@ function renderTitlePage() {
           <a href="#character-identities">Characters</a>
           <a href="#mushroom-compendium">Mushrooms</a>
           <a href="#act-i-arrival">Story</a>
+          <a href="/book/">Picture Book</a>
         </nav>
       </div>
     </section>

@@ -1,23 +1,44 @@
 # Localization
-All player-facing strings flow through `Localization.Get(stringId)` — never hardcode display text. Real dictionary LUT (no longer a passthrough); English-only today, Simplified Chinese required for EA launch.
-Key script: `Assets/_Hollowfen/Scripts/Localization.cs` (static `_table` dictionary; add new IDs there).
-ID conventions: `story.<id>.title`, `mushroom.<id>.name`, `prompt.<context>.verb`, quest/dialogue IDs stamped on SOs.
-Localized today: quest names/objectives (QuestHUD), prompt verbs + NPC display names (InteractionPromptHUD), grow-bed prompt, map side-card content, location names (`loc.<id>.name/.desc`), confirm-modal copy.
-NOT localized (audited 2026-07-11): dialogue lines + speaker names + advance hint (DialogueScreen), QuestHUD eyebrow, StoryBeats narration captions, map chrome (region-name switch, "VILLAGE"/"REGIONAL", bar labels), menu pages (raw SO fields), `SaveSlotMeta.CurrentQuest` (stores localized TEXT at save time — wrong language after switching).
-Status: infrastructure live; coverage partial with known gaps above. Translation pass is a pre-EA milestone (TODOS.md).
+Player-facing strings resolve through `Localization.Get`; never add literal display text directly to UI scripts. The live LUT is English today, with Simplified Chinese required for EA.
+Key script: `Assets/_Hollowfen/Scripts/Localization.cs`; `Get(id)` reports the raw id on a miss, while batch-63 `Get(id, englishFallback)` keeps SO-backed content readable until its translation row exists.
+ID conventions: `story.<id>.<field>`, `mushroom.<id>.<field>`, `character.<id>.<field>`, `prompt.<context>.verb`, plus fixed `journal.*` and `ending.*` chrome IDs.
+Localized/routed today: quest/objective text, prompt verbs/NPC names, map/location content and chrome, modal copy, loading/save-slot presentation, the journal family (including candidate-page browsing and enlarged-spread controls), mushroom content outside the journal, ending decisions/epilogues/credits, quest HUD chrome, the six-beat homecoming opening, and live text painted onto story-moment pages.
+Known unrouted areas: dialogue lines and choices, plus the Act I completion captions in StoryBeats. Dialogue still has no stable per-line or per-choice localization IDs. Save-slot quest copy now resolves authoritatively from `CurrentQuestId`; cached English survives only as an id-less historical-save fallback.
+Status: infrastructure live; journal routing is complete, the hidden-journal letter resolves as localized live page text in its dedicated cursive role, and voiced story moments cannot hide their matching caption. Simplified Chinese is not yet shippable: there is no language store/selector, translated table, or CJK-capable TMP fallback, and several runtime surfaces still contain English literals.
 
 > Self-healing doc: if you change this system, update this doc (including the 7-line header) in the same batch, and note the change in the batch worksheet.
 
 ---
 
-## Rules
+## Resolution rules
 
-- New player-facing string → add an ID to `Localization._table`, reference the ID. No literal display text in scripts or SOs' display paths.
-- `IInteractable.PromptVerb` returns a localization KEY (e.g. `"prompt.inspect.verb"`), the HUD resolves it — single funnel for interaction verbs.
-- Localization IDs are stamped on every content SO even where not yet consumed, so the wiring pass is mechanical.
-- Target languages at EA: English, Simplified Chinese.
+- Fixed chrome calls `Localization.Get("journal.…")`; every consumed fixed journal ID is asserted by `DataIntegrity`.
+- First-identification browser chrome uses fixed `inspect.browser.*`, `inspect.lens.*`, `inspect.quiz.*`, and `inspect.discovery.*` IDs. Species names remain inside the authored candidate spreads during Match; no separate target-name string may be rendered until `IsFieldIdentified` succeeds. Candidate-specific wrong feedback formats a localized sentence around one localized species feature. Discovery annotation copy formats the localized species/place at display time while its save record retains only stable IDs.
+- SO-backed journal copy calls `Localization.Get(derivedId, englishFallback)` through `JournalText`. This is deliberate: the canonical English remains on the SO, while an authored LUT entry overrides it without changing screen code.
+- Stable derived examples: `story.homecoming.title`, `mushroom.flyAgaric.name`, `mushroom.flyAgaric.feature.0`, `character.wrenTobin.kit.0.name`.
+- Array members use their canonical index in the ID. Reordering beats/features/kit items changes the semantic key and must be treated as a content migration.
+- `IInteractable.PromptVerb` returns a localization key, not display text; the HUD resolves it.
+- Save-slot quest rows resolve canonical `CurrentQuestId` values through `quest.<id>.name`; Data Integrity requires each `QuestData.DisplayNameId` to match that convention. Unknown non-empty IDs show localized `save.quest.unknown` and never revive stale cached text.
+- `StoryMomentData.PageText` resolves `_pageTextId` with `_pageTextFallback`; the cinematic overlay draws that result on the authored image rect rather than baking English into the art. Optional paragraph reveal beats keep the localized writing synchronized with its caption and VO, while `_useCursivePageText` changes typography without changing the localized string.
+- Target languages at EA: English and Simplified Chinese.
 
-## Deferred
+## Journal implementation
 
-- Wire menu pages through `Localization.Get` (needs LUT entries for the 30+17+1 content SOs).
-- Extraction tooling: a future EditMode test should assert every ID referenced in code/SOs exists in the LUT (Phase 2 infra — tests.md).
+`JournalText` is the only presentation adapter for journal SO copy:
+
+- Story: act, scene, title, subtitle, body, Wren note, and each beat.
+- Mushroom: common/Latin names, edibility label, description, habitat, season, look-alikes, note, credit, and each identifying feature.
+- Wren: role, home, age, work, keepsake, tagline, dossier prose, pull-quote, and kit item names/lines. Display-name/lead IDs already stamped on the character SO continue to resolve directly.
+
+Locked copy, counters, section headings, paging, missing-art/model-pending text, 3D-study/photo labels, controller hints, and plate captions are fixed `journal.*` table entries. Locked Story and mushroom cards never resolve or display their hidden content/model fields.
+
+## Integrity and deferred translation work
+
+`DataIntegrity.RunAll` currently proves every fixed journal ID exists and that required SO text fields are populated. It does not require all derived IDs to exist yet because their canonical English fallback is intentional.
+
+Remaining localization work:
+
+1. Add Simplified Chinese storage/selection to the localization service.
+2. Export the derived content-ID inventory and author English/Chinese rows.
+3. Move dialogue lines/choices and the remaining Act I completion captions onto stable IDs.
+4. Promote translated-language layout checks at 1280×800 into the Play-mode verification pass.

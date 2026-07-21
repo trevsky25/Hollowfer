@@ -24,26 +24,50 @@ namespace Hollowfen.Save
             MushroomDiscovery.HydrateFrom(null);
             GameScores.HydrateFrom(null);
             Cultivation.GrowBeds.HydrateFrom(null);
+            ForageNodeStates.HydrateFrom(null);
+            Hollowfen.Requests.VillageRequests.HydrateFrom(null);
+            Hollowfen.Restoration.RestorationProjects.HydrateFrom(null);
+            Hollowfen.Apothecary.ApothecaryRuntime.HydrateFrom(null);
+            Hollowfen.Apothecary.ApothecaryCases.HydrateFrom(null);
+            Hollowfen.NPCs.VillagerRelationships.HydrateFrom(null);
             Map.LocationRegistry.HydrateFromSave(null);
 
             // Fresh meta so the slot row shows up immediately.
             SaveManager.WritePlaceholderToSlot(slot);
         }
 
-        public static void LoadSlot(int slot)
+        public static bool TryLoadSlot(int slot, out SaveSlotInspection inspection)
         {
+            inspection = SaveManager.InspectSlot(slot);
+            if (!inspection.CanLoad) return false;
+
             SaveManager.SetActiveSlot(slot);
-            var meta = SaveManager.GetSlotMeta(slot);
+            var meta = inspection.Meta;
 
             QuestManagerReset();
             QuestManagerHydrate(meta);
             InventoryRuntime.HydrateFrom(meta?.Inventory);
             KeyItems.HydrateFrom(meta?.KeyItemIds);
-            CoinPurse.HydrateFrom(meta?.CoinsCopper ?? 0);
+            CoinPurse.HydrateFrom(meta?.CoinsCopper ?? 0, meta?.CoinLedger);
             MushroomDiscovery.HydrateFrom(meta?.DiscoveredMushroomIds);
             GameScores.HydrateFrom(meta);
             Cultivation.GrowBeds.HydrateFrom(meta?.GrowBeds);
+            ForageNodeStates.HydrateFrom(meta?.ForageNodes);
+            Hollowfen.Requests.VillageRequests.HydrateFrom(meta?.VillageRequests);
+            Hollowfen.Restoration.RestorationProjects.HydrateFrom(meta?.RestorationProjects);
+            Hollowfen.Apothecary.ApothecaryRuntime.HydrateFrom(meta?.Apothecary);
+            Hollowfen.Apothecary.ApothecaryCases.HydrateFrom(meta?.ApothecaryCases);
+            Hollowfen.NPCs.VillagerRelationships.HydrateFrom(meta?.VillagerRelationships);
             Map.LocationRegistry.HydrateFromSave(meta?.DiscoveredLocationIds);
+            return true;
+        }
+
+        // Compatibility entry point for editor verifiers and older call sites. Invalid slots
+        // leave the current in-memory session untouched.
+        public static void LoadSlot(int slot)
+        {
+            if (!TryLoadSlot(slot, out var inspection))
+                Debug.LogError($"[SaveCoordinator] Refused to load slot {slot}: {inspection.Status} — {inspection.Detail}");
         }
 
         // Most recently written slot, or -1 when no saves exist.
@@ -53,8 +77,9 @@ namespace Hollowfen.Save
             long bestTime = long.MinValue;
             for (int i = 0; i < SaveManager.TotalSlots; i++)
             {
-                var meta = SaveManager.GetSlotMeta(i);
-                if (meta == null) continue;
+                var inspection = SaveManager.InspectSlot(i);
+                if (!inspection.CanLoad) continue;
+                var meta = inspection.Meta;
                 if (meta.TimestampUnix > bestTime) { bestTime = meta.TimestampUnix; best = i; }
             }
             return best;
@@ -69,8 +94,15 @@ namespace Hollowfen.Save
             meta.Inventory = InventoryRuntime.ToSnapshot();
             meta.KeyItemIds = KeyItems.ToArray();
             meta.CoinsCopper = CoinPurse.TotalCopper;
+            meta.CoinLedger = CoinPurse.ToLedgerSnapshot();
             meta.DiscoveredMushroomIds = MushroomDiscovery.ToArray();
             meta.GrowBeds = Cultivation.GrowBeds.ToSnapshot();
+            meta.ForageNodes = ForageNodeStates.ToSnapshot();
+            meta.VillageRequests = Hollowfen.Requests.VillageRequests.ToSnapshot();
+            meta.RestorationProjects = Hollowfen.Restoration.RestorationProjects.ToSnapshot();
+            meta.Apothecary = Hollowfen.Apothecary.ApothecaryRuntime.ToSnapshot();
+            meta.ApothecaryCases = Hollowfen.Apothecary.ApothecaryCases.ToSnapshot();
+            meta.VillagerRelationships = Hollowfen.NPCs.VillagerRelationships.ToSnapshot();
             meta.DiscoveredLocationIds = Map.LocationRegistry.DiscoveredToArray();
 
             var quests = new string[QuestManager.CompletedQuestIds.Count];
@@ -87,14 +119,26 @@ namespace Hollowfen.Save
                 Hollowfen.GameTime.TimeManager.Instance.WriteTo(meta);
 
             var active = QuestManager.ActiveQuest;
-            if (active != null)
+            if (GameScores.HasFlag("game_complete"))
             {
-                meta.CurrentQuest = Localization.Get(active.DisplayNameId);
+                SaveQuestIdentity.Set(meta, SaveQuestIdentity.GameCompleteId);
+                meta.CurrentAct = 4;
+            }
+            else if (active != null)
+            {
+                SaveQuestIdentity.Set(meta, active.Id);
                 meta.CurrentAct = active.Act;
+            }
+            else if (QuestManager.IsCompleted("meetAldric"))
+            {
+                // The linear quest chain deliberately ends before the four-way decision.
+                // Keep the slot identity truthful during that recoverable terminal fork.
+                SaveQuestIdentity.Set(meta, SaveQuestIdentity.FinalChoiceAvailableId);
+                meta.CurrentAct = 4;
             }
             else if (quests.Length > 0)
             {
-                meta.CurrentQuest = "Act I complete";
+                SaveQuestIdentity.Set(meta, SaveQuestIdentity.ActOneCompleteId);
             }
 
             if (playerPosition.HasValue)

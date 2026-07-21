@@ -1,4 +1,5 @@
 using System.Collections;
+using Hollowfen.Settings;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -37,6 +38,43 @@ namespace Hollowfen.UI
         private Coroutine _anim;
         private System.Reflection.PropertyInfo _textProp;
         private string _baseText;
+
+        // Code-built screens add this component before its target graphics exist.
+        // Configure re-captures the resting state after construction so callers no
+        // longer need to mutate private fields through reflection.
+        public void Configure(
+            Graphic targetGraphic,
+            RectTransform scaleTarget,
+            Color focusedColor,
+            float focusedScale = 1.04f,
+            bool swapColor = true,
+            bool swapScale = true,
+            bool underlineText = false,
+            Graphic glowGraphic = null)
+        {
+            _targetGraphic = targetGraphic;
+            _scaleTarget = scaleTarget != null ? scaleTarget : transform as RectTransform;
+            _focusedColor = focusedColor;
+            _focusedScale = focusedScale;
+            _swapColor = swapColor;
+            _swapScale = swapScale;
+            _underlineText = underlineText;
+            _glowGraphic = glowGraphic;
+            _baseColor = _targetGraphic != null ? _targetGraphic.color : Color.white;
+            _baseScale = _scaleTarget != null ? _scaleTarget.localScale : Vector3.one;
+            _baseGlowAlpha = _glowGraphic != null ? _glowGraphic.color.a : 0f;
+            _textProp = null;
+            _baseText = null;
+            if (_underlineText && _targetGraphic != null)
+            {
+                _textProp = _targetGraphic.GetType().GetProperty("text");
+                if (_textProp != null) _baseText = _textProp.GetValue(_targetGraphic, null) as string;
+            }
+            _isFocused = false;
+            _currentT = 0f;
+            ApplyState(0f);
+            if (_glowGraphic != null) SetGlowAlpha(0f);
+        }
 
         private void Awake()
         {
@@ -146,7 +184,9 @@ namespace Hollowfen.UI
             if (_swapColor && _targetGraphic != null)
                 _targetGraphic.color = Color.Lerp(_baseColor, _focusedColor, t);
             if (_swapScale && _scaleTarget != null)
-                _scaleTarget.localScale = Vector3.Lerp(_baseScale, _baseScale * _focusedScale, t);
+                _scaleTarget.localScale = GameSettings.ReducedMotion
+                    ? _baseScale
+                    : Vector3.Lerp(_baseScale, _baseScale * _focusedScale, t);
             if (_glowGraphic != null)
                 SetGlowAlpha(Mathf.Lerp(0f, _baseGlowAlpha > 0.01f ? _baseGlowAlpha : 1f, t));
         }

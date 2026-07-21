@@ -33,6 +33,19 @@ MonoBehaviour:
   _notes: A practical mushroom, but not a plain one. In the right light, the gills
     look like careful stitching.
   _photo: {fileID: 21300000, guid: 4db6117cce14f4ffe94029cadb1b7b89, type: 3}
-  _photoCredit: 
+  _photoCredit: Generated with OpenAI gpt-image
+  _journalPage: {fileID: 21300000, guid: e8b4da12aa6fa43d4972992de4e52fb3, type: 3}
+  _worldPrefab: {fileID: 781818686707903729, guid: 638d6ad9b824646ba87fb213d66d4f68, type: 3}
+  _journalPreviewPrefab: {fileID: 5490521284871876168, guid: 4a6fbf51130a44db5a52451f32efee88, type: 3}
+  _journalExposure: 0.52
   _displayNameId: mushroom.lacewig.name
   _descriptionId: mushroom.lacewig.description
+  _forageTier: 2
+  _requiredForageFlagId: foraging_knife_unlocked
+  _wildRespawnDays: 2
+  _marraValueCopper: 6
+  _theoValueCopper: 8
+  _cultivable: 1
+  _cultivationHours: 8
+  _cultivationYield: 3
+  _cultivationUnlockFlagId: foraging_knife_unlocked

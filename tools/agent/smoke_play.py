@@ -11,26 +11,50 @@ Promoted from the Batch 11 verification script (2026-07-11).
 """
 
 import argparse
+import json
 import os
+import shutil
+import signal
 import subprocess
 import sys
+import tempfile
 import time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import unitymcp
 
 
-def call(tool, args, retries=6):
+def _rpc_with_deadline(method, params, seconds=10):
+    """Keep a stale SSE response from pinning the whole smoke run for five minutes."""
+    previous = signal.getsignal(signal.SIGALRM)
+
+    def timed_out(_signum, _frame):
+        raise TimeoutError(f"Unity bridge response exceeded {seconds}s")
+
+    signal.signal(signal.SIGALRM, timed_out)
+    signal.setitimer(signal.ITIMER_REAL, seconds)
+    try:
+        return unitymcp.rpc(method, params)
+    finally:
+        signal.setitimer(signal.ITIMER_REAL, 0)
+        signal.signal(signal.SIGALRM, previous)
+
+
+def call(tool, args, retries=4):
     last = None
     for _ in range(retries):
         try:
-            obj = unitymcp.rpc("tools/call", {"name": tool, "arguments": args})
+            obj = _rpc_with_deadline("tools/call", {"name": tool, "arguments": args})
             if obj and "result" in obj:
                 sc = obj["result"].get("structuredContent", {})
                 return sc.get("data") or sc.get("result", {}).get("data") or sc
             last = obj
         except Exception as e:  # bridge blips during play-mode entry
             last = str(e)
+            try:
+                os.remove(unitymcp.SESSION_CACHE)
+            except OSError:
+                pass
         time.sleep(3)
     print(f"smoke: bridge call {tool} failed: {last}", file=sys.stderr)
     sys.exit(3)
@@ -39,6 +63,29 @@ def call(tool, args, retries=6):
 def execute(code):
     data = call("execute_code", {"action": "execute", "code": code})
     return data.get("result") if isinstance(data, dict) else None
+
+
+def pipe_counts(code, label, retries=5):
+    """Read an `int|int` bridge result, tolerating a transient boolean ack.
+
+    Unity can acknowledge execute_code with `True` for one bridge tick while scripts
+    finish reloading. That is transport state, not a console count, so retry instead
+    of crashing the smoke runner while the game itself is healthy.
+    """
+    last = None
+    for _ in range(retries):
+        last = execute(code)
+        if isinstance(last, str):
+            parts = last.split("|")
+            if len(parts) == 2:
+                try:
+                    return int(parts[0]), int(parts[1])
+                except ValueError:
+                    pass
+        time.sleep(1)
+    print(f"smoke: invalid {label} response after {retries} attempts: {last!r}",
+          file=sys.stderr)
+    sys.exit(3)
 
 
 STATE = 'return UnityEditor.EditorApplication.isPlaying + "|" + UnityEngine.Time.frameCount;'
@@ -72,8 +119,25 @@ def main():
     subprocess.run(["osascript", "-e", 'tell application "Unity" to activate'],
                    capture_output=True, timeout=10)
 
-    pre_errors = int(execute(CONSOLE).split("|")[0])
+    pre_errors, _ = pipe_counts(CONSOLE, "pre-play console")
     print(f"smoke: pre-play console errors={pre_errors}")
+
+    isolated_save = tempfile.mkdtemp(prefix="hollowfen-smoke-")
+    real_save = execute("return Hollowfen.Save.SaveManager.SaveDirectory;")
+    if isinstance(real_save, str) and os.path.isdir(real_save):
+        for name in os.listdir(real_save):
+            source = os.path.join(real_save, name)
+            if name.startswith("slot") and ".json" in name and os.path.isfile(source):
+                shutil.copy2(source, os.path.join(isolated_save, name))
+    csharp_path = json.dumps(isolated_save)
+    armed = execute(
+        "System.IO.Directory.CreateDirectory(" + csharp_path + ");"
+        "Hollowfen.Save.SaveManager.EditorArmSaveDirectoryOverrideForNextPlay(" + csharp_path + ");"
+        'return "armed";')
+    if armed != "armed":
+        print(f"smoke: FAIL — could not arm isolated journal before Play Mode: {armed!r}")
+        shutil.rmtree(isolated_save, ignore_errors=True)
+        return 3
 
     call("manage_editor", {"action": "play"})
     playing = False
@@ -106,11 +170,19 @@ def main():
     if not playing:
         print("smoke: FAIL — never reached stable play mode (is Unity visible/focused?)")
         call("manage_editor", {"action": "stop"})
+        time.sleep(2)
+        execute("Hollowfen.Save.SaveManager.EditorClearSaveDirectoryOverride(); return \"cleared\";")
+        shutil.rmtree(isolated_save, ignore_errors=True)
         return 2
 
-    errors = int(execute(CONSOLE).split("|")[0])
+    errors, _ = pipe_counts(CONSOLE, "in-play console")
     state = execute(GAMESTATE)
     call("manage_editor", {"action": "stop"})
+    # manage_editor acknowledges the stop before every OnApplicationQuit callback has
+    # necessarily completed. Keep the isolated journal alive through that tail.
+    time.sleep(2)
+    execute("Hollowfen.Save.SaveManager.EditorClearSaveDirectoryOverride(); return \"cleared\";")
+    shutil.rmtree(isolated_save, ignore_errors=True)
 
     print(f"smoke: in-play console errors={errors} (pre-play {pre_errors})")
     print(f"smoke: game state — {state}")

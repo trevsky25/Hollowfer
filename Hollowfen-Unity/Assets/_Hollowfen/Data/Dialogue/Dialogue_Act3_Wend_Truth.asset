@@ -18,24 +18,34 @@ MonoBehaviour:
     text: 'Wendlight by the old stones. Wendlight where clean water ran.
 
 
-      This is a line.
+      This
+      is a line.
 
 
       Not weather. Not God. A line.'
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: abcdde2f7866643b2a19495924e697a3, type: 3}
   - speaker: Hollin
-    text: 'Whose?'
+    text: Whose?
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 841fdd15233a449f49436d4087afe3e0, type: 3}
   - speaker: Wren
-    text: 'Aldric''s.'
+    text: Aldric's.
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: 2ec3b201cf24141f28e085008d6395de, type: 3}
+  _mushroomHandoff:
+    beforeLineIndex: 0
+    recipientSpeaker: 
+    mushroom: {fileID: 0}
+    presentationHeight: 0
   _unlockStoryCard: {fileID: 0}
   _completeQuest: {fileID: 11400000, guid: 0803c8aad6034f828e48f722bc901b13, type: 2}
-  _giveItemId:
+  _giveItemId: 
   _grantCoinsCopper: 0
   _spendsCoinsCopper: 0
   _sellsForageBasket: 0
   _basketCopperPerItem: 0
+  _basketBuyer: 0
   _grantForage: {fileID: 0}
   _grantForageCount: 1
   _consumeForage: {fileID: 0}
@@ -44,6 +54,11 @@ MonoBehaviour:
   _villageHopeDelta: 0
   _knowledgeDelta: 0
   _relationshipNpcIds: []
-  _relationshipDeltas: []
+  _relationshipDeltas: 
+  _memoryOutcomes: []
+  _bondOutcomes: []
+  _favorOutcomes: []
+  _advanceMinutes: 0
+  _transitionMoment: {fileID: 11400000, guid: 3da24fa59be1f4c4eb29f4a23f0faa6d, type: 2}
   _nextDialog: {fileID: 0}
   _choices: []

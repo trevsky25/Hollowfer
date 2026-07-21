@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Hollowfen.Cinematics;
 using Hollowfen.Data;
 using Hollowfen.Input;
 using Hollowfen.UI;
@@ -51,8 +52,7 @@ namespace Hollowfen.Foraging
 
         private readonly List<Cell> _cells = new List<Cell>();
         private MushroomFieldGuideData _selectedData;
-        private CursorLockMode _previousCursorLock;
-        private bool _previousCursorVisible;
+        private NarrativePresentationSession.Lease _presentationLease;
 
         // Inspect Mode: when true, gamepad camera input is unlocked and EventSystem nav is suspended.
         // Browse mode (default) lets the gamepad navigate the card grid via UI/Navigate.
@@ -90,7 +90,6 @@ namespace Hollowfen.Foraging
             _group = GetComponent<CanvasGroup>();
             if (_group == null) _group = gameObject.AddComponent<CanvasGroup>();
 
-            BuildIfNeeded();
             _input = new InputActions();
             _canvas.enabled = false;
 
@@ -99,6 +98,7 @@ namespace Hollowfen.Foraging
 
         private void OnDestroy()
         {
+            ReleasePresentation();
             if (Instance == this) Instance = null;
             InventoryRuntime.OnChanged -= OnInventoryChanged;
             _input?.Dispose();
@@ -124,6 +124,7 @@ namespace Hollowfen.Foraging
 
         public void Open()
         {
+            if (IsOpen) return;
             BuildIfNeeded();
             EnsureEventSystem();
             _inspectMode = false; // always start in browse
@@ -135,14 +136,8 @@ namespace Hollowfen.Foraging
             _group.blocksRaycasts = true;
             _group.interactable = true;
 
-            Time.timeScale = 0f;
-            PlayerInteractor.Suspended = true;
-            PlayerInteractor.SetPlayerInputEnabled(false);
-
-            _previousCursorLock = Cursor.lockState;
-            _previousCursorVisible = Cursor.visible;
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            _presentationLease = NarrativePresentationSession.Acquire(
+                this, NarrativePresentationSession.Modal);
 
             // Default-select first cell or close button
             GameObject first = null;
@@ -157,6 +152,7 @@ namespace Hollowfen.Foraging
 
         public void Close()
         {
+            if (!IsOpen) return;
             _canvas.enabled = false;
             _group.alpha = 0f;
             _group.blocksRaycasts = false;
@@ -164,14 +160,15 @@ namespace Hollowfen.Foraging
 
             if (MushroomPreviewer.Instance != null) MushroomPreviewer.Instance.Clear();
 
-            Time.timeScale = 1f;
-            PlayerInteractor.Suspended = false;
-            PlayerInteractor.SetPlayerInputEnabled(true);
-
-            Cursor.lockState = _previousCursorLock;
-            Cursor.visible = _previousCursorVisible;
+            ReleasePresentation();
 
             if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(null);
+        }
+
+        private void ReleasePresentation()
+        {
+            _presentationLease?.Dispose();
+            _presentationLease = null;
         }
 
         private void OnCancel(InputAction.CallbackContext _)
@@ -213,8 +210,8 @@ namespace Hollowfen.Foraging
             if (_hintText != null)
             {
                 _hintText.text = _inspectMode
-                    ? "INSPECT MODE   ·   L/R-Stick · LT/RT · M-Drag   ·   R1 / Tab / B to exit"
-                    : "L-Stick / D-Pad: navigate   ·   R1 / Tab: inspect mushroom";
+                    ? Hollowfen.Localization.Get("inventory.hint.inspect")
+                    : Hollowfen.Localization.Get("inventory.hint.browse");
             }
         }
 
@@ -306,7 +303,7 @@ namespace Hollowfen.Foraging
         {
             if (_closeGlyph == null) return;
             // Close = UI/Cancel (buttonEast) — brand glyph via the shared resolver (batch-48).
-            string g = Gamepad.current == null
+            string g = !Hollowfen.UI.ControllerGlyphs.IsGamepadActive
                 ? "Esc"
                 : Hollowfen.UI.ControllerGlyphs.For(Hollowfen.UI.ControllerGlyphs.Face.East);
             if (_closeGlyph.text != g) _closeGlyph.text = g;
@@ -440,14 +437,17 @@ namespace Hollowfen.Foraging
             }
 
             int count = InventoryRuntime.GetCount(cell.Data);
-            _selectedTitle.text = cell.Data.CommonName;
-            _selectedLatin.text = cell.Data.LatinName;
-            _selectedLatin.gameObject.SetActive(!string.IsNullOrEmpty(cell.Data.LatinName));
+            _selectedTitle.text = JournalText.MushroomName(cell.Data);
+            _selectedLatin.text = JournalText.MushroomLatin(cell.Data);
+            _selectedLatin.gameObject.SetActive(!string.IsNullOrEmpty(_selectedLatin.text));
             _selectedCount.text = "<size=18>×</size>" + count;
 
             if (MushroomPreviewer.Instance != null)
             {
                 MushroomPreviewer.Instance.Show(cell.Data, false);
+                // The preview rig is lazy; Show() must run before its RenderTexture is available.
+                if (_previewImage != null)
+                    _previewImage.texture = MushroomPreviewer.Instance.RenderTexture;
                 _previewMissingNote.gameObject.SetActive(cell.Data.WorldPrefab == null);
             }
         }
@@ -491,11 +491,11 @@ namespace Hollowfen.Foraging
             bRT.sizeDelta = new Vector2(46f, 24f);
             bRT.anchoredPosition = new Vector2(-8f, -8f);
             var badgeTxt = UICanvasUtil.NewEyebrow("Txt", badgeGO.transform,
-                "×" + count, 14f, HollowfenPalette.InkDeep, TMPro.TextAlignmentOptions.Center);
+                "×" + count, 18f, HollowfenPalette.InkDeep, TMPro.TextAlignmentOptions.Center);
             UICanvasUtil.Stretch(badgeTxt.rectTransform);
 
             // Name
-            var name = UICanvasUtil.NewBody("Name", root.transform, data.CommonName, 16f,
+            var name = UICanvasUtil.NewBody("Name", root.transform, JournalText.MushroomName(data), 18f,
                 HollowfenPalette.InkDeep, TMPro.FontStyles.Normal, TMPro.TextAlignmentOptions.Center);
             var nRT = name.rectTransform;
             nRT.anchorMin = new Vector2(0f, 0f);
@@ -503,7 +503,7 @@ namespace Hollowfen.Foraging
             nRT.pivot = new Vector2(0.5f, 0f);
             nRT.sizeDelta = new Vector2(-12f, 36f);
             nRT.anchoredPosition = new Vector2(0f, 12f);
-            name.enableWordWrapping = true;
+            name.textWrappingMode = TMPro.TextWrappingModes.Normal;
 
             // Selectable button
             var btn = root.AddComponent<Button>();
@@ -599,7 +599,7 @@ namespace Hollowfen.Foraging
 
             // Top eyebrow
             var topEyebrow = UICanvasUtil.NewEyebrow("TopEyebrow", panel.transform,
-                "FIELD JOURNAL  ·  PROVISIONS", 13f, HollowfenPalette.Gold, TMPro.TextAlignmentOptions.Center);
+                Hollowfen.Localization.Get("inventory.eyebrow"), 18f, HollowfenPalette.PaperAccentInk, TMPro.TextAlignmentOptions.Center);
             var teRT = topEyebrow.rectTransform;
             teRT.anchorMin = new Vector2(0f, 1f); teRT.anchorMax = new Vector2(1f, 1f);
             teRT.pivot = new Vector2(0.5f, 1f);
@@ -607,7 +607,7 @@ namespace Hollowfen.Foraging
             teRT.anchoredPosition = new Vector2(0f, -22f);
 
             // Title (left)
-            var title = UICanvasUtil.NewHeading("Title", panel.transform, "Provisions", 56f,
+            var title = UICanvasUtil.NewHeading("Title", panel.transform, Hollowfen.Localization.Get("inventory.title"), 56f,
                 HollowfenPalette.InkDeep, TMPro.FontStyles.Normal, TMPro.TextAlignmentOptions.TopLeft);
             var tRT = title.rectTransform;
             tRT.anchorMin = new Vector2(0f, 1f); tRT.anchorMax = new Vector2(0f, 1f);
@@ -638,7 +638,7 @@ namespace Hollowfen.Foraging
             UICanvasUtil.Stretch((RectTransform)_populatedState.transform);
 
             // Keepsakes strip — bottom-left, panel-level so it shows even with an empty pouch.
-            _keepsakesLabel = UICanvasUtil.NewBody("Keepsakes", panel.transform, "", 17f,
+            _keepsakesLabel = UICanvasUtil.NewBody("Keepsakes", panel.transform, "", 18f,
                 BodyInk, TMPro.FontStyles.Italic, TMPro.TextAlignmentOptions.BottomLeft);
             _keepsakesLabel.richText = true;
             var kRT = _keepsakesLabel.rectTransform;
@@ -724,16 +724,16 @@ namespace Hollowfen.Foraging
             var hsRT = (RectTransform)hintScrim.transform;
             hsRT.anchorMin = new Vector2(0f, 1f); hsRT.anchorMax = new Vector2(1f, 1f);
             hsRT.pivot = new Vector2(0.5f, 1f);
-            hsRT.sizeDelta = new Vector2(0f, 26f);
+            hsRT.sizeDelta = new Vector2(0f, 34f);
             hsRT.anchoredPosition = Vector2.zero;
             _hintText = UICanvasUtil.NewBody("Hint", hintScrim.transform,
                 "",
-                12f, HollowfenPalette.Cream, TMPro.FontStyles.Italic, TMPro.TextAlignmentOptions.Center);
+                18f, HollowfenPalette.Cream, TMPro.FontStyles.Italic, TMPro.TextAlignmentOptions.Center);
             UICanvasUtil.Stretch(_hintText.rectTransform);
 
             // "MODEL COMING SOON" overlay (centered in preview, hidden when prefab present)
             _previewMissingNote = UICanvasUtil.NewEyebrow("MissingNote", previewBg.transform,
-                "MODEL COMING SOON", 14f, HollowfenPalette.Moss, TMPro.TextAlignmentOptions.Center);
+                Hollowfen.Localization.Get("journal.field.model_pending"), 18f, HollowfenPalette.PaperMutedInk, TMPro.TextAlignmentOptions.Center);
             UICanvasUtil.Stretch(_previewMissingNote.rectTransform);
             _previewMissingNote.gameObject.SetActive(false);
 
@@ -748,7 +748,7 @@ namespace Hollowfen.Foraging
             stRT.anchoredPosition = new Vector2(previewLeft, infoTopY);
 
             _selectedCount = UICanvasUtil.NewEyebrow("SelectedCount", _populatedState.transform, "", 24f,
-                HollowfenPalette.Gold, TMPro.TextAlignmentOptions.TopRight);
+                HollowfenPalette.PaperAccentInk, TMPro.TextAlignmentOptions.TopRight);
             var scRT = _selectedCount.rectTransform;
             scRT.anchorMin = new Vector2(0f, 1f); scRT.anchorMax = new Vector2(0f, 1f);
             scRT.pivot = new Vector2(1f, 1f);
@@ -756,8 +756,8 @@ namespace Hollowfen.Foraging
             scRT.anchoredPosition = new Vector2(previewLeft + previewSize, infoTopY);
             _selectedCount.richText = true;
 
-            _selectedLatin = UICanvasUtil.NewBody("SelectedLatin", _populatedState.transform, "", 16f,
-                HollowfenPalette.Moss, TMPro.FontStyles.Italic, TMPro.TextAlignmentOptions.TopLeft);
+            _selectedLatin = UICanvasUtil.NewBody("SelectedLatin", _populatedState.transform, "", 18f,
+                HollowfenPalette.PaperMutedInk, TMPro.FontStyles.Italic, TMPro.TextAlignmentOptions.TopLeft);
             var slRT = _selectedLatin.rectTransform;
             slRT.anchorMin = new Vector2(0f, 1f); slRT.anchorMax = new Vector2(0f, 1f);
             slRT.pivot = new Vector2(0f, 1f);

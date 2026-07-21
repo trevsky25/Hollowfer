@@ -455,6 +455,15 @@ namespace Hollowfen.Input
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""OpenFieldGuide"",
+                    ""type"": ""Button"",
+                    ""id"": ""1abdecff-a057-4e34-8e1b-6acb023c083d"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""Pause"",
                     ""type"": ""Button"",
                     ""id"": ""9c5ce4a4-9a9c-443a-aaa4-7b17fed7eb03"",
@@ -609,7 +618,7 @@ namespace Hollowfen.Input
                 {
                     ""name"": """",
                     ""id"": ""03b7c57f-0152-4243-843b-e29cfdfc3352"",
-                    ""path"": ""<Keyboard>/j"",
+                    ""path"": ""<Keyboard>/i"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
@@ -625,6 +634,28 @@ namespace Hollowfen.Input
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""OpenInventory"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1e9fc77e-55dd-47fd-958d-bda72150faae"",
+                    ""path"": ""<Keyboard>/j"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""OpenFieldGuide"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6e51b440-1e4a-4e98-8e96-764017229d44"",
+                    ""path"": ""<Gamepad>/dpad/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""OpenFieldGuide"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -936,6 +967,7 @@ namespace Hollowfen.Input
             m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
             m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
             m_Player_OpenInventory = m_Player.FindAction("OpenInventory", throwIfNotFound: true);
+            m_Player_OpenFieldGuide = m_Player.FindAction("OpenFieldGuide", throwIfNotFound: true);
             m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
             m_Player_OpenMap = m_Player.FindAction("OpenMap", throwIfNotFound: true);
             // Dialogue
@@ -1184,6 +1216,7 @@ namespace Hollowfen.Input
         private readonly InputAction m_Player_Interact;
         private readonly InputAction m_Player_Jump;
         private readonly InputAction m_Player_OpenInventory;
+        private readonly InputAction m_Player_OpenFieldGuide;
         private readonly InputAction m_Player_Pause;
         private readonly InputAction m_Player_OpenMap;
         /// <summary>
@@ -1217,6 +1250,10 @@ namespace Hollowfen.Input
             /// Provides access to the underlying input action "Player/OpenInventory".
             /// </summary>
             public InputAction @OpenInventory => m_Wrapper.m_Player_OpenInventory;
+            /// <summary>
+            /// Provides access to the underlying input action "Player/OpenFieldGuide".
+            /// </summary>
+            public InputAction @OpenFieldGuide => m_Wrapper.m_Player_OpenFieldGuide;
             /// <summary>
             /// Provides access to the underlying input action "Player/Pause".
             /// </summary>
@@ -1266,6 +1303,9 @@ namespace Hollowfen.Input
                 @OpenInventory.started += instance.OnOpenInventory;
                 @OpenInventory.performed += instance.OnOpenInventory;
                 @OpenInventory.canceled += instance.OnOpenInventory;
+                @OpenFieldGuide.started += instance.OnOpenFieldGuide;
+                @OpenFieldGuide.performed += instance.OnOpenFieldGuide;
+                @OpenFieldGuide.canceled += instance.OnOpenFieldGuide;
                 @Pause.started += instance.OnPause;
                 @Pause.performed += instance.OnPause;
                 @Pause.canceled += instance.OnPause;
@@ -1298,6 +1338,9 @@ namespace Hollowfen.Input
                 @OpenInventory.started -= instance.OnOpenInventory;
                 @OpenInventory.performed -= instance.OnOpenInventory;
                 @OpenInventory.canceled -= instance.OnOpenInventory;
+                @OpenFieldGuide.started -= instance.OnOpenFieldGuide;
+                @OpenFieldGuide.performed -= instance.OnOpenFieldGuide;
+                @OpenFieldGuide.canceled -= instance.OnOpenFieldGuide;
                 @Pause.started -= instance.OnPause;
                 @Pause.performed -= instance.OnPause;
                 @Pause.canceled -= instance.OnPause;
@@ -1606,6 +1649,13 @@ namespace Hollowfen.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnOpenInventory(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "OpenFieldGuide" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnOpenFieldGuide(InputAction.CallbackContext context);
             /// <summary>
             /// Method invoked when associated input action "Pause" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
             /// </summary>

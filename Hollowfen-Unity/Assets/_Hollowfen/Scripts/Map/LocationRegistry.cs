@@ -96,7 +96,7 @@ namespace Hollowfen.Map
         {
             if (marker == ActiveWaypoint) return;
             ActiveWaypoint = marker;
-            WaypointChanged?.Invoke(marker);
+            PublishWaypointChanged(marker);
         }
 
         public static void ToggleWaypoint(LocationMarker marker)
@@ -110,7 +110,7 @@ namespace Hollowfen.Map
         {
             if (ActiveWaypoint == null) return;
             ActiveWaypoint = null;
-            WaypointChanged?.Invoke(null);
+            PublishWaypointChanged(null);
         }
 
         public static void MarkDiscovered(string id)
@@ -188,6 +188,17 @@ namespace Hollowfen.Map
             if (winner == CurrentRegion) return;
             CurrentRegion = winner;
             RegionChanged?.Invoke(CurrentRegion);
+        }
+
+        private static void PublishWaypointChanged(LocationMarker marker)
+        {
+            var handlers = WaypointChanged;
+            if (handlers == null) return;
+            foreach (Action<LocationMarker> handler in handlers.GetInvocationList())
+            {
+                var callback = handler;
+                Save.SaveManager.PublishAfterAtomicCommit(() => callback(marker));
+            }
         }
     }
 }

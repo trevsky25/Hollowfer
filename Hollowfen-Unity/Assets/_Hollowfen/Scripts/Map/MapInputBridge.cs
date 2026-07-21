@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Hollowfen.UI;
 
 namespace Hollowfen.Map
 {
@@ -38,7 +39,14 @@ namespace Hollowfen.Map
 
         private void OnToggle(InputAction.CallbackContext _)
         {
-            if (_mapScreen != null) _mapScreen.Toggle();
+            if (_mapScreen == null) return;
+            if (_mapScreen.IsOpen)
+            {
+                _mapScreen.Close();
+                return;
+            }
+            if (!UIManager.GameplayShortcutAllowed) return;
+            _mapScreen.Open();
         }
 
         private void OnClose(InputAction.CallbackContext _)

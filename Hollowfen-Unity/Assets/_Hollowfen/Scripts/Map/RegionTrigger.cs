@@ -33,6 +33,13 @@ namespace Hollowfen.Map
             LocationRegistry.PopRegion(this);
         }
 
+        private void OnDisable()
+        {
+            // A story/world swap can disable a volume while the player is still inside it.
+            // Always remove the registration so a destroyed trigger cannot pin the region state.
+            LocationRegistry.PopRegion(this);
+        }
+
         private void OnDrawGizmos()
         {
             var box = GetComponent<BoxCollider>();

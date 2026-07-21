@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d0fced8610445dd87f9c05997c7c4b4, type: 3}
+  m_Name: StoryMoment_Act2_AlmyLesson
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.StoryMomentData
+  _id: act2.almy_lessons.illustrated_lesson
+  _presentation: 0
+  _trigger: 0
+  _storyCard: {fileID: 11400000, guid: 61d5f088f245c4bb0a21b76cf6d991bc, type: 2}
+  _captionIds:
+  - story.almy_lesson.legacy
+  - story.almy_lesson.warning
+  - story.almy_lesson.answer
+  - story.almy_lesson.patience
+  _captionFallbacks:
+  - Your grandmother taught me three things. How to read rot. How to feed it. How
+    to leave enough behind.
+  - That sounds less like a lesson and more like a warning.
+  - Most useful lessons are.
+  - "Do not rush growth. Rushed mushrooms teach regret. The beds wait by your mill
+    wall. Two plugs of Wood Ear spawn \u2014 show me you listened."
+  _voiceClips:
+  - {fileID: 8300000, guid: d8fe2462b23134877901ba669f2ca812, type: 3}
+  - {fileID: 8300000, guid: 83ebba41d0a9545a9b0838fa881bcb6f, type: 3}
+  - {fileID: 8300000, guid: 6beb3b0b7cbbd48b1aa7857a2e628307, type: 3}
+  - {fileID: 8300000, guid: 7c13e8a59f29a4f298ae4f4ed6fc2a4e, type: 3}
+  _images:
+  - {fileID: 21300000, guid: 864f2d267d29f4e04996884a3c48753e, type: 3}
+  - {fileID: 21300000, guid: 6dd69d59e722f4dbb83fcebaa89a366f, type: 3}
+  - {fileID: 21300000, guid: 7a1536fbdf0374abeaa5bba54270c4dc, type: 3}
+  _beatImages: 00000000010000000100000002000000
+  _showStoryCardTitle: 0
+  _showCaptions: 1
+  _fadeIn: 1
+  _holdSeconds: 0
+  _pageTextId: 
+  _pageTextFallback: 
+  _pageTextImageIndex: -1
+  _pageTextStartBeat: 0
+  _pageTextParagraphRevealBeats: 
+  _pageTextRect:
+    serializedVersion: 2
+    x: 0.2
+    y: 0.2
+    width: 0.6
+    height: 0.6
+  _pageTextRotation: 0
+  _pageTextFontSize: 30
+  _pageTextColor: {r: 0.16, g: 0.1, b: 0.05, a: 0.86}
+  _focusContext: 0
+  _focusDistance: 0.4
+  _focusHeight: 0.05
+  _focusFov: 30
+  _focusPushSeconds: 1.2
+  _focusHoldSeconds: 1.6
+  _focusRestoreSeconds: 0.2

@@ -6,7 +6,7 @@ namespace Hollowfen.Quests
 {
     // Scene-level narrative beats that frame Act I: the once-per-save homecoming intro
     // (web playHomecomingIntro parity) and the act-break journal narration after meetAlmy.
-    // Caption copy is verbatim from docs/story.md.
+    // Caption copy follows docs/story.md and resolves through Localization at presentation time.
     public class StoryBeats : MonoBehaviour
     {
         [SerializeField, Tooltip("Voice-over per intro caption, index-matched to IntroCaptions (batch-39: full 6-beat set). Missing/null entries are silent.")]
@@ -27,17 +27,13 @@ namespace Hollowfen.Quests
         // ridge (beats 0-1) → wrong river (2-3) → boarded cottages (4) → silent square/Bram (5).
         private static readonly int[] IntroBeatImage = { 0, 0, 1, 1, 2, 3 };
 
-        // The homecoming passage, restored to the bible's fuller opening (story.md Scene 1,
-        // verbatim) — batch-36. Painted over the homecoming hero image with a slow Ken Burns.
-        private static readonly string[] IntroCaptions =
+        private static string[] ResolveIntroCaptions()
         {
-            "It had been three years since Wren Tobin walked the east road into Hollowfen.",
-            "At first, the valley looked as it always had from the ridge: the low roofs tucked into the hollow, the dark shoulder of the Old Wood behind them, the pale line of the Wend cutting through the fields.",
-            "Then the road dipped, and the old picture came apart.",
-            "The river was wrong.",
-            "Smoke rose from fewer chimneys than Wren remembered. Two cottages near the well had boards nailed over their windows.",
-            "The village did not greet her. No children ran the lane, no cart on the Slatemoor road. The only one who stood there was an old friend — Bram, the innkeeper of The Crooked Pintle.",
-        };
+            var captions = new string[6];
+            for (int i = 0; i < captions.Length; i++)
+                captions[i] = Localization.Get("act1.homecoming.intro." + i);
+            return captions;
+        }
 
         private static readonly string[] Act1CompleteCaptions =
         {
@@ -57,28 +53,36 @@ namespace Hollowfen.Quests
             QuestManager.QuestCompleted -= HandleQuestCompleted;
         }
 
-        private void Start()
+        private System.Collections.IEnumerator Start()
         {
+            // Scene activation precedes the loading card's smoothed visual completion. For a normal
+            // new-game transition, wait until UIManager has visibly landed the card on 100% before
+            // constructing the cinematic or starting its first voice clip. Direct scene play has no
+            // hold and continues immediately.
+            while (UIManager.IsCinematicIntroHeld)
+                yield return null;
+
             // Homecoming intro: once per save, only before the arrive beat.
-            if (QuestManager.IsCompleted("arrive")) return;
+            if (QuestManager.IsCompleted("arrive")) yield break;
             var meta = SaveManager.GetSlotMeta(SaveManager.ActiveSlot);
             if (meta != null && meta.HomecomingIntroSeen)
             {
                 // Player quit between the intro and the guide — the guide still owes them
                 // its one showing (ShowOnce self-gates on its own flag + arrive completion).
                 if (IntroGuide.Instance != null) IntroGuide.Instance.ShowOnce();
-                return;
+                yield break;
             }
             SaveManager.AutoSaveIntroSeen();
             if (NarrationOverlay.Instance != null)
             {
+                string[] introCaptions = ResolveIntroCaptions();
                 // Full-passage VO (batch-39). 4-image crossfade sequence (batch-41) when _introImages
                 // is populated; otherwise the legacy 2-image swap (batch-40) is the fallback.
                 if (_introImages != null && _introImages.Length > 0)
-                    NarrationOverlay.Instance.ShowCinematic(IntroCaptions, _introVoiceClips, _introImages, IntroBeatImage,
+                    NarrationOverlay.Instance.ShowCinematic(introCaptions, _introVoiceClips, _introImages, IntroBeatImage,
                         () => { if (IntroGuide.Instance != null) IntroGuide.Instance.ShowOnce(); });
                 else
-                    NarrationOverlay.Instance.ShowCinematic(IntroCaptions, _introVoiceClips, _introHeroImage,
+                    NarrationOverlay.Instance.ShowCinematic(introCaptions, _introVoiceClips, _introHeroImage,
                         _introHeroImage2, _introSwitchBeat,
                         () => { if (IntroGuide.Instance != null) IntroGuide.Instance.ShowOnce(); });
             }

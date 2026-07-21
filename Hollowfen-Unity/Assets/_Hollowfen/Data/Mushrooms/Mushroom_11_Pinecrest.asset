@@ -34,7 +34,19 @@ MonoBehaviour:
   _notes: 'A good trade mushroom once dried. Its lesson is structural: turn it over.
     Pores, gills, and ridges are different worlds.'
   _photo: {fileID: 21300000, guid: 5bf8a762b805f42b3874d042478210fc, type: 3}
-  _photoCredit: 
+  _photoCredit: Generated with OpenAI gpt-image
+  _journalPage: {fileID: 21300000, guid: d0fc8de859ddb4804a668c7bbb88f2a4, type: 3}
   _worldPrefab: {fileID: 4612834345063534420, guid: 3244fba1b32a24fefb2eb24d7065b7c1, type: 3}
+  _journalPreviewPrefab: {fileID: 5278732996670634106, guid: 39f82e8235b8c4e68af2f5b6ef75a767, type: 3}
+  _journalExposure: 0.39
   _displayNameId: mushroom.pinecrest.name
   _descriptionId: mushroom.pinecrest.description
+  _forageTier: 1
+  _requiredForageFlagId:
+  _wildRespawnDays: 2
+  _marraValueCopper: 5
+  _theoValueCopper: 8
+  _cultivable: 0
+  _cultivationHours: 6
+  _cultivationYield: 3
+  _cultivationUnlockFlagId:

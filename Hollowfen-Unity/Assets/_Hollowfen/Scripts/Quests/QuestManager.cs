@@ -86,7 +86,7 @@ namespace Hollowfen.Quests
 
             _activeQuest = quest;
             ApplyWaypointHint(quest);
-            QuestStarted?.Invoke(quest);
+            PublishQuestStarted(quest);
         }
 
         public static void CompleteQuest(string id)
@@ -109,11 +109,25 @@ namespace Hollowfen.Quests
             if (done.UnlockStoryCardOnComplete != null)
                 UnlockStoryCard(done.UnlockStoryCardOnComplete.Id);
 
-            QuestCompleted?.Invoke(done);
-            _activeQuest = null;
+            // Settle the next active quest before notifying completion listeners. Checkpoint
+            // writers (StoryBeats/SaveCoordinator) must observe the state the player will resume,
+            // not the quest that has already completed. Preserve the public event order:
+            // QuestCompleted(done) still fires before QuestStarted(next).
+            QuestData next = null;
+            if (done.NextQuest != null && !_completedIds.Contains(done.NextQuest.Id))
+            {
+                next = done.NextQuest;
+                _activeQuest = next;
+                ApplyWaypointHint(next);
+            }
+            else
+            {
+                _activeQuest = null;
+                if (LocationRegistry.ActiveWaypoint != null) LocationRegistry.ClearWaypoint();
+            }
 
-            if (done.NextQuest != null) StartQuest(done.NextQuest);
-            else if (LocationRegistry.ActiveWaypoint != null) LocationRegistry.ClearWaypoint();
+            PublishQuestCompleted(done);
+            if (next != null && _activeQuest == next) PublishQuestStarted(next);
         }
 
         // Slot switch (New Game / Load): clear in-memory progression but keep event
@@ -155,7 +169,7 @@ namespace Hollowfen.Quests
             EnsureHydrated();
             if (!_unlockedStoryCardIds.Add(cardId)) return false;
             Persist();
-            StoryCardUnlocked?.Invoke(cardId);
+            PublishStoryCardUnlocked(cardId);
             // Mirror Steam-style achievement hook so this can fan out later.
             GameEvents.TriggerAchievement("ACH_STORY_" + cardId.ToUpperInvariant());
             return true;
@@ -178,6 +192,39 @@ namespace Hollowfen.Quests
                     LocationRegistry.SetWaypoint(m);
                     return;
                 }
+            }
+        }
+
+        private static void PublishQuestStarted(QuestData quest)
+        {
+            var handlers = QuestStarted;
+            if (handlers == null) return;
+            foreach (Action<QuestData> handler in handlers.GetInvocationList())
+            {
+                var callback = handler;
+                Save.SaveManager.PublishAfterAtomicCommit(() => callback(quest));
+            }
+        }
+
+        private static void PublishQuestCompleted(QuestData quest)
+        {
+            var handlers = QuestCompleted;
+            if (handlers == null) return;
+            foreach (Action<QuestData> handler in handlers.GetInvocationList())
+            {
+                var callback = handler;
+                Save.SaveManager.PublishAfterAtomicCommit(() => callback(quest));
+            }
+        }
+
+        private static void PublishStoryCardUnlocked(string cardId)
+        {
+            var handlers = StoryCardUnlocked;
+            if (handlers == null) return;
+            foreach (Action<string> handler in handlers.GetInvocationList())
+            {
+                var callback = handler;
+                Save.SaveManager.PublishAfterAtomicCommit(() => callback(cardId));
             }
         }
     }

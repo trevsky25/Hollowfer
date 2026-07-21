@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa92abadd14f3410f85537dfca1177ea, type: 3}
+  m_Name: Preparation_FieldInk
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Apothecary.PreparationRecipeData
+  _id: field_ink
+  _kind: 1
+  _titleId: apothecary.recipe.field_ink.title
+  _summaryId: apothecary.recipe.field_ink.summary
+  _resultId: preparation.field_ink
+  _resultNameId: apothecary.product.field_ink.name
+  _resultDescriptionId: apothecary.product.field_ink.body
+  _ingredients:
+  - {fileID: 11400000, guid: bb5c7d5872a0d4901b7219b2011d04e0, type: 2}
+  - {fileID: 11400000, guid: 1af653a6e5104453ea0722f2672205ab, type: 2}
+  _amounts: 0100000001000000
+  _stepIds:
+  - apothecary.step.weigh
+  - apothecary.step.grind
+  - apothecary.step.fold
+  - apothecary.step.bottle
+  _requiredFlagId: apothecary_almy_lesson_seen
+  _unlockHintId: apothecary.recipe.field_ink.unlock
+  _resultUseId: apothecary.recipe.field_ink.next
+  _completionFlagId: apothecary_prepared_field_ink
+  _firstCraftKnowledge: 1

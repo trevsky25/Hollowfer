@@ -1,0 +1,99 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b71ffd66f0a5441d5af5ee26c3fa2d26, type: 3}
+  m_Name: Restoration_WendBridge
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Restoration.RestorationProjectData
+  _id: wend_bridge
+  _titleId: restoration.bridge.title
+  _summaryId: restoration.bridge.summary
+  _locationId: restoration.bridge.location
+  _promptTargetId: restoration.bridge.site
+  _benefitId: restoration.bridge.benefit
+  _villageHopeReward: 0
+  _knowledgeReward: 0
+  _activeQuestId: 
+  _completedQuestId: 
+  _stageRules:
+  - _condition: 2
+    _valueId: cottagesReopen
+    _stage: 1
+  - _condition: 3
+    _valueId: wend_bridge_supplies_ready
+    _stage: 2
+  - _condition: 3
+    _valueId: wend_bridge_work_started
+    _stage: 3
+  - _condition: 3
+    _valueId: wend_bridge_restored
+    _stage: 4
+  - _condition: 3
+    _valueId: wend_bridge_in_use
+    _stage: 5
+  _stageCopy:
+  - _stage: 1
+    _titleId: restoration.bridge.stage.surveyed.title
+    _bodyId: restoration.bridge.stage.surveyed.body
+    _shortId: restoration.bridge.stage.surveyed.short
+  - _stage: 2
+    _titleId: restoration.bridge.stage.supplies.title
+    _bodyId: restoration.bridge.stage.supplies.body
+    _shortId: restoration.bridge.stage.supplies.short
+  - _stage: 3
+    _titleId: restoration.bridge.stage.work.title
+    _bodyId: restoration.bridge.stage.work.body
+    _shortId: restoration.bridge.stage.work.short
+  - _stage: 4
+    _titleId: restoration.bridge.stage.restored.title
+    _bodyId: restoration.bridge.stage.restored.body
+    _shortId: restoration.bridge.stage.restored.short
+  - _stage: 5
+    _titleId: restoration.bridge.stage.occupied.title
+    _bodyId: restoration.bridge.stage.occupied.body
+    _shortId: restoration.bridge.stage.occupied.short
+  _milestones:
+  - _labelId: restoration.bridge.milestone.survey
+    _detailId: restoration.bridge.milestone.survey.detail
+    _condition: 2
+    _valueId: cottagesReopen
+    _requiredStage: 0
+  - _labelId: restoration.bridge.milestone.timber
+    _detailId: restoration.bridge.milestone.timber.detail
+    _condition: 3
+    _valueId: wend_bridge_timber_funded
+    _requiredStage: 0
+  - _labelId: restoration.bridge.milestone.iron
+    _detailId: restoration.bridge.milestone.iron.detail
+    _condition: 3
+    _valueId: wend_bridge_iron_funded
+    _requiredStage: 0
+  - _labelId: restoration.bridge.milestone.crew
+    _detailId: restoration.bridge.milestone.crew.detail
+    _condition: 3
+    _valueId: wend_bridge_work_started
+    _requiredStage: 0
+  - _labelId: restoration.bridge.milestone.crossing
+    _detailId: restoration.bridge.milestone.crossing.detail
+    _condition: 3
+    _valueId: wend_bridge_in_use
+    _requiredStage: 0
+  _contributions:
+  - _labelId: restoration.bridge.contribution.timber
+    _detailId: restoration.bridge.contribution.timber.detail
+    _fundedFlagId: wend_bridge_timber_funded
+    _costCopper: 24
+    _availableFromStage: 1
+  - _labelId: restoration.bridge.contribution.iron
+    _detailId: restoration.bridge.contribution.iron.detail
+    _fundedFlagId: wend_bridge_iron_funded
+    _costCopper: 12
+    _availableFromStage: 1
+  _contributionsCompleteFlagId: wend_bridge_supplies_ready

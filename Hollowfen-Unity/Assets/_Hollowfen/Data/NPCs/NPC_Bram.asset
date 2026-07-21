@@ -17,29 +17,359 @@ MonoBehaviour:
   _dialogueEntries:
   - activeQuest: {fileID: 0}
     requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: crooked_pintle_in_use
+    blockedByFlagId: encounter.pintle_last_table_seen
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: Setting the Pintle's last table
+    requiresPartnerNpcId: marra
+    requiresPartnerScheduleSlotLabel: Setting the Pintle's last table
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 7fbbbebd27c6d4ab2842f694824b332a, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: apothecary_story_complete
+    blockedByFlagId: encounter.apothecary_rain_seen
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: Rain ledger at Tobin's apothecary
+    requiresPartnerNpcId: edda
+    requiresPartnerScheduleSlotLabel: Rain ledger at Tobin's apothecary
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 7f1dd232e2b444b26932880d07ebe7f6, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: apothecary_case_resolved_bram_rain_shiver
+    blockedByFlagId: apothecary_case_followup_seen_bram_rain_shiver
+    requiresNoActiveQuest: 1
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 0d6c9fc841b7848349820a22849377c2, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: apothecary_case_active_bram_rain_shiver
+    blockedByFlagId: apothecary_case_intake_bram_rain_shiver
+    requiresNoActiveQuest: 1
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: ac866a7699bfb4fd69e0f5dac3ef6178, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: ending_free_hollow
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: bram.ending_free_hollow_reaction
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 26fe2cefc99bb428886bf11104014d00, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: ending_lordly_patronage
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: bram.ending_lordly_patronage_reaction
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: fda450e3db30f4b6d813d26fa5e87660, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: ending_capital
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: bram.ending_capital_reaction
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: efa4e55d27c004fe48dca38c5646a3c5, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: ending_witch_path
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: bram.ending_witch_path_reaction
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: fcd02856778c54575a2b0f92a83f7e98, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: festival_hosted
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: bram.shared_supper
+    blockedByMemoryId: bram.last_lantern
+    favorId: favor.bram.after_hours
+    minimumFavorStage: 1
+    maximumFavorStage: 1
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 3f38cde9f48544a30837b476ba6a1e5d, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: crooked_pintle_in_use
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: bram.shared_supper
+    favorId: favor.bram.after_hours
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: cdbb9052bdf254c139e35570a3ef0236, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: festival_hosted
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: bram.last_lantern
+    blockedByMemoryId: 
+    favorId: favor.bram.after_hours
+    minimumFavorStage: 2
+    maximumFavorStage: 0
+    usesMinimumRelationship: 1
+    minimumRelationship: 4
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: d04ef8420bb1c41e3b380446c3705e2b, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: tobin_workshop_in_use
+    blockedByFlagId: apothecary_bram_memory_seen
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: af6b95f387a534925a72ccc7c67daa19, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
     requiresFlagId: npc_consultations_unlocked
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
     requiresCoinsCopper: 0
     requiresBasketNonEmpty: 0
     requiresForage: {fileID: 0}
     dialog: {fileID: 11400000, guid: 5ef51ecb59c64bf4b591551c04882842, type: 2}
   - activeQuest: {fileID: 11400000, guid: 0a89ad7b8f66425ebf9661c6ad668b81, type: 2}
     requiresQuestCompleted: {fileID: 0}
-    requiresFlagId:
+    requiresFlagId: 
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
     requiresCoinsCopper: 0
     requiresBasketNonEmpty: 0
     requiresForage: {fileID: 0}
     dialog: {fileID: 11400000, guid: 0655ac2898054d41ab8e3a2baec25680, type: 2}
   - activeQuest: {fileID: 11400000, guid: 233a00ead1da24556a276c9f50260699, type: 2}
     requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: 
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
     dialog: {fileID: 11400000, guid: 326edced24f414e5ea8d715c29d9859f, type: 2}
   - activeQuest: {fileID: 0}
     requiresQuestCompleted: {fileID: 11400000, guid: 0a89ad7b8f66425ebf9661c6ad668b81, type: 2}
-    requiresFlagId:
+    requiresFlagId: 
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
     requiresCoinsCopper: 0
     requiresBasketNonEmpty: 0
     requiresForage: {fileID: 0}
     dialog: {fileID: 11400000, guid: d27f1ee121694df28ba8696e34145835, type: 2}
   - activeQuest: {fileID: 0}
     requiresQuestCompleted: {fileID: 11400000, guid: 233a00ead1da24556a276c9f50260699, type: 2}
+    requiresFlagId: 
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
     dialog: {fileID: 11400000, guid: c0cf675b41b64327adcdc005614923b6, type: 2}
   _repeatDialog: {fileID: 0}

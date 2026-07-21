@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95267338c201c4c76b2d6ee20a231830, type: 3}
+  m_Name: Request_Apothecary_Marra_BrothRepeat
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Requests.VillageRequestData
+  _id: apothecary_marra_broth_repeat
+  _npcId: marra
+  _kind: 0
+  _titleId: request.apothecary.marra_broth_repeat.title
+  _descriptionId: request.apothecary.marra_broth_repeat.body
+  _requesterLineId: request.apothecary.marra_broth_repeat.line
+  _heroImage: {fileID: 21300000, guid: 6d7f22bc8092648beade1be4926ea3e2, type: 3}
+  _requiredSpecies: []
+  _requiredCounts: 
+  _requiredPreparations:
+  - {fileID: 11400000, guid: 1630927f52dea4aadac81181cb0e0782, type: 2}
+  _requiredPreparationCounts: 01000000
+  _rewardCopper: 20
+  _wetWeatherBonusCopper: 0
+  _firstCompletionRelationshipDelta: 1
+  _firstCompletionKnowledgeDelta: 0
+  _requiredFlagIds:
+  - apothecary_goldfoot_delivered
+  _requiredCompletedQuestIds: []
+  _activeQuestId: 
+  _oneShot: 0
+  _completionFlagIds: []
+  _completeQuest: {fileID: 0}
+  _completionDialogue: {fileID: 0}

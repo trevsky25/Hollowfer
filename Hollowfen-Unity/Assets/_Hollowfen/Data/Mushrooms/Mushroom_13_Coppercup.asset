@@ -34,6 +34,19 @@ MonoBehaviour:
   _notes: Pretty enough for market baskets, fragile enough to punish careless handling.
     It is a visual reward for players who scan the ground carefully.
   _photo: {fileID: 21300000, guid: 1ae49e75541c24fbeb6330cba16fabad, type: 3}
-  _photoCredit: 
+  _photoCredit: Generated with OpenAI gpt-image
+  _journalPage: {fileID: 21300000, guid: ec9817430ddc1491fadd64e656c0dfca, type: 3}
+  _worldPrefab: {fileID: 6504814557989675619, guid: 7793390619cc24ef7a3695c670075ccd, type: 3}
+  _journalPreviewPrefab: {fileID: 2298213154426885685, guid: 6d0ea8100933c4232a671e3029145eae, type: 3}
+  _journalExposure: 0.74
   _displayNameId: mushroom.coppercup.name
   _descriptionId: mushroom.coppercup.description
+  _forageTier: 2
+  _requiredForageFlagId: foraging_knife_unlocked
+  _wildRespawnDays: 2
+  _marraValueCopper: 5
+  _theoValueCopper: 7
+  _cultivable: 0
+  _cultivationHours: 6
+  _cultivationYield: 3
+  _cultivationUnlockFlagId:

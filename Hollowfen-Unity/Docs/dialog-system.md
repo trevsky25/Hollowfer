@@ -17,9 +17,9 @@ Files involved:
 2. **Use the lines verbatim from `docs/story.md`.** No paraphrasing. The dialog ID matches the `Dialogue ID:` marker in the story doc.
 3. **Tag 1–2 emotional climax lines per dialog with `shot: 'closeup'`.** Reserve close-ups for genuine emotional beats (apologies, recognitions, hard truths). The default wide shot is for normal beats.
 4. **First line of every dialog should fire the speaker's `talking` animation** via a trigger at `atLine: 0`.
-5. **Item handoffs / physical actions** get a one-shot animation trigger at the exact narrative beat (e.g. Bram's `handoff` fires on *"Your da left this with me when he took poorly."*).
+5. **Item handoffs / physical actions** get a one-shot animation trigger at the exact narrative beat (e.g. Bram's `handoff` fires when he explains why Wren's father entrusted him with the mill key).
 6. **Chain dialogs via `outcome.nextDialog`** when one scene flows directly into another — DialogController keeps the letterbox up across linked dialogs so it reads as one continuous take.
-7. **A "repeat" dialog with 2–4 lines** for when the player talks to an NPC after a story beat is finished. Light, no triggers, no closeups.
+7. **A short "repeat" dialog** for when the player talks to an NPC after a story beat is finished. One substantial line is often enough; keep it light, with no closeups.
 
 ## Data shape
 

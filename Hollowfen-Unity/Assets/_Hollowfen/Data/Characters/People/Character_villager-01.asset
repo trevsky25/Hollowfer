@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b4e19f76957446acb794b6622b288e2, type: 3}
+  m_Name: Character_villager-01
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.CharacterProfileData
+  _id: villager-01
+  _characterName: Villager 01
+  _role: Laundress
+  _age: Adult
+  _home: Hollowfen
+  _work: Laundry and water carrying
+  _keepsake: Washboard
+  _tagline: A working villager shaped by water, lye, and the weight of wet linen.
+  _leadParagraph: An adult laundress in plain rural layers, suited to wash-day activity
+    near Hollowfen's well, lanes, and river.
+  _backgroundParagraph: Use this villager for household labor, water carrying, cottage
+    routines, and practical festival crowd variation.
+  _perspectiveParagraph: 'The silhouette should remain grounded in work: rolled sleeves,
+    a balanced stance, and simple laundry props.'
+  _kitItems: []
+  _heroPortrait: {fileID: 0}
+  _pullquote: 
+  _displayNameId: character.villager_01.name
+  _descriptionId: character.villager_01.lead
+  _sortOrder: 16
+  _category: 2
+  _edition: 17 / VILLAGER 01
+  _previewScale: 1
+  _tPosePlate: {fileID: 0}
+  _characterSheet: {fileID: 0}
+  _missions: []
+  _quotes: []
+  _heroPortraitResourcePath: People/Art/villager-01_tpose
+  _tPosePlateResourcePath: People/Art/villager-01_tpose
+  _characterSheetResourcePath: People/Art/villager-01_tpose
+  _journalModelResourcePath: People/Models/villager-01
+  _journalTriangleBudget: 50000
+  _journalTextureSize: 1024
+  _journalModelPrefab: {fileID: 0}
+  _journalIdleClip: {fileID: 0}
+  _journalExposure: 0.15
+  _studySheet: {fileID: 0}
+  _figureFront: {fileID: 0}
+  _figureBack: {fileID: 0}
+  _figureThreeQuarter: {fileID: 0}
+  _knifePlate: {fileID: 0}

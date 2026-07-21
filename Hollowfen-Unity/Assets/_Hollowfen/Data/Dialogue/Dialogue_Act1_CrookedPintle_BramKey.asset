@@ -14,66 +14,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Dialogue.DialogueData
   _id: act1.crooked_pintle.bram.key
   _lines:
-  - speaker: Bram
-    text: Marra's in back. She'll want to see you. Only she won't say so in a way
-      you'll enjoy.
-    isCloseup: 0
-    voiceClip: {fileID: 8300000, guid: 0205ca836a2a74be8bb5e815e679093a, type: 3}
   - speaker: Wren
-    text: That sounds like Marra.
-    isCloseup: 0
-    voiceClip: {fileID: 8300000, guid: a4a6c0753e3ce42bda362b407426e64b, type: 3}
-  - speaker: Bram
-    text: Your da left this with me when he took poorly.
-    isCloseup: 0
-    voiceClip: {fileID: 8300000, guid: a1f70177006474756af26489e7b4f477, type: 3}
-  - speaker: Wren
-    text: He knew?
-    isCloseup: 0
-    voiceClip: {fileID: 8300000, guid: 7f03a7b062f92485c9fb01872d12ef09, type: 3}
-  - speaker: Bram
-    text: 'He knew enough.
-
-
-      You''ll find the mill in a state. I went by when
-      I could.
-
-
-      Wheel hasn''t turned since the Wend went and changed its mind
-      about where it was going.'
-    isCloseup: 0
-    voiceClip: {fileID: 8300000, guid: d48801d786d1c4036956bb5d734cc23c, type: 3}
-  - speaker: Wren
-    text: Three winters ago?
-    isCloseup: 0
-    voiceClip: {fileID: 8300000, guid: 52d3a3fb5a8e9483ea412c86a3a986fe, type: 3}
-  - speaker: Bram
-    text: Aye.
-    isCloseup: 0
-    voiceClip: {fileID: 8300000, guid: 44f0fa6e5088549a0990f63976614cbd, type: 3}
-  - speaker: Wren
-    text: Father wrote that the lower fields flooded.
-    isCloseup: 0
-    voiceClip: {fileID: 8300000, guid: d062bdb9438bb44f0b04c07f9d59dc1c, type: 3}
-  - speaker: Bram
-    text: 'He would have written it tidy.
-
-
-      He was a good man, your da.'
-    isCloseup: 0
-    voiceClip: {fileID: 8300000, guid: 6df499bb6ec5447748639d6ad55cc2b9, type: 3}
-  - speaker: Wren
-    text: That sounds like him.
-    isCloseup: 0
-    voiceClip: {fileID: 8300000, guid: 7ce014ba3a7454e2eb7618c78d7e40a8, type: 3}
-  - speaker: Bram
-    text: I'm sorry, Wren.
+    text: Dad's letters grew shorter, then stopped. He wrote about the flooded fields,
+      never how bad it was. I should have come sooner, Bram. Tell me what happened
+      - and why you have the mill key.
     isCloseup: 1
-    voiceClip: {fileID: 8300000, guid: f58953799804e4edaab655b036949ca9, type: 3}
-  - speaker: Wren
-    text: So am I.
+    voiceClip: {fileID: 8300000, guid: e3339c81edf6b4517a4df1db97bf50f6, type: 3}
+  - speaker: Bram
+    text: Your father made every hardship sound like weather. The Wend changed course
+      three winters ago and left the wheel over dry stones. When he took poorly,
+      he brought me this key and asked me to keep the damp out until you came home.
+      I did what I could. He was a good man, Wren, and a dear friend. I am sorry.
     isCloseup: 1
-    voiceClip: {fileID: 8300000, guid: ecc8d334baaa342f9b19b8ae8f59bcf3, type: 3}
+    voiceClip: {fileID: 8300000, guid: 9d756b19092dd4f3fa66e3d2f024af1e, type: 3}
+  - speaker: Wren
+    text: Thank you for keeping faith with him. I'll take the key now - and whatever
+      waits at the mill. I've spent long enough being absent.
+    isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: 67389332e582149f4a37aaa72afae9ef, type: 3}
+  _mushroomHandoff:
+    beforeLineIndex: 0
+    recipientSpeaker: 
+    mushroom: {fileID: 0}
+    presentationHeight: 0
   _unlockStoryCard: {fileID: 11400000, guid: 4d3b302c8f5404f1e9b2d48978d76977, type: 2}
   _completeQuest: {fileID: 11400000, guid: 233a00ead1da24556a276c9f50260699, type: 2}
   _giveItemId: item.mill_key
@@ -81,6 +44,7 @@ MonoBehaviour:
   _spendsCoinsCopper: 0
   _sellsForageBasket: 0
   _basketCopperPerItem: 0
+  _basketBuyer: 0
   _grantForage: {fileID: 0}
   _grantForageCount: 1
   _consumeForage: {fileID: 0}
@@ -90,5 +54,10 @@ MonoBehaviour:
   _knowledgeDelta: 0
   _relationshipNpcIds: []
   _relationshipDeltas: 
-  _nextDialog: {fileID: 11400000, guid: c0cf675b41b64327adcdc005614923b6, type: 2}
+  _memoryOutcomes: []
+  _bondOutcomes: []
+  _favorOutcomes: []
+  _advanceMinutes: 0
+  _transitionMoment: {fileID: 11400000, guid: 4a6826e9bd5d94527bec451f0901e1ef, type: 2}
+  _nextDialog: {fileID: 0}
   _choices: []

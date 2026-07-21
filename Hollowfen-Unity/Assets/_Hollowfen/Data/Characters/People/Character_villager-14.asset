@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b4e19f76957446acb794b6622b288e2, type: 3}
+  m_Name: Character_villager-14
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.CharacterProfileData
+  _id: villager-14
+  _characterName: Villager 14
+  _role: Beekeeper-herder
+  _age: Adult
+  _home: Hollowfen
+  _work: Hive tending and small-stock care
+  _keepsake: Straw skep
+  _tagline: A mixed-work villager for hives, small animals, and the edges between
+    garden and pasture.
+  _leadParagraph: An adult beekeeper-herder in practical rural dress, intended for
+    garden edges, pasture gates, and honey-market staging.
+  _backgroundParagraph: Use this villager where Hollowfen's small-scale animal and
+    hive work should be visible without creating a named role.
+  _perspectiveParagraph: The design should stay calm and work-led, using protective
+    layers, a skep, or herding props as the identifying language.
+  _kitItems: []
+  _heroPortrait: {fileID: 0}
+  _pullquote: 
+  _displayNameId: character.villager_14.name
+  _descriptionId: character.villager_14.lead
+  _sortOrder: 29
+  _category: 2
+  _edition: 30 / VILLAGER 14
+  _previewScale: 1
+  _tPosePlate: {fileID: 0}
+  _characterSheet: {fileID: 0}
+  _missions: []
+  _quotes: []
+  _heroPortraitResourcePath: People/Art/villager-14_tpose
+  _tPosePlateResourcePath: People/Art/villager-14_tpose
+  _characterSheetResourcePath: People/Art/villager-14_tpose
+  _journalModelResourcePath: People/Models/villager-14
+  _journalTriangleBudget: 50000
+  _journalTextureSize: 1024
+  _journalModelPrefab: {fileID: 0}
+  _journalIdleClip: {fileID: 0}
+  _journalExposure: 0.15
+  _studySheet: {fileID: 0}
+  _figureFront: {fileID: 0}
+  _figureBack: {fileID: 0}
+  _figureThreeQuarter: {fileID: 0}
+  _knifePlate: {fileID: 0}

@@ -13,6 +13,7 @@ namespace Hollowfen.UI
         public virtual GameObject DefaultSelected => _defaultSelected;
         public CanvasGroup CanvasGroup => _canvasGroup;
         public bool IsModal => _isModal;
+        public virtual bool IsRootScreen => false;
 
         private bool _initialized;
 
@@ -32,6 +33,15 @@ namespace Hollowfen.UI
         }
 
         protected virtual void OnInitialize() { }
+
+        /// <summary>Lets code-built screens participate in the same UIManager stack as prefabs.</summary>
+        protected void ConfigureRuntimeScreen(string screenId, GameObject defaultSelected, CanvasGroup canvasGroup, bool isModal = false)
+        {
+            _screenId = screenId;
+            _defaultSelected = defaultSelected;
+            _canvasGroup = canvasGroup;
+            _isModal = isModal;
+        }
 
         public virtual void OnOpen() { }
         public virtual void OnClose() { }

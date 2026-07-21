@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00c9c9bb92b3b44fb84ca335c48467d8, type: 3}
+  m_Name: Dialogue_Relationship_Edda_01
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Dialogue.DialogueData
+  _id: relationship.edda.favor_01
+  _lines:
+  - speaker: Edda
+    text: Come check the care shelf with me. Preparing a tonic is half the work.
+      Finding it where frightened hands expect it is the other half.
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 844ebc2a9c53b494da26d90608dbf6ea, type: 3}
+  - speaker: Wren
+    text: Labels outward, oldest forward?
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: a452c704266c54dfc82144234798920e, type: 3}
+  - speaker: Edda
+    text: And every empty space explained. An unexplained empty shelf becomes a rumor
+      by supper.
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: d05f088fbe8d741df9840340519151f9, type: 3}
+  - speaker: Wren
+    text: Then we leave no room for rumors.
+    isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: a2dd6d09bd891476781583bdaf4be9eb, type: 3}
+  _mushroomHandoff:
+    beforeLineIndex: 0
+    recipientSpeaker: 
+    mushroom: {fileID: 0}
+    presentationHeight: 0
+  _unlockStoryCard: {fileID: 0}
+  _completeQuest: {fileID: 0}
+  _giveItemId: 
+  _grantCoinsCopper: 0
+  _spendsCoinsCopper: 0
+  _sellsForageBasket: 0
+  _basketCopperPerItem: 0
+  _basketBuyer: 0
+  _grantForage: {fileID: 0}
+  _grantForageCount: 1
+  _consumeForage: {fileID: 0}
+  _consumeForageCount: 1
+  _setFlagIds: []
+  _villageHopeDelta: 0
+  _knowledgeDelta: 0
+  _relationshipNpcIds:
+  - edda
+  _relationshipDeltas: 02000000
+  _memoryOutcomes:
+  - npcId: edda
+    memoryId: edda.shared_shelf_round
+  _bondOutcomes:
+  - firstNpcId: edda
+    secondNpcId: almy
+    delta: 1
+  _favorOutcomes:
+  - favorId: favor.edda.care_rounds
+    stage: 1
+  _advanceMinutes: 40
+  _transitionMoment: {fileID: 0}
+  _nextDialog: {fileID: 0}
+  _choices: []

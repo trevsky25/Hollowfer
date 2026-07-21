@@ -33,7 +33,19 @@ MonoBehaviour:
   _notes: Wood Ear teaches Wren that not every mushroom has a stem. Look for the
     rubbery fold, the damp deadwood, and the absence of true gills.
   _photo: {fileID: 21300000, guid: 1a058e6ecfc4245769e8309e594a44cd, type: 3}
-  _photoCredit: 
+  _photoCredit: Generated with OpenAI gpt-image
+  _journalPage: {fileID: 21300000, guid: 67bc51f67410e469597c8f2eafbb9816, type: 3}
   _worldPrefab: {fileID: 1036503861399197175, guid: 42901cd9731a64997ac4da87483bf9e4, type: 3}
+  _journalPreviewPrefab: {fileID: 7893322195588830468, guid: fbd44fb1d7acc45938482a26466aa9e5, type: 3}
+  _journalExposure: 1.08
   _displayNameId: mushroom.woodEar.name
   _descriptionId: mushroom.woodEar.description
+  _forageTier: 1
+  _requiredForageFlagId:
+  _wildRespawnDays: 2
+  _marraValueCopper: 5
+  _theoValueCopper: 7
+  _cultivable: 1
+  _cultivationHours: 6
+  _cultivationYield: 3
+  _cultivationUnlockFlagId:

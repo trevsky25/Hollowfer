@@ -13,14 +13,11 @@ export const DIALOGS = {
     speaker: 'Bram',
     title: "Old Bram",
     lines: [
-      { speaker: 'Bram', text: 'Wren?' },
-      { speaker: 'Wren', text: 'Evening, Bram.' },
-      { speaker: 'Bram', text: "Lord help me. You've got your father's height." },
-      { speaker: 'Wren', text: 'I came as soon as I could.', shot: 'closeup' },
-      { speaker: 'Bram', text: "Aye. I know.\n\nI've got the key inside." }
+      { speaker: 'Wren', text: "Old Bram! How I've missed you. It's been so long. I thought of the Pintle every winter in Veyrwick — your fire, Marra's oatcakes, Dad pretending not to notice when I stayed past supper.", shot: 'closeup' },
+      { speaker: 'Bram', text: "Wren? Lord help me, it is you. Come here and let an old innkeeper look at you. Three winters, and you've come home with your father's height and your mother's eyes. I only wish the village had kept more of itself to welcome you.", shot: 'closeup' }
     ],
     triggers: [
-      { atLine: 0, action: 'talking', target: 'bram' }
+      { atLine: 0, action: 'talking', target: 'wren' }
     ],
     outcome: {
       unlockCard: 'homecoming',
@@ -32,30 +29,19 @@ export const DIALOGS = {
     speaker: 'Bram',
     title: "Old Bram",
     lines: [
-      { speaker: 'Bram', text: "Marra's in back. She'll want to see you. Only she won't say so in a way you'll enjoy." },
-      { speaker: 'Wren', text: 'That sounds like Marra.' },
-      // Bram retrieves the key from below the bar — handoff plays here.
-      // He holds it in both palms before placing it on the bar between them.
-      { speaker: 'Bram', text: 'Your da left this with me when he took poorly.' },
-      { speaker: 'Wren', text: 'He knew?' },
-      { speaker: 'Bram', text: "He knew enough.\n\nYou'll find the mill in a state. I went by when I could.\n\nWheel hasn't turned since the Wend went and changed its mind about where it was going." },
-      { speaker: 'Wren', text: 'Three winters ago?' },
-      { speaker: 'Bram', text: 'Aye.' },
-      { speaker: 'Wren', text: 'Father wrote that the lower fields flooded.' },
-      { speaker: 'Bram', text: "He would have written it tidy.\n\nHe was a good man, your da." },
-      { speaker: 'Wren', text: 'That sounds like him.' },
-      { speaker: 'Bram', text: "I'm sorry, Wren.", shot: 'closeup' },
-      { speaker: 'Wren', text: 'So am I.', shot: 'closeup' }
+      { speaker: 'Wren', text: "Dad's letters grew shorter, then stopped. He wrote about the flooded fields, never how bad it was. I should have come sooner, Bram. Tell me what happened — and why you have the mill key.", shot: 'closeup' },
+      // Bram holds the key in both palms before placing it in Wren's hand.
+      { speaker: 'Bram', text: 'Your father made every hardship sound like weather. The Wend changed course three winters ago and left the wheel over dry stones. When he took poorly, he brought me this key and asked me to keep the damp out until you came home. I did what I could. He was a good man, Wren, and a dear friend. I am sorry.', shot: 'closeup' },
+      { speaker: 'Wren', text: "Thank you for keeping faith with him. I'll take the key now — and whatever waits at the mill. I've spent long enough being absent.", shot: 'closeup' }
     ],
     triggers: [
-      { atLine: 0, action: 'talking', target: 'bram' },
-      { atLine: 2, action: 'handoff', target: 'bram' }
+      { atLine: 0, action: 'talking', target: 'wren' },
+      { atLine: 1, action: 'handoff', target: 'bram' }
     ],
     outcome: {
       unlockCard: 'crooked_pintle',
       giveItem: 'item.mill_key',
-      completeQuest: 'speakBram',
-      nextDialog: 'act1.crooked_pintle.bram.repeat'
+      completeQuest: 'speakBram'
     }
   },
 
@@ -63,9 +49,7 @@ export const DIALOGS = {
     speaker: 'Bram',
     title: "Old Bram",
     lines: [
-      { speaker: 'Bram', text: "Mill lane's east of the well. You'll know the turn, I expect." },
-      { speaker: 'Wren', text: 'I know it.' },
-      { speaker: 'Bram', text: 'Course you do. Sorry.' }
+      { speaker: 'Bram', text: "Mill lane runs east from the well. You'll know the turn. Of course you will — old habit, Wren. Forgive me." }
     ],
     triggers: [
       { atLine: 0, action: 'talking', target: 'bram' }

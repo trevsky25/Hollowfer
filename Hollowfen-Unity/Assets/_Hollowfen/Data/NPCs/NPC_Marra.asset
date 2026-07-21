@@ -15,50 +15,403 @@ MonoBehaviour:
   _id: marra
   _displayNameId: npc.marra.name
   _dialogueEntries:
-  - activeQuest: {fileID: 11400000, guid: 2279b658c2e24d238bd17796d4b16552, type: 2}
+  - activeQuest: {fileID: 0}
     requiresQuestCompleted: {fileID: 0}
-    requiresFlagId:
+    requiresFlagId: crooked_pintle_in_use
+    blockedByFlagId: encounter.pintle_last_table_seen
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: Setting the Pintle's last table
+    requiresPartnerNpcId: bram
+    requiresPartnerScheduleSlotLabel: Setting the Pintle's last table
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
     requiresCoinsCopper: 0
     requiresBasketNonEmpty: 0
     requiresForage: {fileID: 0}
-    dialog: {fileID: 11400000, guid: f4e39764e31b4d0d88b4c5c8f09da6ab, type: 2}
+    dialog: {fileID: 11400000, guid: 7fbbbebd27c6d4ab2842f694824b332a, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: chapel_garden_in_use
+    blockedByFlagId: encounter.garden_seed_seen
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: Trading seed at the chapel garden
+    requiresPartnerNpcId: almy
+    requiresPartnerScheduleSlotLabel: Trading seed at the chapel garden
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 97390267f1d64499798d208519cfa3df, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: apothecary_case_resolved_marra_cellar_bloom
+    blockedByFlagId: apothecary_case_followup_seen_marra_cellar_bloom
+    requiresNoActiveQuest: 1
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 5368d7c3a53be4e0093bf965c06c9d7b, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: apothecary_case_active_marra_cellar_bloom
+    blockedByFlagId: apothecary_case_intake_marra_cellar_bloom
+    requiresNoActiveQuest: 1
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: da84ba6a156414bec9e0ae13c4a87305, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: ending_free_hollow
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: marra.ending_free_hollow_reaction
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 32ab699c93fe8424da689f90450edade, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: ending_lordly_patronage
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: marra.ending_lordly_patronage_reaction
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: a92d59fe0311249a18892153f2027613, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: ending_capital
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: marra.ending_capital_reaction
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 86515b1f0f96046c7acbcd9c6ca4ac43, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: ending_witch_path
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: marra.ending_witch_path_reaction
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 9f7366f75f48b4a4e9f5b21c13343d4f, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: final_choice_available
+    blockedByFlagId: game_complete
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: marra.weighed_final_choice
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 02364bf2a7ed840ebb90f38c3800b94c, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: festival_hosted
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: marra.shared_kitchen_supper
+    blockedByMemoryId: marra.cleaned_after_festival
+    favorId: favor.marra.kitchen_table
+    minimumFavorStage: 1
+    maximumFavorStage: 1
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: f783c941a873e4b0db346bde60d2b7fc, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: crooked_pintle_in_use
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: marra.shared_kitchen_supper
+    favorId: favor.marra.kitchen_table
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 25a4b746dd2b0406f8984add6e703dba, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: festival_hosted
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: marra.cleaned_after_festival
+    blockedByMemoryId: 
+    favorId: favor.marra.kitchen_table
+    minimumFavorStage: 2
+    maximumFavorStage: 0
+    usesMinimumRelationship: 1
+    minimumRelationship: 4
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 6b0870aa520584f0695c87d32f3b6cb0, type: 2}
+  - activeQuest: {fileID: 11400000, guid: 2279b658c2e24d238bd17796d4b16552, type: 2}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: 
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 410e00da0cb7a4308950e2acc0d1881f, type: 2}
   - activeQuest: {fileID: 11400000, guid: bd86d1b8a0dd4755902c72775da664d8, type: 2}
     requiresQuestCompleted: {fileID: 0}
-    requiresFlagId:
+    requiresFlagId: 
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
     requiresCoinsCopper: 0
     requiresBasketNonEmpty: 0
     requiresForage: {fileID: 11400000, guid: 60b9b87ae9cc149b2aaca2adedec80ba, type: 2}
     dialog: {fileID: 11400000, guid: 4545c4fb68904aa488a0f4cd1546d254, type: 2}
   - activeQuest: {fileID: 11400000, guid: 8af58c6703004c4392bc2c30a4a102c1, type: 2}
     requiresQuestCompleted: {fileID: 0}
-    requiresFlagId:
+    requiresFlagId: 
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
     requiresCoinsCopper: 0
     requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
     dialog: {fileID: 11400000, guid: d576b2075c014c74a9294ac673987888, type: 2}
   - activeQuest: {fileID: 0}
     requiresQuestCompleted: {fileID: 11400000, guid: dd4b3b018abd4443b893b8d40870a9f7, type: 2}
-    requiresFlagId:
+    requiresFlagId: 
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
     requiresCoinsCopper: 0
     requiresBasketNonEmpty: 1
+    requiresForage: {fileID: 0}
     dialog: {fileID: 11400000, guid: 643b4a29c17d46a2a281e4f8c81ee4f2, type: 2}
   - activeQuest: {fileID: 0}
     requiresQuestCompleted: {fileID: 11400000, guid: 2279b658c2e24d238bd17796d4b16552, type: 2}
-    requiresFlagId:
+    requiresFlagId: 
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
     requiresCoinsCopper: 0
     requiresBasketNonEmpty: 0
     requiresForage: {fileID: 0}
     dialog: {fileID: 11400000, guid: 1fc727f627f8404f91308da0a845d91b, type: 2}
   - activeQuest: {fileID: 11400000, guid: 526e25bd081e4e6a9029e8273760d303, type: 2}
     requiresQuestCompleted: {fileID: 0}
-    requiresFlagId:
+    requiresFlagId: 
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
     requiresCoinsCopper: 0
     requiresBasketNonEmpty: 0
     requiresForage: {fileID: 0}
     dialog: {fileID: 11400000, guid: d1c7ce20507a4cc1958322b6f03d95a9, type: 2}
   - activeQuest: {fileID: 0}
     requiresQuestCompleted: {fileID: 11400000, guid: 8af58c6703004c4392bc2c30a4a102c1, type: 2}
-    requiresFlagId:
+    requiresFlagId: 
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
     requiresCoinsCopper: 0
     requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
     dialog: {fileID: 11400000, guid: 6eecd938d7a1483d8d487fb188ae14af, type: 2}
   _repeatDialog: {fileID: 0}

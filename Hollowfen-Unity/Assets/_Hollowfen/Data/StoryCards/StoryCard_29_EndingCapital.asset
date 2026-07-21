@@ -30,7 +30,7 @@ MonoBehaviour:
   - Her name becomes synonymous with a moment Hollowfen had.
   - Hollin remains and continues the foraging lineage.
   _image: {fileID: 21300000, guid: 0aa6004dbb0184c1ca22640ae57c9295, type: 3}
-  _unlockAt: 26
+  _unlockAt: -1
   _questId: endingCapital
   _displayNameId: story.ending_capital.title
   _descriptionId: story.ending_capital.body

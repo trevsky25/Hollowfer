@@ -23,45 +23,59 @@ MonoBehaviour:
 
       Marra.'
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: f673c28e146d74085b8df69cb81fe4ad, type: 3}
   - speaker: Wren
     text: Are they worth anything?
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: b2317aff12fd4415f9ed3891d9784d3c, type: 3}
   - speaker: Marra
     text: What?
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 6ae0b3256ffc94730bfacdc184fee5b7, type: 3}
   - speaker: Bram
     text: Come here.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 56a5aedb8fa7d4023a34293a5d03f07d, type: 3}
   - speaker: Marra
     text: If the roof's fallen in, stand somewhere else.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 7366ac2e56ef94cfb84e73354f39c02d, type: 3}
   - speaker: Bram
     text: Marra.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: b73d1da7c1faf432392745f55acb3a5c, type: 3}
   - speaker: Marra
     text: Where did you get those?
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 578da7c2747634958a2bf0c48e6ff52f, type: 3}
   - speaker: Wren
     text: Edge Woods.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: a36e1858fc91a4ed182563017f00f4d8, type: 3}
   - speaker: Marra
     text: You picked them yourself?
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 73b50336b7ec040a9949939319edf4aa, type: 3}
   - speaker: Wren
     text: I checked them against Father's journal. Mostly.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 05ded2c423e9e4c27b7eb49548954de7, type: 3}
   - speaker: Marra
     text: Goldfoots.
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: a60f232ab65334f11869e1dff20673f3, type: 3}
   - speaker: Bram
     text: In this kitchen. After twenty years.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: d214331536191449e99c3344c3ccf46c, type: 3}
   - speaker: Marra
     text: Cold water.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 39cfa0b17f6684529ac3aa814c6a021e, type: 3}
   - speaker: Wren
     text: What?
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 899f7641077ab4790bda143237539dcc, type: 3}
   - speaker: Marra
     text: 'You wash these in cold water. Not hot. Hot bruises them and makes liars
       of the texture.
@@ -69,9 +83,33 @@ MonoBehaviour:
 
       I''ll tell you twice and not three times.'
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: ca4ed795156a84894ac63ce75f89271f, type: 3}
+  _mushroomHandoff:
+    beforeLineIndex: 10
+    recipientSpeaker: Marra
+    mushroom: {fileID: 11400000, guid: 8ef0eedcc9a4f49e998202c235dd5881, type: 2}
+    presentationHeight: 0.27
   _unlockStoryCard: {fileID: 0}
   _completeQuest: {fileID: 0}
-  _giveItemId:
+  _giveItemId: 
   _grantCoinsCopper: 0
+  _spendsCoinsCopper: 0
   _sellsForageBasket: 0
+  _basketCopperPerItem: 0
+  _basketBuyer: 0
+  _grantForage: {fileID: 0}
+  _grantForageCount: 1
+  _consumeForage: {fileID: 0}
+  _consumeForageCount: 1
+  _setFlagIds: []
+  _villageHopeDelta: 0
+  _knowledgeDelta: 0
+  _relationshipNpcIds: []
+  _relationshipDeltas: 
+  _memoryOutcomes: []
+  _bondOutcomes: []
+  _favorOutcomes: []
+  _advanceMinutes: 0
+  _transitionMoment: {fileID: 11400000, guid: 926c6cd25cb043ccb75ae265fb4ae05f, type: 2}
   _nextDialog: {fileID: 11400000, guid: ec2017c785124fd6a5003b6dedf73e29, type: 2}
+  _choices: []

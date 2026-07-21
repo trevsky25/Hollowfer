@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00c9c9bb92b3b44fb84ca335c48467d8, type: 3}
+  m_Name: Dialogue_ApothecaryCase_JorenHammerEcho_Intake
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Dialogue.DialogueData
+  _id: apothecary_case_joren_hammer_echo_intake
+  _lines:
+  - speaker: Joren
+    text: My hand keeps the hammer's rhythm after the hammer is down. Makes fine
+      work feel one beat late.
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 79d79afaa2da04512b51d213e7ec7525, type: 3}
+  - speaker: Wren
+    text: Show me what changes when you loosen your grip.
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 095f3120f68f7456ab6f913e140b440b, type: 3}
+  - speaker: Edda
+    text: And ask what the forge has demanded this week that it did not demand before.
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 507d15fe374a24bc0860876a5e4c9b79, type: 3}
+  _mushroomHandoff:
+    beforeLineIndex: 0
+    recipientSpeaker: 
+    mushroom: {fileID: 0}
+    presentationHeight: 0
+  _unlockStoryCard: {fileID: 0}
+  _completeQuest: {fileID: 0}
+  _giveItemId: 
+  _grantCoinsCopper: 0
+  _spendsCoinsCopper: 0
+  _sellsForageBasket: 0
+  _basketCopperPerItem: 0
+  _basketBuyer: 0
+  _grantForage: {fileID: 0}
+  _grantForageCount: 0
+  _consumeForage: {fileID: 0}
+  _consumeForageCount: 0
+  _setFlagIds:
+  - apothecary_case_intake_joren_hammer_echo
+  _villageHopeDelta: 0
+  _knowledgeDelta: 0
+  _relationshipNpcIds: []
+  _relationshipDeltas: 
+  _memoryOutcomes: []
+  _bondOutcomes: []
+  _favorOutcomes: []
+  _advanceMinutes: 0
+  _transitionMoment: {fileID: 0}
+  _nextDialog: {fileID: 0}
+  _choices: []

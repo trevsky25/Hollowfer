@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
+using Hollowfen.Settings;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.UI;
@@ -33,14 +33,13 @@ namespace Hollowfen.Cinematics
         private Canvas _lbCanvas;
         private RectTransform _lbTop, _lbBot;
         private bool _lbBuilt;
-        private readonly List<CanvasGroup> _hudHidden = new List<CanvasGroup>();
-
         // Cached gameplay pose (so a held shot can be restored later, from Restore()).
         private Vector3 _startPos;
         private Quaternion _startRot;
         private float _startFov;
         private CinemachineBrain _brain;
         private float _pendingRestore = 0.55f;
+        private NarrativePresentationSession.Lease _inputLease;
 
         public static PropFocusCinematic Ensure()
         {
@@ -60,6 +59,8 @@ namespace Hollowfen.Cinematics
 
         private void OnDestroy()
         {
+            _inputLease?.Dispose();
+            _inputLease = null;
             if (Instance == this) Instance = null;
         }
 
@@ -91,9 +92,10 @@ namespace Hollowfen.Cinematics
             var cam = Camera.main;
             IsPlaying = true;
             _pendingRestore = restoreSeconds;
-            Foraging.PlayerInteractor.Suspended = true;
-            Foraging.PlayerInteractor.SetPlayerInputEnabled(false);
-            HideHud();
+            _inputLease = NarrativePresentationSession.Acquire(
+                this,
+                NarrativePresentationSession.InputOnly
+                    .With(NarrativePresentationSession.Claim.HideGameplayHud));
             BuildLetterbox();
             _lbCanvas.gameObject.SetActive(true);
             _brain = cam.GetComponent<CinemachineBrain>();
@@ -111,6 +113,15 @@ namespace Hollowfen.Cinematics
             else { toCam = _startPos - Center(target); toCam.y = 0f; }
             if (toCam.sqrMagnitude < 0.0001f) toCam = -cam.transform.forward;
             toCam.Normalize();
+
+            if (GameSettings.ReducedMotion)
+            {
+                pushSeconds = 0f;
+                restoreSeconds = 0f;
+                _pendingRestore = 0f;
+                arcDegrees = 0f;
+                arcRise = 0f;
+            }
 
             // Push in (letterbox slides in with the move). With an arc, the approach direction starts
             // swung out by arcDegrees and the height starts raised by arcRise, both easing to the final
@@ -131,6 +142,14 @@ namespace Hollowfen.Cinematics
                 SetLetterbox(e);
                 yield return null;
             }
+            // Clamp the hero frame explicitly. Besides avoiding accumulated interpolation error,
+            // this gives Reduced Motion the same composed shot as the animated path without a sweep.
+            Vector3 finalCenter = Center(target);
+            Vector3 finalPosition = finalCenter + toCam * distance + Vector3.up * heightOffset;
+            cam.transform.SetPositionAndRotation(finalPosition,
+                Quaternion.LookRotation(finalCenter - finalPosition, Vector3.up));
+            cam.fieldOfView = fov;
+            SetLetterbox(1f);
             onPeak?.Invoke();
 
             // Hold, re-aiming each frame so a spinning/rocking prop stays framed.
@@ -177,7 +196,7 @@ namespace Hollowfen.Cinematics
             Vector3 fromPos = cam.transform.position;
             Quaternion fromRot = cam.transform.rotation;
             float fromFov = cam.fieldOfView;
-            float dur = Mathf.Max(0.01f, _pendingRestore);
+            float dur = GameSettings.ReducedMotion ? 0f : Mathf.Max(0.01f, _pendingRestore);
             float t = 0f;
             while (t < dur)
             {
@@ -199,9 +218,8 @@ namespace Hollowfen.Cinematics
         {
             if (_brain != null) _brain.enabled = true;
             if (_lbCanvas != null) _lbCanvas.gameObject.SetActive(false);
-            ShowHud();
-            Foraging.PlayerInteractor.Suspended = false;
-            Foraging.PlayerInteractor.SetPlayerInputEnabled(true);
+            _inputLease?.Dispose();
+            _inputLease = null;
             IsPlaying = false;
             IsHeld = false;
         }
@@ -216,28 +234,6 @@ namespace Hollowfen.Cinematics
             return b.center;
         }
 
-        // ---- HUD + letterbox dressing ----
-
-        private void HideHud()
-        {
-            _hudHidden.Clear();
-            foreach (var n in new[] { "_HUDCanvas", "_MiniMapCanvas" })
-            {
-                var go = GameObject.Find(n);
-                if (go == null) continue;
-                var cg = go.GetComponent<CanvasGroup>();
-                if (cg == null) cg = go.AddComponent<CanvasGroup>();
-                cg.alpha = 0f;
-                _hudHidden.Add(cg);
-            }
-        }
-
-        private void ShowHud()
-        {
-            foreach (var cg in _hudHidden) if (cg != null) cg.alpha = 1f;
-            _hudHidden.Clear();
-        }
-
         private void BuildLetterbox()
         {
             if (_lbBuilt) return;
@@ -249,7 +245,9 @@ namespace Hollowfen.Cinematics
             _lbCanvas.sortingOrder = 90;
             var scaler = go.AddComponent<CanvasScaler>();
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1920f, 1080f);
+            scaler.referenceResolution = AccessibilityPresentationPolicy.ReferenceResolution;
+            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+            scaler.matchWidthOrHeight = .5f;
             _lbTop = MakeBar("Top", 1f);
             _lbBot = MakeBar("Bot", 0f);
             _lbCanvas.gameObject.SetActive(false);

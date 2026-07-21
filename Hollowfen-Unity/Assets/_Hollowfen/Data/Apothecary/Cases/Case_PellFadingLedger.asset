@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25f24c93bd8a744f694b0ec9c17f5f22, type: 3}
+  m_Name: Case_PellFadingLedger
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Apothecary.ApothecaryCaseData
+  _id: pell_fading_ledger
+  _patientNpcId: pell
+  _patientProfile: {fileID: 11400000, guid: 81a1f019e0b8a4315be48042b9493107, type: 2}
+  _mentorNpcId: edda
+  _requiredFlagId: apothecary_story_complete
+  _requiresResolvedCase: {fileID: 11400000, guid: 902bbc96e960143eaa39f298ab3abbb7, type: 2}
+  _unlockDelayDays: 1
+  _clues:
+  - id: page
+  - id: eyes
+  _interviews:
+  - id: daylight
+  - id: pattern
+  _decisions:
+  - id: careful
+    preparation: {fileID: 11400000, guid: 2b006a3dc88e44d6aa20169f983a6b69, type: 2}
+    grade: 2
+    followUpDays: 1
+    villageHope: 1
+    knowledge: 1
+    relationshipDelta: 2
+    mentorBondDelta: 2
+    memoryId: case.pell_fading_ledger.careful
+  - id: supportive
+    preparation: {fileID: 11400000, guid: 1630927f52dea4aadac81181cb0e0782, type: 2}
+    grade: 1
+    followUpDays: 2
+    villageHope: 0
+    knowledge: 1
+    relationshipDelta: 1
+    mentorBondDelta: 1
+    memoryId: case.pell_fading_ledger.supportive
+  - id: mistaken
+    preparation: {fileID: 11400000, guid: 05d02b2a37a3b4002a9a8e42d5701fd7, type: 2}
+    grade: 0
+    followUpDays: 2
+    villageHope: 0
+    knowledge: 1
+    relationshipDelta: 0
+    mentorBondDelta: 1
+    memoryId: case.pell_fading_ledger.mistaken
+  _intakeDialogue: {fileID: 11400000, guid: 1b23e1e712bf94328a2e9c2fad16223d, type: 2}
+  _followUpDialogue: {fileID: 11400000, guid: 889012c74851e4316880659b62ec8532, type: 2}

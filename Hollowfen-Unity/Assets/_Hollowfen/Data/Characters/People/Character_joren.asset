@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b4e19f76957446acb794b6622b288e2, type: 3}
+  m_Name: Character_joren
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.CharacterProfileData
+  _id: joren
+  _characterName: Joren
+  _role: Smith / tool upgrades
+  _age: Forties
+  _home: Joren's forge
+  _work: Blacksmithing, tools, and repair hardware
+  _keepsake: Smith's hammer
+  _tagline: The smith who respects a clean edge, honest payment, and useful work.
+  _leadParagraph: Joren is broad as a doorframe, with soot-black forearms, a leather
+    apron, and pride he usually disguises as irritation.
+  _backgroundParagraph: He forges Wren a proper horn-handled knife and supplies the
+    hinges needed when Hollowfen's boarded cottages begin to open again.
+  _perspectiveParagraph: Joren judges people by whether they know what a tool is
+    for. Pretty costs extra, cuts worse, and earns very little patience at his anvil.
+  _kitItems: []
+  _heroPortrait: {fileID: 0}
+  _pullquote: Pretty costs extra and cuts worse.
+  _displayNameId: character.joren.name
+  _descriptionId: character.joren.lead
+  _sortOrder: 5
+  _category: 0
+  _edition: 06 / JOREN
+  _previewScale: 1
+  _tPosePlate: {fileID: 0}
+  _characterSheet: {fileID: 0}
+  _missions:
+  - Act: 2
+    QuestId: forgeKnife
+    Title: Joren's Forge
+    Summary: Forge Wren a proper curved foraging knife.
+  - Act: 2
+    QuestId: cottagesReopen
+    Title: Two Boards Come Down
+    Summary: Make hinges for the first repaired cottages.
+  _quotes:
+  - Text: Pretty costs extra and cuts worse.
+    Context: Taking Wren's knife commission.
+  - Text: Come back tomorrow. And don't tell anyone you commissioned it like charity.
+    Context: Protecting his pride after accepting the work.
+  - Text: Old nails. Rotten frame. No one respects hinges until they fail.
+    Context: Repairing the cottage shutters.
+  _heroPortraitResourcePath: People/Art/joren_hero
+  _tPosePlateResourcePath: People/Art/joren_tpose
+  _characterSheetResourcePath: People/Art/joren_hero
+  _journalModelResourcePath: People/Models/joren
+  _journalTriangleBudget: 90000
+  _journalTextureSize: 2048
+  _journalModelPrefab: {fileID: 0}
+  _journalIdleClip: {fileID: 0}
+  _journalExposure: 0.15
+  _studySheet: {fileID: 0}
+  _figureFront: {fileID: 0}
+  _figureBack: {fileID: 0}
+  _figureThreeQuarter: {fileID: 0}
+  _knifePlate: {fileID: 0}

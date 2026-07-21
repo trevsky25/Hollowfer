@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5c728fb7dcb046ca98c54f46a63e11d, type: 3}
+  m_Name: Ending_FreeHollow
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.EndingData
+  _id: free_hollow
+  _endingFlagId: ending_free_hollow
+  _choiceText: Refuse the monopoly
+  _choiceContext: Hollowfen stays its own. The village will have less protection,
+    and its future will belong to the people who live there.
+  _lockedHint: Hollowfen needs greater hope, proof of Aldric's harm, and the leverage
+    to stand alone.
+  _minimumVillageHope: 50
+  _minimumKnowledge: 0
+  _requiredFlagIds:
+  - final_choice_available
+  - wenmar_tax_paid
+  - clearcut_evidence_found
+  - aldermark_sample_collected
+  _relationshipNpcIds: []
+  _minimumRelationshipValues: []
+  _resolutionDialogue: {fileID: 11400000, guid: 9f85acbf3cd7c42eb95ac20745fcc8b4, type: 2}
+  _storyCard: {fileID: 11400000, guid: 7822380980ad64c9c8fe77c566518747, type: 2}
+  _epilogueCaptions:
+  - Wren said no, and the saying took a long time.
+  - She refused the monopoly, accepted a smaller tax relief, traded Aldermark knowledge
+    for a written limit on upstream cutting, and returned to Hollowfen with no banner
+    behind her.
+  - A year later, the square was full. Not rich. Full.
+  - Foragers came from neighboring villages to learn from Almy. Theo still bought
+    what Wren chose to sell. Edda taught children to turn mushrooms over before trusting
+    them. Marra's Goldfoot stew brought travelers through the rain.
+  - The mill wheel did not turn. The Wend had not come back. But Hollowfen no longer
+    waited for the river to decide whether it deserved to live.
+  - Wren wrote the next page of Tobin's journal in her own hand.
+  _consequenceFlagIds:
+  - aldric_offer_refused
+  - hollowfen_independent
+  _achievementId: ACH_ENDING_FREE_HOLLOW

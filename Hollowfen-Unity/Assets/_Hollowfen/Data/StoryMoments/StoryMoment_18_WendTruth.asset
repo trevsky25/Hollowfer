@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d0fced8610445dd87f9c05997c7c4b4, type: 3}
+  m_Name: StoryMoment_18_WendTruth
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.StoryMomentData
+  _id: story.wend_truth.illustrated
+  _presentation: 0
+  _trigger: 0
+  _storyCard: {fileID: 11400000, guid: 6ea1097f7485248f6a8e1cb5bb6f8fd8, type: 2}
+  _captionIds:
+  - story.wend_truth.beat.0
+  - story.wend_truth.beat.1
+  - story.wend_truth.beat.2
+  _captionFallbacks:
+  - Wendlight mushrooms reveal the river's old course.
+  - The course-shift was caused by deforestation upstream.
+  - Lord Aldric's name enters the story for the first time as a cause, not a backdrop.
+  _voiceClips:
+  - {fileID: 8300000, guid: 9138857bf087f40f1a0a85fe31e20191, type: 3}
+  - {fileID: 8300000, guid: 32be0b1a236e3465a9c071ed9caa35b9, type: 3}
+  - {fileID: 8300000, guid: 327caf2e237d5420084eb697cd088f31, type: 3}
+  _images:
+  - {fileID: 21300000, guid: f0e44ace9ce274b0d90bd231e1d98c25, type: 3}
+  - {fileID: 21300000, guid: a10596870414a4fc6ac84ae63aa8d77b, type: 3}
+  - {fileID: 21300000, guid: 5e179858b2e0c47df8007d625541eddc, type: 3}
+  _beatImages: 000000000100000002000000
+  _showStoryCardTitle: 0
+  _showCaptions: 1
+  _fadeIn: 1
+  _holdSeconds: 0
+  _pageTextId: 
+  _pageTextFallback: 
+  _pageTextImageIndex: -1
+  _pageTextStartBeat: 0
+  _pageTextParagraphRevealBeats: 
+  _pageTextRect:
+    serializedVersion: 2
+    x: 0.2
+    y: 0.2
+    width: 0.6
+    height: 0.6
+  _pageTextRotation: 0
+  _pageTextFontSize: 30
+  _pageTextColor: {r: 0.16, g: 0.1, b: 0.05, a: 0.86}
+  _focusContext: 0
+  _focusDistance: 0.4
+  _focusHeight: 0.05
+  _focusFov: 30
+  _focusPushSeconds: 1.2
+  _focusHoldSeconds: 1.6
+  _focusRestoreSeconds: 0.2

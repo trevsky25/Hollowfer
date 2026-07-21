@@ -1,24 +1,29 @@
 using TMPro;
+using Hollowfen.Cinematics;
+using Hollowfen.Items;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Hollowfen.UI
 {
     // Wren's pause journal. Builds its UI programmatically (same convention as the menu
-    // pages): dim scrim over frozen gameplay, rounded parchment card with soft shadow and
-    // gold hairline, serif rows. The legacy prefab's authored children are torn down on
+    // pages): dim scrim over frozen gameplay, rounded parchment card with a double gold rule,
+    // and serif rows. The legacy prefab's authored children are torn down on
     // first init — the prefab only contributes the UIScreen plumbing.
     public class PauseScreen : UIScreen
     {
         [SerializeField] private Button _resumeButton;
         [SerializeField] private Button _storyButton;
         [SerializeField] private Button _fieldGuideButton;
+        [SerializeField] private Button _purseButton;
         [SerializeField] private Button _settingsButton;
         [SerializeField] private Button _saveGameButton;
         [SerializeField] private Button _quitButton;
 
         private TMP_Text _saveLabel;
+        private TMP_Text _purseLabel;
         private bool _builtRefined;
+        private NarrativePresentationSession.Lease _presentationLease;
 
         public override GameObject DefaultSelected =>
             _resumeButton != null ? _resumeButton.gameObject : base.DefaultSelected;
@@ -30,6 +35,7 @@ namespace Hollowfen.UI
             if (_resumeButton     != null) _resumeButton.onClick.AddListener(OnResume);
             if (_storyButton      != null) _storyButton.onClick.AddListener(OnStory);
             if (_fieldGuideButton != null) _fieldGuideButton.onClick.AddListener(OnFieldGuide);
+            if (_purseButton      != null) _purseButton.onClick.AddListener(OnPurse);
             if (_settingsButton   != null) _settingsButton.onClick.AddListener(OnSettings);
             if (_saveGameButton   != null) _saveGameButton.onClick.AddListener(OnSaveGame);
             if (_quitButton       != null) _quitButton.onClick.AddListener(OnQuit);
@@ -38,14 +44,27 @@ namespace Hollowfen.UI
         public override void OnOpen()
         {
             base.OnOpen();
-            Time.timeScale = 0f;
-            if (_saveLabel != null) _saveLabel.text = "Save Game";
+            if (_presentationLease == null)
+                _presentationLease = NarrativePresentationSession.AcquireIfGameplay(
+                    this, NarrativePresentationSession.Modal);
+            if (_saveLabel != null) _saveLabel.text = Localization.Get("ui.pause.save");
+            if (_purseLabel != null)
+                _purseLabel.text = string.Format(Localization.Get("ui.pause.purse_balance"),
+                    CoinPurse.Format(CoinPurse.TotalCopper));
         }
 
         public override void OnClose()
         {
             base.OnClose();
-            Time.timeScale = 1f;
+            ReleasePresentation();
+        }
+
+        private void OnDestroy() => ReleasePresentation();
+
+        private void ReleasePresentation()
+        {
+            _presentationLease?.Dispose();
+            _presentationLease = null;
         }
 
         private void OnResume()
@@ -63,6 +82,11 @@ namespace Hollowfen.UI
             if (UIManager.Instance != null) UIManager.Instance.OpenScreen("field-guide");
         }
 
+        private void OnPurse()
+        {
+            PurseScreen.OpenFromMenu();
+        }
+
         private void OnSettings()
         {
             if (UIManager.Instance != null) UIManager.Instance.OpenScreen("settings");
@@ -72,7 +96,7 @@ namespace Hollowfen.UI
         {
             Hollowfen.Save.SaveCoordinator.SaveAllWithPlayer();
             Debug.Log($"[Pause] Saved to slot {Hollowfen.Save.SaveManager.ActiveSlot}");
-            if (_saveLabel != null) _saveLabel.text = "Saved <sprite name=\"ui_check\">"; // batch-48: ✓ had no font glyph
+            if (_saveLabel != null) _saveLabel.text = Localization.Get("ui.pause.saved"); // batch-48: ✓ had no font glyph
         }
 
         private const string MainMenuSceneName = "Scene_MainMenu";
@@ -84,7 +108,6 @@ namespace Hollowfen.UI
                 message: Localization.Get("ui.pause.quit_message"),
                 onConfirm: () =>
                 {
-                    Time.timeScale = 1f; // restore before scene load so the next scene starts unpaused
                     if (UIManager.Instance != null)
                         UIManager.Instance.LoadSceneAndOpen(MainMenuSceneName, "main-menu");
                 });
@@ -99,8 +122,21 @@ namespace Hollowfen.UI
 
             // The prefab root is a plain Transform host; the UI lives under its Canvas child.
             var canvas = GetComponentInChildren<Canvas>(true);
-            var canvasRT = canvas != null ? (RectTransform)canvas.transform : transform as RectTransform;
+            if (canvas == null)
+            {
+                Debug.LogError("[Pause] No canvas to build into.");
+                return;
+            }
+            var canvasRT = canvas.transform as RectTransform;
             if (canvasRT == null) { Debug.LogError("[Pause] No canvas rect to build into."); return; }
+
+            // The legacy prefab authored this one canvas against 1280×800 while every other
+            // Hollowfen screen uses the shared 1920×1080 contract. Standardize the scaler, then
+            // preserve the approved card's exact apparent size with a constant presentation
+            // transform (the ratio between those two scaler contracts is resolution-independent).
+            var scaler = canvas.GetComponent<CanvasScaler>();
+            if (scaler == null) scaler = canvas.gameObject.AddComponent<CanvasScaler>();
+            scaler.Init1080();
 
             // Tear down the legacy authored card.
             for (int i = canvasRT.childCount - 1; i >= 0; i--)
@@ -110,10 +146,17 @@ namespace Hollowfen.UI
             var scrim = UICanvasUtil.NewImage("Scrim", canvasRT, new Color(0.04f, 0.05f, 0.04f, 0.55f), true);
             UICanvasUtil.Stretch((RectTransform)scrim.transform);
 
+            var presentation = UICanvasUtil.NewRect("PausePresentation", canvasRT);
+            presentation.sizeDelta = Vector2.zero;
+            presentation.localScale = Vector3.one * 1.423f;
+
             // Card
-            var card = UICanvasUtil.NewRect("Card", canvasRT);
+            var card = UICanvasUtil.NewRect("Card", presentation);
             card.sizeDelta = new Vector2(470f, 660f);
-            UICanvasUtil.AddShadow(card, 26, 34, 0.45f, -10f);
+            // Keep this overlay card shadow-free. The generated full-card SoftShadow rendered as
+            // a wide blurred black band through the upper portion of this particular overlay
+            // composition. The dimmed world, parchment edge, and double rule already provide
+            // sufficient separation without an extra floating image behind the card.
             UICanvasUtil.MakeRoundedPanel(card, HollowfenPalette.Parchment, 22, 0.34f);
 
             // Inner hairline (double-rule feel)
@@ -127,47 +170,48 @@ namespace Hollowfen.UI
             innerRT.offsetMax = new Vector2(-10f, -10f);
 
             // Header
-            var eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", card, "HOLLOWFEN", 12f, HollowfenPalette.Gold, TextAlignmentOptions.Center);
+            var eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", card, Localization.Get("ui.pause.eyebrow"), 18f, HollowfenPalette.PaperAccentInk, TextAlignmentOptions.Center);
             UICanvasUtil.SetRect(eyebrow.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, 18f), new Vector2(0f, -42f));
 
-            var title = UICanvasUtil.NewHeading("Title", card, "Paused", 52f, HollowfenPalette.InkDeep, FontStyles.Normal, TextAlignmentOptions.Center);
-            UICanvasUtil.SetRect(title.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, 62f), new Vector2(0f, -64f));
+            var title = UICanvasUtil.NewHeading("Title", card, Localization.Get("ui.pause.title"), 52f, HollowfenPalette.InkDeep, FontStyles.Normal, TextAlignmentOptions.Center);
+            UICanvasUtil.SetRect(title.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, 72f), new Vector2(0f, -60f));
 
             var rule = UICanvasUtil.NewImage("TitleRule", card, new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0.55f), false);
             UICanvasUtil.SetRect((RectTransform)rule.transform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(56f, 2f), new Vector2(0f, -136f));
 
             // Rows
             float y = -172f;
-            _resumeButton     = BuildRow(card, "Resume", ref y, accent: false, out _);
-            _storyButton      = BuildRow(card, "Story", ref y, accent: false, out _);
-            _fieldGuideButton = BuildRow(card, "Field Guide", ref y, accent: false, out _);
-            _settingsButton   = BuildRow(card, "Settings", ref y, accent: false, out _);
-            _saveGameButton   = BuildRow(card, "Save Game", ref y, accent: true, out _saveLabel);
+            _resumeButton     = BuildRow(card, Localization.Get("ui.pause.resume"), ref y, out _);
+            _storyButton      = BuildRow(card, Localization.Get("ui.pause.story"), ref y, out _);
+            _fieldGuideButton = BuildRow(card, Localization.Get("ui.pause.field_guide"), ref y, out _);
+            _purseButton      = BuildRow(card, Localization.Get("ui.pause.purse"), ref y, out _purseLabel);
+            _settingsButton   = BuildRow(card, Localization.Get("ui.pause.settings"), ref y, out _);
+            _saveGameButton   = BuildRow(card, Localization.Get("ui.pause.save"), ref y, out _saveLabel);
             y -= 10f; // breathe before the destructive action
-            _quitButton       = BuildRow(card, "Quit to Main Menu", ref y, accent: false, out var quitLabel, danger: true);
+            _quitButton       = BuildRow(card, Localization.Get("ui.pause.quit"), ref y, out var quitLabel, danger: true);
 
             // Hint
-            var hint = UICanvasUtil.NewBody("Hint", card, "ESC to resume", 13f,
-                new Color(HollowfenPalette.Moss.r, HollowfenPalette.Moss.g, HollowfenPalette.Moss.b, 0.8f),
+            var hint = UICanvasUtil.NewBody("Hint", card, Localization.Get("ui.pause.hint"), 18f,
+                HollowfenPalette.PaperMutedInk,
                 FontStyles.Italic, TextAlignmentOptions.Center);
             UICanvasUtil.SetRect(hint.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 20f), new Vector2(0f, 22f));
 
             WireVerticalNavigation();
         }
 
-        private Button BuildRow(RectTransform card, string label, ref float y, bool accent, out TMP_Text labelText, bool danger = false)
+        private Button BuildRow(RectTransform card, string label, ref float y, out TMP_Text labelText, bool danger = false)
         {
             var row = UICanvasUtil.NewRect("Btn_" + label.Replace(" ", ""), card);
             UICanvasUtil.SetRect(row, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(366f, 56f), new Vector2(0f, y));
             y -= 64f;
 
-            // Resting fill: transparent; focus paints it. Accent rows get a faint gold wash.
+            // Every row is visually transparent at rest. FocusHighlight is the sole owner of
+            // the gold backing, so a previously focused or special-purpose action can never look
+            // selected at the same time as the EventSystem's actual selection.
             var fill = row.gameObject.AddComponent<Image>();
             fill.sprite = UICanvasUtil.RoundedRect(12);
             fill.type = Image.Type.Sliced;
-            fill.color = accent
-                ? new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0.10f)
-                : new Color(0f, 0f, 0f, 0.001f);
+            fill.color = new Color(0f, 0f, 0f, 0.001f);
             fill.raycastTarget = true;
 
             var btn = row.gameObject.AddComponent<Button>();
@@ -186,27 +230,22 @@ namespace Hollowfen.UI
             UICanvasUtil.Stretch((RectTransform)glowGo.transform);
 
             var fh = row.gameObject.AddComponent<FocusHighlight>();
-            var fhT = typeof(FocusHighlight);
-            System.Action<string, object> setF = (n, v) =>
-            {
-                var f = fhT.GetField(n, System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-                if (f != null) f.SetValue(fh, v);
-            };
-            setF("_targetGraphic", glowImg);
-            setF("_baseColor", new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0f));
-            setF("_focusedColor", new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0.14f));
-            setF("_focusedScale", 1.02f);
-            setF("_swapColor", true);
-            setF("_swapScale", true);
-            setF("_underlineText", false);
-            glowImg.color = new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0f);
+            fh.Configure(
+                glowImg,
+                row,
+                new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0.14f),
+                focusedScale: 1.02f,
+                swapColor: true,
+                swapScale: true,
+                underlineText: false);
 
             return btn;
         }
 
         private void WireVerticalNavigation()
         {
-            Button[] order = { _resumeButton, _storyButton, _fieldGuideButton, _settingsButton, _saveGameButton, _quitButton };
+            Button[] order = { _resumeButton, _storyButton, _fieldGuideButton, _purseButton,
+                _settingsButton, _saveGameButton, _quitButton };
             for (int i = 0; i < order.Length; i++)
             {
                 if (order[i] == null) continue;

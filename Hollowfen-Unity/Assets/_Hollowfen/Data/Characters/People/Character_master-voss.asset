@@ -1,0 +1,70 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b4e19f76957446acb794b6622b288e2, type: 3}
+  m_Name: Character_master-voss
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.CharacterProfileData
+  _id: master-voss
+  _characterName: Master Voss
+  _role: Tax collector / Aldric's messenger
+  _age: Late forties
+  _home: On the road and Lord Aldric's estate
+  _work: Tax collection, ledgers, and official deliveries
+  _keepsake: Tax ledger
+  _tagline: A tired professional carrying exact figures through an inexact hardship.
+  _leadParagraph: Master Voss is gaunt, plain, and controlled, with a drab coat and
+    a ledger satchel held close.
+  _backgroundParagraph: He arrives in Hollowfen as Lord Aldric's collector, counts
+    what the village owes without raising his voice, and later returns carrying a
+    sealed letter.
+  _perspectiveParagraph: Voss separates sympathy from duty because his work requires
+    it. His smallest changes in posture say more than a speech would.
+  _kitItems: []
+  _heroPortrait: {fileID: 0}
+  _pullquote: I am not unsympathetic, but I am also not paid to be sympathetic.
+  _displayNameId: character.master_voss.name
+  _descriptionId: character.master_voss.lead
+  _sortOrder: 6
+  _category: 0
+  _edition: 07 / MASTER VOSS
+  _previewScale: 1
+  _tPosePlate: {fileID: 0}
+  _characterSheet: {fileID: 0}
+  _missions:
+  - Act: 2
+    QuestId: firstTax
+    Title: Twelve Silver by Yule
+    Summary: Demand twelve silver and name the Wenmar cottage as security.
+  - Act: 3
+    QuestId: aldricLetter
+    Title: A Sealed Letter
+    Summary: Deliver Lord Aldric's letter to Wren in person.
+  _quotes:
+  - Text: I am not unsympathetic, but I am also not paid to be sympathetic.
+    Context: Explaining the tax demand.
+  - Text: I was already doing so.
+    Context: When Wren tells him to wait for payment.
+  - Text: I am not here to collect.
+    Context: Returning to Hollowfen with Aldric's letter.
+  _heroPortraitResourcePath: People/Art/master-voss_hero
+  _tPosePlateResourcePath: People/Art/master-voss_tpose
+  _characterSheetResourcePath: People/Art/master-voss_hero
+  _journalModelResourcePath: People/Models/master-voss
+  _journalTriangleBudget: 90000
+  _journalTextureSize: 2048
+  _journalModelPrefab: {fileID: 0}
+  _journalIdleClip: {fileID: 0}
+  _journalExposure: 0.15
+  _studySheet: {fileID: 0}
+  _figureFront: {fileID: 0}
+  _figureBack: {fileID: 0}
+  _figureThreeQuarter: {fileID: 0}
+  _knifePlate: {fileID: 0}

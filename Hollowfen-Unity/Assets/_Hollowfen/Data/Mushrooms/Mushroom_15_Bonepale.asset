@@ -33,6 +33,19 @@ MonoBehaviour:
   _notes: 'Almy will eventually teach Wren what this is worth to the sick. Its lesson
     is restraint: not every useful mushroom belongs in a pan.'
   _photo: {fileID: 21300000, guid: 245c65c216980465c8ac57c2d49e4002, type: 3}
-  _photoCredit: 
+  _photoCredit: Generated with OpenAI gpt-image
+  _journalPage: {fileID: 21300000, guid: c39ba1c5cac9a4dd1b1bcf70dc2125f7, type: 3}
+  _worldPrefab: {fileID: 6207146476672128252, guid: 94a91769912314d3ca0952376cd59e58, type: 3}
+  _journalPreviewPrefab: {fileID: 140789179999045384, guid: 5f0f18ecd6a38467b93d45ba05ac7321, type: 3}
+  _journalExposure: 0.32
   _displayNameId: mushroom.bonepale.name
   _descriptionId: mushroom.bonepale.description
+  _forageTier: 2
+  _requiredForageFlagId: foraging_knife_unlocked
+  _wildRespawnDays: 4
+  _marraValueCopper: 0
+  _theoValueCopper: 9
+  _cultivable: 0
+  _cultivationHours: 6
+  _cultivationYield: 3
+  _cultivationUnlockFlagId:

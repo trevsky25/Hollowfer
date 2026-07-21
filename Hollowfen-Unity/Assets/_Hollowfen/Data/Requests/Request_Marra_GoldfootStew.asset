@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95267338c201c4c76b2d6ee20a231830, type: 3}
+  m_Name: Request_Marra_GoldfootStew
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Requests.VillageRequestData
+  _id: marra_goldfoot_stew
+  _npcId: marra
+  _kind: 0
+  _titleId: request.marra.goldfoot_stew.title
+  _descriptionId: request.marra.goldfoot_stew.body
+  _requesterLineId: request.marra.goldfoot_stew.line
+  _heroImage: {fileID: 21300000, guid: 6d7f22bc8092648beade1be4926ea3e2, type: 3}
+  _requiredSpecies:
+  - {fileID: 11400000, guid: 8ef0eedcc9a4f49e998202c235dd5881, type: 2}
+  - {fileID: 11400000, guid: bb5c7d5872a0d4901b7219b2011d04e0, type: 2}
+  _requiredCounts: 0100000002000000
+  _requiredPreparations: []
+  _requiredPreparationCounts: 
+  _rewardCopper: 28
+  _wetWeatherBonusCopper: 0
+  _firstCompletionRelationshipDelta: 1
+  _firstCompletionKnowledgeDelta: 0
+  _requiredFlagIds: []
+  _requiredCompletedQuestIds:
+  - firstSale
+  _activeQuestId: 
+  _oneShot: 0
+  _completionFlagIds: []
+  _completeQuest: {fileID: 0}
+  _completionDialogue: {fileID: 0}

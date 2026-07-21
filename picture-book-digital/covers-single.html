@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Hollowfen — Front & Back Cover (single pages, for the complete PDF)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+@page{size:10.25in 8.25in;margin:0}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"EB Garamond",Georgia,serif}
+.sheet{width:10.25in;height:8.25in;position:relative;overflow:hidden;page-break-after:always;background:#0f0d0a}
+.art{position:absolute;inset:0}
+.art img{width:100%;height:100%;object-fit:cover}
+.scrim{position:absolute;inset:0;background:linear-gradient(to top,rgba(15,13,10,.9) 6%,rgba(15,13,10,.25) 45%,rgba(15,13,10,.3))}
+/* front */
+.front .overlay{position:absolute;left:.75in;right:.75in;bottom:.85in;z-index:3;color:#ecdfc2;text-align:center}
+.front .ot{font-family:"IM Fell English SC",serif;font-size:10.5pt;letter-spacing:.42em;text-indent:.42em;color:#c99a4b;margin-bottom:.16in}
+.front h1{font-family:"IM Fell English",serif;font-weight:400;font-size:64pt;line-height:.95;letter-spacing:.04em;text-shadow:0 3px 22px rgba(0,0,0,.7)}
+.front .st{font-family:"IM Fell English",serif;font-style:italic;font-size:16pt;margin-top:.1in}
+.front .by{font-style:italic;font-size:9.5pt;color:rgba(236,223,194,.75);margin-top:.14in;line-height:1.5}
+/* back */
+.back .scrim2{position:absolute;inset:0;background:rgba(15,13,10,.6)}
+.back .blurb{position:absolute;left:1.4in;right:1.4in;top:47%;transform:translateY(-50%);z-index:3;text-align:center;color:#e6d9bf}
+.back .k{font-family:"IM Fell English SC",serif;font-size:9pt;letter-spacing:.34em;text-indent:.34em;color:#c99a4b;margin-bottom:.24in}
+.back p.body{font-size:12.5pt;line-height:1.75;font-style:italic;color:rgba(236,223,194,.92);text-shadow:0 1px 10px rgba(0,0,0,.7)}
+.back .quote{margin-top:.3in;font-family:"IM Fell English",serif;font-style:italic;font-size:14.5pt;color:#c99a4b}
+.back .qsrc{font-family:"IM Fell English SC",serif;font-size:8pt;letter-spacing:.24em;color:rgba(236,223,194,.55);margin-top:.08in}
+.back .imprint{position:absolute;left:0;right:0;bottom:.75in;text-align:center;z-index:3}
+.back .imprint svg{width:1.5in;height:.28in;color:rgba(230,217,191,.55)}
+.back .imprint p{font-family:"IM Fell English SC",serif;font-size:8pt;letter-spacing:.3em;text-indent:.3em;color:rgba(236,223,194,.6);margin-top:.07in}
+</style>
+</head>
+<body>
+
+<section class="sheet front">
+  <div class="art"><img src="press-img/cover.jpg" alt=""></div>
+  <div class="scrim"></div>
+  <div class="overlay">
+    <p class="ot">An Illustrated Tale in Four Acts</p>
+    <h1>HOLLOWFEN</h1>
+    <p class="st">The Failing Village</p>
+    <p class="by">Being the story of Wren Tobin, who came home to a village the river had forgotten,<br>and found what her family had hidden in the woods</p>
+  </div>
+</section>
+
+<section class="sheet back">
+  <div class="art"><img src="press-img/endpaper.jpg" alt=""></div>
+  <div class="scrim2"></div>
+  <div class="blurb">
+    <p class="k">An Illustrated Tale in Four Acts · With Four Endings</p>
+    <p class="body">Three years after she left, Wren Tobin walks the east road home to a village the river has forgotten. Her father is dead. His mill is still. What he left her — wrapped in oilcloth, tied in a hesitating knot — is a journal of names: Field Cap, Goldfoot, Brightspore, Wendlight. In Hollowfen, knowing the true name of a thing can feed a family, save a life, and unbury what powerful men worked hard to make a village forget.</p>
+    <p class="quote">“Never eat what you cannot name twice.”</p>
+    <p class="qsrc">— Tobin's journal, underlined until the pencil tore the page</p>
+  </div>
+  <div class="imprint">
+    <svg viewBox="0 0 190 34" fill="none"><path d="M0 17h70M120 17h70" stroke="currentColor" stroke-width="1"/><path d="M95 6c-7 0-13 4-13 9 0 1 .6 2 2 2h22c1.4 0 2-1 2-2 0-5-6-9-13-9Z" stroke="currentColor" stroke-width="1.4"/><path d="M95 17v9m-3 2c0-1.5 1-2 3-2s3 .5 3 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    <p>The Crooked Pintle Press · Hollowfen</p>
+  </div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d0fced8610445dd87f9c05997c7c4b4, type: 3}
+  m_Name: StoryMoment_26_MeetingAldric
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.StoryMomentData
+  _id: story.meeting_aldric.illustrated
+  _presentation: 0
+  _trigger: 0
+  _storyCard: {fileID: 11400000, guid: 73cbf90e7e4274a968931398f711dc5c, type: 2}
+  _captionIds:
+  - story.meeting_aldric.beat.0
+  - story.meeting_aldric.beat.1
+  - story.meeting_aldric.beat.2
+  _captionFallbacks:
+  - Wren meets Lord Aldric at his manor.
+  - He offers a partnership at his terms.
+  - Wren's answer determines which ending follows.
+  _voiceClips:
+  - {fileID: 8300000, guid: f575ee97133224363ac50bcf773e84a9, type: 3}
+  - {fileID: 8300000, guid: ed5293f84d3784a76967df498ac45d11, type: 3}
+  - {fileID: 8300000, guid: 84490721e106c45aba38983adb1e67c5, type: 3}
+  _images:
+  - {fileID: 21300000, guid: b500fde0e1286489ca6c02a83bb414f0, type: 3}
+  - {fileID: 21300000, guid: 32a37f4597b584711956058a1fd26c7b, type: 3}
+  - {fileID: 21300000, guid: 502db6f7a65b14a568cf1a3cde66f596, type: 3}
+  _beatImages: 000000000100000002000000
+  _showStoryCardTitle: 0
+  _showCaptions: 1
+  _fadeIn: 1
+  _holdSeconds: 0
+  _pageTextId: 
+  _pageTextFallback: 
+  _pageTextImageIndex: -1
+  _pageTextStartBeat: 0
+  _pageTextParagraphRevealBeats: 
+  _pageTextRect:
+    serializedVersion: 2
+    x: 0.2
+    y: 0.2
+    width: 0.6
+    height: 0.6
+  _pageTextRotation: 0
+  _pageTextFontSize: 30
+  _pageTextColor: {r: 0.16, g: 0.1, b: 0.05, a: 0.86}
+  _focusContext: 0
+  _focusDistance: 0.4
+  _focusHeight: 0.05
+  _focusFov: 30
+  _focusPushSeconds: 1.2
+  _focusHoldSeconds: 1.6
+  _focusRestoreSeconds: 0.2

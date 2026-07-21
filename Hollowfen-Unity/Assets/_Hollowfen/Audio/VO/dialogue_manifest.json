@@ -1,0 +1,2875 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "dialogue": "Dialogue_Act1_AlmyDoorway_FirstVisit",
+      "line": 0,
+      "speaker": "Wren",
+      "textSha256": "e3522eadca07c9501d5e4422f42559a7db6e4cee9d116248117bd4af2f884659",
+      "clip": "Dialogue_Act1_AlmyDoorway_FirstVisit/00_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_AlmyDoorway_FirstVisit",
+      "line": 1,
+      "speaker": "Almy",
+      "textSha256": "38178a20b470cfd18299fb1593dd4ba706f1a83321dac051d01086efd8b7a96f",
+      "clip": "Dialogue_Act1_AlmyDoorway_FirstVisit/01_Almy.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_AlmyDoorway_FirstVisit",
+      "line": 2,
+      "speaker": "Wren",
+      "textSha256": "2b5f13fb5e90d353ccd714f2dcf8c1d52039e897aa44c750a41069ac54d738bd",
+      "clip": "Dialogue_Act1_AlmyDoorway_FirstVisit/02_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_AlmyDoorway_FirstVisit",
+      "line": 3,
+      "speaker": "Almy",
+      "textSha256": "4ec17cc1099231dc16829ed7afdaaf30092cac54e897809a036e132851619c8b",
+      "clip": "Dialogue_Act1_AlmyDoorway_FirstVisit/03_Almy.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_AlmyDoorway_FirstVisit",
+      "line": 4,
+      "speaker": "Wren",
+      "textSha256": "aca2da1e60d1ceee38dae778634fbac4628d060dbbda218f28db1157d7c63d22",
+      "clip": "Dialogue_Act1_AlmyDoorway_FirstVisit/04_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_AlmyDoorway_FirstVisit",
+      "line": 5,
+      "speaker": "Almy",
+      "textSha256": "65d0d284bfce418e289b135c683a781ee54fb7d4410e47a8024fb4677764fa71",
+      "clip": "Dialogue_Act1_AlmyDoorway_FirstVisit/05_Almy.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_AlmyDoorway_FirstVisit",
+      "line": 6,
+      "speaker": "Wren",
+      "textSha256": "ea64cb0b7d46426c13373ad8d6ada8e92938eef3010f7780540b184aea3015a2",
+      "clip": "Dialogue_Act1_AlmyDoorway_FirstVisit/06_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_AlmyDoorway_FirstVisit",
+      "line": 7,
+      "speaker": "Almy",
+      "textSha256": "bc8b6aa51ea31f5852449b73b4c86f6f79241c8da982cca9e697e709b9ea5704",
+      "clip": "Dialogue_Act1_AlmyDoorway_FirstVisit/07_Almy.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_AlmyDoorway_FirstVisit",
+      "line": 8,
+      "speaker": "Wren",
+      "textSha256": "df4159d3ef43e1364ae139e07685788bb0bcc659018d882601594f1f2629ea95",
+      "clip": "Dialogue_Act1_AlmyDoorway_FirstVisit/08_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_AlmyDoorway_FirstVisit",
+      "line": 9,
+      "speaker": "Almy",
+      "textSha256": "c92cd3cf19491ee9f81ad87925987741c9248407dc18e37804592aa88e64b3a2",
+      "clip": "Dialogue_Act1_AlmyDoorway_FirstVisit/09_Almy.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_AlmyDoorway_FirstVisit",
+      "line": 10,
+      "speaker": "Wren",
+      "textSha256": "e8efe5b3bd2d1d2e5b3bc92988b2226988d64dd5df98a59ba3bb3f7e23259671",
+      "clip": "Dialogue_Act1_AlmyDoorway_FirstVisit/10_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_AlmyDoorway_FirstVisit",
+      "line": 11,
+      "speaker": "Almy",
+      "textSha256": "46cd6cba7d4255754786797d9db09267eb9fe893c2dad68c4fa98bdd790e0307",
+      "clip": "Dialogue_Act1_AlmyDoorway_FirstVisit/11_Almy.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_Almy_Repeat",
+      "line": 0,
+      "speaker": "Almy",
+      "textSha256": "fcbe4b3cf08d946aea0415c6ae72223efde8154cbc5def152e8f160a64d91d7d",
+      "clip": "Dialogue_Act1_Almy_Repeat/00_Almy.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_Bram_Repeat",
+      "line": 0,
+      "speaker": "Bram",
+      "textSha256": "3fb2c75326212b349a97226cb85e1e93430a29a4acfd13531b2fa1a59637c9cf",
+      "clip": "Dialogue_Act1_Bram_Repeat/00_Bram.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_CrookedPintle_BramKey",
+      "line": 0,
+      "speaker": "Wren",
+      "textSha256": "ff8a0e49918fd45e4f7ae65940df39d163a08bc1b0075896ed2ae59402d1b46a",
+      "clip": "Dialogue_Act1_CrookedPintle_BramKey/00_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_CrookedPintle_BramKey",
+      "line": 1,
+      "speaker": "Bram",
+      "textSha256": "0ffc16678e492fd03acbc19d2a235c5cf9e8430d2c9b953a835c165e153c1e18",
+      "clip": "Dialogue_Act1_CrookedPintle_BramKey/01_Bram.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_CrookedPintle_BramKey",
+      "line": 2,
+      "speaker": "Wren",
+      "textSha256": "7864b8e13338beb16cd49db913532b6f4cfcb6de78a593967deb05869c379c1a",
+      "clip": "Dialogue_Act1_CrookedPintle_BramKey/02_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_Homecoming_Bram",
+      "line": 0,
+      "speaker": "Wren",
+      "textSha256": "c55dd035407996c6beb6f98ed27ad96f83d418ff3de3dbf3d92d2b9b8e7a9e52",
+      "clip": "Dialogue_Act1_Homecoming_Bram/00_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_Homecoming_Bram",
+      "line": 1,
+      "speaker": "Bram",
+      "textSha256": "7e518e00d12a9015153d3ee8c1601c731d9ac8cc6206de9d0911afa12f15153f",
+      "clip": "Dialogue_Act1_Homecoming_Bram/01_Bram.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_MarraKitchen_FirstBasket",
+      "line": 0,
+      "speaker": "Bram",
+      "textSha256": "b53c8364f232bd62360c8e796f15cdb7e6ed3c55e8bd1ef85e9a56de385fdb5d",
+      "clip": "Dialogue_Act1_MarraKitchen_FirstBasket/00_Bram.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_MarraKitchen_FirstBasket",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "77da978aae8602eb3362d54daeb9c1ab608e5e8bbea09191e01d9f8807984e5f",
+      "clip": "Dialogue_Act1_MarraKitchen_FirstBasket/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_MarraKitchen_FirstBasket",
+      "line": 2,
+      "speaker": "Marra",
+      "textSha256": "a4949e2c96de26681c9519749e57bfb362bbac2a8f40c89b24c35d1de111336d",
+      "clip": "Dialogue_Act1_MarraKitchen_FirstBasket/02_Marra.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_MarraKitchen_FirstBasket",
+      "line": 3,
+      "speaker": "Bram",
+      "textSha256": "0c15f557d3b6f0295b026e83357037d1eef8c7bdc59123a7d6acfe6354c9ad3a",
+      "clip": "Dialogue_Act1_MarraKitchen_FirstBasket/03_Bram.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_MarraKitchen_FirstBasket",
+      "line": 4,
+      "speaker": "Marra",
+      "textSha256": "651e33df46d436a589128a7d73cb0d79bea24d310b5323018f3b0debbf822657",
+      "clip": "Dialogue_Act1_MarraKitchen_FirstBasket/04_Marra.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_MarraKitchen_FirstBasket",
+      "line": 5,
+      "speaker": "Bram",
+      "textSha256": "f78fb6e21fc1dbddbff13e4f9085f992f2e0cc421e2f04b9bb3cac08ce7e54e2",
+      "clip": "Dialogue_Act1_MarraKitchen_FirstBasket/05_Bram.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_MarraKitchen_FirstBasket",
+      "line": 6,
+      "speaker": "Marra",
+      "textSha256": "a9e0eb1e87a965dab1286341b581cc27cc19b0e08a4bccde68e815ba2054b241",
+      "clip": "Dialogue_Act1_MarraKitchen_FirstBasket/06_Marra.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_MarraKitchen_FirstBasket",
+      "line": 7,
+      "speaker": "Wren",
+      "textSha256": "c3015d5a218a653ad0a1061ee4a958f93cda09e13d1b1f0bd06087be3ad92c79",
+      "clip": "Dialogue_Act1_MarraKitchen_FirstBasket/07_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_MarraKitchen_FirstBasket",
+      "line": 8,
+      "speaker": "Marra",
+      "textSha256": "d9d5f157d822eedf55d9b29b4625b6db39d9f810d66e51703dd5218056cceaab",
+      "clip": "Dialogue_Act1_MarraKitchen_FirstBasket/08_Marra.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_MarraKitchen_FirstBasket",
+      "line": 9,
+      "speaker": "Wren",
+      "textSha256": "c4c80b205e402f92ba9f27b414b5a1621a64f351a9a87a01e422f06106386657",
+      "clip": "Dialogue_Act1_MarraKitchen_FirstBasket/09_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_MarraKitchen_FirstBasket",
+      "line": 10,
+      "speaker": "Marra",
+      "textSha256": "808c8881f5fe04a3399926c5077f5454dd526c26516b0addf1eeacdb95c2bd89",
+      "clip": "Dialogue_Act1_MarraKitchen_FirstBasket/10_Marra.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_MarraKitchen_FirstBasket",
+      "line": 11,
+      "speaker": "Bram",
+      "textSha256": "fec152c29ab875a8690c055fe0a96b4222385d823e9410ccbbcab16b1229943e",
+      "clip": "Dialogue_Act1_MarraKitchen_FirstBasket/11_Bram.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_MarraKitchen_FirstBasket",
+      "line": 12,
+      "speaker": "Marra",
+      "textSha256": "539b51c5a38492e66e2ec810ad4255e8df3e312d4dad9982d1150e75f7e4b014",
+      "clip": "Dialogue_Act1_MarraKitchen_FirstBasket/12_Marra.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_MarraKitchen_FirstBasket",
+      "line": 13,
+      "speaker": "Wren",
+      "textSha256": "a4949e2c96de26681c9519749e57bfb362bbac2a8f40c89b24c35d1de111336d",
+      "clip": "Dialogue_Act1_MarraKitchen_FirstBasket/13_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_MarraKitchen_FirstBasket",
+      "line": 14,
+      "speaker": "Marra",
+      "textSha256": "36ba741bdf4d378da861fce5d8e9a107cd9d76929964a9b53c00b2692b56fbc7",
+      "clip": "Dialogue_Act1_MarraKitchen_FirstBasket/14_Marra.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_MarraKitchen_FirstPayment",
+      "line": 0,
+      "speaker": "Bram",
+      "textSha256": "c0aebe7be39360b13ddf4b4174ce1a879193f5469b42cfc0a7509c2d8912d659",
+      "clip": "Dialogue_Act1_MarraKitchen_FirstPayment/00_Bram.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_MarraKitchen_FirstPayment",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "857a2d7283946d558b37ea8219aa57fe5e5c2036c3e8b113ddc24bc5f1bed275",
+      "clip": "Dialogue_Act1_MarraKitchen_FirstPayment/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_MarraKitchen_FirstPayment",
+      "line": 2,
+      "speaker": "Bram",
+      "textSha256": "e63028af0f8508ff43250057d3e9cf096cba27dffb70e79d13475800c145993f",
+      "clip": "Dialogue_Act1_MarraKitchen_FirstPayment/02_Bram.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_MarraKitchen_FirstPayment",
+      "line": 3,
+      "speaker": "Marra",
+      "textSha256": "bff7e5d1083d96a1e735e9a4acddb0870c977cb007226a7b20a6fd308db09f93",
+      "clip": "Dialogue_Act1_MarraKitchen_FirstPayment/03_Marra.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_MarraKitchen_FirstPayment",
+      "line": 4,
+      "speaker": "Wren",
+      "textSha256": "4f61e15c3f0c9402532f09588b44333dd3edfc54cf737341cc96faaa73771999",
+      "clip": "Dialogue_Act1_MarraKitchen_FirstPayment/04_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_MarraKitchen_FirstPayment",
+      "line": 5,
+      "speaker": "Marra",
+      "textSha256": "bb78f97b6c8c4882290ff873b305b77847f6c1dfafe1184998525ffc376fd0cc",
+      "clip": "Dialogue_Act1_MarraKitchen_FirstPayment/05_Marra.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act1_Marra_Repeat",
+      "line": 0,
+      "speaker": "Marra",
+      "textSha256": "bff7e5d1083d96a1e735e9a4acddb0870c977cb007226a7b20a6fd308db09f93",
+      "clip": "Dialogue_Act1_Marra_Repeat/00_Marra.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_AlmyGarden_Lesson",
+      "line": 0,
+      "speaker": "Wren",
+      "textSha256": "9bc09fb503130340f3d4cd60681c45cd4b2345935e8a560bc767af2e77611c61",
+      "clip": "Dialogue_Act2_AlmyGarden_Lesson/00_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_AlmyGarden_Lesson",
+      "line": 1,
+      "speaker": "Almy",
+      "textSha256": "3f94afef2e2e71a9d21a9614d154544218fc8c5d7a3959bf4d5d234464bbdbbb",
+      "clip": "Dialogue_Act2_AlmyGarden_Lesson/01_Almy.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_AlmyGarden_Lesson",
+      "line": 2,
+      "speaker": "Wren",
+      "textSha256": "0ba32bc2cd8059209fa6d08c03091722032ca338f6b8839f427979aa69c7c8c5",
+      "clip": "Dialogue_Act2_AlmyGarden_Lesson/02_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Almy_Brightspore",
+      "line": 0,
+      "speaker": "Almy",
+      "textSha256": "eb548b99e522be24613d356a9b21d1592ee17a7378dcc34645a96500c579fe26",
+      "clip": "Dialogue_Act2_Almy_Brightspore/00_Almy.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Almy_WaitGrow",
+      "line": 0,
+      "speaker": "Almy",
+      "textSha256": "183d2ebdc997ba9e2413069ef65d3621586c88662be47f633d8e80ec16e3dd35",
+      "clip": "Dialogue_Act2_Almy_WaitGrow/00_Almy.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Bram_StrangerNotice",
+      "line": 0,
+      "speaker": "Bram",
+      "textSha256": "e01c5599923a5a63686a349977fd91138206e33fe70e2025a7836358a7a0ee81",
+      "clip": "Dialogue_Act2_Bram_StrangerNotice/00_Bram.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Bram_Travelers",
+      "line": 0,
+      "speaker": "Bram",
+      "textSha256": "ffb03e26e33ad4e9d130f5c8cb3b08030e00110d26e9d395a39cd5194abd5bbb",
+      "clip": "Dialogue_Act2_Bram_Travelers/00_Bram.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Calden_Repeat",
+      "line": 0,
+      "speaker": "Calden",
+      "textSha256": "73cf3a62bcd316f61f9f6a0624012b80fb8e82ecbb638ebe621e344f92ccf2ad",
+      "clip": "Dialogue_Act2_Calden_Repeat/00_Calden.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Calden_Warning",
+      "line": 0,
+      "speaker": "Calden",
+      "textSha256": "ad8870913340588bd1fff88577e2cb4d986023a5e3e91a75999bd5296ff98c80",
+      "clip": "Dialogue_Act2_Calden_Warning/00_Calden.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Calden_Warning",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "c650af43f27612e2de9411e6248ee97172d25d3fe1aeaef6df6b3c5152931dc6",
+      "clip": "Dialogue_Act2_Calden_Warning/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Calden_Warning",
+      "line": 2,
+      "speaker": "Calden",
+      "textSha256": "d07ad8424f9b33278a84f93f96652ec5440da457a0e4bb0b6b61ad2cb5c5f52a",
+      "clip": "Dialogue_Act2_Calden_Warning/02_Calden.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Calden_Warning",
+      "line": 3,
+      "speaker": "Wren",
+      "textSha256": "6a049b6e7bddd765992ac63d3d2d9bc15bd395a5452bb1cccefeae30dd5d40b4",
+      "clip": "Dialogue_Act2_Calden_Warning/03_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Calden_Warning",
+      "line": 4,
+      "speaker": "Calden",
+      "textSha256": "b8d30d17faf230e2c7a47b5ad0e1b1e10f301dd57d849834fa35086c5d2d5032",
+      "clip": "Dialogue_Act2_Calden_Warning/04_Calden.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Edda_Ask",
+      "line": 0,
+      "speaker": "Edda",
+      "textSha256": "5f208359b8e6fabb9b888b8be512fb951bd756852ae5485bd8de7a80ac40e456",
+      "clip": "Dialogue_Act2_Edda_Ask/00_Edda.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Edda_Ask",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "001f71b8ca0585fde356373a72494c5e85529ab19b01f50c5465a0ca453d463a",
+      "clip": "Dialogue_Act2_Edda_Ask/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Edda_Ask",
+      "line": 2,
+      "speaker": "Edda",
+      "textSha256": "5f1143a101ee51e7a1457bf0dd5fa8ab23939ce3b2d52c84fb44355d35cbde26",
+      "clip": "Dialogue_Act2_Edda_Ask/02_Edda.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Edda_Recovery",
+      "line": 0,
+      "speaker": "Edda",
+      "textSha256": "c4839d6081af4ef58cb9bed44bb636baf3a304c95bb05a8f4bde8d7746cbc363",
+      "clip": "Dialogue_Act2_Edda_Recovery/00_Edda.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Edda_Recovery",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "2c33dcef91e066247cc05cc403f99dcf572e5bb8f45656fec462270e689916b6",
+      "clip": "Dialogue_Act2_Edda_Recovery/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Edda_Recovery",
+      "line": 2,
+      "speaker": "Edda",
+      "textSha256": "86adaefba674e6b2fc2b12e2e99f0e77b0ccec7ee2b8b3211a42535c9f3619f2",
+      "clip": "Dialogue_Act2_Edda_Recovery/02_Edda.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Edda_Recovery",
+      "line": 3,
+      "speaker": "Wren",
+      "textSha256": "38178a20b470cfd18299fb1593dd4ba706f1a83321dac051d01086efd8b7a96f",
+      "clip": "Dialogue_Act2_Edda_Recovery/03_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Edda_Repeat",
+      "line": 0,
+      "speaker": "Edda",
+      "textSha256": "9f94a9c9485bf3db0dd987661bcbc61a771de0b9c56224240febb12a8141367a",
+      "clip": "Dialogue_Act2_Edda_Repeat/00_Edda.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Edda_WaitNight",
+      "line": 0,
+      "speaker": "Edda",
+      "textSha256": "9d6f5002a5411c49b3e710134c4ffe7e5fd057f01c5043918a20e94c430ba739",
+      "clip": "Dialogue_Act2_Edda_WaitNight/00_Edda.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Hollin_FirstMeeting",
+      "line": 0,
+      "speaker": "Hollin",
+      "textSha256": "f11db6df404fe5af4e7b1c2b9cc3757af8dbdfb1a88b0d8de2ceabb1895eb5c7",
+      "clip": "Dialogue_Act2_Hollin_FirstMeeting/00_Hollin.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Hollin_FirstMeeting",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "2d4dcff26f8d64be97845f31e4fdbbb56f51b007930d303eb5e02d1ede6508e4",
+      "clip": "Dialogue_Act2_Hollin_FirstMeeting/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Hollin_FirstMeeting",
+      "line": 2,
+      "speaker": "Hollin",
+      "textSha256": "38178a20b470cfd18299fb1593dd4ba706f1a83321dac051d01086efd8b7a96f",
+      "clip": "Dialogue_Act2_Hollin_FirstMeeting/02_Hollin.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Hollin_FirstMeeting",
+      "line": 3,
+      "speaker": "Wren",
+      "textSha256": "8e344455e5ff357bfc7e3a2f2bd3bed73db7d490e24c25146761297b90579fe5",
+      "clip": "Dialogue_Act2_Hollin_FirstMeeting/03_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Hollin_FirstMeeting",
+      "line": 4,
+      "speaker": "Hollin",
+      "textSha256": "360e7323934b9fa3949da0c4cc777270944e00726d04c041bea7dd73e27060a1",
+      "clip": "Dialogue_Act2_Hollin_FirstMeeting/04_Hollin.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Hollin_FirstMeeting",
+      "line": 5,
+      "speaker": "Wren",
+      "textSha256": "85c2e3ed2a5db7217869d42c8061f377a1c3c01eef2dbd60b4106e14694f36a9",
+      "clip": "Dialogue_Act2_Hollin_FirstMeeting/05_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Hollin_FirstMeeting",
+      "line": 6,
+      "speaker": "Hollin",
+      "textSha256": "46438371960f0974b3c15f54488a09d835f9c48094ef97ad65355a1765ae921f",
+      "clip": "Dialogue_Act2_Hollin_FirstMeeting/06_Hollin.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Hollin_Repeat",
+      "line": 0,
+      "speaker": "Hollin",
+      "textSha256": "d8f7cee218c1289d1de89b10e20179e72d92c59f66610413cae6a0d82a9242df",
+      "clip": "Dialogue_Act2_Hollin_Repeat/00_Hollin.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Joren_Commission",
+      "line": 0,
+      "speaker": "Joren",
+      "textSha256": "5ffe0742aaa8e4595b61b20468383597e2c792bf1441287a492154b3bba374e1",
+      "clip": "Dialogue_Act2_Joren_Commission/00_Joren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Joren_Commission",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "060ee7974d84336b5a5e5ad3ec0435679e3e32115220a57f2ab0c743d0079eb6",
+      "clip": "Dialogue_Act2_Joren_Commission/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Joren_Commission",
+      "line": 2,
+      "speaker": "Joren",
+      "textSha256": "bb78f97b6c8c4882290ff873b305b77847f6c1dfafe1184998525ffc376fd0cc",
+      "clip": "Dialogue_Act2_Joren_Commission/02_Joren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Joren_Commission",
+      "line": 3,
+      "speaker": "Wren",
+      "textSha256": "1fdf5f2a68370ff3741b48aaaa6b2353c6facfbbbb57c2828c594f678596daff",
+      "clip": "Dialogue_Act2_Joren_Commission/03_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Joren_Commission",
+      "line": 4,
+      "speaker": "Joren",
+      "textSha256": "7f82e8e426cb1f6068d880a65a3d07253b761db7492c3b429016e950d3492dd8",
+      "clip": "Dialogue_Act2_Joren_Commission/04_Joren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Joren_Commission",
+      "line": 5,
+      "speaker": "Wren",
+      "textSha256": "68598f5b081af401da97abb580374be8c213f70b904434f819433778eefcfa5c",
+      "clip": "Dialogue_Act2_Joren_Commission/05_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Joren_Commission",
+      "line": 6,
+      "speaker": "Joren",
+      "textSha256": "597a741d958cfae67c503f91d7ebdff5165610ee7f78c89ef8b0d58208b41a24",
+      "clip": "Dialogue_Act2_Joren_Commission/06_Joren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Joren_Handoff",
+      "line": 0,
+      "speaker": "Joren",
+      "textSha256": "247acb8810983151a3fce6f67044c1ad97a0d854fa8715224dd33502cb895166",
+      "clip": "Dialogue_Act2_Joren_Handoff/00_Joren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Joren_Handoff",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "f9984a350a4a7f7439a49ca083faed44f5cd228455cb020ee5c7a0951837a568",
+      "clip": "Dialogue_Act2_Joren_Handoff/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Joren_Handoff",
+      "line": 2,
+      "speaker": "Joren",
+      "textSha256": "f8de5235a137907cc0adb5acf022c750af46981e5b286f2a0116f59d6a810b95",
+      "clip": "Dialogue_Act2_Joren_Handoff/02_Joren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Joren_Handoff",
+      "line": 3,
+      "speaker": "Wren",
+      "textSha256": "82094d73787374fcf52d6cdddeef4c43e44646b523fc323c689bd23b39071e99",
+      "clip": "Dialogue_Act2_Joren_Handoff/03_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Joren_Handoff",
+      "line": 4,
+      "speaker": "Joren",
+      "textSha256": "d454c4bdf2efa7a3e24ef6e68f1571d8d57b2a833785774903b35f2c7c2011d4",
+      "clip": "Dialogue_Act2_Joren_Handoff/04_Joren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Joren_Hinges",
+      "line": 0,
+      "speaker": "Joren",
+      "textSha256": "47ce84052288e16399de5aa1d6a15f3daf91c7c3490b5085f7ff44691ce96ab7",
+      "clip": "Dialogue_Act2_Joren_Hinges/00_Joren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Joren_Repeat",
+      "line": 0,
+      "speaker": "Joren",
+      "textSha256": "022ee50ec64fd00af209c16abfd1556510546feb58fa2ee7c3383adf2c7f462f",
+      "clip": "Dialogue_Act2_Joren_Repeat/00_Joren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Joren_Waiting",
+      "line": 0,
+      "speaker": "Joren",
+      "textSha256": "413f40ee96ca7b6d02f37626c2d1f918a30c0764add4e94e8cc6054d6eea0a44",
+      "clip": "Dialogue_Act2_Joren_Waiting/00_Joren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Marra_Bread",
+      "line": 0,
+      "speaker": "Marra",
+      "textSha256": "aa47bce4e8d5befea5304cde17b0ccbfa1ad4e843105884970182a6905054116",
+      "clip": "Dialogue_Act2_Marra_Bread/00_Marra.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Marra_SellBasket",
+      "line": 0,
+      "speaker": "Marra",
+      "textSha256": "3ba5a43e960a8aec62bbf78b81fa319e70b908595aabd2f833d57da3209bb2b9",
+      "clip": "Dialogue_Act2_Marra_SellBasket/00_Marra.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Marra_Tonic",
+      "line": 0,
+      "speaker": "Marra",
+      "textSha256": "17463aa813a09c7fa7c706870e16bf60e5c1c2de2e20b4a21e32a115b685ef2b",
+      "clip": "Dialogue_Act2_Marra_Tonic/00_Marra.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Pell_LedgerLine",
+      "line": 0,
+      "speaker": "Pell",
+      "textSha256": "fe6d0b58fa0c5776bfb2ced450ecb27447064dc9070b695b132a8997bb81c085",
+      "clip": "Dialogue_Act2_Pell_LedgerLine/00_Pell.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Pell_LedgerLine",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "ae8cbf4f36be78d9c9069ebc78b273e6db65c7b515c0893e329e0b1e568b5804",
+      "clip": "Dialogue_Act2_Pell_LedgerLine/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Pell_LedgerLine",
+      "line": 2,
+      "speaker": "Pell",
+      "textSha256": "96c5a0c467d39da3df51ca225a57cc2d559d430e0f1e62696f65a418ccec07ef",
+      "clip": "Dialogue_Act2_Pell_LedgerLine/02_Pell.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Pell_NeedCoin",
+      "line": 0,
+      "speaker": "Pell",
+      "textSha256": "b5fbb8707065ad84290fa57150a145537bdeee0afd811e52fc72f4c0ed1e7f47",
+      "clip": "Dialogue_Act2_Pell_NeedCoin/00_Pell.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Pell_Repeat",
+      "line": 0,
+      "speaker": "Pell",
+      "textSha256": "4539999abb985ad1166f7f059b26c6da7703f11e2ec66cdfc3d3b1407cbfd738",
+      "clip": "Dialogue_Act2_Pell_Repeat/00_Pell.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Pell_ShuttersFunding",
+      "line": 0,
+      "speaker": "Pell",
+      "textSha256": "a0fd83ea7bdd85d064ce88533b145fd96bf0c75d47fa689449929f82d5dd9ad3",
+      "clip": "Dialogue_Act2_Pell_ShuttersFunding/00_Pell.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Pell_WaitingCousin",
+      "line": 0,
+      "speaker": "Pell",
+      "textSha256": "114174e310f81a6fa813bb9a84241d2ebecea138300ceec2aa1ac6988df92358",
+      "clip": "Dialogue_Act2_Pell_WaitingCousin/00_Pell.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Theo_FirstSale",
+      "line": 0,
+      "speaker": "Theo",
+      "textSha256": "b013c974edc428e95143f39cf10b5e32be77de058e7066b58ba46ebb79036dc3",
+      "clip": "Dialogue_Act2_Theo_FirstSale/00_Theo.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Theo_FirstSale",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "012e0127b6a89ab5fd630c2f9a29ccf5a0a4b5491d1e023accb391ad2d66cf2c",
+      "clip": "Dialogue_Act2_Theo_FirstSale/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Theo_FirstSale",
+      "line": 2,
+      "speaker": "Theo",
+      "textSha256": "11109c12e159533a0b9b5904d09cd69b05d061df7f429a3becad30c2faf40cdb",
+      "clip": "Dialogue_Act2_Theo_FirstSale/02_Theo.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Theo_FirstSale",
+      "line": 3,
+      "speaker": "Wren",
+      "textSha256": "5d8a995a6fa7cf7c577cc9d49ca9e00d4aee4d0bcd5e2ad5caff27e2a8097276",
+      "clip": "Dialogue_Act2_Theo_FirstSale/03_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Theo_FirstSale",
+      "line": 4,
+      "speaker": "Theo",
+      "textSha256": "64c0ef18c776465eb70d6794d3db64aa8d2b380edce930efc064a5c297705d24",
+      "clip": "Dialogue_Act2_Theo_FirstSale/04_Theo.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Theo_FirstSale",
+      "line": 5,
+      "speaker": "Wren",
+      "textSha256": "512b7a5222b9ea593008e12e650369d901dd376b721e33e12f6bb26221ed3711",
+      "clip": "Dialogue_Act2_Theo_FirstSale/05_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Theo_FirstSale",
+      "line": 6,
+      "speaker": "Theo",
+      "textSha256": "ca7848723378974e32be9df683930f36dba9203fa939e6abd7d7430f44963a73",
+      "clip": "Dialogue_Act2_Theo_FirstSale/06_Theo.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Theo_Repeat",
+      "line": 0,
+      "speaker": "Theo",
+      "textSha256": "7dd1b2b7bef4d417ad1d5edb356aa8d048af6baf8bb3fc2bf8ff0cfcd128da9e",
+      "clip": "Dialogue_Act2_Theo_Repeat/00_Theo.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Theo_RepeatSale",
+      "line": 0,
+      "speaker": "Theo",
+      "textSha256": "9cefe63fb48009d1aab4c62b43e658a0f7ac944d0732fdabaf0e6f70405a0c1a",
+      "clip": "Dialogue_Act2_Theo_RepeatSale/00_Theo.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Theo_Waiting",
+      "line": 0,
+      "speaker": "Theo",
+      "textSha256": "dde2763f841ffcc6ade6f4cce05c3e4efde686e3e3622abf032a46ce8fd9be38",
+      "clip": "Dialogue_Act2_Theo_Waiting/00_Theo.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Voss_Demand",
+      "line": 0,
+      "speaker": "Voss",
+      "textSha256": "00df710fea491a40311a9edc1c96405008efabc142a410f85bb56aff2f24f603",
+      "clip": "Dialogue_Act2_Voss_Demand/00_Voss.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Voss_Demand",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "547ca4fd4d03fbfd21a8b7391b2abbf0b4f673fa60b535353e2dcf180dbfd939",
+      "clip": "Dialogue_Act2_Voss_Demand/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Voss_Demand",
+      "line": 2,
+      "speaker": "Voss",
+      "textSha256": "9a8a3a6f026ec5f36b82777b35e4c5f6789abdccea94575d12c6a8a8fe5563a2",
+      "clip": "Dialogue_Act2_Voss_Demand/02_Voss.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Voss_Demand",
+      "line": 3,
+      "speaker": "Wren",
+      "textSha256": "aa1ddf43af6fbbe13619a2ffaa684699b75c948467cab5a63e360eb998e95a13",
+      "clip": "Dialogue_Act2_Voss_Demand/03_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Voss_Demand",
+      "line": 4,
+      "speaker": "Voss",
+      "textSha256": "17510d9343b2910c0f4c1544b0b8e86a07905f5d163c90dd087c227a48d92790",
+      "clip": "Dialogue_Act2_Voss_Demand/04_Voss.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Voss_Payment",
+      "line": 0,
+      "speaker": "Wren",
+      "textSha256": "70b8c05b710a492578dac91fd70ed94009e370f32386290cb4ce18cf77cfdff9",
+      "clip": "Dialogue_Act2_Voss_Payment/00_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Voss_Payment",
+      "line": 1,
+      "speaker": "Voss",
+      "textSha256": "9e20deb43300f27d97b93ca14edbfb52a38834b8d0cabfb38f29e845e406c0cf",
+      "clip": "Dialogue_Act2_Voss_Payment/01_Voss.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Voss_Payment",
+      "line": 2,
+      "speaker": "Wren",
+      "textSha256": "12e6f60cc0a8e286d32ff83d83872d6dc6d239ca54d903c612f1102306d78602",
+      "clip": "Dialogue_Act2_Voss_Payment/02_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Voss_Payment",
+      "line": 3,
+      "speaker": "Voss",
+      "textSha256": "4ec6ff6366af2373b35b11fdafe12dedd5c110f7c6436d23ac4bee8e0455cae6",
+      "clip": "Dialogue_Act2_Voss_Payment/03_Voss.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Voss_Repeat",
+      "line": 0,
+      "speaker": "Voss",
+      "textSha256": "6990e120959fb071941e8c213f251125e01646ea67d6acdac6e263a22cf0f646",
+      "clip": "Dialogue_Act2_Voss_Repeat/00_Voss.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act2_Voss_Waiting",
+      "line": 0,
+      "speaker": "Voss",
+      "textSha256": "908f8ad7a2112308e5eec9c3606bfa33fc21cc4cb0b35c860a81747c98418a3f",
+      "clip": "Dialogue_Act2_Voss_Waiting/00_Voss.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Calden_Reconcile",
+      "line": 0,
+      "speaker": "Calden",
+      "textSha256": "b385b3b87b1e616fd2e7c884568f7fab7ab8442025b22da3d5ba9107a2883e9a",
+      "clip": "Dialogue_Act3_Calden_Reconcile/00_Calden.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Calden_Reconcile",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "c9fe90bb9a9356c5b1c260a1eea05d08b40826cbc4b229b10ca896f1ca6a6dc3",
+      "clip": "Dialogue_Act3_Calden_Reconcile/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Calden_Reconcile",
+      "line": 2,
+      "speaker": "Calden",
+      "textSha256": "8bb1c2d3de277dfb0ae067b995ea784098331f05a22e3a68115a49be1e9d36b5",
+      "clip": "Dialogue_Act3_Calden_Reconcile/02_Calden.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Calden_Reconcile",
+      "line": 3,
+      "speaker": "Wren",
+      "textSha256": "be1cf3305609b54c2734b93fca5f48b1a305d2d9a0af222b27ef5e836745c11b",
+      "clip": "Dialogue_Act3_Calden_Reconcile/03_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Calden_Reconcile",
+      "line": 4,
+      "speaker": "Calden",
+      "textSha256": "dcba3b129601db1b9c55a330bd638693164b9965ec8ecfda078cad228d7902c4",
+      "clip": "Dialogue_Act3_Calden_Reconcile/04_Calden.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Calden_Records",
+      "line": 0,
+      "speaker": "Wren",
+      "textSha256": "77ef74d17df6568805fb9cf1cd079b15228b1130c79a3f8fd7f0f7447c732f86",
+      "clip": "Dialogue_Act3_Calden_Records/00_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Calden_Records",
+      "line": 1,
+      "speaker": "Calden",
+      "textSha256": "99b6d995254900327a5502ac9fa8afc2e143bfbdb74431ca97f9f9667980403d",
+      "clip": "Dialogue_Act3_Calden_Records/01_Calden.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Calden_Records",
+      "line": 2,
+      "speaker": "Wren",
+      "textSha256": "7eba627f1882cb3fb367dfd94ce76bd18d8ce9eb7d41910aaed7ddf5e62e8632",
+      "clip": "Dialogue_Act3_Calden_Records/02_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Calden_Records",
+      "line": 3,
+      "speaker": "Calden",
+      "textSha256": "fa36308beef54d0ca82436080953881bda614676f8d9de4cebcfe03fc1ace6f3",
+      "clip": "Dialogue_Act3_Calden_Records/03_Calden.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Calden_Repeat",
+      "line": 0,
+      "speaker": "Calden",
+      "textSha256": "ba4759df35e5de609eb7c71039d3da524e26209c2f6ef89ecaee17834ea32afc",
+      "clip": "Dialogue_Act3_Calden_Repeat/00_Calden.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Cottage_Arrival",
+      "line": 0,
+      "speaker": "Hollin",
+      "textSha256": "1a2c8bf06d63944b158bfee4dd82c5c5b8d733d4bd823771afebc0fe70a119f6",
+      "clip": "Dialogue_Act3_Cottage_Arrival/00_Hollin.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Cottage_Arrival",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "b6aa39de528ed4bbca50c732bbd6ef693736dac90cf52d774dc8c8fb2af606cc",
+      "clip": "Dialogue_Act3_Cottage_Arrival/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Cottage_Arrival",
+      "line": 2,
+      "speaker": "Almy",
+      "textSha256": "1ae8465d1813c9e5f045cb63721890e80cc9789dbf3c7eb1a931f7a2317850e3",
+      "clip": "Dialogue_Act3_Cottage_Arrival/02_Almy.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Cottage_Arrival",
+      "line": 3,
+      "speaker": "Wren",
+      "textSha256": "c8c6c6b520e9b76c1ed70a92275464ceb8f9d8302e65d5588fee50ef18c6fd68",
+      "clip": "Dialogue_Act3_Cottage_Arrival/03_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Cottage_Arrival",
+      "line": 4,
+      "speaker": "Almy",
+      "textSha256": "7c8f16bf32807d1af0780b71feb9e76c78ebff50d575f3634ede9e155673d3a0",
+      "clip": "Dialogue_Act3_Cottage_Arrival/04_Almy.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Cottage_Arrival",
+      "line": 5,
+      "speaker": "Hollin",
+      "textSha256": "3e0ab67c92893d026570a5edb1740ebac3120cef7c6852419188224d7dd86651",
+      "clip": "Dialogue_Act3_Cottage_Arrival/05_Hollin.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Cottage_Arrival",
+      "line": 6,
+      "speaker": "Wren",
+      "textSha256": "dc9b2b9573117274abf846a3f28e39e461fdf103dce8b516102914e5b90d4441",
+      "clip": "Dialogue_Act3_Cottage_Arrival/06_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Edda_Apprentice",
+      "line": 0,
+      "speaker": "Edda",
+      "textSha256": "ce992a37cacf444393eac9a7d9d1ce314be8fa3423362832978e8338461331c3",
+      "clip": "Dialogue_Act3_Edda_Apprentice/00_Edda.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Edda_Apprentice",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "931a5ab2eaf164a385b46b41cd364766052393168f0e255f5a13a3ad7f2f7cc5",
+      "clip": "Dialogue_Act3_Edda_Apprentice/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Edda_Apprentice",
+      "line": 2,
+      "speaker": "Edda",
+      "textSha256": "68ba864f0f39044ce7f554682ad368315581eb5aa1f15b4b9e1680c6cacdbf4d",
+      "clip": "Dialogue_Act3_Edda_Apprentice/02_Edda.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Edda_Apprentice",
+      "line": 3,
+      "speaker": "Wren",
+      "textSha256": "e85e0b99db47003f7c0db2a90a41aa0b155e2ad054324f9b3d603e2637d58c52",
+      "clip": "Dialogue_Act3_Edda_Apprentice/03_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Edda_Apprentice",
+      "line": 4,
+      "speaker": "Edda",
+      "textSha256": "85ef63fd2f685e324517cb40cab761fb00f5edb0c58677215b08032cb747ed45",
+      "clip": "Dialogue_Act3_Edda_Apprentice/04_Edda.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Edda_Apprentice",
+      "line": 5,
+      "speaker": "Wren",
+      "textSha256": "1d0d642b9409edd0c03eed086d74465f3bf114a73ce8f61a0c3adbebe9668c2e",
+      "clip": "Dialogue_Act3_Edda_Apprentice/05_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Edda_Apprentice",
+      "line": 6,
+      "speaker": "Edda",
+      "textSha256": "667c5b1404a394556c0f8b06c8fda3ef0f90aa19bdd0fe05d9bc237415acee5d",
+      "clip": "Dialogue_Act3_Edda_Apprentice/06_Edda.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Edda_Apprentice",
+      "line": 7,
+      "speaker": "Wren",
+      "textSha256": "9b2eb7ad2eed05fe44a52d52cffc781c0f3605cfa34cfc6aeb7e3e49e7e5d4c7",
+      "clip": "Dialogue_Act3_Edda_Apprentice/07_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Edda_Repeat",
+      "line": 0,
+      "speaker": "Edda",
+      "textSha256": "2802ca8916b1690aab7fbc666af0798e8e5cd8ccb19d9c26f79c2cc3975d6266",
+      "clip": "Dialogue_Act3_Edda_Repeat/00_Edda.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Festival",
+      "line": 0,
+      "speaker": "Wren",
+      "textSha256": "84b39847cd17018949f5ac0c28368324e0044dd0f6deba7148d04c9620aa31f0",
+      "clip": "Dialogue_Act3_Festival/00_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Festival",
+      "line": 1,
+      "speaker": "Edda",
+      "textSha256": "76de994dd074b0893c5dde9b273761729355fb53b50be69aec8f3a3dc75229e5",
+      "clip": "Dialogue_Act3_Festival/01_Edda.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Festival",
+      "line": 2,
+      "speaker": "Wren",
+      "textSha256": "c4451729a9c76a00fe565cdb5406e8d47cce8b82efb89c7d9ea11158b9e4dacb",
+      "clip": "Dialogue_Act3_Festival/02_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Festival",
+      "line": 3,
+      "speaker": "Edda",
+      "textSha256": "0447c3bad1b11ed190eccd04e098e67b652e3c629771e8e193a9827fafd8cbf9",
+      "clip": "Dialogue_Act3_Festival/03_Edda.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Festival",
+      "line": 4,
+      "speaker": "Wren",
+      "textSha256": "05975b4f0b965573c1bb5ded1fe01d19662ee7d2c4f0691ef22a531697bbd75f",
+      "clip": "Dialogue_Act3_Festival/04_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Festival_Gathering",
+      "line": 0,
+      "speaker": "Marra",
+      "textSha256": "da31d5d4afeccbf2fb78c2ee2ca13729bdfd16bcc042d5d9688b70136cac8834",
+      "clip": "Dialogue_Act3_Festival_Gathering/00_Marra.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Festival_Gathering",
+      "line": 1,
+      "speaker": "Bram",
+      "textSha256": "ea8f1906018124c2c66213e8c3d8c1b1a69a90baf5bfd5af8baf9d40a2d21b93",
+      "clip": "Dialogue_Act3_Festival_Gathering/01_Bram.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Festival_Gathering",
+      "line": 2,
+      "speaker": "Pell",
+      "textSha256": "46cfa3d81680bf797408b2b50b0f1c38462446d9dcb833907f656571bfbc5871",
+      "clip": "Dialogue_Act3_Festival_Gathering/02_Pell.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Festival_Repeat",
+      "line": 0,
+      "speaker": "Marra",
+      "textSha256": "e163bf2693974344b4c28728de7d035168dedab63ff26d6096028e2da89ce5e5",
+      "clip": "Dialogue_Act3_Festival_Repeat/00_Marra.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Hollin_Inheritance",
+      "line": 0,
+      "speaker": "Hollin",
+      "textSha256": "cee394274141933380fefb26e95b3e03d90a9ca5abfc06087f5d9260dd6bcfc4",
+      "clip": "Dialogue_Act3_Hollin_Inheritance/00_Hollin.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Hollin_Inheritance",
+      "line": 1,
+      "speaker": "Almy",
+      "textSha256": "8f26e45d81a92f8fe756cfabccd65f407f158d238d362395e28da3104edcc5d0",
+      "clip": "Dialogue_Act3_Hollin_Inheritance/01_Almy.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Hollin_Inheritance",
+      "line": 2,
+      "speaker": "Wren",
+      "textSha256": "23939d9d927cda0a8901597061510c1695eaf9826a578cd49a15511507a4b35c",
+      "clip": "Dialogue_Act3_Hollin_Inheritance/02_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Hollin_Inheritance",
+      "line": 3,
+      "speaker": "Almy",
+      "textSha256": "25c137ad4c244ffcb42f67fb570326feb70e2ff7aee49f56548539b6910fadb7",
+      "clip": "Dialogue_Act3_Hollin_Inheritance/03_Almy.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Hollin_Inheritance",
+      "line": 4,
+      "speaker": "Hollin",
+      "textSha256": "14515f64ef8a8ecf63c628d00e158a17affe45845b00e61cea5e9f5bfd83c759",
+      "clip": "Dialogue_Act3_Hollin_Inheritance/04_Hollin.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Hollin_Inheritance",
+      "line": 5,
+      "speaker": "Wren",
+      "textSha256": "c4176ac7b15bd0ae688c6e22994efef05e7aa7a9b449545e7ee347d6c9958ceb",
+      "clip": "Dialogue_Act3_Hollin_Inheritance/05_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Hollin_Repeat",
+      "line": 0,
+      "speaker": "Hollin",
+      "textSha256": "ce8de7d970c36a1d10fb54ef94eaa4209789fddcbd42b60fb64dc19c93932d6f",
+      "clip": "Dialogue_Act3_Hollin_Repeat/00_Hollin.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Theo_Capital",
+      "line": 0,
+      "speaker": "Theo",
+      "textSha256": "3cb4940426a737d63b3e7c3289ce082768921f168890590f7b9f42bc59fcb9fb",
+      "clip": "Dialogue_Act3_Theo_Capital/00_Theo.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Theo_Capital",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "8de01d82d5ad0ea094169c7312e100561aafbfd29937d8ac6647e2df37155178",
+      "clip": "Dialogue_Act3_Theo_Capital/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Theo_Capital",
+      "line": 2,
+      "speaker": "Theo",
+      "textSha256": "ad33644c4fbb15d9e57ca6c4fc837bbb46efe03acee002e0616c48efef8494b4",
+      "clip": "Dialogue_Act3_Theo_Capital/02_Theo.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Theo_Capital",
+      "line": 3,
+      "speaker": "Theo",
+      "textSha256": "37d514cecdec0778bf4dc99c8da4623ad5cbf25978f45890eca06be32727d625",
+      "clip": "Dialogue_Act3_Theo_Capital/03_Theo.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Theo_Capital",
+      "line": 4,
+      "speaker": "Wren",
+      "textSha256": "6ea27a9d6a3fd0bc951bdb19727a133a5fd5de7cb1865da787a8e1de71fe67e3",
+      "clip": "Dialogue_Act3_Theo_Capital/04_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Theo_Capital",
+      "line": 5,
+      "speaker": "Theo",
+      "textSha256": "3baf033965280227cf0b6df8b8eab9a1b0fe125871dddcc346f1c3e35474fbec",
+      "clip": "Dialogue_Act3_Theo_Capital/05_Theo.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Theo_Capital_Cost",
+      "line": 0,
+      "speaker": "Theo",
+      "textSha256": "0cd8f5b81f016c8cb1ed2c3c76bec338a009fb2d108b09cc6748e21d474f362d",
+      "clip": "Dialogue_Act3_Theo_Capital_Cost/00_Theo.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Theo_Capital_Cost",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "ddd47a3a97547eb999029a8543bbe6592b9e0cb5462d9cf74185f44846602edd",
+      "clip": "Dialogue_Act3_Theo_Capital_Cost/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Theo_Capital_Cost",
+      "line": 2,
+      "speaker": "Theo",
+      "textSha256": "cb2b087e149eab80b77a77436f280b437fc09306978dd667db31c908e05e7019",
+      "clip": "Dialogue_Act3_Theo_Capital_Cost/02_Theo.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Theo_Capital_Hollowfen",
+      "line": 0,
+      "speaker": "Wren",
+      "textSha256": "e4449ffec0d5ad8e3a4462fe80e7121c019ce0192a4827bca259adb1e65e7e93",
+      "clip": "Dialogue_Act3_Theo_Capital_Hollowfen/00_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Theo_Capital_Hollowfen",
+      "line": 1,
+      "speaker": "Theo",
+      "textSha256": "90ade1ef258440c45ca16ea3a133eed90c59b3d3d8ae0121aa3314cd9ab7b869",
+      "clip": "Dialogue_Act3_Theo_Capital_Hollowfen/01_Theo.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Theo_Capital_Hub",
+      "line": 0,
+      "speaker": "Theo",
+      "textSha256": "cfd321a71596d2dd70b518a10f998668cfeb0575f1d02794c5e31ec6af6a2b38",
+      "clip": "Dialogue_Act3_Theo_Capital_Hub/00_Theo.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Theo_Capital_Leave",
+      "line": 0,
+      "speaker": "Wren",
+      "textSha256": "65a5d768d96c4791546bc393efc4d8003af5158216715cb66f76ec8321222bcf",
+      "clip": "Dialogue_Act3_Theo_Capital_Leave/00_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Theo_Capital_Leave",
+      "line": 1,
+      "speaker": "Theo",
+      "textSha256": "d14c75231ef9b2a0b22570690d4468b11ec9013a63fdc9ad8eefa78cfa32df6c",
+      "clip": "Dialogue_Act3_Theo_Capital_Leave/01_Theo.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Theo_Capital_Repeat",
+      "line": 0,
+      "speaker": "Theo",
+      "textSha256": "89b6d7bc262791f72917d058bec0183a5fd5e14875a04c31106013d9aabba0e1",
+      "clip": "Dialogue_Act3_Theo_Capital_Repeat/00_Theo.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Theo_Capital_Timing",
+      "line": 0,
+      "speaker": "Wren",
+      "textSha256": "06681818c4aa6001e98539f26aed9c95d2918aa5aab59b223201945fd22ddbc3",
+      "clip": "Dialogue_Act3_Theo_Capital_Timing/00_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Theo_Capital_Timing",
+      "line": 1,
+      "speaker": "Theo",
+      "textSha256": "127325faee2190dadb0eccbe1852c69019218052982fbcc1a01134ff35b61444",
+      "clip": "Dialogue_Act3_Theo_Capital_Timing/01_Theo.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Voss_Letter",
+      "line": 0,
+      "speaker": "Voss",
+      "textSha256": "0948d882a53be127b7eb46e7f40770f6c26d90caba72f07fbe3978b70752bac3",
+      "clip": "Dialogue_Act3_Voss_Letter/00_Voss.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Voss_Letter",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "e88b2d088e39b9f393b788a7678e9240f8d23cf10cd397d854b8e4b70f2f1179",
+      "clip": "Dialogue_Act3_Voss_Letter/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Voss_Letter",
+      "line": 2,
+      "speaker": "Voss",
+      "textSha256": "e4c43405514299f8058ea3b7ba9cc673fb1b686ea1b546fcb2f8857c4602d343",
+      "clip": "Dialogue_Act3_Voss_Letter/02_Voss.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Voss_Letter",
+      "line": 3,
+      "speaker": "Wren",
+      "textSha256": "1991efdc4938d9533bb379a2df99309428469e2cccfc37e6caec9d2bdf64371a",
+      "clip": "Dialogue_Act3_Voss_Letter/03_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Voss_Letter",
+      "line": 4,
+      "speaker": "Voss",
+      "textSha256": "38178a20b470cfd18299fb1593dd4ba706f1a83321dac051d01086efd8b7a96f",
+      "clip": "Dialogue_Act3_Voss_Letter/04_Voss.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Voss_Letter",
+      "line": 5,
+      "speaker": "Wren",
+      "textSha256": "c951b17f73b2aae5f7a9ee92396470881b571ac36198f9f886e928d895935c1c",
+      "clip": "Dialogue_Act3_Voss_Letter/05_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Voss_Letter",
+      "line": 6,
+      "speaker": "Voss",
+      "textSha256": "38178a20b470cfd18299fb1593dd4ba706f1a83321dac051d01086efd8b7a96f",
+      "clip": "Dialogue_Act3_Voss_Letter/06_Voss.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Voss_Letter",
+      "line": 7,
+      "speaker": "Wren",
+      "textSha256": "6aa03ca5838c4e10c9d3161d75e11da4772b2366ca09121b0cdb82da283e2ae5",
+      "clip": "Dialogue_Act3_Voss_Letter/07_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Voss_Letter_OpenNow",
+      "line": 0,
+      "speaker": "Wren",
+      "textSha256": "3ebd126dd05f57bc07c96c64c752b3ae47fb9895eb77114e6d851f509d6c41a1",
+      "clip": "Dialogue_Act3_Voss_Letter_OpenNow/00_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Voss_Letter_OpenNow",
+      "line": 1,
+      "speaker": "Voss",
+      "textSha256": "e8749e06cb9ca3f8b5c05c72a19a994d20d464f8ca560d0dd497d7fe7d645e01",
+      "clip": "Dialogue_Act3_Voss_Letter_OpenNow/01_Voss.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Voss_Letter_Wait",
+      "line": 0,
+      "speaker": "Wren",
+      "textSha256": "c7553f00f2972c5812b86f8767c42d6be2588f9d382b8a9b367de6b8524c822b",
+      "clip": "Dialogue_Act3_Voss_Letter_Wait/00_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Voss_Letter_Wait",
+      "line": 1,
+      "speaker": "Voss",
+      "textSha256": "7d150bc07dc838d6bd42c7b576217d0f07de579b6a871ca678e8e4fa14e6a693",
+      "clip": "Dialogue_Act3_Voss_Letter_Wait/01_Voss.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Voss_Repeat",
+      "line": 0,
+      "speaker": "Voss",
+      "textSha256": "ab4a7eb18c8c46b5ad4fc0f7d2927e5690388cfbfc8cdb3a6ded266eaaac1c57",
+      "clip": "Dialogue_Act3_Voss_Repeat/00_Voss.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Wend_Truth",
+      "line": 0,
+      "speaker": "Wren",
+      "textSha256": "6ae10c9e18e1532b0ed1798cee633daa2fd24dbc360237b1e0de9877b13949a9",
+      "clip": "Dialogue_Act3_Wend_Truth/00_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Wend_Truth",
+      "line": 1,
+      "speaker": "Hollin",
+      "textSha256": "bf3a8f4bd61ef742de187cefd6f0f81d5aafb0a76648f96a8761f22b15df9321",
+      "clip": "Dialogue_Act3_Wend_Truth/01_Hollin.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act3_Wend_Truth",
+      "line": 2,
+      "speaker": "Wren",
+      "textSha256": "b0f723cae36fca7095835f85f3d1b4d47575b3acbc818cd4f8e5df1dbcb861c4",
+      "clip": "Dialogue_Act3_Wend_Truth/02_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_Aldric_Offer",
+      "line": 0,
+      "speaker": "Wren",
+      "textSha256": "b1c591dfeeeae9a7ab8f19441f26c0c965455c09afbccd0a2b9b7c9b42668d6c",
+      "clip": "Dialogue_Act4_Aldric_Offer/00_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_Aldric_Offer",
+      "line": 1,
+      "speaker": "Aldric's letter",
+      "textSha256": "63b183567fb10559c9fc7f42120f277cce866c4ba00d91e541e28212da58f967",
+      "clip": "Dialogue_Act4_Aldric_Offer/01_Aldric_s_letter.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_Aldric_Offer",
+      "line": 2,
+      "speaker": "Aldric's letter",
+      "textSha256": "4d23b8169efc1180702300199323ab55bb8bf9639191ea96240e5ef91e8bf5ce",
+      "clip": "Dialogue_Act4_Aldric_Offer/02_Aldric_s_letter.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_Aldric_Offer",
+      "line": 3,
+      "speaker": "Wren",
+      "textSha256": "6bf4ea077e4b3ce80566c024269a8cd12410e67e681f4a2e3fd6cb760d266bf3",
+      "clip": "Dialogue_Act4_Aldric_Offer/03_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_Aldric_Offer",
+      "line": 4,
+      "speaker": "Aldric's letter",
+      "textSha256": "a4997cb4147f168d0f560e62d9ffd9496a18f935765744f1a44140cca5eb5177",
+      "clip": "Dialogue_Act4_Aldric_Offer/04_Aldric_s_letter.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_Aldric_Offer",
+      "line": 5,
+      "speaker": "Wren",
+      "textSha256": "afca536eb1f38d536afce77d1580800c5741393703a4790cdd0e962a8df28c57",
+      "clip": "Dialogue_Act4_Aldric_Offer/05_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_Aldric_Offer",
+      "line": 6,
+      "speaker": "Wren",
+      "textSha256": "ffd1629c7f64da0e220a51d7c70f155d411534d7988c30f3c4c1e46220bffab0",
+      "clip": "Dialogue_Act4_Aldric_Offer/06_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_Consult_Almy",
+      "line": 0,
+      "speaker": "Wren",
+      "textSha256": "fb46c9b1c3c831462050eb92679073bc650b169cb571806dc41f3e590a1ad690",
+      "clip": "Dialogue_Act4_Consult_Almy/00_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_Consult_Almy",
+      "line": 1,
+      "speaker": "Almy",
+      "textSha256": "636261b2bb4484057f3c741f5450cf86c10a113033a6d4a41620e23546f22708",
+      "clip": "Dialogue_Act4_Consult_Almy/01_Almy.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_Consult_Almy",
+      "line": 2,
+      "speaker": "Almy",
+      "textSha256": "f0d4037daf08c1b330227e504c4311e6b0aa31759ea2c12eda6fd8a93a7acb71",
+      "clip": "Dialogue_Act4_Consult_Almy/02_Almy.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_Consult_Bram",
+      "line": 0,
+      "speaker": "Wren",
+      "textSha256": "41d0d7f9cb2e07942bfc66c7a22e3d88cf96316e6ca9376105f726e330115860",
+      "clip": "Dialogue_Act4_Consult_Bram/00_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_Consult_Bram",
+      "line": 1,
+      "speaker": "Bram",
+      "textSha256": "c58f51ba1cda0abae74b6f067d5e4a91bc2da9e540a6987fd9b13e775bbf3d08",
+      "clip": "Dialogue_Act4_Consult_Bram/01_Bram.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_Consult_Bram",
+      "line": 2,
+      "speaker": "Bram",
+      "textSha256": "c0ee26471e9d820e6af187e065bbfe17a0376eac8183926a5c6344e8ff93139c",
+      "clip": "Dialogue_Act4_Consult_Bram/02_Bram.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_Consult_Hollin",
+      "line": 0,
+      "speaker": "Wren",
+      "textSha256": "2b8e73375274dba8f8445bb5735c569f78e01ced212ddd9490a632cf66578438",
+      "clip": "Dialogue_Act4_Consult_Hollin/00_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_Consult_Hollin",
+      "line": 1,
+      "speaker": "Hollin",
+      "textSha256": "acf2b477da99b6bdc580a9235d210edf45188a16f05940c24565e6c1533eb5dd",
+      "clip": "Dialogue_Act4_Consult_Hollin/01_Hollin.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_Consult_Hollin",
+      "line": 2,
+      "speaker": "Hollin",
+      "textSha256": "a195013156bb181e9c9d13ac872a9a4b623365389de7893e148a477f783411cb",
+      "clip": "Dialogue_Act4_Consult_Hollin/02_Hollin.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_MeetAldric",
+      "line": 0,
+      "speaker": "Wren",
+      "textSha256": "11d31e7dc6d5f7f6dfc4e955989b8edfe843740d4244da6cdf8044b86e98925b",
+      "clip": "Dialogue_Act4_MeetAldric/00_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_MeetAldric",
+      "line": 1,
+      "speaker": "Aldric",
+      "textSha256": "6bacb05fa45e9e8ab6f7f9075d9468978bbccdb7a6f7d81c27a02047c7364e63",
+      "clip": "Dialogue_Act4_MeetAldric/01_Aldric.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_MeetAldric",
+      "line": 2,
+      "speaker": "Wren",
+      "textSha256": "9d9435ef33464012b57bfd2953c77a5e793b260dc6586b71cc7ee1e78e848a78",
+      "clip": "Dialogue_Act4_MeetAldric/02_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_MeetAldric",
+      "line": 3,
+      "speaker": "Aldric",
+      "textSha256": "37d149effd07e18a6b1c08023ab6298b2ab3a7d713d67d87f44ca67c3ec1e944",
+      "clip": "Dialogue_Act4_MeetAldric/03_Aldric.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_MeetAldric",
+      "line": 4,
+      "speaker": "Wren",
+      "textSha256": "93361f61146dab1bf33e7f70d72e687bad40ff97f4ac3e4be04a08cb76793480",
+      "clip": "Dialogue_Act4_MeetAldric/04_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_MeetAldric",
+      "line": 5,
+      "speaker": "Aldric",
+      "textSha256": "f334af84de7fea2d0fc6b7161b408d7b3e0f503298690e5c977d54d73e2ed04a",
+      "clip": "Dialogue_Act4_MeetAldric/05_Aldric.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_MeetAldric",
+      "line": 6,
+      "speaker": "Wren",
+      "textSha256": "5f9a2b795615ba6a3d5455fd5624d773fbca5bcd16249c421fd37411dc9837da",
+      "clip": "Dialogue_Act4_MeetAldric/06_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_MeetAldric",
+      "line": 7,
+      "speaker": "Aldric",
+      "textSha256": "334bf44a0aa723137500a725dfc4080701c06bfe48eee805dddedb3798639bc6",
+      "clip": "Dialogue_Act4_MeetAldric/07_Aldric.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_MeetAldric",
+      "line": 8,
+      "speaker": "Wren",
+      "textSha256": "546ac85a7ce29e73477022eacf860749dcfffcc28c571b5eb30da9350696ef9e",
+      "clip": "Dialogue_Act4_MeetAldric/08_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_MeetAldric",
+      "line": 9,
+      "speaker": "Wren",
+      "textSha256": "86686a2cee70978a8a922f02bc605d7b86d70eff853dde8f3a489c4c39b2b08c",
+      "clip": "Dialogue_Act4_MeetAldric/09_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_MeetAldric",
+      "line": 10,
+      "speaker": "Wren",
+      "textSha256": "2c25d286871d57916af150189d68b3cc07622cd94f891699a843be50c247326b",
+      "clip": "Dialogue_Act4_MeetAldric/10_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_MeetAldric",
+      "line": 11,
+      "speaker": "Wren",
+      "textSha256": "bdf7b843e5edfd1498847fcf9f99238815c5c063a8eaee647e728b6b4346f1e4",
+      "clip": "Dialogue_Act4_MeetAldric/11_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_WendSource",
+      "line": 0,
+      "speaker": "Wren",
+      "textSha256": "4643cb4c0dd92ab91e935a14d766d8b102271143b52d386676d4acecc8feba2d",
+      "clip": "Dialogue_Act4_WendSource/00_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_WendSource",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "16c1404179647be695efdeeb1300a8991408f30e6817c1838738dd96899d17ad",
+      "clip": "Dialogue_Act4_WendSource/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_WendSource",
+      "line": 2,
+      "speaker": "Hollin",
+      "textSha256": "8f246615ce3322102a5b430a85bae6a77d47a0b7932832b6ce0888a7c5b9c462",
+      "clip": "Dialogue_Act4_WendSource/02_Hollin.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_WendSource",
+      "line": 3,
+      "speaker": "Wren",
+      "textSha256": "20ea4fc4e99e1a19799ae4d297ec1cb72b12c9b0d4011ee7b0f7095a418b9c19",
+      "clip": "Dialogue_Act4_WendSource/03_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_WendSource",
+      "line": 4,
+      "speaker": "Hollin",
+      "textSha256": "5f9a2b795615ba6a3d5455fd5624d773fbca5bcd16249c421fd37411dc9837da",
+      "clip": "Dialogue_Act4_WendSource/04_Hollin.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_WendSource",
+      "line": 5,
+      "speaker": "Wren",
+      "textSha256": "767e749741594de42974553dfd8735a20be2ff142f5890b5b1a8b30db9228f33",
+      "clip": "Dialogue_Act4_WendSource/05_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_WendSource",
+      "line": 6,
+      "speaker": "Wren",
+      "textSha256": "6c6d6936e16561812f2baf856a178263e13de1c795e4701f4ea3ab0a0c6b4d9b",
+      "clip": "Dialogue_Act4_WendSource/06_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_WendSource",
+      "line": 7,
+      "speaker": "Wren",
+      "textSha256": "46f570f5ae5addba87c14468f6664db41abf45503c8aee754ba1e18bfe0bb77b",
+      "clip": "Dialogue_Act4_WendSource/07_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Act4_WendSource",
+      "line": 8,
+      "speaker": "Wren",
+      "textSha256": "a1d115581cb2ec4174c49bb853ed61ae7f39169e9cbab9cdfbf3ddac3f1123a0",
+      "clip": "Dialogue_Act4_WendSource/08_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_ApothecaryCase_AlmyBrightsporeSleep_FollowUp",
+      "line": 0,
+      "speaker": "Almy",
+      "textSha256": "ff901fabb6eb55664185defe9a978558b37ecdf70e6c9dbe38b324db03bc5d96",
+      "clip": "Dialogue_ApothecaryCase_AlmyBrightsporeSleep_FollowUp/00_Almy.wav"
+    },
+    {
+      "dialogue": "Dialogue_ApothecaryCase_AlmyBrightsporeSleep_FollowUp",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "516a27ee4e64e000a157978f4761264cdb3ad013853c55d18c0afd14343a5f9e",
+      "clip": "Dialogue_ApothecaryCase_AlmyBrightsporeSleep_FollowUp/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_ApothecaryCase_AlmyBrightsporeSleep_Intake",
+      "line": 0,
+      "speaker": "Almy",
+      "textSha256": "3d1cb852a9cede8652f4263e4d4ab03f895f0d840402cbd156c82b742bf00c3b",
+      "clip": "Dialogue_ApothecaryCase_AlmyBrightsporeSleep_Intake/00_Almy.wav"
+    },
+    {
+      "dialogue": "Dialogue_ApothecaryCase_AlmyBrightsporeSleep_Intake",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "31eb95044ccfddced64addc9a2c67d82d5c7488f99f8b8c03bee79d73f24b53f",
+      "clip": "Dialogue_ApothecaryCase_AlmyBrightsporeSleep_Intake/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_ApothecaryCase_AlmyBrightsporeSleep_Intake",
+      "line": 2,
+      "speaker": "Edda",
+      "textSha256": "741ae8a4234292da5354ae024c8754ff405e366221658696842ce7c149c47679",
+      "clip": "Dialogue_ApothecaryCase_AlmyBrightsporeSleep_Intake/02_Edda.wav"
+    },
+    {
+      "dialogue": "Dialogue_ApothecaryCase_BramRainShiver_FollowUp",
+      "line": 0,
+      "speaker": "Bram",
+      "textSha256": "cc07b5674b89852aa8c97106d1cb389b8200e55597a0e72554a93481635a6d34",
+      "clip": "Dialogue_ApothecaryCase_BramRainShiver_FollowUp/00_Bram.wav"
+    },
+    {
+      "dialogue": "Dialogue_ApothecaryCase_BramRainShiver_FollowUp",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "f0ba09d853ab9429c29401f047c5e0564bf33040b804518064e4fd613330fc7d",
+      "clip": "Dialogue_ApothecaryCase_BramRainShiver_FollowUp/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_ApothecaryCase_BramRainShiver_Intake",
+      "line": 0,
+      "speaker": "Bram",
+      "textSha256": "8c2fd56d9d223a2fcc6bf6cea00ef8e579dc2da8a0441071141ef3a7aa4f94f0",
+      "clip": "Dialogue_ApothecaryCase_BramRainShiver_Intake/00_Bram.wav"
+    },
+    {
+      "dialogue": "Dialogue_ApothecaryCase_BramRainShiver_Intake",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "25f9ee65431f60e5130471c1e1de208ab91b1f8d027a0488f225f6d0cdaf7038",
+      "clip": "Dialogue_ApothecaryCase_BramRainShiver_Intake/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_ApothecaryCase_BramRainShiver_Intake",
+      "line": 2,
+      "speaker": "Edda",
+      "textSha256": "2539b18ebde5782745d547dce71317576f020b785fb7b498e607c2e977966cee",
+      "clip": "Dialogue_ApothecaryCase_BramRainShiver_Intake/02_Edda.wav"
+    },
+    {
+      "dialogue": "Dialogue_ApothecaryCase_JorenHammerEcho_FollowUp",
+      "line": 0,
+      "speaker": "Joren",
+      "textSha256": "e6739b1a7b78c87580b44396d8b6589a5376197051a7049c40e6189a641bcd02",
+      "clip": "Dialogue_ApothecaryCase_JorenHammerEcho_FollowUp/00_Joren.wav"
+    },
+    {
+      "dialogue": "Dialogue_ApothecaryCase_JorenHammerEcho_FollowUp",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "83323bcb3fdc52a35d66a301a249a0c1b0ccb2426e4d8e04a989c99b5f99d8a4",
+      "clip": "Dialogue_ApothecaryCase_JorenHammerEcho_FollowUp/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_ApothecaryCase_JorenHammerEcho_Intake",
+      "line": 0,
+      "speaker": "Joren",
+      "textSha256": "b821279e4534d5c0ead8fe4f724ce66ca258fdd9e889c0cc44bdbc177f945007",
+      "clip": "Dialogue_ApothecaryCase_JorenHammerEcho_Intake/00_Joren.wav"
+    },
+    {
+      "dialogue": "Dialogue_ApothecaryCase_JorenHammerEcho_Intake",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "c603309a3be74c7d54b954e9306c8b7bb1f54dbb7735c87b2c6a13142a5cc80c",
+      "clip": "Dialogue_ApothecaryCase_JorenHammerEcho_Intake/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_ApothecaryCase_JorenHammerEcho_Intake",
+      "line": 2,
+      "speaker": "Edda",
+      "textSha256": "dbfa50c4688101635a605755a0e5be53631be713bba00773f16b1ab0b35383b0",
+      "clip": "Dialogue_ApothecaryCase_JorenHammerEcho_Intake/02_Edda.wav"
+    },
+    {
+      "dialogue": "Dialogue_ApothecaryCase_MarraCellarBloom_FollowUp",
+      "line": 0,
+      "speaker": "Marra",
+      "textSha256": "61d161220f95161e81e1b2827fe91b1445c2b0b9e6aff2a81d8e9d3efbce1a8b",
+      "clip": "Dialogue_ApothecaryCase_MarraCellarBloom_FollowUp/00_Marra.wav"
+    },
+    {
+      "dialogue": "Dialogue_ApothecaryCase_MarraCellarBloom_FollowUp",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "76a8100a74f0007eca42dd2812198acae80a179c01c84dc6c076d74360740f6c",
+      "clip": "Dialogue_ApothecaryCase_MarraCellarBloom_FollowUp/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_ApothecaryCase_MarraCellarBloom_Intake",
+      "line": 0,
+      "speaker": "Marra",
+      "textSha256": "83e6ed771ab908e71f987944b79fac6ec4378d91e8d31eb5c752a0fca635dc27",
+      "clip": "Dialogue_ApothecaryCase_MarraCellarBloom_Intake/00_Marra.wav"
+    },
+    {
+      "dialogue": "Dialogue_ApothecaryCase_MarraCellarBloom_Intake",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "c964f3debb0f6c7d0c141349d84696a4133094f0a9c07780aa0be9986c05d62d",
+      "clip": "Dialogue_ApothecaryCase_MarraCellarBloom_Intake/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_ApothecaryCase_MarraCellarBloom_Intake",
+      "line": 2,
+      "speaker": "Edda",
+      "textSha256": "08dfe4cc9dee4047a58c67a0f8643b3de769864c20a69ba7be274bcc26aa102b",
+      "clip": "Dialogue_ApothecaryCase_MarraCellarBloom_Intake/02_Edda.wav"
+    },
+    {
+      "dialogue": "Dialogue_ApothecaryCase_PellFadingLedger_FollowUp",
+      "line": 0,
+      "speaker": "Pell",
+      "textSha256": "7d2231e813348f43c4d4a346b0c09d830295e07e44a529575c3552c8f3567236",
+      "clip": "Dialogue_ApothecaryCase_PellFadingLedger_FollowUp/00_Pell.wav"
+    },
+    {
+      "dialogue": "Dialogue_ApothecaryCase_PellFadingLedger_FollowUp",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "4b416722d5320a75e730eabde1219ffab336f281ad8d7707e4cd1eb27c49cda2",
+      "clip": "Dialogue_ApothecaryCase_PellFadingLedger_FollowUp/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_ApothecaryCase_PellFadingLedger_Intake",
+      "line": 0,
+      "speaker": "Pell",
+      "textSha256": "05105eade4c9a222943dfdd6d6c6c2b225455bd280a60e358b624e4b1b8cd109",
+      "clip": "Dialogue_ApothecaryCase_PellFadingLedger_Intake/00_Pell.wav"
+    },
+    {
+      "dialogue": "Dialogue_ApothecaryCase_PellFadingLedger_Intake",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "1104a9e8943f7a24c4e62f55b8f8c290b235aa552d053eb90ce923a9de93f911",
+      "clip": "Dialogue_ApothecaryCase_PellFadingLedger_Intake/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_ApothecaryCase_PellFadingLedger_Intake",
+      "line": 2,
+      "speaker": "Edda",
+      "textSha256": "af3cfa6649b356efb0cb0afd27aeec9dd77bbccef83ce586e9afbc02afbcfc7b",
+      "clip": "Dialogue_ApothecaryCase_PellFadingLedger_Intake/02_Edda.wav"
+    },
+    {
+      "dialogue": "Dialogue_ApothecaryCase_TheoRoadCold_FollowUp",
+      "line": 0,
+      "speaker": "Theo",
+      "textSha256": "655b4f2d7c2dd294e76ad52a83bad1695909034b739b2f7d3224948f5692d263",
+      "clip": "Dialogue_ApothecaryCase_TheoRoadCold_FollowUp/00_Theo.wav"
+    },
+    {
+      "dialogue": "Dialogue_ApothecaryCase_TheoRoadCold_FollowUp",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "92c6251aa70c6f6449e0d4fc28aa77165e05627ae17bac81edf3d8a0ad688f2e",
+      "clip": "Dialogue_ApothecaryCase_TheoRoadCold_FollowUp/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_ApothecaryCase_TheoRoadCold_Intake",
+      "line": 0,
+      "speaker": "Theo",
+      "textSha256": "38b66860265f89ef4bb1c52a50aad64abb9ffc988909ba5efafaace6f74bc915",
+      "clip": "Dialogue_ApothecaryCase_TheoRoadCold_Intake/00_Theo.wav"
+    },
+    {
+      "dialogue": "Dialogue_ApothecaryCase_TheoRoadCold_Intake",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "4ae6f1e5b84ff2ede8460d704086268c75b9dfa6074108bbcaf6935f4e070124",
+      "clip": "Dialogue_ApothecaryCase_TheoRoadCold_Intake/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_ApothecaryCase_TheoRoadCold_Intake",
+      "line": 2,
+      "speaker": "Edda",
+      "textSha256": "74946976670eec0d84f3a8a4ad787b24aa814bfa97c4f1d98269c49c644354b0",
+      "clip": "Dialogue_ApothecaryCase_TheoRoadCold_Intake/02_Edda.wav"
+    },
+    {
+      "dialogue": "Dialogue_Apothecary_Almy_FirstLesson",
+      "line": 0,
+      "speaker": "Almy",
+      "textSha256": "d0eedf6e8eba4e30caf24dab964e9236adc23845cdadf1531b5cc765ab410067",
+      "clip": "Dialogue_Apothecary_Almy_FirstLesson/00_Almy.wav"
+    },
+    {
+      "dialogue": "Dialogue_Apothecary_Almy_FirstLesson",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "8cf0a6bdac7c5aa2f2eacb0778b857aebc7f911c18ac95fe6760b79c0c9972d4",
+      "clip": "Dialogue_Apothecary_Almy_FirstLesson/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Apothecary_Almy_FirstLesson",
+      "line": 2,
+      "speaker": "Almy",
+      "textSha256": "0e8df097e8c643ef6aa1cff88ee3b69a48f6df2d3b983033efc9c2fbcd5d4301",
+      "clip": "Dialogue_Apothecary_Almy_FirstLesson/02_Almy.wav"
+    },
+    {
+      "dialogue": "Dialogue_Apothecary_Almy_FirstLesson",
+      "line": 3,
+      "speaker": "Wren",
+      "textSha256": "9ca83abf484d4cf8ad2e4c50f3fcdcebd31cf5773916d9b5cbfa842bef490050",
+      "clip": "Dialogue_Apothecary_Almy_FirstLesson/03_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Apothecary_Bram_TobinMemory",
+      "line": 0,
+      "speaker": "Bram",
+      "textSha256": "297b49a8f0ef312250da93250779ba9e309b7b3a1d778b672aa4d7618e419ed1",
+      "clip": "Dialogue_Apothecary_Bram_TobinMemory/00_Bram.wav"
+    },
+    {
+      "dialogue": "Dialogue_Apothecary_Bram_TobinMemory",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "8394950ee26a02c6c2e53df9876e70121dc9bfbd29c16803946b40eb025cd0f5",
+      "clip": "Dialogue_Apothecary_Bram_TobinMemory/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Apothecary_Bram_TobinMemory",
+      "line": 2,
+      "speaker": "Bram",
+      "textSha256": "e4a3acaa3c6c3716a0a31c84dcd675bfe93ce58d216727164d71c7804dd1ab77",
+      "clip": "Dialogue_Apothecary_Bram_TobinMemory/02_Bram.wav"
+    },
+    {
+      "dialogue": "Dialogue_Apothecary_Edda_TonicDelivery",
+      "line": 0,
+      "speaker": "Wren",
+      "textSha256": "5214536896f3742abf54f9cfeb306c2085ccc427e8f896f92dee81fae2839143",
+      "clip": "Dialogue_Apothecary_Edda_TonicDelivery/00_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Apothecary_Edda_TonicDelivery",
+      "line": 1,
+      "speaker": "Edda",
+      "textSha256": "60c83c78b458edf5c338e8916640535389e5cd9015406cc6310ca86ec4766454",
+      "clip": "Dialogue_Apothecary_Edda_TonicDelivery/01_Edda.wav"
+    },
+    {
+      "dialogue": "Dialogue_Apothecary_Edda_TonicDelivery",
+      "line": 2,
+      "speaker": "Edda",
+      "textSha256": "d506e122028a0155c5d45e56e5542df1e56bdeed99d556a85921ec0caf986bc3",
+      "clip": "Dialogue_Apothecary_Edda_TonicDelivery/02_Edda.wav"
+    },
+    {
+      "dialogue": "Dialogue_Apothecary_Edda_TonicDelivery",
+      "line": 3,
+      "speaker": "Wren",
+      "textSha256": "2e0bb9ba1fed2292d714cf64662086a336265216f17f56a76864bc9206c17562",
+      "clip": "Dialogue_Apothecary_Edda_TonicDelivery/03_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Apothecary_Hollin_Reflection",
+      "line": 0,
+      "speaker": "Hollin",
+      "textSha256": "9e64df8253fd2583ecd6603baa2784907ff6ab47b8bb9b289641ca2fbc71acd8",
+      "clip": "Dialogue_Apothecary_Hollin_Reflection/00_Hollin.wav"
+    },
+    {
+      "dialogue": "Dialogue_Apothecary_Hollin_Reflection",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "3f6b1e6a702419362e5d5062d74a3655a21f4bc096854086902b47864e7185af",
+      "clip": "Dialogue_Apothecary_Hollin_Reflection/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Apothecary_Hollin_Reflection",
+      "line": 2,
+      "speaker": "Hollin",
+      "textSha256": "a982bab854889a6fb904735b7bad33fdda209bba1998f8158e7902c405ec2fac",
+      "clip": "Dialogue_Apothecary_Hollin_Reflection/02_Hollin.wav"
+    },
+    {
+      "dialogue": "Dialogue_Apothecary_Joren_Worksite",
+      "line": 0,
+      "speaker": "Joren",
+      "textSha256": "2c32a232b4671299fd1dfe2dc6cd43ef6b04ebecd13441db5721b3e0e2315d3f",
+      "clip": "Dialogue_Apothecary_Joren_Worksite/00_Joren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Apothecary_Joren_Worksite",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "09b3297e3c5247d64f588acb6b2e9fd264499900db9dcb886422df096595915e",
+      "clip": "Dialogue_Apothecary_Joren_Worksite/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Apothecary_Joren_Worksite",
+      "line": 2,
+      "speaker": "Joren",
+      "textSha256": "2b7bdc66a21a3cf564015b778121499043a709d6e3e7d1dce9c65538625e6605",
+      "clip": "Dialogue_Apothecary_Joren_Worksite/02_Joren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Apothecary_Marra_BrothDelivery",
+      "line": 0,
+      "speaker": "Wren",
+      "textSha256": "3a66a4e4ffcf51acf50e2efec8a1a39df9c91ae311f3a0f92356b6458dc7616f",
+      "clip": "Dialogue_Apothecary_Marra_BrothDelivery/00_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Apothecary_Marra_BrothDelivery",
+      "line": 1,
+      "speaker": "Marra",
+      "textSha256": "42ab9c4091ff1358cec78d86f8042569d16119603aa7fe3443b5671af0beead3",
+      "clip": "Dialogue_Apothecary_Marra_BrothDelivery/01_Marra.wav"
+    },
+    {
+      "dialogue": "Dialogue_Apothecary_Marra_BrothDelivery",
+      "line": 2,
+      "speaker": "Marra",
+      "textSha256": "c9b1a800de8ab4c795395d3bc07a3b80ff0a3618ef15f2ba02733cbfcaac0420",
+      "clip": "Dialogue_Apothecary_Marra_BrothDelivery/02_Marra.wav"
+    },
+    {
+      "dialogue": "Dialogue_Apothecary_Pell_Ledger",
+      "line": 0,
+      "speaker": "Pell",
+      "textSha256": "04a261058bb3242fe2e7b66feceefc86e24f061e42dcb9ea64d1cde9b3bcb1f8",
+      "clip": "Dialogue_Apothecary_Pell_Ledger/00_Pell.wav"
+    },
+    {
+      "dialogue": "Dialogue_Apothecary_Pell_Ledger",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "3aea93ffaeb34217ab4a7d401f7d8d3e72570b99898e756551a046c0019c81a3",
+      "clip": "Dialogue_Apothecary_Pell_Ledger/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Apothecary_Pell_Ledger",
+      "line": 2,
+      "speaker": "Pell",
+      "textSha256": "65b84f5eb63f01572055a5036e226232f4c046f05d335703ca30bef4f9db6807",
+      "clip": "Dialogue_Apothecary_Pell_Ledger/02_Pell.wav"
+    },
+    {
+      "dialogue": "Dialogue_Apothecary_Theo_FieldInkDelivery",
+      "line": 0,
+      "speaker": "Wren",
+      "textSha256": "93505e6d9c696c19a982ebe6b9b98ef17a6c742cfc3ee24ea9440140986d6676",
+      "clip": "Dialogue_Apothecary_Theo_FieldInkDelivery/00_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Apothecary_Theo_FieldInkDelivery",
+      "line": 1,
+      "speaker": "Theo",
+      "textSha256": "ad6711600348b6a319297f414c45a43ad351db30097c353afb033fce9bb2d819",
+      "clip": "Dialogue_Apothecary_Theo_FieldInkDelivery/01_Theo.wav"
+    },
+    {
+      "dialogue": "Dialogue_Apothecary_Theo_FieldInkDelivery",
+      "line": 2,
+      "speaker": "Theo",
+      "textSha256": "c49f2f4e087164042ec1aff90dad1bd127014444d7e55198f4021b052d8aa835",
+      "clip": "Dialogue_Apothecary_Theo_FieldInkDelivery/02_Theo.wav"
+    },
+    {
+      "dialogue": "Dialogue_Ending_Capital",
+      "line": 0,
+      "speaker": "Theo",
+      "textSha256": "5e02e77b2d7d514d9cb7ebf1bab9adc1829fa1ef15806bf4728f4f53086968e6",
+      "clip": "Dialogue_Ending_Capital/00_Theo.wav"
+    },
+    {
+      "dialogue": "Dialogue_Ending_Capital",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "47631ebf28de65df216cb98fbd35583b0be3aa30f533f6c3b9be0de8ee989d86",
+      "clip": "Dialogue_Ending_Capital/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Ending_Capital",
+      "line": 2,
+      "speaker": "Theo",
+      "textSha256": "e8ba09e6814280d255cd0a6b5e9361ad893a729774f457ef4c549359b151bbd0",
+      "clip": "Dialogue_Ending_Capital/02_Theo.wav"
+    },
+    {
+      "dialogue": "Dialogue_Ending_Capital",
+      "line": 3,
+      "speaker": "Wren",
+      "textSha256": "5dc799d4b8156ce14ff768b43248d4d422f9c873f5658c6deff8a56ce6e109f8",
+      "clip": "Dialogue_Ending_Capital/03_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Ending_Capital",
+      "line": 4,
+      "speaker": "Edda",
+      "textSha256": "a32fe2aa78c4b9e91e2966749aa8fa50dec6d2973bd8a7ef5f0d616825021dfc",
+      "clip": "Dialogue_Ending_Capital/04_Edda.wav"
+    },
+    {
+      "dialogue": "Dialogue_Ending_Capital",
+      "line": 5,
+      "speaker": "Wren",
+      "textSha256": "7a4aff6322ffd48d3c657afd683e4cd2ca10909a56f7784229e64acf189b48ab",
+      "clip": "Dialogue_Ending_Capital/05_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Ending_FreeHollow",
+      "line": 0,
+      "speaker": "Wren",
+      "textSha256": "38178a20b470cfd18299fb1593dd4ba706f1a83321dac051d01086efd8b7a96f",
+      "clip": "Dialogue_Ending_FreeHollow/00_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Ending_FreeHollow",
+      "line": 1,
+      "speaker": "Aldric",
+      "textSha256": "f970d3e10bd2689de541f3aa153f74d08ede022298c5ecca515b23d26ab806e0",
+      "clip": "Dialogue_Ending_FreeHollow/01_Aldric.wav"
+    },
+    {
+      "dialogue": "Dialogue_Ending_FreeHollow",
+      "line": 2,
+      "speaker": "Wren",
+      "textSha256": "c0cea21e7b9baf76f56022bc89fe607311fea49eb95758ecbce330942aac49a3",
+      "clip": "Dialogue_Ending_FreeHollow/02_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Ending_FreeHollow",
+      "line": 3,
+      "speaker": "Aldric",
+      "textSha256": "7fb6b6f577afbac426182d7c6d3a99cb33101124ddc961195416c306e87ea6ec",
+      "clip": "Dialogue_Ending_FreeHollow/03_Aldric.wav"
+    },
+    {
+      "dialogue": "Dialogue_Ending_FreeHollow",
+      "line": 4,
+      "speaker": "Wren",
+      "textSha256": "92a1d159b90f298a335e8ab5aecf7da879889b3a2656dd3db748083d318c99d6",
+      "clip": "Dialogue_Ending_FreeHollow/04_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Ending_LordlyPatronage",
+      "line": 0,
+      "speaker": "Aldric",
+      "textSha256": "0056693e37282de2386b307b9258cf301d85e97bbef504e1727f148b777b1040",
+      "clip": "Dialogue_Ending_LordlyPatronage/00_Aldric.wav"
+    },
+    {
+      "dialogue": "Dialogue_Ending_LordlyPatronage",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "b4738e94053997f9e464510c5d313a6eeabb39473d2ee8a9776ea271eb24e4ec",
+      "clip": "Dialogue_Ending_LordlyPatronage/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Ending_LordlyPatronage",
+      "line": 2,
+      "speaker": "Aldric",
+      "textSha256": "eeb30bc5aecdf0ad89ca3621aad2cf20ad8d582d2043be9fb405330d99952ca3",
+      "clip": "Dialogue_Ending_LordlyPatronage/02_Aldric.wav"
+    },
+    {
+      "dialogue": "Dialogue_Ending_LordlyPatronage",
+      "line": 3,
+      "speaker": "Wren",
+      "textSha256": "febb014f6ca7006741a2c82ae76f400185d8d6160a8a4a4c2bcaf801f5379b7c",
+      "clip": "Dialogue_Ending_LordlyPatronage/03_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Ending_WitchsPath",
+      "line": 0,
+      "speaker": "Hollin",
+      "textSha256": "00b41a916728df876d834078cf4450af8c0e2f6c0dc8fe0ccb8cf0b67584ea39",
+      "clip": "Dialogue_Ending_WitchsPath/00_Hollin.wav"
+    },
+    {
+      "dialogue": "Dialogue_Ending_WitchsPath",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "bc92a1db5e32de1f2d019ac13ccf77af7b3eda6b7508988dc489dec7f8a37a39",
+      "clip": "Dialogue_Ending_WitchsPath/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Ending_WitchsPath",
+      "line": 2,
+      "speaker": "Hollin",
+      "textSha256": "84786bc16e08e4d87d01c657d27bbe21da9fcbe88e421ff4f94d7df2ef28cc0c",
+      "clip": "Dialogue_Ending_WitchsPath/02_Hollin.wav"
+    },
+    {
+      "dialogue": "Dialogue_Ending_WitchsPath",
+      "line": 3,
+      "speaker": "Wren",
+      "textSha256": "ef21c84599d06c937d68ad1f47b979456bd0b7ebd37c27b263ac535cadf4fe4b",
+      "clip": "Dialogue_Ending_WitchsPath/03_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Ending_WitchsPath",
+      "line": 4,
+      "speaker": "Almy",
+      "textSha256": "cf024e876d666cc3c3b5161840f7d12d9683a87129030e28a6424a63e6f2e306",
+      "clip": "Dialogue_Ending_WitchsPath/04_Almy.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Almy_01",
+      "line": 0,
+      "speaker": "Almy",
+      "textSha256": "2160a04b58e9e450cd98e990e0e891235d255dd1c3372e72a3461c2d86e41419",
+      "clip": "Dialogue_Relationship_Almy_01/00_Almy.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Almy_01",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "da3715cd6191038f087ce6e1ddd89a38c51803e15bd87c5d81d1d8447865b34d",
+      "clip": "Dialogue_Relationship_Almy_01/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Almy_01",
+      "line": 2,
+      "speaker": "Almy",
+      "textSha256": "681022f38b629345111138c0b6fafb4d34c50f7561d89c44655c214123996958",
+      "clip": "Dialogue_Relationship_Almy_01/02_Almy.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Almy_01",
+      "line": 3,
+      "speaker": "Wren",
+      "textSha256": "f4da474b09a0aa6e9ee37bb3bce2fa28a7965fa1101645396bc7676900316f80",
+      "clip": "Dialogue_Relationship_Almy_01/03_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Almy_02",
+      "line": 0,
+      "speaker": "Almy",
+      "textSha256": "d16b0e9cbcf842a80cd8b867bd6ac6a8f214d526d11020c570f9ea98da1b1cfc",
+      "clip": "Dialogue_Relationship_Almy_02/00_Almy.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Almy_02",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "c8e582d949c6817fcd588b3d03e61c9e1fbebc829c5b98860b1233527fe7bc5f",
+      "clip": "Dialogue_Relationship_Almy_02/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Almy_02",
+      "line": 2,
+      "speaker": "Almy",
+      "textSha256": "23c2347c7724318f342a2e40ed0738f5a6b09c67e455f2fe8630fd13279b2c79",
+      "clip": "Dialogue_Relationship_Almy_02/02_Almy.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Almy_02",
+      "line": 3,
+      "speaker": "Wren",
+      "textSha256": "67f70e19dffaf5d0ebf3c21e84689bf45151408ba78956cc8fa7540aaa9c404a",
+      "clip": "Dialogue_Relationship_Almy_02/03_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Almy_EndingCapital",
+      "line": 0,
+      "speaker": "Almy",
+      "textSha256": "8b79c9fb6e02e3533668f520cf7bdfe4de7c62405ab8f670199d2da181440ee8",
+      "clip": "Dialogue_Relationship_Almy_EndingCapital/00_Almy.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Almy_EndingFreeHollow",
+      "line": 0,
+      "speaker": "Almy",
+      "textSha256": "f09b53867cde02918cb79823aebd533e0599466006536803037f72902e924646",
+      "clip": "Dialogue_Relationship_Almy_EndingFreeHollow/00_Almy.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Almy_EndingLordlyPatronage",
+      "line": 0,
+      "speaker": "Almy",
+      "textSha256": "acfabe931c0ba3142e0aca3d7562e6bb2c513ff5fecb206d8c705f528328ef2b",
+      "clip": "Dialogue_Relationship_Almy_EndingLordlyPatronage/00_Almy.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Almy_EndingWitchPath",
+      "line": 0,
+      "speaker": "Almy",
+      "textSha256": "5569bc19e1d5d4358b975e395bae4342fb27f2c9d2f9390f69d7be6f775ce3d8",
+      "clip": "Dialogue_Relationship_Almy_EndingWitchPath/00_Almy.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Almy_Familiar",
+      "line": 0,
+      "speaker": "Almy",
+      "textSha256": "5d466e57326ba316e9343980d03ae11faf1e5d98eecc3fe2eb1c6cea04e46d8e",
+      "clip": "Dialogue_Relationship_Almy_Familiar/00_Almy.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Bram_01",
+      "line": 0,
+      "speaker": "Bram",
+      "textSha256": "a0bc238100c3d71a4c2c026483b9f088592d1a83a8f73503f4218725ba9b6a1d",
+      "clip": "Dialogue_Relationship_Bram_01/00_Bram.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Bram_01",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "f423e7bdba9571c5b961dc98cd927e83aa8890f1e6568169a02b1e2b93790af3",
+      "clip": "Dialogue_Relationship_Bram_01/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Bram_01",
+      "line": 2,
+      "speaker": "Bram",
+      "textSha256": "bd9f7279256571d5e43677764ce2680c6dca54ec2ff2605e16bef3d72cf6dfa2",
+      "clip": "Dialogue_Relationship_Bram_01/02_Bram.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Bram_01",
+      "line": 3,
+      "speaker": "Wren",
+      "textSha256": "4199329c2cd108db3ab3234731bf32481e40108a67a7b82b4f68cd4d4b76feb6",
+      "clip": "Dialogue_Relationship_Bram_01/03_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Bram_02",
+      "line": 0,
+      "speaker": "Bram",
+      "textSha256": "1133f1b2e3cc2dee6c19aecc740c1e5ec9a0c65f2847dd1c261c3cc7248c66cb",
+      "clip": "Dialogue_Relationship_Bram_02/00_Bram.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Bram_02",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "d2d85aa530139e787c11fff2a96c1d4e20368710fd073b18bea6d9bd50d3ca52",
+      "clip": "Dialogue_Relationship_Bram_02/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Bram_02",
+      "line": 2,
+      "speaker": "Bram",
+      "textSha256": "1e189dd164a7827c20b50e420d0f70ae20feaba27a4510d27b662d71fe7f3878",
+      "clip": "Dialogue_Relationship_Bram_02/02_Bram.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Bram_02",
+      "line": 3,
+      "speaker": "Wren",
+      "textSha256": "17a052b74daa3857f9ccf69b2eebb3ec233bd16f75d408319ea722b461e61f67",
+      "clip": "Dialogue_Relationship_Bram_02/03_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Bram_EndingCapital",
+      "line": 0,
+      "speaker": "Bram",
+      "textSha256": "0096fc6f8ecc3cf8f6ac7596d8a5893ed4c88cebd9fabf48857c04fdd2bbe595",
+      "clip": "Dialogue_Relationship_Bram_EndingCapital/00_Bram.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Bram_EndingFreeHollow",
+      "line": 0,
+      "speaker": "Bram",
+      "textSha256": "7421304555750d301b53910424aef95c8f20017dfe0e72f501bf9775d492ae75",
+      "clip": "Dialogue_Relationship_Bram_EndingFreeHollow/00_Bram.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Bram_EndingLordlyPatronage",
+      "line": 0,
+      "speaker": "Bram",
+      "textSha256": "68dbfa1b15eca60dafa36871259c687815be365a802ce2bdf5a88b44db6c4581",
+      "clip": "Dialogue_Relationship_Bram_EndingLordlyPatronage/00_Bram.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Bram_EndingWitchPath",
+      "line": 0,
+      "speaker": "Bram",
+      "textSha256": "890c51e6687a03881da0f601e3bb02745b5e2600ea679bb4b9239393b546de13",
+      "clip": "Dialogue_Relationship_Bram_EndingWitchPath/00_Bram.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Bram_Familiar",
+      "line": 0,
+      "speaker": "Bram",
+      "textSha256": "69ea508210dd0db6a49d3ee728762666d10fe888fbf6adea0b9a32d1e797e3cd",
+      "clip": "Dialogue_Relationship_Bram_Familiar/00_Bram.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Edda_01",
+      "line": 0,
+      "speaker": "Edda",
+      "textSha256": "6f78d16752c889bbe261a0bbb8a538f17fc2d07b5c09a4cbab7d0a5a985f6cc5",
+      "clip": "Dialogue_Relationship_Edda_01/00_Edda.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Edda_01",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "c3721bb864ec2458f3ac59482f2185d1bfad3418702171d0457799361ccf2fbb",
+      "clip": "Dialogue_Relationship_Edda_01/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Edda_01",
+      "line": 2,
+      "speaker": "Edda",
+      "textSha256": "277f5feec641a688cc62d2ca4396b5a98ccb47eaef25953cdfd62313a261784b",
+      "clip": "Dialogue_Relationship_Edda_01/02_Edda.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Edda_01",
+      "line": 3,
+      "speaker": "Wren",
+      "textSha256": "38f7b97ee38456f4565255ba3d5be1003a079ef48e7f055571eb42aaf1e13e21",
+      "clip": "Dialogue_Relationship_Edda_01/03_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Edda_02",
+      "line": 0,
+      "speaker": "Edda",
+      "textSha256": "8cc914142d1cbc283260928dd2247a4a7444bcb982cd49a56074dec8a1f81452",
+      "clip": "Dialogue_Relationship_Edda_02/00_Edda.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Edda_02",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "ac498fef3d1db79d58f597c9851ce0bec38de328197aa33bdab5ec888b86cdae",
+      "clip": "Dialogue_Relationship_Edda_02/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Edda_02",
+      "line": 2,
+      "speaker": "Edda",
+      "textSha256": "7172a3a3817209a6da4cdf97263ce32c5cb06803bb66cda79eb09015f60bd46b",
+      "clip": "Dialogue_Relationship_Edda_02/02_Edda.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Edda_02",
+      "line": 3,
+      "speaker": "Wren",
+      "textSha256": "09ed45083c17c6998b7831ee7b93989a72902994e960c2b42e062673c913e167",
+      "clip": "Dialogue_Relationship_Edda_02/03_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Edda_Consideration",
+      "line": 0,
+      "speaker": "Edda",
+      "textSha256": "d3441e0117b64a2544c084131641ca95f3dd5db52937d816a3aa4ce7bbd9e3e0",
+      "clip": "Dialogue_Relationship_Edda_Consideration/00_Edda.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Edda_EndingCapital",
+      "line": 0,
+      "speaker": "Edda",
+      "textSha256": "1f8b40e5b0509b3fe5428a8451d270cda44a7222a571d576e6e3d1399bd3e828",
+      "clip": "Dialogue_Relationship_Edda_EndingCapital/00_Edda.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Edda_EndingFreeHollow",
+      "line": 0,
+      "speaker": "Edda",
+      "textSha256": "0cdb1ef3138a2d31041570d729cc8fbb67d4fb203f1a7fe30b2c793670d3e6ba",
+      "clip": "Dialogue_Relationship_Edda_EndingFreeHollow/00_Edda.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Edda_EndingLordlyPatronage",
+      "line": 0,
+      "speaker": "Edda",
+      "textSha256": "ec18af9541c9d2ca03b80354fa5a2d31b15d53d70e11a81f503c9d564d9dcd16",
+      "clip": "Dialogue_Relationship_Edda_EndingLordlyPatronage/00_Edda.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Edda_EndingWitchPath",
+      "line": 0,
+      "speaker": "Edda",
+      "textSha256": "37859148632ae016c92e6ee68d808aaff473c3860760ef61e4603190a9d1ced8",
+      "clip": "Dialogue_Relationship_Edda_EndingWitchPath/00_Edda.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Edda_Familiar",
+      "line": 0,
+      "speaker": "Edda",
+      "textSha256": "1e52a9e917d33193a62cbb4907a61f28300c6a5635e803def852320eef8ee725",
+      "clip": "Dialogue_Relationship_Edda_Familiar/00_Edda.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Joren_01",
+      "line": 0,
+      "speaker": "Joren",
+      "textSha256": "229c4762fdc1eab82698409b7f6daf7b86fbaf807b2aaba429838089a5b91426",
+      "clip": "Dialogue_Relationship_Joren_01/00_Joren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Joren_01",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "6313de04cad64371a1e83b9cd0fc2a849502c002ad0f5ee4f76e37c8074f1700",
+      "clip": "Dialogue_Relationship_Joren_01/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Joren_01",
+      "line": 2,
+      "speaker": "Joren",
+      "textSha256": "9a11bb9cf72883ff39412c60e5e369b98912110291d95bbb8d647bd735ae8ebe",
+      "clip": "Dialogue_Relationship_Joren_01/02_Joren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Joren_01",
+      "line": 3,
+      "speaker": "Wren",
+      "textSha256": "647dd8c31fb6d2ceb99032ae366a4568bc3943f52787969c46c018b8f677d656",
+      "clip": "Dialogue_Relationship_Joren_01/03_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Joren_01",
+      "line": 4,
+      "speaker": "Joren",
+      "textSha256": "bb13d172d8ea8f663d844890685e1552f2b2c9220068cf461acb4e0b1ca17952",
+      "clip": "Dialogue_Relationship_Joren_01/04_Joren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Joren_02",
+      "line": 0,
+      "speaker": "Joren",
+      "textSha256": "902fb5a6d5cf2102d19a142ae66a099e7fb2c133f847ba72336f6c9d32cee22c",
+      "clip": "Dialogue_Relationship_Joren_02/00_Joren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Joren_02",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "299affcfc6a23fe4d606fcfa9cc2e52bdfbd53dec0538eb4d291eee408dd5c55",
+      "clip": "Dialogue_Relationship_Joren_02/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Joren_02",
+      "line": 2,
+      "speaker": "Joren",
+      "textSha256": "af5cb4c5427df4ae8e10e8fc19e36ace8b46a7944c9e92603c8bdffdbe66ee90",
+      "clip": "Dialogue_Relationship_Joren_02/02_Joren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Joren_02",
+      "line": 3,
+      "speaker": "Wren",
+      "textSha256": "4790dd76125a5a1fd89b7bdc116f62de291535a944329139444943bc6bf05cb5",
+      "clip": "Dialogue_Relationship_Joren_02/03_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Joren_Consideration",
+      "line": 0,
+      "speaker": "Joren",
+      "textSha256": "b948f80a8340a16fb403997f33ab0264bdd4e9750b85fe26aa159eeaae202077",
+      "clip": "Dialogue_Relationship_Joren_Consideration/00_Joren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Joren_EndingCapital",
+      "line": 0,
+      "speaker": "Joren",
+      "textSha256": "323a64a680d5f7aed42c29a90ced31b776727fb083c627cec6f73d79a3327610",
+      "clip": "Dialogue_Relationship_Joren_EndingCapital/00_Joren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Joren_EndingFreeHollow",
+      "line": 0,
+      "speaker": "Joren",
+      "textSha256": "8217b9cd3a925b86634da2de08792c61b3f497fae0d55489f592e42be0140e96",
+      "clip": "Dialogue_Relationship_Joren_EndingFreeHollow/00_Joren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Joren_EndingLordlyPatronage",
+      "line": 0,
+      "speaker": "Joren",
+      "textSha256": "5f5aa196d031aa0d4c08c2b9de118aa0705dd455bef3f4b105df2e5d66276975",
+      "clip": "Dialogue_Relationship_Joren_EndingLordlyPatronage/00_Joren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Joren_EndingWitchPath",
+      "line": 0,
+      "speaker": "Joren",
+      "textSha256": "1726920cffc51351afc361aeb586c1917b0b1cf82b5953c615635a9e817068c3",
+      "clip": "Dialogue_Relationship_Joren_EndingWitchPath/00_Joren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Joren_Familiar",
+      "line": 0,
+      "speaker": "Joren",
+      "textSha256": "989b0284f57553b65fd02867e7ecda087bfde53e2c65cc0118a5259f680c4d49",
+      "clip": "Dialogue_Relationship_Joren_Familiar/00_Joren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Marra_01",
+      "line": 0,
+      "speaker": "Marra",
+      "textSha256": "2712a655c46f7eec29bd06218e2643c3c4e41ae638f96b30c35dbcee56a9b1d7",
+      "clip": "Dialogue_Relationship_Marra_01/00_Marra.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Marra_01",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "c236478b51ac6f336c8a7a42aadea54c7b64b4b8c6d2d334759dcfb791504063",
+      "clip": "Dialogue_Relationship_Marra_01/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Marra_01",
+      "line": 2,
+      "speaker": "Marra",
+      "textSha256": "fed81e1cf1df427d9a41271d04c58260e21900dfdc7faa7b386510381130e1a6",
+      "clip": "Dialogue_Relationship_Marra_01/02_Marra.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Marra_01",
+      "line": 3,
+      "speaker": "Wren",
+      "textSha256": "f80dbfa51052d1227fcb6e3f3a91f0131b58c4ec0c9d05f95bba14bf097a5e9c",
+      "clip": "Dialogue_Relationship_Marra_01/03_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Marra_01",
+      "line": 4,
+      "speaker": "Marra",
+      "textSha256": "2c616ef1964d78ddc3ef1cd94ad175f920f96c4c74d34b69c7d4f6daad56b795",
+      "clip": "Dialogue_Relationship_Marra_01/04_Marra.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Marra_02",
+      "line": 0,
+      "speaker": "Marra",
+      "textSha256": "b9e8a9534d0388ca536bdae7f92677e1b1e5dcf49e2770797f8ecb2224a8fbcd",
+      "clip": "Dialogue_Relationship_Marra_02/00_Marra.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Marra_02",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "8510c46e3a1c2fc2a0e2d9b1d99bb13bce6a8491cd6bf647de3c22b7a908417a",
+      "clip": "Dialogue_Relationship_Marra_02/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Marra_02",
+      "line": 2,
+      "speaker": "Marra",
+      "textSha256": "450d54c45467365a5b0c7c50c4fc8b525be69435945dd8cecae9f47cdf940c77",
+      "clip": "Dialogue_Relationship_Marra_02/02_Marra.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Marra_02",
+      "line": 3,
+      "speaker": "Wren",
+      "textSha256": "9889f55940bb4e81014267adfe41a31588365ed68a56e90101ca057b278dab1d",
+      "clip": "Dialogue_Relationship_Marra_02/03_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Marra_02",
+      "line": 4,
+      "speaker": "Marra",
+      "textSha256": "ae636568444afc9bb786d761059d325ac24284a619468f65a7b5a56ebd510295",
+      "clip": "Dialogue_Relationship_Marra_02/04_Marra.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Marra_Consideration",
+      "line": 0,
+      "speaker": "Marra",
+      "textSha256": "19d5446c5a61e884dcdbddd18bc976348f011079154f24bc495a4786571ddc1b",
+      "clip": "Dialogue_Relationship_Marra_Consideration/00_Marra.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Marra_EndingCapital",
+      "line": 0,
+      "speaker": "Marra",
+      "textSha256": "923706f495378587e01e05a33babd6a95ce13a79fbcb6c30c3528dcf881d9977",
+      "clip": "Dialogue_Relationship_Marra_EndingCapital/00_Marra.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Marra_EndingFreeHollow",
+      "line": 0,
+      "speaker": "Marra",
+      "textSha256": "5c15fc68e1bc3da79485852c7ea1ede5ed17fc85157704fef973a410b2fd956a",
+      "clip": "Dialogue_Relationship_Marra_EndingFreeHollow/00_Marra.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Marra_EndingLordlyPatronage",
+      "line": 0,
+      "speaker": "Marra",
+      "textSha256": "059ffa0e0ba957e96062d9a95adc9876753ef30a2a473586cd54d978ecbf51f8",
+      "clip": "Dialogue_Relationship_Marra_EndingLordlyPatronage/00_Marra.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Marra_EndingWitchPath",
+      "line": 0,
+      "speaker": "Marra",
+      "textSha256": "f22b5cd7d7277f774ef403b05498c7e050a872ae1b029854f760b9198e08185e",
+      "clip": "Dialogue_Relationship_Marra_EndingWitchPath/00_Marra.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Marra_Familiar",
+      "line": 0,
+      "speaker": "Marra",
+      "textSha256": "5d4e9973b484f230641017a52a987e74d56f989a8f2960150857995f6037d48f",
+      "clip": "Dialogue_Relationship_Marra_Familiar/00_Marra.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Pell_01",
+      "line": 0,
+      "speaker": "Pell",
+      "textSha256": "c23d28008bd83a6eb39e0ce819f9b2cb31ae7da0fa7ec061408c30333a495570",
+      "clip": "Dialogue_Relationship_Pell_01/00_Pell.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Pell_01",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "76a7e3a82463f2233986423721b753c58f29d6c1586d143a4e16d2e153dc29b1",
+      "clip": "Dialogue_Relationship_Pell_01/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Pell_01",
+      "line": 2,
+      "speaker": "Pell",
+      "textSha256": "309e55f27925951090488bf513633a6d68d892e84052be000baf29920295f2ec",
+      "clip": "Dialogue_Relationship_Pell_01/02_Pell.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Pell_01",
+      "line": 3,
+      "speaker": "Wren",
+      "textSha256": "6f21eb1fd264dddcfed5c5b1a00c9f13726c1f5a11d8c8045bcd2822ab17ab30",
+      "clip": "Dialogue_Relationship_Pell_01/03_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Pell_02",
+      "line": 0,
+      "speaker": "Pell",
+      "textSha256": "05c5a6025a4a9b22cdea0e3c7bf83999fe30d452bb631dc93f6bc241d55c0bec",
+      "clip": "Dialogue_Relationship_Pell_02/00_Pell.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Pell_02",
+      "line": 1,
+      "speaker": "Wren",
+      "textSha256": "991fd5346486a133d5ebee261819da46af16cf7e28ab3de57d397fc32e888cba",
+      "clip": "Dialogue_Relationship_Pell_02/01_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Pell_02",
+      "line": 2,
+      "speaker": "Pell",
+      "textSha256": "9b22f25912b9d4d0cb477e84e4d7bc6efb84ccd20edf2f92c5f6ae9133ac73c6",
+      "clip": "Dialogue_Relationship_Pell_02/02_Pell.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Pell_02",
+      "line": 3,
+      "speaker": "Wren",
+      "textSha256": "c7019ced9bceaf7f10871aab7fb5e420da5e5d297716653c07679aa8b175d36b",
+      "clip": "Dialogue_Relationship_Pell_02/03_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Pell_Consideration",
+      "line": 0,
+      "speaker": "Pell",
+      "textSha256": "cb1527faabc61b0d15ad4b7a924baaf47771d3928c53f3a34d93d3a1860eea0d",
+      "clip": "Dialogue_Relationship_Pell_Consideration/00_Pell.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Pell_EndingCapital",
+      "line": 0,
+      "speaker": "Pell",
+      "textSha256": "e704a61b1f5be82da69f08be272923cb799f72e819475a66845949d9ff6335ef",
+      "clip": "Dialogue_Relationship_Pell_EndingCapital/00_Pell.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Pell_EndingFreeHollow",
+      "line": 0,
+      "speaker": "Pell",
+      "textSha256": "b6e7145489851df1f0bfd553a5e074e5f36c59ef49376567c5a69c9298a50e3e",
+      "clip": "Dialogue_Relationship_Pell_EndingFreeHollow/00_Pell.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Pell_EndingLordlyPatronage",
+      "line": 0,
+      "speaker": "Pell",
+      "textSha256": "c3dcf47c610d52c4cf4c22048937afe6d5062403c61c2b1abbbcd3f7808d7659",
+      "clip": "Dialogue_Relationship_Pell_EndingLordlyPatronage/00_Pell.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Pell_EndingWitchPath",
+      "line": 0,
+      "speaker": "Pell",
+      "textSha256": "60a7d35e040402adb1106ac3ec3230df4702a6a76c2e3a1aa93c30261177a51b",
+      "clip": "Dialogue_Relationship_Pell_EndingWitchPath/00_Pell.wav"
+    },
+    {
+      "dialogue": "Dialogue_Relationship_Pell_Familiar",
+      "line": 0,
+      "speaker": "Pell",
+      "textSha256": "151f8e15d46d7d275840d48bed8a4a4844a5e8c03a747e9b0e91944e74bba867",
+      "clip": "Dialogue_Relationship_Pell_Familiar/00_Pell.wav"
+    },
+    {
+      "dialogue": "Dialogue_encounter_apothecary_rain_ledger",
+      "line": 0,
+      "speaker": "Bram",
+      "textSha256": "47eb548214e2dad0b73d28bf149e43d87c1ebc8b5bbb8c15b598a390be9f8c11",
+      "clip": "Dialogue_encounter_apothecary_rain_ledger/00_Bram.wav"
+    },
+    {
+      "dialogue": "Dialogue_encounter_apothecary_rain_ledger",
+      "line": 1,
+      "speaker": "Edda",
+      "textSha256": "13b4a1e8aa1ec96730bfb2d82fbac2b29f39ed4f54c9a8ce200653b4cacbae31",
+      "clip": "Dialogue_encounter_apothecary_rain_ledger/01_Edda.wav"
+    },
+    {
+      "dialogue": "Dialogue_encounter_apothecary_rain_ledger",
+      "line": 2,
+      "speaker": "Wren",
+      "textSha256": "e63a306218a98c789d2c3710ba0a1e34651b555b430e5de3267d9b8b0d928d62",
+      "clip": "Dialogue_encounter_apothecary_rain_ledger/02_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_encounter_apothecary_rain_ledger",
+      "line": 3,
+      "speaker": "Bram",
+      "textSha256": "e3e1f5530bd07c9a3bd4f515b20592b86669f444e2fea643e897b03d39a58da4",
+      "clip": "Dialogue_encounter_apothecary_rain_ledger/03_Bram.wav"
+    },
+    {
+      "dialogue": "Dialogue_encounter_apothecary_rain_ledger",
+      "line": 4,
+      "speaker": "Edda",
+      "textSha256": "e24bccf9c8fe38ad767dd42fa3f6a67de4062d17dd19db59835e8fab24d45aa9",
+      "clip": "Dialogue_encounter_apothecary_rain_ledger/04_Edda.wav"
+    },
+    {
+      "dialogue": "Dialogue_encounter_forge_ledger",
+      "line": 0,
+      "speaker": "Pell",
+      "textSha256": "5128429de45e7b808fad471dc7992bfd37ea76622445774c55e445960a70be16",
+      "clip": "Dialogue_encounter_forge_ledger/00_Pell.wav"
+    },
+    {
+      "dialogue": "Dialogue_encounter_forge_ledger",
+      "line": 1,
+      "speaker": "Joren",
+      "textSha256": "58e35c20f5382cb62fe51aafdf3073403cd6c701b9ea1eef3885ffdfe8760583",
+      "clip": "Dialogue_encounter_forge_ledger/01_Joren.wav"
+    },
+    {
+      "dialogue": "Dialogue_encounter_forge_ledger",
+      "line": 2,
+      "speaker": "Wren",
+      "textSha256": "14d251ae96906e7fbabfd0ab5bdb56e8fab32a0fba0855166835a718df896650",
+      "clip": "Dialogue_encounter_forge_ledger/02_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_encounter_forge_ledger",
+      "line": 3,
+      "speaker": "Pell",
+      "textSha256": "138acabc75837d57b07950c1d509bf5225f701ed307b484606be0902a2de09e3",
+      "clip": "Dialogue_encounter_forge_ledger/03_Pell.wav"
+    },
+    {
+      "dialogue": "Dialogue_encounter_forge_ledger",
+      "line": 4,
+      "speaker": "Joren",
+      "textSha256": "b09ab697946e01da034ba12813187fe455425f40fdd1ec06f6569859e15e2468",
+      "clip": "Dialogue_encounter_forge_ledger/04_Joren.wav"
+    },
+    {
+      "dialogue": "Dialogue_encounter_garden_seed_exchange",
+      "line": 0,
+      "speaker": "Marra",
+      "textSha256": "607d7e099e7b5fedc60cbfc2a09095f8695e80f76e74c8acd33f9fb263db1c72",
+      "clip": "Dialogue_encounter_garden_seed_exchange/00_Marra.wav"
+    },
+    {
+      "dialogue": "Dialogue_encounter_garden_seed_exchange",
+      "line": 1,
+      "speaker": "Almy",
+      "textSha256": "0011b9abc7ed4a04c5c5b2b04f6d23e047efb9f77a24944b3991f1d46ca32f77",
+      "clip": "Dialogue_encounter_garden_seed_exchange/01_Almy.wav"
+    },
+    {
+      "dialogue": "Dialogue_encounter_garden_seed_exchange",
+      "line": 2,
+      "speaker": "Wren",
+      "textSha256": "a7c814172c3e0444130ccf87cd70e01a1c7dc2038a8e539ab614eae6cd4fdab4",
+      "clip": "Dialogue_encounter_garden_seed_exchange/02_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_encounter_garden_seed_exchange",
+      "line": 3,
+      "speaker": "Almy",
+      "textSha256": "bcc48a5e4ed3d0f0328b43b536ed445eaaee42c0994ac190c2a498a60e9d8810",
+      "clip": "Dialogue_encounter_garden_seed_exchange/03_Almy.wav"
+    },
+    {
+      "dialogue": "Dialogue_encounter_garden_seed_exchange",
+      "line": 4,
+      "speaker": "Marra",
+      "textSha256": "0e21961cc706ecbd837363c255dcf01600121b3d08a89a99f30ec2a022f1cf3f",
+      "clip": "Dialogue_encounter_garden_seed_exchange/04_Marra.wav"
+    },
+    {
+      "dialogue": "Dialogue_encounter_pintle_last_table",
+      "line": 0,
+      "speaker": "Bram",
+      "textSha256": "42c30f8cc0bb1134e847ac0b124ac087390a23738b7a7d3f0cbeaef02c88bc96",
+      "clip": "Dialogue_encounter_pintle_last_table/00_Bram.wav"
+    },
+    {
+      "dialogue": "Dialogue_encounter_pintle_last_table",
+      "line": 1,
+      "speaker": "Marra",
+      "textSha256": "a3e5f4283427ee5dcdb298327ac296e842466d2795be1701bad8cb5f85adf3fc",
+      "clip": "Dialogue_encounter_pintle_last_table/01_Marra.wav"
+    },
+    {
+      "dialogue": "Dialogue_encounter_pintle_last_table",
+      "line": 2,
+      "speaker": "Wren",
+      "textSha256": "e4afc278c1616c2fc16193b3b483e2eeab4b4646f5f9132752f52613f7daf888",
+      "clip": "Dialogue_encounter_pintle_last_table/02_Wren.wav"
+    },
+    {
+      "dialogue": "Dialogue_encounter_pintle_last_table",
+      "line": 3,
+      "speaker": "Bram",
+      "textSha256": "1165d9ff79810a4880b5865562465643e902634a2923a1095935695ca1f173a7",
+      "clip": "Dialogue_encounter_pintle_last_table/03_Bram.wav"
+    },
+    {
+      "dialogue": "Dialogue_encounter_pintle_last_table",
+      "line": 4,
+      "speaker": "Marra",
+      "textSha256": "13c2b57e55bb35e68e38359b9aca9a885b07502333e67e1fa006a02e8b21df9c",
+      "clip": "Dialogue_encounter_pintle_last_table/04_Marra.wav"
+    }
+  ]
+}

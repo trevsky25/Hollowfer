@@ -18,11 +18,11 @@ MonoBehaviour:
   _act: 2
   _order: 10
   _unlockStoryCardOnComplete: {fileID: 0}
+  _storyMoment: {fileID: 11400000, guid: 7ef9bd877fe324efe93164f49b11b010, type: 2}
   _nextQuest: {fileID: 11400000, guid: c3190d940d184eceb4888868528538db, type: 2}
-  _waypointLocation: {fileID: 11400000, guid: 6173a887ceca347b686f8502e12abb90, type: 2}
+  _waypointLocation: {fileID: 11400000, guid: 0b9a86fea406435ea39f4c38a1b9399b, type: 2}
   _villageHopeDelta: 10
   _knowledgeDelta: 0
   _relationshipNpcIds:
   - voss
-  _relationshipDeltas:
-  - 3
+  _relationshipDeltas: 03000000

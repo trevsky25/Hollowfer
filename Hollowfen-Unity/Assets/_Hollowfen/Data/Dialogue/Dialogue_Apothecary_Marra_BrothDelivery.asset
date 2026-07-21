@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00c9c9bb92b3b44fb84ca335c48467d8, type: 3}
+  m_Name: Dialogue_Apothecary_Marra_BrothDelivery
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Dialogue.DialogueData
+  _id: apothecary.marra.broth_delivery
+  _lines:
+  - speaker: Wren
+    text: The first covered jar from the restored bench.
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 5ebfb384e9ad24319a4db02972f1dbec, type: 3}
+  - speaker: Marra
+    text: Label straight. Lid sound. Smells like Goldfoot without shouting about
+      it.
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: eb8a6dc1c80544632919145b195df053, type: 3}
+  - speaker: Marra
+    text: Tobin kept secrets. You are keeping stock. That may be the more useful
+      inheritance.
+    isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: 82ce390f2999d4e61af6fae8c879d7ae, type: 3}
+  _mushroomHandoff:
+    beforeLineIndex: 0
+    recipientSpeaker: 
+    mushroom: {fileID: 0}
+    presentationHeight: 0
+  _unlockStoryCard: {fileID: 0}
+  _completeQuest: {fileID: 0}
+  _giveItemId: 
+  _grantCoinsCopper: 0
+  _spendsCoinsCopper: 0
+  _sellsForageBasket: 0
+  _basketCopperPerItem: 0
+  _basketBuyer: 0
+  _grantForage: {fileID: 0}
+  _grantForageCount: 1
+  _consumeForage: {fileID: 0}
+  _consumeForageCount: 1
+  _setFlagIds: []
+  _villageHopeDelta: 0
+  _knowledgeDelta: 0
+  _relationshipNpcIds: []
+  _relationshipDeltas: 
+  _memoryOutcomes:
+  - npcId: marra
+    memoryId: marra.received_first_apothecary_broth
+  _bondOutcomes: []
+  _favorOutcomes: []
+  _advanceMinutes: 0
+  _transitionMoment: {fileID: 0}
+  _nextDialog: {fileID: 0}
+  _choices: []

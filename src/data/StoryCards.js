@@ -52,7 +52,7 @@ export const STORY_CARDS = [
     questId: 'searchMill',
     unlockAt: 2,
     body: "The mill is the same building and a stranger's house at once. The big wheel hangs over a streambed that no longer carries water. Inside, Tobin's ledgers are folded just so, his coat hangs on the same peg, and the kettle is on the hearth as if someone meant to put it back on the fire and forgot.",
-    wrenNote: "Da wrote less every winter. I used to be cross about it. Standing in his kitchen now, I think he was saving words for the wrong pages.",
+    wrenNote: "Dad wrote less every winter. I used to be cross about it. Standing in his kitchen now, I think he was saving words for the wrong pages.",
     beats: [
       "Wren enters her childhood home for the first time in three years.",
       "The mill wheel hasn't turned since the river left.",
@@ -69,7 +69,7 @@ export const STORY_CARDS = [
     questId: 'findJournal',
     unlockAt: 3,
     body: "It was in the bottom drawer, wrapped in oilcloth under a stack of his old receipts. Tobin's hand changes as the pages go on — careful at the start, hurried at the end. Three mushrooms drawn in soft pencil: Field Cap, Wood Ear, Pinecrest. And a confession in the margins about a family secret no one was supposed to write down.",
-    wrenNote: "\"If you're reading this, I never told you.\" Da, you were waiting for me to be old enough. I was old enough. I was just gone.",
+    wrenNote: "\"If you're reading this, I never told you.\" Dad, you were waiting for me to be old enough. I was old enough. I was just gone.",
     beats: [
       "Wren finds Tobin's hidden foraging journal.",
       "The first three mushrooms are sketched and named.",

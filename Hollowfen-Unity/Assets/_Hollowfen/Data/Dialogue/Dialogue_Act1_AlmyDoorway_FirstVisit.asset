@@ -17,54 +17,86 @@ MonoBehaviour:
   - speaker: Wren
     text: Good morning.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: fabb73811109747a9a3c19a62b556c17, type: 3}
   - speaker: Almy
     text: No.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: ec37c975685784c38a0962c98bdff855, type: 3}
   - speaker: Wren
     text: No?
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: ddf20c1ceb7ca4eb5affcf5536f5f967, type: 3}
   - speaker: Almy
     text: You picked goldfoots yesterday.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: ff2b173d659784a13b0c77428cdfcc4c, type: 3}
   - speaker: Wren
     text: Field Caps. Wood Ear. Pinecrest.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: bba35b8d4f0e0459290e481a26af07a2, type: 3}
   - speaker: Almy
     text: And goldfoots.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 1b3d38927016948e88da56fdb944c8dd, type: 3}
   - speaker: Wren
     text: I used my father's journal.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: bb40a5ee01f3b4e2fb9af64b534b809b, type: 3}
   - speaker: Almy
     text: Your father couldn't have taught you that. He didn't know it.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 2d49b9e70f21f4d818b9e5be956f29f5, type: 3}
   - speaker: Wren
     text: Then who did?
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 29181420df255480db7b1b0cb8d0628f, type: 3}
   - speaker: Almy
     text: 'Your grandmother taught me three things.
 
 
-      She forbade me from teaching anyone else.'
+      She forbade me from teaching
+      anyone else.'
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: 174d53ef9ea784e26933e56a5b9e1dd0, type: 3}
   - speaker: Wren
     text: I don't remember my grandmother.
     isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 06cc7d33c27e8444ebe9785cd29cdf57, type: 3}
   - speaker: Almy
     text: 'No. But your hands do.
 
 
-      Sit down, child. We need to talk about your grandmother.'
+      Sit down, child. We need to talk about
+      your grandmother.'
     isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: 5273b31c3069546f4bc36117d4f4469d, type: 3}
+  _mushroomHandoff:
+    beforeLineIndex: 0
+    recipientSpeaker: 
+    mushroom: {fileID: 0}
+    presentationHeight: 0
   _unlockStoryCard: {fileID: 11400000, guid: 6020acf222d4544ff805f44f48397cbc, type: 2}
   _completeQuest: {fileID: 11400000, guid: bb25aa206b764410b9eb5925b6101dc8, type: 2}
-  _giveItemId:
+  _giveItemId: 
   _grantCoinsCopper: 0
+  _spendsCoinsCopper: 0
   _sellsForageBasket: 0
+  _basketCopperPerItem: 0
+  _basketBuyer: 0
+  _grantForage: {fileID: 0}
+  _grantForageCount: 1
+  _consumeForage: {fileID: 0}
+  _consumeForageCount: 1
+  _setFlagIds: []
   _villageHopeDelta: 0
   _knowledgeDelta: 0
   _relationshipNpcIds:
   - almy
-  _relationshipDeltas:
-  - 5
+  _relationshipDeltas: 05000000
+  _memoryOutcomes: []
+  _bondOutcomes: []
+  _favorOutcomes: []
+  _advanceMinutes: 0
+  _transitionMoment: {fileID: 11400000, guid: 4030bea9bea1a4f77af59478d3a0a26f, type: 2}
   _nextDialog: {fileID: 0}
+  _choices: []

@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d0fced8610445dd87f9c05997c7c4b4, type: 3}
+  m_Name: StoryMoment_Act1_HiddenJournal
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.StoryMomentData
+  _id: act1.hidden_journal.discovery
+  _presentation: 0
+  _trigger: 1
+  _storyCard: {fileID: 11400000, guid: 19f3478a42e7247babcd733c5d2271d7, type: 2}
+  _captionIds:
+  - act1.hidden_journal.tobin_note
+  _captionFallbacks: []
+  _voiceClips:
+  - {fileID: 8300000, guid: a0179f9af932f452d844b8f8624df341, type: 3}
+  - {fileID: 8300000, guid: 61ebe31137f0d45d9955882342b8278c, type: 3}
+  - {fileID: 8300000, guid: 2f4c3fd632446440e896e61f2d7e76ad, type: 3}
+  - {fileID: 8300000, guid: c6ed569178efc422ca48064a88ef7964, type: 3}
+  - {fileID: 8300000, guid: fc4ab5c4a0b804cfcb9e7c91b28a0c03, type: 3}
+  - {fileID: 8300000, guid: 788baba3016b745c8bdd466c3e9c36f8, type: 3}
+  - {fileID: 8300000, guid: e38399292414b4d829fe207df2d77772, type: 3}
+  _images:
+  - {fileID: 21300000, guid: 6f78c64cab6bf47949d88459fea0392c, type: 3}
+  - {fileID: 21300000, guid: 9ff2d970c30804cce804f7c76990d4d7, type: 3}
+  - {fileID: 21300000, guid: 67bc51f67410e469597c8f2eafbb9816, type: 3}
+  - {fileID: 21300000, guid: d0fc8de859ddb4804a668c7bbb88f2a4, type: 3}
+  - {fileID: 21300000, guid: 6f410db14312e4f16ba95363bda38779, type: 3}
+  - {fileID: 21300000, guid: f3a03c2d3afa94b49a35dec900df412e, type: 3}
+  _beatImages:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 5
+  _showStoryCardTitle: 0
+  _showCaptions: 1
+  _fadeIn: 1
+  _holdSeconds: 0
+  _preserveFullFrameImages: 1
+  _pageTextId: act1.hidden_journal.page_note
+  _pageTextFallback:
+  _pageTextImageIndex: 5
+  _pageTextStartBeat: 5
+  _pageTextParagraphRevealBeats:
+  - 5
+  - 5
+  - 5
+  - 6
+  _pageTextRect:
+    serializedVersion: 2
+    x: 0.19
+    y: 0.235
+    width: 0.56
+    height: 0.59
+  _pageTextRotation: 1.25
+  _pageTextFontSize: 36
+  _pageTextColor: {r: 0.16, g: 0.095, b: 0.045, a: 0.84}
+  _useCursivePageText: 1
+  _focusContext: 1
+  _focusDistance: 0.4
+  _focusHeight: 0.05
+  _focusFov: 30
+  _focusPushSeconds: 1.2
+  _focusHoldSeconds: 1.6
+  _focusRestoreSeconds: 0.2

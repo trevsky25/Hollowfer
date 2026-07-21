@@ -17,19 +17,40 @@ MonoBehaviour:
   _latinName: Amanita phalloides
   _edibility: 1
   _edibilityLabel: Deadly
-  _description: 'Sable''s seedbook name for the Death Cap (Amanita phalloides) — the most lethal mushroom on Earth, blamed for roughly half of all mushroom-poisoning deaths worldwide. The old hand named it Hollowheart for how it kills: pleasant to eat, then quiet for a day while it hollows the liver from within.'
+  _description: "Sable's seedbook name for the Death Cap (Amanita phalloides) \u2014
+    the most lethal mushroom on Earth, blamed for roughly half of all mushroom-poisoning
+    deaths worldwide. The old hand named it Hollowheart for how it kills: pleasant
+    to eat, then quiet for a day while it hollows the liver from within."
   _idFeatures:
   - Cap olive-green to pale yellow, smooth and slightly sticky when moist
   - White free gills, not attached to the stem
   - White ring (annulus) on the upper stem
-  - Bulbous volva at the base, often hidden in litter — always brush down to check
+  - "Bulbous volva at the base, often hidden in litter \u2014 always brush down to
+    check"
   - White spore print
-  _habitat: Mycorrhizal with broadleaf trees — oak, beech, hornbeam.
+  _habitat: "Mycorrhizal with broadleaf trees \u2014 oak, beech, hornbeam."
   _season: Late summer through autumn
-  _lookalikes: Field Mushroom and Horse Mushroom are edible but have pink or brown gills, never white, and no volva. Caesar''s Mushroom has an orange cap with yellow gills. The volva at the base is the single most important check.
-  _notes: 'There is no antidote. Symptoms appear six to twelve hours after eating: severe illness, then a deceptive well period of a day or two, then liver and kidney failure. By the time you feel sick, the damage is done. Sable''s warning, half lost to damp, ends: only once.'
+  _lookalikes: Field Mushroom and Horse Mushroom are edible but have pink or brown
+    gills, never white, and no volva. Caesar''s Mushroom has an orange cap with yellow
+    gills. The volva at the base is the single most important check.
+  _notes: 'There is no antidote. Symptoms appear six to twelve hours after eating:
+    severe illness, then a deceptive well period of a day or two, then liver and
+    kidney failure. By the time you feel sick, the damage is done. Sable''s warning,
+    half lost to damp, ends: only once.'
   _photo: {fileID: 21300000, guid: ee5656c6536494ed185db05eb17c5016, type: 3}
-  _photoCredit: Wikimedia Commons
-  _worldPrefab: {fileID: 0}
+  _photoCredit: Generated with OpenAI gpt-image
+  _journalPage: {fileID: 21300000, guid: da6d1f016e6de426ebb3f5f909985fdc, type: 3}
+  _worldPrefab: {fileID: 8152779609558057382, guid: 839ccd30fb08640d2a61eaf3b56296b9, type: 3}
+  _journalPreviewPrefab: {fileID: 5019150083343276976, guid: d784e2126ed2e4a158de46c5e3fbac5b, type: 3}
+  _journalExposure: 0.27
   _displayNameId: mushroom.hollowheart.name
   _descriptionId: mushroom.hollowheart.description
+  _forageTier: 3
+  _requiredForageFlagId: tier4_mushrooms_unlocked
+  _wildRespawnDays: 5
+  _marraValueCopper: 0
+  _theoValueCopper: 0
+  _cultivable: 0
+  _cultivationHours: 6
+  _cultivationYield: 3
+  _cultivationUnlockFlagId:

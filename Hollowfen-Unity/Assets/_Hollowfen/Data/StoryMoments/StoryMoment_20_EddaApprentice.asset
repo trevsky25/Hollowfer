@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d0fced8610445dd87f9c05997c7c4b4, type: 3}
+  m_Name: StoryMoment_20_EddaApprentice
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.StoryMomentData
+  _id: story.edda_apprentice.illustrated
+  _presentation: 0
+  _trigger: 0
+  _storyCard: {fileID: 11400000, guid: c212ef4856d724a3ab98ecc269e04b6e, type: 2}
+  _captionIds:
+  - story.edda_apprentice.beat.0
+  - story.edda_apprentice.beat.1
+  - story.edda_apprentice.beat.2
+  _captionFallbacks:
+  - Edda asks to be Wren's formal apprentice.
+  - She begins learning identification and the journal's discipline.
+  - Wren gains a junior forager and the village gains a future.
+  _voiceClips:
+  - {fileID: 8300000, guid: bfc4e5c5e545c4e129c7f434e789d455, type: 3}
+  - {fileID: 8300000, guid: acba2ac5faa3141cc9092ece76b1db54, type: 3}
+  - {fileID: 8300000, guid: 8d5f07e187d0544308e5cf0fc1a5fb00, type: 3}
+  _images:
+  - {fileID: 21300000, guid: 9f561ba92ee4443ebb28e30c40584574, type: 3}
+  - {fileID: 21300000, guid: 15a6e5426378145488795f41d20bb63f, type: 3}
+  - {fileID: 21300000, guid: 616c230a161b84beeb4b9cc285e85981, type: 3}
+  _beatImages: 000000000100000002000000
+  _showStoryCardTitle: 0
+  _showCaptions: 1
+  _fadeIn: 1
+  _holdSeconds: 0
+  _pageTextId: 
+  _pageTextFallback: 
+  _pageTextImageIndex: -1
+  _pageTextStartBeat: 0
+  _pageTextParagraphRevealBeats: 
+  _pageTextRect:
+    serializedVersion: 2
+    x: 0.2
+    y: 0.2
+    width: 0.6
+    height: 0.6
+  _pageTextRotation: 0
+  _pageTextFontSize: 30
+  _pageTextColor: {r: 0.16, g: 0.1, b: 0.05, a: 0.86}
+  _focusContext: 0
+  _focusDistance: 0.4
+  _focusHeight: 0.05
+  _focusFov: 30
+  _focusPushSeconds: 1.2
+  _focusHoldSeconds: 1.6
+  _focusRestoreSeconds: 0.2
