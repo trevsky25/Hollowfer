@@ -201,6 +201,12 @@ namespace Hollowfen.UI
             UICanvasUtil.SetRect(scene.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, 1f), new Vector2(0f, 20f), Vector2.zero);
             var title = UICanvasUtil.NewHeading("Title", body, JournalText.StoryTitle(card), 34f, Cream, FontStyles.Normal, TextAlignmentOptions.TopLeft);
             UICanvasUtil.SetRect(title.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, 1f), new Vector2(0f, 48f), new Vector2(0f, -32f));
+            // Keep the three-column index rhythm while allowing the longest canonical title
+            // ("The First Festival in Three Years") to fit at the 1280x800 Deck target.
+            title.enableAutoSizing = true;
+            title.fontSizeMin = 26f;
+            title.fontSizeMax = 34f;
+            title.textWrappingMode = TextWrappingModes.NoWrap;
             title.overflowMode = TextOverflowModes.Truncate;
             var subtitle = UICanvasUtil.NewBody("Subtitle", body, JournalText.StorySubtitle(card), 17f, Subtle);
             UICanvasUtil.SetRect(subtitle.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, 1f), new Vector2(0f, 58f), new Vector2(0f, -90f));

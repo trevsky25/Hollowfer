@@ -58,6 +58,18 @@ namespace Hollowfen.EditorTools
         private static bool ValidateReleaseMenuEnabled() =>
             !EditorApplication.isCompiling && !EditorApplication.isPlayingOrWillChangePlaymode;
 
+        /// <summary>
+        /// Runs the exact technical preflight used by <see cref="BuildAudit"/> without starting
+        /// a player build. Editor-only automation uses this before visual/performance evidence so
+        /// Pipeline and Coplay remain wrappers around Hollowfen's production policy and never bypass it.
+        /// </summary>
+        public static string ValidateAuditPreflightForAutomation()
+        {
+            BuildTarget target = EditorUserBuildSettings.activeBuildTarget;
+            Validate(target, BuildOptions.None, requireShippingIdentity: false);
+            return $"AUDIT PREFLIGHT — PASS ({target})";
+        }
+
         [MenuItem("Hollowfen/Production/Build Audit macOS...")]
         private static void BuildAuditMacMenu()
         {

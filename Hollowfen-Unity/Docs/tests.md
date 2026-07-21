@@ -4,7 +4,7 @@ Run: `tools/agent/lint_hollowfen.py` (always) · `tools/agent/run_integrity.py` 
 Checker code: `Assets/_Hollowfen/Scripts/Editor/DataIntegrity.cs` — an editor utility, NOT a Unity Test Framework assembly, because game code compiles into Assembly-CSharp (coupled to no-asmdef third-party sources) and test assemblies can't reference it.
 Philosophy: checks target failures that are SILENT at runtime (Localization.Get returns the raw id on a miss; PickDialog skips null entries; extra relationship ids are ignored). Loud failures don't need tests — the console already catches them.
 Waiver policy: lint waivers in `tools/agent/lint_waivers.txt`, each pointing at the TODOS item that owns the fix. A waiver is a debt marker, not a dismissal.
-Status: all three layers verified through 2026-07-19. Focused verifiers cover save-file integrity, durable inventory batches, endings, presentation ownership, repeatable gameplay, village requests, Living Restoration, the apothecary, day/night, dynamic weather, NPC schedules, relationship memory/personal arcs, regional feedback, audio/voice, and active production UI. Destructive state verifiers use an isolated temporary save directory where supported.
+Status: all three layers verified through 2026-07-21. Focused verifiers cover save-file integrity, durable inventory batches, endings, presentation ownership, repeatable gameplay, village requests, Living Restoration, the apothecary, day/night, dynamic weather, NPC schedules, relationship memory/personal arcs, regional feedback, audio/voice, and active production UI. Batch 120 adds a gated visual/performance baseline. Destructive state verifiers use an isolated temporary save directory where supported.
 
 > Self-healing doc: adding a check? Document it here. Hitting a new failure class? Add a check AND a row here in the same batch.
 
@@ -56,6 +56,14 @@ Runs inside the editor (menu / bridge / batchmode `-executeMethod …DataIntegri
 ## Layer 3 — Play-mode smoke (`tools/agent/smoke_play.py`)
 
 Activates Unity (macOS App Nap freezes the player loop when the app is hidden — `PlayModeBackgroundTicker` can't tick a napped app), enters Play mode, immediately redirects all journal writes to a unique temporary directory, requires ≥240 frames, asserts **no new console errors**, samples quest/clock state, exits, and deletes the isolated fixture. The bridge reader retries transient boolean acknowledgements during script reload instead of mis-parsing them as console counts, and applies a short per-call deadline so a stale SSE response cannot hang the runner for five minutes. Run at the end of every implementation batch and in night-shift wrap-up.
+
+## Gated visual/performance baseline (`tools/agent/capture_visual_baseline.py`)
+
+With the pinned Unity Editor stopped and scenes clean, run `python3 tools/agent/capture_visual_baseline.py`. The Pipeline runner first executes `ProductionBuildGate.ValidateAuditPreflightForAutomation()` and `DataIntegrity.RunAllAsReport()`. It then fixes Game View at 1280×800, stages all 30 Story cards and 21 Field Guide entries in Play Mode memory, and captures main menu, save slots, settings, Story index/detail, Field Guide index/detail, and Wren. `ProductionUIVerifier.VerifyActiveForAutomation()` must return PASS for each settled presentation before Unity may queue its PNG.
+
+Both UI and gameplay phases arm unique temporary save directories and clear their overrides in `finally`; the runner also restores the starting scene and stops Play Mode. Existing evidence is not overwritten unless `--replace` is explicit. The report records exact gate output, dimensions, and performance samples under `Docs/screenshots/batch-NN/`.
+
+The five-stop route records 60 wall-time samples around `EditorApplication.Step()` plus Pipeline triangle, SetPass, and allocated-memory snapshots. This includes Editor overhead and is CPU-side only: it is a regression reference for later batches, **not** a standalone-player, GPU, 60fps, or Steam Deck certification result. Captures are reviewed manually; the harness does not yet claim tolerant pixel-diff automation.
 
 ## Focused save-integrity verifier
 
@@ -184,6 +192,6 @@ Expected result: `NARRATIVE COPY — PASS: 145 dialogues, 26 quest cards, 16 vil
 - **Playtime cadence/lifecycle callbacks**: `SaveIntegrityVerifier` proves playtime normalization and disk round-trip, but it does not wait through the 60-second focused timer or synthesize application pause/quit. Verify those hooks in a Play Mode lifecycle check before release.
 - **Derived content translation coverage** — journal fields are routed through stable IDs with English SO fallbacks, but the checker does not yet require an English/Chinese LUT row for every derived Story/mushroom/character key.
 - **Full controller traversal** — batch-63 live QA asserts explicit navigation, locked-focus skipping, and return focus for the journal family; a device-driven automated traversal is still a candidate PlayMode test.
-- **Visual composition** — batch-84 adds the in-world Old Wood arrival title; batch-83 adds day/night Crooked Pintle routine evidence; batch-82 adds fixed-view day/dusk/night village evidence plus a ground-level night-practical shot; batch-71 covers Wren's character study; batches 69–70 cover model lighting/controls/framing. Screenshot judgment remains manual rather than pixel-golden automation.
+- **Visual composition** — batch-120 adds the repeatable gate-checked eight-screen 1280×800 baseline; batch-84 adds the in-world Old Wood arrival title; batch-83 adds day/night Crooked Pintle routine evidence; batch-82 adds fixed-view day/dusk/night village evidence plus a ground-level night-practical shot; batch-71 covers Wren's character study; batches 69–70 cover model lighting/controls/framing. Screenshot judgment remains manual rather than tolerant pixel-diff automation.
 - **Hardcoded display strings** — needs the dialogue localization restructure first; the linter can't distinguish display strings from ids reliably today.
 - **False-confidence audit**: every ~10 batches, re-verify checks still catch planted faults. The isolated save verifier now owns parseable corruption, checksum tamper, temp/backup revision choice, future-version refusal, and recovered-rewrite quarantine.

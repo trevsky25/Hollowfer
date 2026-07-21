@@ -6,6 +6,8 @@
 
 **2026-07-16 update:** item 13's ending engine remains implemented and verified in the working tree. The repeatable game-loop foundation is live; batch 81 adds rotating requests/gathering; batch 82 delivers art-directed day/night; batch 83 adds derived NPC routines; and batch 84 completes the regional world-feedback foundation with four 48 kHz day/night ambience profiles, adaptive score states, six trigger volumes, shared localized region presentation, and a restrained arrival title. All focused verifiers are green; these batches remain queue-pending only because this task has not been committed/tagged. Cast models and Act III–IV world dressing still follow the engine pass.
 
+**2026-07-21 update:** Batch 120 closes the Phase 3 visual/performance infrastructure item: the native Unity CLI/Pipeline now runs Hollowfen's exact audit preflight and data-integrity gate, captures eight production-UI-verified screens at 1280×800 with isolated journals, and records a five-stop village Editor diagnostic baseline. Coplay remains the independent smoke/integrity fallback. This is regression evidence, not a standalone Steam Deck performance claim.
+
 ---
 
 ## Cinematic Pass (Trevor-directed, 2026-07-12 — "make the UI AMAZING and cinematic, wow the user")
@@ -81,7 +83,7 @@ inheritance beat. Slices:
     checklist, owned system docs, and PASS/PASS-WITH-CHANGES/BLOCK verdict format. Wired into night-shift.md
     Model Tiering (the WHEN) + the CLAUDE.md router. Formalizes the fable-gate that caught bugs in batches
     21/24/26/27/32. (Night-shift orchestration doc DONE in Batch 17: `Docs/night-shift.md`.)
-11. **Phase 3 infra: visual regression + perf baseline** — scripted screenshot pass of the ~8 canonical screens at 1280×800 into `Docs/screenshots/batch-NN/`; fixed-path village frame-time capture appended to `Docs/benchmarks.md`.
+11. ~~**Phase 3 infra: visual regression + perf baseline**~~ **DONE 2026-07-21, tag `batch-120`** — native Pipeline runner wraps the exact audit preflight + data-integrity + per-screen production-UI gates; eight canonical 1280×800 captures use in-memory reference unlocks and isolated journals; a fixed five-stop village route records Editor CPU-step time, triangles, SetPass calls, and allocated memory in `Docs/benchmarks.md`. The baseline caught and fixed the long Act III Story-card title clip. Coplay integrity/smoke remains the fallback path; standalone Deck profiling remains a pre-EA check.
 12. **Act IV (scenes 1–3, quests 24–26 of the endgame)** — FABLE-REVIEW GATE (canon-critical endgame).
    - ~~**scene 1 `aldricOfferRead`**~~ **DONE 2026-07-12, tag `batch-24` — ACT IV STARTED** — Wren reads the sealed letter at the mill (prop-anchored `_MillLetter`); ScoreHooks sets `act4_started` + offer flags; StoryCard_24. Fable-reviewed (seal-continuity + grandmother lines fixed). ⚠️ `npc_consultations_unlocked` has no consumer yet — add "consult NPCs about Aldric" content.
    - ~~**scene 2 `wendSource`**~~ **DONE 2026-07-12, tag `batch-26`** — the upstream clear-cut (`_ClearCutSite` prop + `clear_cut` LocationData), Aldermark species #21 (= real **Grifola frondosa**, Q7 resolved), the Hollin scene, Knowledge +15 + evidence flags. Fable-reviewed (hesitation beat + seedbook wording fixed). Deferred to staging pass: Hollin's clear-cut placement, stump/camp dressing, Aldermark world node + photo.

@@ -4,7 +4,7 @@ Key scripts: `Assets/_Hollowfen/Scripts/UI/` — `StoryScreen`, `StoryDetailScre
 Data: 30 `StoryCardData`, 21 `MushroomFieldGuideData`, and one `CharacterProfileData`, registered in ordered database SOs under `Assets/_Hollowfen/`.
 Entry points: Main Menu and Pause buttons push `story`, `wren`, or `field-guide` through `UIManager`; detail screens push over their index and pop back to it.
 Biggest gotchas: database order is canonical; locked content must use the same availability predicate for rendering, focus, opening, paging, and counting; sprite art goes through `JournalArtPresenter`; 3D journal art must use a dedicated visual-only preview asset, never a gameplay controller prefab.
-Status: batch-71 turns Wren's page into an interactive living character study with an optimized animated model, studio lighting, and pointer/gamepad orbit and zoom; the existing dossier and five plates remain intact.
+Status: batch-120 establishes the gated 1280×800 journal baseline and makes Story-card headings auto-size from 34px to 26px so the longest canonical title remains intact; batch-71's interactive Wren study remains the latest feature pass.
 
 > Self-healing doc: if you change this system, update this doc (including the 7-line header) in the same batch, and note the change in the batch worksheet.
 
@@ -28,7 +28,7 @@ Status: batch-71 turns Wren's page into an interactive living character study wi
 
 | Component | Role and behavior |
 |---|---|
-| `StoryScreen` (`screenId="story"`) | Three-column memory index grouped by act. Cards are borderless at rest and use the shared rail/wash focus state. Locked cards are inert, non-selectable, darkened, and reveal neither title nor art. Focus begins on the first unlocked card, skips locked cards, and returns to the originating card/scroll position after detail. |
+| `StoryScreen` (`screenId="story"`) | Three-column memory index grouped by act. Cards are borderless at rest and use the shared rail/wash focus state. Locked cards are inert, non-selectable, darkened, and reveal neither title nor art. Focus begins on the first unlocked card, skips locked cards, and returns to the originating card/scroll position after detail. Titles stay on one line and auto-size within 26–34px at the 1280×800 target; do not replace that with fixed 34px text because “The First Festival in Three Years” will clip. |
 | `StoryDetailScreen` (`screenId="story-detail"`) | Fullscreen cinematic cover art with one readable right-side journal leaf. Previous/next walks unlocked cards only and reports available position (`N of M`). Annotations expand inside the leaf; Back hides annotations first, then pops the reader. |
 | `FieldGuideScreen` (`screenId="field-guide"`) | Three-column square specimen index at Deck resolution. Undiscovered entries are inert `?` cards. A discovered species with dedicated journal 3D art shows an auto-rotating, transparently composited model and unboxed `3D STUDY` label; other species retain their realistic photo card. Model presenters are hydrated only while their card intersects the masked viewport (six rigs at the Deck target instead of twenty). Resting cards have no outline; focus uses the shared rail/wash state. |
 | `MushroomDetailScreen` (`screenId="mushroom-detail"`) | Two-leaf specimen spread: the left leaf is a large 3D study on a soft halo (or an explicit pending state), with no nested RenderTexture rectangle. Detail framing fits rotation-safe model bounds directly to the camera plane with a 2% margin, making clicked specimens about 25% larger than the former sphere fit while index cards keep their original framing. Mouse/touch drag or the right stick orbits; wheel or LT/RT zooms; `R`/right-stick click resets. The realistic field photo and identification copy occupy the right leaf. |
@@ -58,6 +58,7 @@ This prevents a UI-only lock from becoming a progression or controller-focus lea
 
 ## Verification and deferred work
 
+- Batch-120's canonical journal evidence lives in `Docs/screenshots/batch-120/`; the Story index, Story detail, Field Guide, mushroom detail, and Wren page each passed `ProductionUIVerifier` before their 1280×800 capture. The harness unlocks reference content in Play Mode memory only and never writes those unlocks to a journal.
 - Batch-68 model evidence lives in `Docs/screenshots/batch-68/`. Batch-69 lighting/interaction evidence lives in `Docs/screenshots/batch-69/` and includes balanced Brightspore plus its zoomed/orbited state at 1280×800.
 - Batch-70 detail-framing evidence lives in `Docs/screenshots/batch-70/brightspore-larger-detail-1280x800.png`; the all-model yaw audit found a worst projected fill of 0.980, so no modeled species crosses the camera edge at its default zoom.
 - Batch-71 Wren evidence lives in `Docs/screenshots/batch-71/`: the default living-study spread and an orbited/zoomed inspection state at 1280×800. The shipping derivative measures 89,999 triangles / 61,849 vertices, down from the 542,469-triangle / 304,206-vertex source.
