@@ -4,7 +4,7 @@ Run: `tools/agent/lint_hollowfen.py` (always) · `tools/agent/run_integrity.py` 
 Checker code: `Assets/_Hollowfen/Scripts/Editor/DataIntegrity.cs` — an editor utility, NOT a Unity Test Framework assembly, because game code compiles into Assembly-CSharp (coupled to no-asmdef third-party sources) and test assemblies can't reference it.
 Philosophy: checks target failures that are SILENT at runtime (Localization.Get returns the raw id on a miss; PickDialog skips null entries; extra relationship ids are ignored). Loud failures don't need tests — the console already catches them.
 Waiver policy: lint waivers in `tools/agent/lint_waivers.txt`, each pointing at the TODOS item that owns the fix. A waiver is a debt marker, not a dismissal.
-Status: all three layers verified through 2026-07-21. Focused verifiers cover save-file integrity, durable inventory batches, endings, presentation ownership, repeatable gameplay, village requests, Living Restoration, the apothecary, day/night, dynamic weather, NPC schedules, relationship memory/personal arcs, regional feedback, audio/voice, and active production UI. Batch 120 adds a gated visual/performance baseline. Destructive state verifiers use an isolated temporary save directory where supported.
+Status: all three layers verified through 2026-07-21. Focused verifiers cover save-file integrity, durable inventory batches, endings, presentation ownership, repeatable gameplay, village requests, Living Restoration, the apothecary, day/night, dynamic weather, NPC schedules, relationship memory/personal arcs, regional feedback, audio/voice, and active production UI. Batch 120 adds a gated visual/performance baseline; Batch 121 exposes the synchronous checks through a safe native Pipeline allowlist. Destructive state verifiers use an isolated temporary save directory where supported.
 
 > Self-healing doc: adding a check? Document it here. Hitting a new failure class? Add a check AND a row here in the same batch.
 
@@ -64,6 +64,40 @@ With the pinned Unity Editor stopped and scenes clean, run `python3 tools/agent/
 Both UI and gameplay phases arm unique temporary save directories and clear their overrides in `finally`; the runner also restores the starting scene and stops Play Mode. Existing evidence is not overwritten unless `--replace` is explicit. The report records exact gate output, dimensions, and performance samples under `Docs/screenshots/batch-NN/`.
 
 The five-stop route records 60 wall-time samples around `EditorApplication.Step()` plus Pipeline triangle, SetPass, and allocated-memory snapshots. This includes Editor overhead and is CPU-side only: it is a regression reference for later batches, **not** a standalone-player, GPU, 60fps, or Steam Deck certification result. Captures are reviewed manually; the harness does not yet claim tolerant pixel-diff automation.
+
+## Native Pipeline command layer
+
+With the pinned Hollowfen Editor open, Unity CLI/Pipeline exposes seven project-owned Editor commands.
+They are an invocation layer over the checks in this manifest, not a replacement test framework:
+
+| Command | What it proves or controls |
+|---|---|
+| `hollowfen_health` | The command is routed to the expected Editor and reports its scene, compilation, Play Mode, bounded console, package-version, and save-override state. |
+| `hollowfen_preflight` | The exact audit-build technical preflight and full data-integrity report both pass from a stopped, clean Editor. |
+| `hollowfen_verifier_catalog` | The live adapter advertises the 24 hardcoded synchronous verifier names and their minimum Editor/isolation state. |
+| `hollowfen_run_verifier` | `dry_run=true` reports blockers without invoking a verifier; `confirm=true` runs only an allowlisted method and accepts only an explicit synchronous PASS report. |
+| `hollowfen_begin_save_isolation` / `hollowfen_end_save_isolation` | A confirmed Play Mode session is redirected to a command-owned `Library/HollowfenPipeline/isolated-saves/<id>` fixture, and cleanup proves ownership before clearing/deleting it. |
+| `hollowfen_world_audit` | The active loaded scene has a bounded structural report for missing scripts, collider transforms, object/render/material counts, and authored mesh instances. It does not prove runtime framerate. |
+
+Typical non-mutating use:
+
+```bash
+unity --format json --no-banner command --project-path "/absolute/path/to/Hollowfen-Unity" hollowfen_preflight
+unity --format json --no-banner command --project-path "/absolute/path/to/Hollowfen-Unity" hollowfen_verifier_catalog
+unity --format json --no-banner command --project-path "/absolute/path/to/Hollowfen-Unity" hollowfen_run_verifier --name narrative-copy --dry_run true
+unity --format json --no-banner command --project-path "/absolute/path/to/Hollowfen-Unity" hollowfen_run_verifier --name narrative-copy --confirm true
+```
+
+Pipeline command arguments retain underscores (`dry_run`, `include_inactive`, `max_findings`,
+`interval_ms`). Entering or exiting Play Mode causes the expected domain reload and temporary
+connection loss; poll the read-only `editor_status` command before continuing. For a mutating
+gameplay verifier, dry-run and confirm `hollowfen_begin_save_isolation`, enter Play, wait for real
+frames, dry-run and confirm the verifier, exit Play, then dry-run and confirm
+`hollowfen_end_save_isolation`. Finish by confirming the health report has no active override.
+
+`PresentationSessionVerifier.Run()` is asynchronous and returns no completion report, so it remains
+on the menu/Coplay workflow below rather than allowing the native adapter to infer success. Full
+operating and extension rules are in `Docs/systems/agent-tooling.md`.
 
 ## Focused save-integrity verifier
 

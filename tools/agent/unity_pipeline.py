@@ -52,7 +52,7 @@ class UnityPipeline:
             raise PipelineError("Unity CLI version check failed.")
         return completed.stdout.strip()
 
-    def command(self, name: str, **parameters: Any) -> Any:
+    def command(self, command_name: str, **parameters: Any) -> Any:
         argv = [
             self.cli,
             "--format",
@@ -63,12 +63,16 @@ class UnityPipeline:
             self.project_path,
             "--timeout",
             str(self.timeout),
-            name,
+            command_name,
         ]
         for key, value in parameters.items():
             if value is None:
                 continue
-            option = "--" + key.replace("_", "-")
+            # Pipeline command arguments are advertised and bound by their exact CliArg names.
+            # Unlike the CLI's own top-level options, many command args intentionally contain
+            # underscores (dry_run, include_inactive, interval_ms); changing them to hyphens
+            # silently leaves the C# handler at its default value.
+            option = "--" + key
             if isinstance(value, bool):
                 value = "true" if value else "false"
             argv.extend([option, str(value)])
@@ -77,20 +81,37 @@ class UnityPipeline:
             argv, capture_output=True, text=True, timeout=self.timeout + 5
         )
         if completed.returncode != 0:
+            structured = None
+            try:
+                failure = json.loads(completed.stdout)
+                failure_data = failure.get("data") or {}
+                structured = failure_data.get("errors") or failure.get("errors")
+            except (json.JSONDecodeError, AttributeError):
+                pass
             detail = completed.stderr.strip().splitlines()
-            suffix = detail[-1] if detail else "no structured error"
-            raise PipelineError(f"Pipeline command '{name}' failed: {suffix}")
+            suffix = (
+                json.dumps(structured, ensure_ascii=False)
+                if structured
+                else detail[-1] if detail else "no structured error"
+            )
+            raise PipelineError(f"Pipeline command '{command_name}' failed: {suffix}")
 
         try:
             response = json.loads(completed.stdout)
         except json.JSONDecodeError as error:
-            raise PipelineError(f"Pipeline command '{name}' returned invalid JSON.") from error
+            raise PipelineError(
+                f"Pipeline command '{command_name}' returned invalid JSON."
+            ) from error
 
         if not response.get("success", False):
-            raise PipelineError(f"Pipeline command '{name}' was rejected: {response.get('errors')}")
+            raise PipelineError(
+                f"Pipeline command '{command_name}' was rejected: {response.get('errors')}"
+            )
         data = response.get("data") or {}
         if data.get("success") is False:
-            raise PipelineError(f"Pipeline command '{name}' failed: {data.get('errors')}")
+            raise PipelineError(
+                f"Pipeline command '{command_name}' failed: {data.get('errors')}"
+            )
         result = data.get("result")
         if isinstance(result, dict) and result.get("success") is False:
             details = [
@@ -100,7 +121,7 @@ class UnityPipeline:
                 result.get("diagnostics"),
             ]
             message = " · ".join(str(value) for value in details if value)
-            raise PipelineError(f"Pipeline command '{name}' failed: {message}")
+            raise PipelineError(f"Pipeline command '{command_name}' failed: {message}")
         return result
 
     def eval(self, code: str, timeout_ms: int = 5000) -> Any:

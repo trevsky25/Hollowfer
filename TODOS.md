@@ -8,6 +8,8 @@
 
 **2026-07-21 update:** Batch 120 closes the Phase 3 visual/performance infrastructure item: the native Unity CLI/Pipeline now runs Hollowfen's exact audit preflight and data-integrity gate, captures eight production-UI-verified screens at 1280×800 with isolated journals, and records a five-stop village Editor diagnostic baseline. Coplay remains the independent smoke/integrity fallback. This is regression evidence, not a standalone Steam Deck performance claim.
 
+**2026-07-21 update (Batch 121):** Hollowfen now owns a thin Editor-only native Pipeline command layer for live health, exact production preflight, 24 allowlisted synchronous verifiers, command-owned save isolation, and structural world audits. The adapter is a non-auto-referenced asmdef; existing game/editor assemblies remain independent of Pipeline, Player automation stays disabled, and Coplay remains the cross-check/fallback.
+
 ---
 
 ## Cinematic Pass (Trevor-directed, 2026-07-12 — "make the UI AMAZING and cinematic, wow the user")
@@ -84,6 +86,7 @@ inheritance beat. Slices:
     Model Tiering (the WHEN) + the CLAUDE.md router. Formalizes the fable-gate that caught bugs in batches
     21/24/26/27/32. (Night-shift orchestration doc DONE in Batch 17: `Docs/night-shift.md`.)
 11. ~~**Phase 3 infra: visual regression + perf baseline**~~ **DONE 2026-07-21, tag `batch-120`** — native Pipeline runner wraps the exact audit preflight + data-integrity + per-screen production-UI gates; eight canonical 1280×800 captures use in-memory reference unlocks and isolated journals; a fixed five-stop village route records Editor CPU-step time, triangles, SetPass calls, and allocated memory in `Docs/benchmarks.md`. The baseline caught and fixed the long Act III Story-card title clip. Coplay integrity/smoke remains the fallback path; standalone Deck profiling remains a pre-EA check.
+11b. ~~**Hollowfen-native Pipeline command layer**~~ **DONE 2026-07-21, tag `batch-121`** — seven discoverable Editor-only commands expose project health, the exact production/data preflight, a 24-verifier explicit allowlist, owned temporary-save lifecycle, and bounded loaded-scene auditing. Every mutating entry point supports dry-run/confirmation and existing production gates remain authoritative; Coplay independently passed integrity and smoke.
 12. **Act IV (scenes 1–3, quests 24–26 of the endgame)** — FABLE-REVIEW GATE (canon-critical endgame).
    - ~~**scene 1 `aldricOfferRead`**~~ **DONE 2026-07-12, tag `batch-24` — ACT IV STARTED** — Wren reads the sealed letter at the mill (prop-anchored `_MillLetter`); ScoreHooks sets `act4_started` + offer flags; StoryCard_24. Fable-reviewed (seal-continuity + grandmother lines fixed). ⚠️ `npc_consultations_unlocked` has no consumer yet — add "consult NPCs about Aldric" content.
    - ~~**scene 2 `wendSource`**~~ **DONE 2026-07-12, tag `batch-26`** — the upstream clear-cut (`_ClearCutSite` prop + `clear_cut` LocationData), Aldermark species #21 (= real **Grifola frondosa**, Q7 resolved), the Hollin scene, Knowledge +15 + evidence flags. Fable-reviewed (hesitation beat + seedbook wording fixed). Deferred to staging pass: Hollin's clear-cut placement, stump/camp dressing, Aldermark world node + photo.

@@ -2,7 +2,7 @@
 Scripts that make agent sessions faster and more reliable. Policy: when you find yourself repeating a multi-step incantation (driving the bridge, resetting state, capturing screenshots), turn it into a script here, document it below, and keep this list current.
 Everything here must run with system python3/bash — no venv, no pip installs.
 Committed to the repo on purpose: /tmp gets wiped (we lost the original unitymcp.py that way).
-Status: updated 2026-07-21 (Batch 120).
+Status: updated 2026-07-21 (Batch 121).
 
 ---
 
@@ -15,10 +15,20 @@ Status: updated 2026-07-21 (Batch 120).
 | `lint_hollowfen.py` | Gotcha linter (legacy Input, dataPath, emoji in content, missing .meta, public fields on components). No Unity needed. Waivers: `lint_waivers.txt`. | `python3 tools/agent/lint_hollowfen.py` — exit 1 on unwaived errors |
 | `run_integrity.py` | Run `DataIntegrity.RunAllAsReport()` in the live editor via the bridge; exit 1 on errors. See `Hollowfen-Unity/Docs/tests.md` for what it proves. | `python3 tools/agent/run_integrity.py` |
 | `smoke_play.py` | Play-mode smoke: activate Unity (App Nap!), play, ≥240 frames, no new console errors, state sample, stop. | `python3 tools/agent/smoke_play.py [--min-frames N]` |
-| `unity_pipeline.py` | Structured JSON client for the pinned native Unity CLI/Pipeline connection. It never reads or emits Unity startup logs. | Import `UnityPipeline`, or run the baseline script below. Set `UNITY_CLI` only when the CLI is not at `~/.unity/bin/unity`. |
+| `unity_pipeline.py` | Structured JSON client for the pinned native Unity CLI/Pipeline connection. It preserves exact command argument names (including underscores), supports commands with a `name` parameter, and never reads or emits Unity startup logs. | Import `UnityPipeline`, or run the baseline script below. Set `UNITY_CLI` only when the CLI is not at `~/.unity/bin/unity`. |
 | `capture_visual_baseline.py` | Run audit preflight + data integrity, capture eight gate-checked 1280×800 UI states, and sample the five-stop village Editor diagnostic route using isolated temporary saves. Existing evidence is immutable unless `--replace` is explicit. | `python3 tools/agent/capture_visual_baseline.py [--replace] [--samples-per-stop 8] [--timed-frames 60]` |
 
 **Pre-commit gate**: `.githooks/pre-commit` runs lint always + integrity when the bridge is up. Enable per clone: `git config core.hooksPath .githooks`.
+
+## Native Hollowfen commands
+
+Batch 121 adds seven first-class, Editor-only commands: `hollowfen_health`,
+`hollowfen_preflight`, `hollowfen_verifier_catalog`, `hollowfen_run_verifier`,
+`hollowfen_begin_save_isolation`, `hollowfen_end_save_isolation`, and
+`hollowfen_world_audit`. Use the catalog plus `dry_run=true` before confirmed verifier execution,
+and bracket every state-mutating Play Mode verifier with the owned isolation commands. The full
+command contracts, safe Play/reconnect/cleanup sequence, and production boundary live in
+`Hollowfen-Unity/Docs/systems/agent-tooling.md`.
 
 ## Wanted (build when first needed)
 
