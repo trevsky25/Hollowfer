@@ -1,6 +1,6 @@
 # Batch 118 — Unity CLI Adoption Pilot
 
-**Date:** 2026-07-21 · **Status:** verified partial adoption; Pipeline compatibility-blocked
+**Date:** 2026-07-21 · **Status:** standalone adoption verified; Pipeline compatibility-blocked
 
 ## Goal
 Evaluate Unity's native CLI and experimental Pipeline package beside the existing Coplay MCP bridge, adopting only the parts that can be introduced without destabilizing Hollowfen. This is a reversible pilot: Coplay remains installed, no Player-runtime Pipeline component is added, and incompatible package changes are rolled back.
@@ -12,6 +12,8 @@ Evaluate Unity's native CLI and experimental Pipeline package beside the existin
 - [x] Trial `com.unity.pipeline` `0.3.1-exp.1` alongside Coplay.
 - [x] Diagnose the compile incompatibility and roll Pipeline plus its transitive package changes back.
 - [x] Verify the restored compile state, lint, data integrity, and Play-mode smoke.
+- [x] Prove an Editor-closed headless integrity run through `unity run`.
+- [x] Prove an Editor-closed macOS audit build through Hollowfen's existing production gate.
 - [x] Leave release behavior unchanged: no Pipeline package, custom command, or Player component remains.
 - [x] Docs updated + worksheet finalized.
 
@@ -26,6 +28,8 @@ Evaluate Unity's native CLI and experimental Pipeline package beside the existin
 | Existing worktree | Preserve existing package/doc/code changes; do not create a mixed commit | The tree contains extensive user-owned production work predating this pilot, including edits to `manifest.json` and `packages-lock.json`. |
 | Compatibility result | Keep the standalone CLI; roll back Pipeline and its Codex MCP registration | Pipeline cannot currently compile beside Hollowfen's embedded Coplay package without patching or weakening a third-party package. A dormant MCP registration would expose unusable tools in future Codex tasks. |
 | Hollowfen adapter | Deferred | Custom `[CliCommand]` endpoints require Pipeline, so none were added after the compatibility gate failed. |
+| Standalone integration | Wrap Hollowfen's existing entry points; do not replace them | `unity run` and `unity build` provide lifecycle, logging, timeout, and exit-code handling while `DataIntegrity.RunCLI` and `ProductionBuildGate` retain the actual project policy. |
+| Hooks | Leave pre-commit unchanged | Cold batch-mode launches require the interactive Editor to be closed and are too slow and lock-sensitive for every commit. |
 
 ## Verification evidence
 
@@ -55,6 +59,16 @@ Post-rollback gates:
 - `python3 tools/agent/run_integrity.py` — PASS (`ERRORS=0 WARNINGS=0`).
 - `python3 tools/agent/smoke_play.py --min-frames 240` — PASS at 242 frames with zero pre-play and in-play console errors.
 
+Standalone CLI Track 1 verification (interactive Editor closed, clean checkpoint `1acaa2c`):
+
+- `unity run Hollowfen-Unity -- -executeMethod Hollowfen.EditorTools.DataIntegrity.RunCLI` — PASS, exit code `0`, with exact parity against the bridge result: 26 quests, 145 dialogues, 11 NPCs, 15 locations, 21 mushrooms, 30 story cards, 28 story moments, 31 character profiles, four endings, 16 village requests, seven restoration projects, zero errors, and zero warnings.
+- `unity build` requires an `--execute-method`; it is not an independent Unity build pipeline. The verified entry point is `Hollowfen.EditorTools.ProductionBuildGate.BuildAuditFromCommandLine`.
+- The CLI's `--output-path` becomes Unity's `-buildOutput`, but Hollowfen deliberately requires `-hollowfenOutput`. The verified invocation supplied both and translated the output path explicitly through `--args`.
+- Gated macOS audit build — PASS, exit code `0`: `StandaloneOSX`, 4,171,093,757 bytes (3.9 GB on disk), 189 files, isolated under `/tmp`, and zero Coplay, MCPForUnity, Newtonsoft.Json, glTFast, Visual Scripting, or Multiplayer artifacts in the player.
+- The batch launch reused the installed Unity Personal licence successfully; service-account CLI authentication alone should still not be treated as proof that a future CI host has a valid Editor licence.
+- Unity's raw batch startup log includes its transient Hub access-token command-line argument. Never publish that log verbatim from CI; redact the token-bearing line or keep the raw log private.
+- The repository remained clean after both runs. No hook, wrapper, manifest, package, release gate, or project setting was changed by Track 1 verification.
+
 ## Docs updated
 
 - `Docs/worksheets/batch-118-unity-cli-adoption-pilot.md` — live pilot record and handoff.
@@ -68,8 +82,8 @@ The safe adoption boundary is now explicit:
 3. Re-test native Pipeline when Unity removes the Newtonsoft assembly collision or documents a supported coexistence mechanism.
 4. If earlier evaluation is valuable, use a separate disposable Coplay-free project or copy; do not turn Hollowfen production into the experiment.
 
-The working tree was already extensively dirty before this batch. This worksheet is the only new project file from the pilot; do not stage or commit unrelated files.
+The accumulated production state through batch 118 is checkpointed at `1acaa2c`. The standalone verification record is a documentation-only follow-up; no implementation wrapper or CI integration has been added yet.
 
 ## Feedback to Trevor
 
-Unity CLI remains strategically promising and is now installed, but the current experimental Pipeline package is not side-by-side compatible with Hollowfen's hardened embedded Coplay package. The pilot protected the game: it found the failure at the compile gate, preserved Coplay, and restored all project checks before any Hollowfen adapter or Player-runtime surface was introduced.
+The standalone Unity CLI is now proven useful for Hollowfen's headless integrity and gated audit-build workflows. Coplay remains the only live Editor surface, because the current experimental Pipeline package is not side-by-side compatible with Hollowfen's hardened embedded Coplay package. The adoption split is evidence-backed: standalone automation passes, Pipeline automation remains parked.
