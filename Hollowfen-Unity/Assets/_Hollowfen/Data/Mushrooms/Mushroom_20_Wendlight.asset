@@ -38,7 +38,8 @@ MonoBehaviour:
     with deadly Galerina when it is not bruised \u2014 never collect by appearance
     alone. Sable's hand underlines the habitat once: where water had been betrayed."
   _photo: {fileID: 21300000, guid: 2ee3be24c4dae4c2180158e9f017bd0d, type: 3}
-  _photoCredit: Wikimedia Commons
+  _photoCredit: Generated with OpenAI gpt-image
+  _journalPage: {fileID: 21300000, guid: 896f29b847ff04770b4948d1d1d48797, type: 3}
   _worldPrefab: {fileID: 5716283212947672387, guid: cadc54d2a332f4134876f80e70efbdcf, type: 3}
   _journalPreviewPrefab: {fileID: 2607102179713991365, guid: b6f061faa67c7413d887c18b1b02f1b9, type: 3}
   _journalExposure: 0.41

@@ -15,35 +15,361 @@ MonoBehaviour:
   _id: joren
   _displayNameId: npc.joren.name
   _dialogueEntries:
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: forge_in_use
+    blockedByFlagId: encounter.forge_ledger_seen
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: Settling the forge ledger
+    requiresPartnerNpcId: pell
+    requiresPartnerScheduleSlotLabel: Settling the forge ledger
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: a9aaf6c4dce9045d9bfaf9b15e642169, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: apothecary_case_resolved_joren_hammer_echo
+    blockedByFlagId: apothecary_case_followup_seen_joren_hammer_echo
+    requiresNoActiveQuest: 1
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 64bedd9a65c2f47d49a23ba3f0b3bfc0, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: apothecary_case_active_joren_hammer_echo
+    blockedByFlagId: apothecary_case_intake_joren_hammer_echo
+    requiresNoActiveQuest: 1
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 49effffc75dea4ac2bc31ddc0b004a5f, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: ending_free_hollow
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: joren.ending_free_hollow_reaction
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 7e3af04a8fb3c4daba47e8f916dcf5df, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: ending_lordly_patronage
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: joren.ending_lordly_patronage_reaction
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: d8c5ed1b3ed82425994a61432e4a2466, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: ending_capital
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: joren.ending_capital_reaction
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 47e9b8aa2c049469a89792625d560858, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: ending_witch_path
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: joren.ending_witch_path_reaction
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 04a281ec71f9e45179c3661084ffaece, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: final_choice_available
+    blockedByFlagId: game_complete
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: joren.weighed_final_choice
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 2f07101f57f8b4c07ad60cc9f17cb64e, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: tobin_workshop_in_use
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: joren.shared_first_fire
+    blockedByMemoryId: joren.made_shelf_bracket
+    favorId: favor.joren.working_silence
+    minimumFavorStage: 1
+    maximumFavorStage: 1
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 1440fe203beed465bb377b1eb8c2f6c5, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: forge_in_use
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: joren.shared_first_fire
+    favorId: favor.joren.working_silence
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 3925adfb527fe49d8a54d96ef3062d91, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: tobin_workshop_in_use
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: joren.made_shelf_bracket
+    blockedByMemoryId: 
+    favorId: favor.joren.working_silence
+    minimumFavorStage: 2
+    maximumFavorStage: 0
+    usesMinimumRelationship: 1
+    minimumRelationship: 4
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 0e8cfffce91f3436e8d8e29dee9e584d, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: tobin_workshop_work_started
+    blockedByFlagId: tobin_workshop_restored
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: b5340dc12305c49bf9648904984f5fdd, type: 2}
   - activeQuest: {fileID: 11400000, guid: 361dbfb41db8407590f092f68dd45ae9, type: 2}
     requiresQuestCompleted: {fileID: 0}
     requiresFlagId: knife_ready
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
     requiresCoinsCopper: 0
     requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
     dialog: {fileID: 11400000, guid: bf4d804b2711402f9f2039202e0a2b04, type: 2}
   - activeQuest: {fileID: 11400000, guid: 361dbfb41db8407590f092f68dd45ae9, type: 2}
     requiresQuestCompleted: {fileID: 0}
     requiresFlagId: knife_commissioned
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
     requiresCoinsCopper: 0
     requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
     dialog: {fileID: 11400000, guid: aeef982f1e234e2cbc55e1cb98d4d740, type: 2}
   - activeQuest: {fileID: 11400000, guid: 361dbfb41db8407590f092f68dd45ae9, type: 2}
     requiresQuestCompleted: {fileID: 0}
-    requiresFlagId:
+    requiresFlagId: 
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
     requiresCoinsCopper: 0
     requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
     dialog: {fileID: 11400000, guid: 52a4b596716f44658a907072b8d32b4e, type: 2}
   - activeQuest: {fileID: 11400000, guid: 526e25bd081e4e6a9029e8273760d303, type: 2}
     requiresQuestCompleted: {fileID: 0}
-    requiresFlagId:
+    requiresFlagId: 
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
     requiresCoinsCopper: 0
     requiresBasketNonEmpty: 0
     requiresForage: {fileID: 0}
     dialog: {fileID: 11400000, guid: 804b116912a444b9950f14de394f6d77, type: 2}
   - activeQuest: {fileID: 0}
     requiresQuestCompleted: {fileID: 11400000, guid: 361dbfb41db8407590f092f68dd45ae9, type: 2}
-    requiresFlagId:
+    requiresFlagId: 
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
     requiresCoinsCopper: 0
     requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
     dialog: {fileID: 11400000, guid: 0d912d5097fa45b39dcdac82f8d38fc5, type: 2}
   _repeatDialog: {fileID: 0}

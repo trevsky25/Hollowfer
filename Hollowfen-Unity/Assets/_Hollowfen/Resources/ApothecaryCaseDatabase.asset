@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd48bca00e6c246669ead0223c1e3c68, type: 3}
+  m_Name: ApothecaryCaseDatabase
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Apothecary.ApothecaryCaseDatabase
+  _cases:
+  - {fileID: 11400000, guid: 902bbc96e960143eaa39f298ab3abbb7, type: 2}
+  - {fileID: 11400000, guid: 45c0aab0e972e4194ae2fbcc7fe4b082, type: 2}
+  - {fileID: 11400000, guid: 682998d3b70cf4e6db4720f4cb1b5308, type: 2}
+  - {fileID: 11400000, guid: ebadbb0e8fb84434084358bce4d2ce2f, type: 2}
+  - {fileID: 11400000, guid: 186683c38e86e4993859ad291765e759, type: 2}
+  - {fileID: 11400000, guid: 0da572688d2c14b7db5a3fdd0febcb20, type: 2}

@@ -70,6 +70,11 @@ MonoBehaviour:
       your grandmother.'
     isCloseup: 1
     voiceClip: {fileID: 8300000, guid: 5273b31c3069546f4bc36117d4f4469d, type: 3}
+  _mushroomHandoff:
+    beforeLineIndex: 0
+    recipientSpeaker: 
+    mushroom: {fileID: 0}
+    presentationHeight: 0
   _unlockStoryCard: {fileID: 11400000, guid: 6020acf222d4544ff805f44f48397cbc, type: 2}
   _completeQuest: {fileID: 11400000, guid: bb25aa206b764410b9eb5925b6101dc8, type: 2}
   _giveItemId: 
@@ -88,6 +93,10 @@ MonoBehaviour:
   _relationshipNpcIds:
   - almy
   _relationshipDeltas: 05000000
-  _transitionMoment: {fileID: 0}
+  _memoryOutcomes: []
+  _bondOutcomes: []
+  _favorOutcomes: []
+  _advanceMinutes: 0
+  _transitionMoment: {fileID: 11400000, guid: 4030bea9bea1a4f77af59478d3a0a26f, type: 2}
   _nextDialog: {fileID: 0}
   _choices: []

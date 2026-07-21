@@ -1,0 +1,83 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b4e19f76957446acb794b6622b288e2, type: 3}
+  m_Name: Character_old-bram
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.CharacterProfileData
+  _id: old-bram
+  _characterName: Bram
+  _role: Innkeeper / first buyer
+  _age: Sixties
+  _home: The Crooked Pintle
+  _work: Innkeeping and village trade
+  _keepsake: The mill key wrapped in a rag
+  _tagline: The old innkeeper who kept a key and a place at the hearth.
+  _leadParagraph: 'Bram is the first familiar face Wren sees on returning to Hollowfen:
+    broad, white-bearded, and careful with every word he has waited years to say.'
+  _backgroundParagraph: He keeps the Crooked Pintle open through lean seasons, buys
+    Wren's first basket, and remembers both the Tobin family and the village before
+    the Wend changed course.
+  _perspectiveParagraph: Bram measures recovery in warm bowls, occupied chairs, familiar
+    lantern hooks, and whether the inn can still make room for someone coming home.
+  _kitItems: []
+  _heroPortrait: {fileID: 0}
+  _pullquote: Lord help me. You've got your father's height.
+  _displayNameId: character.old_bram.name
+  _descriptionId: character.old_bram.lead
+  _sortOrder: 1
+  _category: 0
+  _edition: 02 / OLD BRAM
+  _previewScale: 1
+  _tPosePlate: {fileID: 0}
+  _characterSheet: {fileID: 0}
+  _missions:
+  - Act: 1
+    QuestId: arrive
+    Title: Homecoming
+    Summary: Recognize Wren at the village well.
+  - Act: 1
+    QuestId: speakBram
+    Title: The Crooked Pintle
+    Summary: Give Wren the mill key and what news he can bear to tell.
+  - Act: 1
+    QuestId: firstSale
+    Title: Marra's Kitchen
+    Summary: Buy Wren's first basket and bring Marra into the room.
+  - Act: 2
+    QuestId: meetHollin
+    Title: A Stranger at the Inn
+    Summary: Host the traveler who asks for Wren by name.
+  - Act: 3
+    QuestId: festivalHosted
+    Title: The First Festival in Three Years
+    Summary: Restore the Pintle's lanterns and public place in village life.
+  _quotes:
+  - Text: Lord help me. You've got your father's height.
+    Context: Recognizing Wren after three winters.
+  - Text: Wheel hasn't turned since the Wend went and changed its mind about where
+      it was going.
+    Context: Explaining what happened to the mill.
+  - Text: I remember where the lantern hooks go. Mostly.
+    Context: Preparing for Hollowfen's festival.
+  _heroPortraitResourcePath: People/Art/old-bram_hero
+  _tPosePlateResourcePath: People/Art/old-bram_tpose
+  _characterSheetResourcePath: People/Art/old-bram_hero
+  _journalModelResourcePath: People/Models/old-bram
+  _journalTriangleBudget: 90000
+  _journalTextureSize: 2048
+  _journalModelPrefab: {fileID: 0}
+  _journalIdleClip: {fileID: 0}
+  _journalExposure: 0.15
+  _studySheet: {fileID: 0}
+  _figureFront: {fileID: 0}
+  _figureBack: {fileID: 0}
+  _figureThreeQuarter: {fileID: 0}
+  _knifePlate: {fileID: 0}

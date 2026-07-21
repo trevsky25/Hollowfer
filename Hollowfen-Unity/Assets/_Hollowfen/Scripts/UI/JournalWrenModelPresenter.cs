@@ -9,7 +9,7 @@ using UnityEngine.UI;
 namespace Hollowfen.UI
 {
     /// <summary>
-    /// Visual-only, isolated character study rig for Wren's journal page.
+    /// Visual-only, isolated character study rig for the People of Hollowfen archive.
     /// It owns its RenderTexture, cloned preview materials, animation graph,
     /// lights, and lifecycle; no player/input/controller component is instantiated.
     /// </summary>
@@ -24,7 +24,7 @@ namespace Hollowfen.UI
         private const float MaxPitch = 32f;
         private const float MinZoomScale = 0.52f;
         private const float MaxZoomScale = 1.34f;
-        private const float FramingPadding = 1.045f;
+        private const float FramingPadding = 1.08f;
         private static int _nextStage;
 
         private readonly List<Material> _previewMaterials = new List<Material>();
@@ -50,7 +50,7 @@ namespace Hollowfen.UI
         private int _textureWidth = 768;
         private int _textureHeight = 896;
 
-        public bool HasModel => _profile != null && _profile.JournalModelPrefab != null && _current != null;
+        public bool HasModel => _current != null;
         public RenderTexture Texture => _renderTexture;
         public float ZoomScale => _zoomScale;
         public Vector2 Rotation => new Vector2(_yaw, _pitch);
@@ -85,7 +85,8 @@ namespace Hollowfen.UI
 
             ClearCurrent();
             _profile = profile;
-            if (profile == null || profile.JournalModelPrefab == null)
+            GameObject prefab = profile != null ? profile.JournalModelPrefab : null;
+            if (prefab == null)
             {
                 _image.enabled = false;
                 return;
@@ -99,8 +100,8 @@ namespace Hollowfen.UI
             }
 
             _mount.localRotation = Quaternion.identity;
-            _current = Instantiate(profile.JournalModelPrefab, _mount);
-            _current.name = "Wren_JournalStudy";
+            _current = Instantiate(prefab, _mount);
+            _current.name = (string.IsNullOrEmpty(profile.Id) ? "Character" : profile.Id) + "_JournalStudy";
             _current.transform.localPosition = Vector3.zero;
             _current.transform.localRotation = Quaternion.identity;
             _current.transform.localScale = Vector3.one;
@@ -118,6 +119,37 @@ namespace Hollowfen.UI
             ResetView();
             _image.enabled = true;
             SetRigActive(isActiveAndEnabled);
+        }
+
+        public void Clear()
+        {
+            SetProfile(null);
+        }
+
+        public void ReleaseResources()
+        {
+            ClearCurrent();
+            _profile = null;
+            if (_camera != null) _camera.targetTexture = null;
+            if (_image != null)
+            {
+                _image.texture = null;
+                _image.enabled = false;
+            }
+            if (_renderTexture != null)
+            {
+                _renderTexture.Release();
+                Destroy(_renderTexture);
+                _renderTexture = null;
+            }
+            if (_rigRoot != null) Destroy(_rigRoot);
+            _rigRoot = null;
+            _mount = null;
+            _camera = null;
+            _key = null;
+            _fill = null;
+            _rim = null;
+            _bounce = null;
         }
 
         public void ApplyRotationDelta(float yawDelta, float pitchDelta)
@@ -189,14 +221,7 @@ namespace Hollowfen.UI
 
         private void OnDestroy()
         {
-            ClearCurrent();
-            if (_renderTexture != null)
-            {
-                _renderTexture.Release();
-                Destroy(_renderTexture);
-                _renderTexture = null;
-            }
-            if (_rigRoot != null) Destroy(_rigRoot);
+            ReleaseResources();
         }
 
         private void EnsureRig()
@@ -211,7 +236,7 @@ namespace Hollowfen.UI
 
             int stageIndex = _nextStage++;
             Vector3 origin = new Vector3(3000f + stageIndex * 12f, -3000f, 3000f);
-            _rigRoot = new GameObject("JournalWrenPreviewRig_" + stageIndex);
+            _rigRoot = new GameObject("JournalCharacterPreviewRig_" + stageIndex);
             _rigRoot.transform.position = origin;
             DontDestroyOnLoad(_rigRoot);
 
@@ -232,12 +257,15 @@ namespace Hollowfen.UI
             _camera.nearClipPlane = 0.01f;
             _camera.farClipPlane = 12f;
             _camera.allowHDR = false;
-            _camera.allowMSAA = true;
+            // The project URP assets run at 1x MSAA. The preview is already
+            // rendered above its on-screen size, so bilinear downsampling gives
+            // clean edges without a wasted four-sample color/depth allocation.
+            _camera.allowMSAA = false;
 
             _renderTexture = new RenderTexture(_textureWidth, _textureHeight, 24, RenderTextureFormat.ARGB32)
             {
-                name = "JournalWrenRT_" + stageIndex,
-                antiAliasing = 4,
+                name = "JournalCharacterRT_" + stageIndex,
+                antiAliasing = 1,
                 filterMode = FilterMode.Bilinear,
                 wrapMode = TextureWrapMode.Clamp
             };
@@ -282,12 +310,12 @@ namespace Hollowfen.UI
             animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
             animator.updateMode = AnimatorUpdateMode.UnscaledTime;
 
-            _animationGraph = PlayableGraph.Create("WrenJournalIdle");
+            _animationGraph = PlayableGraph.Create("CharacterJournalIdle");
             _animationGraph.SetTimeUpdateMode(DirectorUpdateMode.UnscaledGameTime);
             _idlePlayable = AnimationClipPlayable.Create(_animationGraph, clip);
             _idlePlayable.SetApplyFootIK(true);
             _idlePlayable.SetTime(0.85f);
-            var output = AnimationPlayableOutput.Create(_animationGraph, "WrenJournalIdleOutput", animator);
+            var output = AnimationPlayableOutput.Create(_animationGraph, "CharacterJournalIdleOutput", animator);
             output.SetSourcePlayable(_idlePlayable);
             _animationGraph.Play();
             _animationGraph.Evaluate(0f);
@@ -300,7 +328,13 @@ namespace Hollowfen.UI
             if (renderers.Length == 0) return;
             Bounds bounds = renderers[0].bounds;
             for (int i = 1; i < renderers.Length; i++) bounds.Encapsulate(renderers[i].bounds);
-            _current.transform.position += _mount.position - bounds.center;
+            float authoredScale = _profile != null ? Mathf.Max(0.1f, _profile.PreviewScale) : 1f;
+            float adultReferenceHeight = bounds.size.y / authoredScale;
+            Vector3 targetGround = _mount.position + Vector3.down * (adultReferenceHeight * 0.5f);
+            _current.transform.position += new Vector3(
+                _mount.position.x - bounds.center.x,
+                targetGround.y - bounds.min.y,
+                _mount.position.z - bounds.center.z);
 
             bounds = renderers[0].bounds;
             for (int i = 1; i < renderers.Length; i++) bounds.Encapsulate(renderers[i].bounds);
@@ -310,9 +344,12 @@ namespace Hollowfen.UI
                 : 1f;
             float horizontalRadius = Mathf.Sqrt(
                 bounds.extents.x * bounds.extents.x + bounds.extents.z * bounds.extents.z);
+            // Youth scale is baked into the static FBX. Compensate the camera's
+            // auto-fit calculation so a smaller person still reads smaller beside
+            // the adult portraits instead of being enlarged to fill the frame.
             _baseOrthoSize = Mathf.Max(
                 Mathf.Max(0.05f, bounds.extents.y),
-                horizontalRadius / Mathf.Max(0.05f, aspect)) * FramingPadding;
+                horizontalRadius / Mathf.Max(0.05f, aspect)) * FramingPadding / authoredScale;
             _camera.orthographicSize = _baseOrthoSize;
         }
 
@@ -331,7 +368,7 @@ namespace Hollowfen.UI
                     Material clone;
                     if (!clones.TryGetValue(source, out clone))
                     {
-                        clone = new Material(source) { name = source.name + "_WrenJournalPreview" };
+                        clone = new Material(source) { name = source.name + "_CharacterJournalPreview" };
                         Texture albedo = source.GetTexture("_BaseMap");
                         clone.SetColor("_BaseColor", new Color(1.08f, 1.08f, 1.08f, 1f));
                         if (albedo != null && ambient > 0f)

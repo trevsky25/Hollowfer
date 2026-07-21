@@ -1,5 +1,6 @@
 using System.Collections;
 using Hollowfen.Audio;
+using Hollowfen.Cinematics;
 using Hollowfen.Foraging;
 using Hollowfen.Quests;
 using Hollowfen.UI;
@@ -20,6 +21,7 @@ namespace Hollowfen.GameTime
         [SerializeField] private float _holdSeconds = 0.7f;
 
         private bool _resting;
+        private NarrativePresentationSession.Lease _presentationLease;
 
         public string PromptVerb => "prompt.rest.verb";
         public string PromptTarget => Localization.Get(_targetTextId);
@@ -54,28 +56,37 @@ namespace Hollowfen.GameTime
         {
             if (_resting) yield break;
             _resting = true;
-            float previousScale = Time.timeScale;
-            Time.timeScale = 0f;
-            PlayerInteractor.Suspended = true;
-            PlayerInteractor.SetPlayerInputEnabled(false);
+            _presentationLease = NarrativePresentationSession.Acquire(
+                this, NarrativePresentationSession.Modal);
+            GameObject overlay = null;
+            try
+            {
+                overlay = BuildOverlay(out var group, out var caption);
+                caption.text = "";
+                GameplaySfx.Rest();
+                yield return Fade(group, 0f, 1f);
 
-            var overlay = BuildOverlay(out var group, out var caption);
-            caption.text = "";
-            GameplaySfx.Rest();
-            yield return Fade(group, 0f, 1f);
+                var time = TimeManager.Instance;
+                if (time != null) time.AdvanceTo(targetDay, targetHour, true);
+                bool dusk = Mathf.Approximately(targetHour, _duskHour);
+                caption.text = string.Format(Localization.Get(dusk ? "rest.transition.dusk" : "rest.transition.dawn"), targetDay);
+                yield return new WaitForSecondsRealtime(_holdSeconds);
+                yield return Fade(group, 1f, 0f);
+            }
+            finally
+            {
+                if (overlay != null) Destroy(overlay);
+                ReleasePresentation();
+                _resting = false;
+            }
+        }
 
-            var time = TimeManager.Instance;
-            if (time != null) time.AdvanceTo(targetDay, targetHour, true);
-            bool dusk = Mathf.Approximately(targetHour, _duskHour);
-            caption.text = string.Format(Localization.Get(dusk ? "rest.transition.dusk" : "rest.transition.dawn"), targetDay);
-            yield return new WaitForSecondsRealtime(_holdSeconds);
-            yield return Fade(group, 1f, 0f);
+        private void OnDestroy() => ReleasePresentation();
 
-            Destroy(overlay);
-            Time.timeScale = previousScale;
-            PlayerInteractor.Suspended = false;
-            PlayerInteractor.SetPlayerInputEnabled(true);
-            _resting = false;
+        private void ReleasePresentation()
+        {
+            _presentationLease?.Dispose();
+            _presentationLease = null;
         }
 
         private GameObject BuildOverlay(out CanvasGroup group, out TMP_Text caption)

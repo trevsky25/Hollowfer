@@ -13,6 +13,7 @@ namespace Hollowfen.UI
         public virtual GameObject DefaultSelected => _defaultSelected;
         public CanvasGroup CanvasGroup => _canvasGroup;
         public bool IsModal => _isModal;
+        public virtual bool IsRootScreen => false;
 
         private bool _initialized;
 

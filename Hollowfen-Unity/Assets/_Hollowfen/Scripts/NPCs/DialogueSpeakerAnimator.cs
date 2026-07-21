@@ -20,7 +20,8 @@ namespace Hollowfen.NPCs
 
         public string SpeakerName => _speakerName;
         public Animator CharacterAnimator => _animator;
-        public bool IsTalking => _hasTalkingParameter && _animator != null && _animator.GetBool(_talkingHash);
+        public bool IsTalking => _hasTalkingParameter && _animator != null && _animator.isInitialized &&
+                                 _animator.GetBool(_talkingHash);
 
         private void Awake()
         {
@@ -69,7 +70,8 @@ namespace Hollowfen.NPCs
 
         private void SetTalking(bool talking)
         {
-            if (_animator == null || !_animator.isActiveAndEnabled || _animator.runtimeAnimatorController == null)
+            if (_animator == null || !_animator.isActiveAndEnabled || !_animator.isInitialized ||
+                _animator.runtimeAnimatorController == null)
                 return;
             if (!_hasTalkingParameter) CacheParameter();
             if (!_hasTalkingParameter) return;

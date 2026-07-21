@@ -18,11 +18,11 @@ MonoBehaviour:
   _act: 3
   _order: 20
   _unlockStoryCardOnComplete: {fileID: 11400000, guid: c212ef4856d724a3ab98ecc269e04b6e, type: 2}
+  _storyMoment: {fileID: 11400000, guid: 945ba6de9f0bd40beab447420e6e8ac1, type: 2}
   _nextQuest: {fileID: 11400000, guid: fb180177b287462394b3f2cded48acf9, type: 2}
   _waypointLocation: {fileID: 11400000, guid: 68150875e462d46d993c04ae1b636395, type: 2}
   _villageHopeDelta: 0
   _knowledgeDelta: 0
   _relationshipNpcIds:
   - edda
-  _relationshipDeltas:
-  - 20
+  _relationshipDeltas: 14000000

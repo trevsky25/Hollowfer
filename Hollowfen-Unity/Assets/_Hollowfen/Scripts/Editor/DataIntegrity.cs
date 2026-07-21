@@ -9,6 +9,7 @@ using Hollowfen.Map;
 using Hollowfen.NPCs;
 using Hollowfen.Quests;
 using Hollowfen.Requests;
+using Hollowfen.Restoration;
 using UnityEditor;
 using UnityEngine;
 
@@ -33,6 +34,15 @@ namespace Hollowfen.EditorTools
         private static readonly HashSet<string> CanonNpcIds = new HashSet<string>
         { "bram", "marra", "edda", "almy", "joren", "voss", "theo", "hollin", "calden", "aldric", "pell" };
 
+        private static readonly string[] CanonPeopleIds =
+        {
+            "wren-tobin", "old-bram", "marra", "edda", "sister-almy", "joren", "master-voss", "theo",
+            "hollin", "father-calden", "elder-pell", "lord-aldric", "eddas-grandfather", "wenmar-father",
+            "wenmar-mother", "wenmar-son", "villager-01", "villager-02", "villager-03", "villager-04",
+            "villager-05", "villager-06", "villager-07", "villager-08", "villager-09", "villager-10",
+            "villager-11", "villager-12", "villager-13", "villager-14", "villager-15"
+        };
+
         // Localization ids consumed by live code paths. Localization.Get returns the
         // raw id on a miss, so a missing entry never errors at runtime — only here.
         private static readonly string[] ConsumedPromptIds =
@@ -42,7 +52,13 @@ namespace Hollowfen.EditorTools
             "prompt.door.unlock", "growbed.name", "inspect.locked.knowledge", "prompt.rest.verb",
             "rest.mill_hearth.name", "rest.confirm.dusk.title", "rest.confirm.dusk.body",
             "rest.confirm.dawn.title", "rest.confirm.dawn.body", "rest.transition.dusk", "rest.transition.dawn",
-            "cultivation.eyebrow", "cultivation.title", "cultivation.recipe.details", "cultivation.cancel"
+            "cultivation.eyebrow", "cultivation.title", "cultivation.recipe.details", "cultivation.cancel",
+            "quest.almyTeach.stage.lesson", "quest.almyTeach.stage.plant",
+            "quest.edsGrandfather.stage.ask", "quest.edsGrandfather.stage.almy",
+            "quest.edsGrandfather.stage.forage", "quest.edsGrandfather.stage.brew",
+            "quest.edsGrandfather.stage.deliver", "quest.edsGrandfather.stage.wait",
+            "quest.edsGrandfather.stage.return", "quest.caldenWarning.stage.mill",
+            "quest.caldenWarning.stage.chapel"
         };
 
         private static readonly string[] ConsumedJournalIds =
@@ -56,6 +72,19 @@ namespace Hollowfen.EditorTools
             "journal.field.missing_photo", "journal.field.model_pending", "journal.field.model_caption",
             "journal.field.model_badge", "journal.field.photo_heading", "journal.field.features", "journal.field.note", "journal.field.habitat",
             "journal.field.season", "journal.field.lookalikes", "journal.field.photo_credit",
+            "journal.people.eyebrow", "journal.people.title", "journal.people.summary", "journal.people.archive_count",
+            "journal.people.roster", "journal.people.roster_count", "journal.people.filter.all", "journal.people.filter.story",
+            "journal.people.filter.village", "journal.people.category.story", "journal.people.category.family",
+            "journal.people.category.villager", "journal.people.model_badge", "journal.people.model_pending",
+            "journal.people.model_counter", "journal.people.edition_fallback", "journal.people.details", "journal.people.age",
+            "journal.people.home", "journal.people.work", "journal.people.keepsake", "journal.people.missions_count",
+            "journal.people.missions_none", "journal.people.ambient_note", "journal.people.act", "journal.people.story_thread",
+            "journal.people.quotes_count", "journal.people.quotes_none", "journal.people.biography", "journal.people.background",
+            "journal.people.perspective", "journal.people.plates", "journal.people.plate.identity",
+            "journal.people.plate.tpose", "journal.people.open_note", "journal.people.relationship_history",
+            "journal.people.relationship_standing", "journal.people.personal_thread",
+            "journal.people.personal_thread_progress", "journal.people.memories_none",
+            "journal.people.memory_day", "journal.people.village_bond",
             "journal.wren.title", "journal.wren.background", "journal.wren.perspective", "journal.wren.carries", "journal.wren.studies",
             "journal.wren.age", "journal.wren.home", "journal.wren.work", "journal.wren.keepsake",
             "journal.wren.model_badge", "journal.wren.model_caption", "journal.wren.model_pending",
@@ -78,6 +107,14 @@ namespace Hollowfen.EditorTools
             "request.completed.eyebrow", "request.completed.title", "request.completed.body",
             "request.completed.story_body", "request.completed.first", "request.completed.repeat",
             "request.tracker.story", "request.tracker.daily"
+        };
+
+        private static readonly string[] ConsumedAccessibilityIds =
+        {
+            "settings.tab.accessibility", "settings.accessibility.interface_scale",
+            "settings.accessibility.scale.standard", "settings.accessibility.scale.large",
+            "settings.accessibility.scale.largest", "settings.accessibility.reduced_motion",
+            "settings.accessibility.caption_backing", "settings.accessibility.note",
         };
 
         public enum Severity { Error, Warn, Info }
@@ -118,6 +155,7 @@ namespace Hollowfen.EditorTools
             var characters = LoadAll<CharacterProfileData>();
             var endings = LoadAll<EndingData>();
             var requests = LoadAll<VillageRequestData>();
+            var restorations = LoadAll<RestorationProjectData>();
             var loc = LocalizationTable(issues);
 
             CheckQuests(issues, quests, loc);
@@ -126,16 +164,17 @@ namespace Hollowfen.EditorTools
             CheckNpcs(issues, npcs, loc);
             CheckScoreHooks(issues, quests, mushrooms);
             CheckDatabases(issues);
-            CheckJournalContent(issues, stories, mushrooms, characters);
-            CheckStoryMoments(issues, quests, dialogues, stories, storyMoments, loc);
-            CheckEndings(issues, endings, dialogues);
+            CheckJournalContent(issues, stories, mushrooms, characters, quests);
+            CheckStoryMoments(issues, quests, dialogues, stories, storyMoments, endings, loc);
+            CheckEndings(issues, endings, dialogues, npcs);
             CheckVillageRequests(issues, requests, quests, loc);
+            CheckRestorations(issues, restorations, quests, loc);
             CheckLocations(issues, locations, loc);
             CheckPromptIds(issues, loc);
             CheckBuildSettings(issues);
 
             issues.Add(New(Severity.Info, "coverage", "(project)",
-                $"checked {quests.Count} quests, {dialogues.Count} dialogues, {npcs.Count} NPCs, {locations.Count} locations, {mushrooms.Count} mushrooms, {stories.Count} story cards, {storyMoments.Count} story moments, {characters.Count} character profiles, {endings.Count} endings, {requests.Count} village requests"));
+                $"checked {quests.Count} quests, {dialogues.Count} dialogues, {npcs.Count} NPCs, {locations.Count} locations, {mushrooms.Count} mushrooms, {stories.Count} story cards, {storyMoments.Count} story moments, {characters.Count} character profiles, {endings.Count} endings, {requests.Count} village requests, {restorations.Count} restoration projects"));
             return issues;
         }
 
@@ -237,6 +276,33 @@ namespace Hollowfen.EditorTools
 
                 CheckRelationshipArrays(issues, path, d.RelationshipNpcIds, d.RelationshipDeltas);
 
+                if (d.MemoryOutcomes != null)
+                    for (int i = 0; i < d.MemoryOutcomes.Length; i++)
+                    {
+                        var outcome = d.MemoryOutcomes[i];
+                        if (!CanonNpcIds.Contains(outcome.npcId ?? "") || string.IsNullOrWhiteSpace(outcome.memoryId))
+                            issues.Add(New(Severity.Error, "dialogue-memory", path,
+                                $"memory outcome {i} needs a canonical NPC id and non-empty memory id"));
+                    }
+                if (d.BondOutcomes != null)
+                    for (int i = 0; i < d.BondOutcomes.Length; i++)
+                    {
+                        var outcome = d.BondOutcomes[i];
+                        if (!CanonNpcIds.Contains(outcome.firstNpcId ?? "") ||
+                            !CanonNpcIds.Contains(outcome.secondNpcId ?? "") || outcome.delta == 0 ||
+                            string.Equals(outcome.firstNpcId, outcome.secondNpcId, System.StringComparison.Ordinal))
+                            issues.Add(New(Severity.Error, "dialogue-bond", path,
+                                $"bond outcome {i} needs two different canonical NPC ids and a non-zero delta"));
+                    }
+                if (d.FavorOutcomes != null)
+                    for (int i = 0; i < d.FavorOutcomes.Length; i++)
+                        if (string.IsNullOrWhiteSpace(d.FavorOutcomes[i].favorId) || d.FavorOutcomes[i].stage <= 0)
+                            issues.Add(New(Severity.Error, "dialogue-favor", path,
+                                $"favor outcome {i} needs an id and positive stage"));
+                if (d.AdvanceMinutes > 180)
+                    issues.Add(New(Severity.Warn, "dialogue-time", path,
+                        $"optional activity advances {d.AdvanceMinutes} minutes; verify that this is intentional"));
+
                 if (d.SellsForageBasket && d.BasketCopperPerItem > 0 && d.BasketBuyer == MushroomBuyer.None)
                     issues.Add(New(Severity.Error, "mushroom-economy", path,
                         "repeat basket sale has a flat price but no species-aware buyer"));
@@ -251,6 +317,24 @@ namespace Hollowfen.EditorTools
                 if (d.TransitionMoment != null && d.Id.IndexOf("repeat", System.StringComparison.OrdinalIgnoreCase) >= 0)
                     issues.Add(New(Severity.Error, "story-moment-repeat", path,
                         "repeat dialogue may not replay a one-time story moment"));
+
+                DialogueMushroomHandoffCue handoff = d.MushroomHandoff;
+                if (handoff.IsConfigured)
+                {
+                    if (handoff.beforeLineIndex < 0 || d.Lines == null ||
+                        handoff.beforeLineIndex >= d.Lines.Length)
+                        issues.Add(New(Severity.Error, "dialogue-handoff", path,
+                            $"mushroom handoff line {handoff.beforeLineIndex} is outside the dialogue"));
+                    if (string.IsNullOrWhiteSpace(handoff.recipientSpeaker))
+                        issues.Add(New(Severity.Error, "dialogue-handoff", path,
+                            "mushroom handoff has no recipient speaker"));
+                    if (handoff.mushroom.JournalPreviewPrefab == null && handoff.mushroom.WorldPrefab == null)
+                        issues.Add(New(Severity.Error, "dialogue-handoff", path,
+                            $"handoff species '{handoff.mushroom.Id}' has no 3D presentation prefab"));
+                    if (d.Id.IndexOf("repeat", System.StringComparison.OrdinalIgnoreCase) >= 0)
+                        issues.Add(New(Severity.Error, "dialogue-handoff", path,
+                            "repeat dialogue may not replay a one-time mushroom handoff"));
+                }
 
                 if (d.Choices != null && d.Choices.Length > 0)
                 {
@@ -280,7 +364,8 @@ namespace Hollowfen.EditorTools
             return CycleDfs(root, new HashSet<DialogueData>(), 0);
         }
 
-        private static void CheckEndings(List<Issue> issues, List<EndingData> endings, List<DialogueData> dialogues)
+        private static void CheckEndings(List<Issue> issues, List<EndingData> endings,
+            List<DialogueData> dialogues, List<NPCData> npcs)
         {
             var canonicalFlags = new HashSet<string>(EndingResolver.CanonicalEndingFlags);
             if (endings.Count != canonicalFlags.Count)
@@ -364,6 +449,23 @@ namespace Hollowfen.EditorTools
             }
             foreach (var ending in endings.Where(ending => !wired.Contains(ending)))
                 issues.Add(New(Severity.Error, "ending-choice", Path(meeting), $"ending '{ending.Id}' is not wired into the decision"));
+
+            // The meeting completes and autosaves the final quest before its choice pills appear.
+            // A quit/crash at that point must leave a persisted route back to the same fork.
+            var aldric = npcs.FirstOrDefault(npc => npc.Id == "aldric");
+            var entriesField = typeof(NPCData).GetField("_dialogueEntries",
+                BindingFlags.NonPublic | BindingFlags.Instance);
+            var entries = aldric != null ? entriesField?.GetValue(aldric) as NPCDialogueEntry[] : null;
+            bool hasRecovery = entries != null && entries.Any(entry =>
+                entry.activeQuest == null &&
+                entry.requiresQuestCompleted == meeting.CompleteQuest &&
+                entry.requiresFlagId == "final_choice_available" &&
+                entry.blockedByFlagId == "game_complete" &&
+                entry.dialog == meeting);
+            if (!hasRecovery)
+                issues.Add(New(Severity.Error, "ending-recovery",
+                    aldric != null ? Path(aldric) : DataRoot + "/NPCs/NPC_Aldric.asset",
+                    "completed final quest has no persisted Aldric route back to the ending fork before game_complete"));
         }
 
         private static string EndingRootLabel() => DataRoot + "/Endings";
@@ -414,10 +516,31 @@ namespace Hollowfen.EditorTools
                     // PickDialog is first-match-wins: an unconditional entry above others
                     // permanently shadows everything after it.
                     var unconditional = e.activeQuest == null && e.requiresQuestCompleted == null
-                        && string.IsNullOrEmpty(e.requiresFlagId) && e.requiresCoinsCopper <= 0 && !e.requiresBasketNonEmpty;
+                        && string.IsNullOrEmpty(e.requiresFlagId) && string.IsNullOrEmpty(e.blockedByFlagId)
+                        && !e.requiresNoActiveQuest && string.IsNullOrEmpty(e.requiresScheduleSlotLabel)
+                        && string.IsNullOrEmpty(e.requiresPartnerNpcId)
+                        && string.IsNullOrEmpty(e.requiresPartnerScheduleSlotLabel)
+                        && string.IsNullOrEmpty(e.requiresMemoryId)
+                        && string.IsNullOrEmpty(e.blockedByMemoryId) && string.IsNullOrEmpty(e.favorId)
+                        && !e.usesMinimumRelationship && !e.usesMaximumRelationship
+                        && e.requiresCoinsCopper <= 0 && !e.requiresBasketNonEmpty && e.requiresForage == null;
                     if (unconditional && e.dialog != null && i < entries.Length - 1)
                         issues.Add(New(Severity.Error, "npc-entries", path,
                             $"entry {i} is unconditional — entries {i + 1}..{entries.Length - 1} are unreachable"));
+                    if (!string.IsNullOrEmpty(e.requiresFlagId) && e.requiresFlagId == e.blockedByFlagId)
+                        issues.Add(New(Severity.Error, "npc-entries", path,
+                            $"entry {i} both requires and is blocked by flag '{e.requiresFlagId}'"));
+                    if (!string.IsNullOrEmpty(e.requiresMemoryId) && e.requiresMemoryId == e.blockedByMemoryId)
+                        issues.Add(New(Severity.Error, "npc-entries", path,
+                            $"entry {i} both requires and is blocked by memory '{e.requiresMemoryId}'"));
+                    if (!string.IsNullOrEmpty(e.favorId) && e.maximumFavorStage > 0 &&
+                        e.maximumFavorStage < e.minimumFavorStage)
+                        issues.Add(New(Severity.Error, "npc-entries", path,
+                            $"entry {i} favor stage range is impossible"));
+                    if (e.usesMinimumRelationship && e.usesMaximumRelationship &&
+                        e.maximumRelationship < e.minimumRelationship)
+                        issues.Add(New(Severity.Error, "npc-entries", path,
+                            $"entry {i} relationship range is impossible"));
                 }
                 if (n.RepeatDialog == null)
                     issues.Add(New(Severity.Info, "npc-entries", path, "no repeat dialog — NPC goes silent outside entry conditions (intentional for Voss-style windows)"));
@@ -466,9 +589,14 @@ namespace Hollowfen.EditorTools
                 if (speciesLength != countLength)
                     issues.Add(New(Severity.Error, "village-request", path,
                         $"parallel requirement mismatch: {speciesLength} species vs {countLength} counts"));
-                if (request.RequirementCount < 1 || request.RequirementCount > 4)
+                int preparationLength = request.RequiredPreparations?.Length ?? 0;
+                int preparationCountLength = request.RequiredPreparationCounts?.Length ?? 0;
+                if (preparationLength != preparationCountLength)
                     issues.Add(New(Severity.Error, "village-request", path,
-                        $"request card supports 1–4 requirements; found {request.RequirementCount}"));
+                        $"parallel preparation mismatch: {preparationLength} products vs {preparationCountLength} counts"));
+                if (request.TotalRequirementCount < 1 || request.TotalRequirementCount > 4)
+                    issues.Add(New(Severity.Error, "village-request", path,
+                        $"request card supports 1–4 requirements; found {request.TotalRequirementCount}"));
                 var speciesIds = new HashSet<string>(System.StringComparer.Ordinal);
                 for (int i = 0; i < request.RequirementCount; i++)
                 {
@@ -485,6 +613,23 @@ namespace Hollowfen.EditorTools
                     if (species.Edibility == Edibility.Deadly || species.Edibility == Edibility.Psychoactive)
                         issues.Add(New(Severity.Error, "village-request", path,
                             $"unsafe species '{species.Id}' cannot appear in a village delivery"));
+                }
+                var preparationIds = new HashSet<string>(System.StringComparer.Ordinal);
+                for (int i = 0; i < request.PreparationRequirementCount; i++)
+                {
+                    var preparation = request.RequiredPreparations[i];
+                    if (preparation == null)
+                    {
+                        issues.Add(New(Severity.Error, "village-request", path,
+                            $"prepared requirement {i} has no recipe"));
+                        continue;
+                    }
+                    if (!preparationIds.Add(preparation.ResultId))
+                        issues.Add(New(Severity.Error, "village-request", path,
+                            $"prepared product '{preparation.ResultId}' appears twice"));
+                    if (request.RequiredPreparationCounts[i] <= 0)
+                        issues.Add(New(Severity.Error, "village-request", path,
+                            $"prepared requirement {i} count must be positive"));
                 }
 
                 if (request.RequiredFlagIds != null && request.RequiredFlagIds.Any(string.IsNullOrWhiteSpace))
@@ -507,12 +652,16 @@ namespace Hollowfen.EditorTools
 
                 if (request.OneShot)
                 {
-                    if (request.CompleteQuest == null || request.CompletionDialogue == null)
+                    if (request.CompletionDialogue == null)
                         issues.Add(New(Severity.Error, "village-request", path,
-                            "story request needs an atomic quest completion and follow-up dialogue"));
-                    else if (request.CompleteQuest.Id != request.ActiveQuestId)
+                            "story request needs a follow-up dialogue"));
+                    if (request.CompleteQuest != null &&
+                        request.CompleteQuest.Id != request.ActiveQuestId)
                         issues.Add(New(Severity.Error, "village-request", path,
                             "story request CompleteQuest must match its active quest gate"));
+                    if (request.Kind == VillageRequestKind.Gathering && request.CompleteQuest == null)
+                        issues.Add(New(Severity.Error, "village-request", path,
+                            "one-shot village gathering needs an atomic quest completion"));
                 }
                 else
                 {
@@ -555,6 +704,154 @@ namespace Hollowfen.EditorTools
 
         private static string RequestRootLabel() => DataRoot + "/Requests";
 
+        private static void CheckRestorations(List<Issue> issues,
+            List<RestorationProjectData> projects, List<QuestData> quests,
+            Dictionary<string, string> loc)
+        {
+            var questIds = new HashSet<string>(quests.Select(quest => quest.Id));
+            var projectIds = new HashSet<string>();
+            foreach (var project in projects)
+            {
+                string path = Path(project);
+                if (string.IsNullOrWhiteSpace(project.Id))
+                    issues.Add(New(Severity.Error, "restoration", path, "empty project id"));
+                else if (!projectIds.Add(project.Id))
+                    issues.Add(New(Severity.Error, "restoration", path,
+                        $"duplicate project id '{project.Id}'"));
+
+                RequireLoc(issues, loc, project.TitleId, path, "restoration title");
+                RequireLoc(issues, loc, project.SummaryId, path, "restoration summary");
+                RequireLoc(issues, loc, project.LocationId, path, "restoration location");
+                RequireLoc(issues, loc, project.PromptTargetId, path, "restoration prompt target");
+                if (!string.IsNullOrWhiteSpace(project.BenefitId))
+                    RequireLoc(issues, loc, project.BenefitId, path, "restoration benefit");
+
+                if (!string.IsNullOrWhiteSpace(project.ActiveQuestId) &&
+                    !questIds.Contains(project.ActiveQuestId))
+                    issues.Add(New(Severity.Error, "restoration", path,
+                        $"active quest '{project.ActiveQuestId}' does not exist"));
+                if (!string.IsNullOrWhiteSpace(project.CompletedQuestId) &&
+                    !questIds.Contains(project.CompletedQuestId))
+                    issues.Add(New(Severity.Error, "restoration", path,
+                        $"completion quest '{project.CompletedQuestId}' does not exist"));
+
+                var stageSet = new HashSet<RestorationStage>();
+                foreach (var copy in project.StageCopy ?? System.Array.Empty<RestorationStageCopy>())
+                {
+                    if (!stageSet.Add(copy.Stage))
+                        issues.Add(New(Severity.Error, "restoration", path,
+                            $"duplicate copy for stage {copy.Stage}"));
+                    RequireLoc(issues, loc, copy.TitleId, path, $"{copy.Stage} title");
+                    RequireLoc(issues, loc, copy.BodyId, path, $"{copy.Stage} body");
+                    if (!string.IsNullOrWhiteSpace(copy.ShortId))
+                        RequireLoc(issues, loc, copy.ShortId, path, $"{copy.Stage} short label");
+                }
+                foreach (var required in new[]
+                {
+                    RestorationStage.Surveyed, RestorationStage.SuppliesCommitted,
+                    RestorationStage.WorkUnderway, RestorationStage.Restored,
+                    RestorationStage.Occupied,
+                })
+                    if (!stageSet.Contains(required))
+                        issues.Add(New(Severity.Error, "restoration", path,
+                            $"missing player copy for {required}"));
+
+                foreach (var rule in project.StageRules ?? System.Array.Empty<RestorationStageRule>())
+                {
+                    if (string.IsNullOrWhiteSpace(rule.ValueId))
+                        issues.Add(New(Severity.Error, "restoration", path,
+                            $"{rule.Stage} rule has an empty condition id"));
+                    if ((rule.Condition == RestorationCondition.ActiveQuest ||
+                         rule.Condition == RestorationCondition.CompletedQuest) &&
+                        !questIds.Contains(rule.ValueId))
+                        issues.Add(New(Severity.Error, "restoration", path,
+                            $"{rule.Stage} rule quest '{rule.ValueId}' does not exist"));
+                }
+
+                foreach (var milestone in project.Milestones ?? System.Array.Empty<RestorationMilestone>())
+                {
+                    RequireLoc(issues, loc, milestone.LabelId, path, "milestone label");
+                    RequireLoc(issues, loc, milestone.DetailId, path, "milestone detail");
+                    if (string.IsNullOrWhiteSpace(milestone.ValueId))
+                        issues.Add(New(Severity.Error, "restoration", path,
+                            "milestone has an empty condition id"));
+                    if ((milestone.Condition == RestorationCondition.ActiveQuest ||
+                         milestone.Condition == RestorationCondition.CompletedQuest) &&
+                        !questIds.Contains(milestone.ValueId))
+                        issues.Add(New(Severity.Error, "restoration", path,
+                            $"milestone quest '{milestone.ValueId}' does not exist"));
+                }
+
+                var contributionFlags = new HashSet<string>(System.StringComparer.Ordinal);
+                foreach (var contribution in project.Contributions ??
+                         System.Array.Empty<RestorationContribution>())
+                {
+                    RequireLoc(issues, loc, contribution.LabelId, path, "contribution label");
+                    RequireLoc(issues, loc, contribution.DetailId, path, "contribution detail");
+                    if (string.IsNullOrWhiteSpace(contribution.FundedFlagId))
+                        issues.Add(New(Severity.Error, "restoration", path,
+                            "contribution has an empty funded flag"));
+                    else if (!contributionFlags.Add(contribution.FundedFlagId))
+                        issues.Add(New(Severity.Error, "restoration", path,
+                            $"duplicate contribution flag '{contribution.FundedFlagId}'"));
+                    if (contribution.CostCopper <= 0)
+                        issues.Add(New(Severity.Error, "restoration", path,
+                            "contribution cost must be positive"));
+                }
+                if ((project.Contributions?.Length ?? 0) > 0 &&
+                    string.IsNullOrWhiteSpace(project.ContributionsCompleteFlagId))
+                    issues.Add(New(Severity.Error, "restoration", path,
+                        "funded project needs a contributions-complete flag"));
+                if ((project.Contributions?.Length ?? 0) > 2)
+                    issues.Add(New(Severity.Error, "restoration", path,
+                        "restoration ledger supports at most two contribution rows"));
+                if ((project.Milestones?.Length ?? 0) > 5)
+                    issues.Add(New(Severity.Error, "restoration", path,
+                        "restoration ledger supports at most five milestone rows"));
+            }
+
+            if (projects.Count > 7)
+                issues.Add(New(Severity.Error, "restoration", "(catalogue)",
+                    "restoration ledger supports at most seven projects"));
+
+            string databasePath = "Assets/_Hollowfen/Resources/RestorationProjectDatabase.asset";
+            var database = AssetDatabase.LoadAssetAtPath<RestorationProjectDatabase>(databasePath);
+            if (database == null)
+            {
+                issues.Add(New(Severity.Error, "restoration", databasePath,
+                    "missing runtime restoration database"));
+            }
+            else
+            {
+                CheckDbArray(issues, database, "_projects", (RestorationProjectData project) => project.Id);
+                var databaseSet = new HashSet<RestorationProjectData>(
+                    database.Projects ?? System.Array.Empty<RestorationProjectData>());
+                foreach (var project in projects.Where(project => !databaseSet.Contains(project)))
+                    issues.Add(New(Severity.Error, "restoration", databasePath,
+                        $"project '{project.Id}' is missing from the runtime database"));
+            }
+
+            foreach (var id in new[]
+            {
+                "prompt.restoration.review", "restoration.board.prompt_target",
+                "restoration.eyebrow", "restoration.heading", "restoration.projects",
+                "restoration.close", "restoration.hint", "restoration.stage.eyebrow",
+                "restoration.current_stage", "restoration.milestones",
+                "restoration.milestone.complete", "restoration.milestone.pending",
+                "restoration.location.format", "restoration.day_record",
+                "restoration.day_record.pending", "restoration.stage.surveyed.short",
+                "restoration.stage.suppliescommitted.short", "restoration.stage.workunderway.short",
+                "restoration.stage.restored.short", "restoration.stage.occupied.short",
+                "restoration.reveal.eyebrow", "restoration.reveal.title", "restoration.reveal.body",
+                "restoration.contribution.prompt", "restoration.contribution.funded",
+                "restoration.contribution.confirm.body", "restoration.contribution.success",
+                "restoration.contribution.insufficient", "restoration.contribution.save_failed",
+                "restoration.contribution.unavailable", "restoration.benefit.format",
+                "restoration.completed.eyebrow", "restoration.completed.benefit",
+            })
+                RequireLoc(issues, loc, id, "(restoration UI)", "runtime restoration chrome");
+        }
+
         private static void CheckDatabases(List<Issue> issues)
         {
             foreach (var db in LoadAll<StoryCardDatabase>())
@@ -569,13 +866,42 @@ namespace Hollowfen.EditorTools
                 if (db.Count != 21)
                     issues.Add(New(Severity.Error, "journal-database", Path(db), $"expected 21 canonical mushroom entries, found {db.Count}"));
             }
+
+            const string peopleDatabasePath = "Assets/_Hollowfen/Resources/PeopleOfHollowfenDatabase.asset";
+            var people = AssetDatabase.LoadAssetAtPath<CharacterProfileDatabase>(peopleDatabasePath);
+            if (people == null)
+            {
+                issues.Add(New(Severity.Error, "journal-database", peopleDatabasePath,
+                    "missing People of Hollowfen runtime database"));
+            }
+            else
+            {
+                CheckDbArray(issues, people, "_profiles", (CharacterProfileData profile) => profile.Id);
+                if (people.Count != CanonPeopleIds.Length)
+                    issues.Add(New(Severity.Error, "journal-database", peopleDatabasePath,
+                        $"expected {CanonPeopleIds.Length} People of Hollowfen portraits, found {people.Count}"));
+
+                int comparable = Mathf.Min(people.Count, CanonPeopleIds.Length);
+                for (int index = 0; index < comparable; index++)
+                {
+                    CharacterProfileData profile = people.Profiles[index];
+                    if (profile == null) continue;
+                    if (!string.Equals(profile.Id, CanonPeopleIds[index], System.StringComparison.Ordinal))
+                        issues.Add(New(Severity.Error, "journal-database", peopleDatabasePath,
+                            $"portrait {index + 1:00} must be '{CanonPeopleIds[index]}', found '{profile.Id}'"));
+                    if (profile.SortOrder != index)
+                        issues.Add(New(Severity.Error, "journal-database", Path(profile),
+                            $"SortOrder must be {index} to match manifest/database order, found {profile.SortOrder}"));
+                }
+            }
         }
 
         private static void CheckJournalContent(
             List<Issue> issues,
             List<StoryCardData> stories,
             List<MushroomFieldGuideData> mushrooms,
-            List<CharacterProfileData> characters)
+            List<CharacterProfileData> characters,
+            List<QuestData> quests)
         {
             foreach (var card in stories)
             {
@@ -652,53 +978,145 @@ namespace Hollowfen.EditorTools
             else
                 issues.Add(New(Severity.Info, "journal-model", "MushroomFieldGuideDatabase", $"{journalModels} species have dedicated 3D journal models"));
 
-            foreach (var profile in characters)
+            const string peopleDatabasePath = "Assets/_Hollowfen/Resources/PeopleOfHollowfenDatabase.asset";
+            var peopleDatabase = AssetDatabase.LoadAssetAtPath<CharacterProfileDatabase>(peopleDatabasePath);
+            List<CharacterProfileData> peopleProfiles = peopleDatabase != null
+                ? peopleDatabase.Profiles.Where(profile => profile != null).ToList()
+                : characters.Where(profile => CanonPeopleIds.Contains(profile.Id)).ToList();
+            var questIds = new HashSet<string>(quests.Select(quest => quest.Id));
+
+            foreach (var profile in peopleProfiles)
             {
                 var path = Path(profile);
                 RequireJournalField(issues, profile.Id, path, "character id");
                 RequireJournalField(issues, profile.DisplayNameId, path, "character DisplayNameId");
                 RequireJournalField(issues, profile.DescriptionId, path, "character DescriptionId");
-                if (profile.HeroPortrait == null)
-                    issues.Add(New(Severity.Error, "journal-art", path, "character profile has no hero portrait"));
+                RequireJournalField(issues, profile.CharacterName, path, "character name fallback");
+                RequireJournalField(issues, profile.Role, path, "character role");
+                RequireJournalField(issues, profile.Age, path, "character age");
+                RequireJournalField(issues, profile.Home, path, "character home");
+                RequireJournalField(issues, profile.Work, path, "character work");
+                RequireJournalField(issues, profile.Keepsake, path, "character keepsake");
+                RequireJournalField(issues, profile.Tagline, path, "character tagline");
+                RequireJournalField(issues, profile.LeadParagraph, path, "character lead paragraph");
+                RequireJournalField(issues, profile.BackgroundParagraph, path, "character background paragraph");
+                RequireJournalField(issues, profile.PerspectiveParagraph, path, "character perspective paragraph");
+                RequireJournalField(issues, profile.Edition, path, "character archive edition");
+                if (profile.PreviewScale <= 0f)
+                    issues.Add(New(Severity.Error, "journal-model", path,
+                        "character PreviewScale must be positive"));
+                if (profile.JournalTriangleBudget <= 0 || profile.JournalTextureSize <= 0)
+                    issues.Add(New(Severity.Error, "journal-model", path,
+                        "character is missing its manifest triangle or texture budget"));
+
+                // Inspect the serialized lazy-load contract directly. Calling the
+                // public getters here would load all 31 Resources assets and would
+                // also let a forbidden heavyweight direct reference masquerade as valid.
+                var serialized = new SerializedObject(profile);
+                string heroResource = serialized.FindProperty("_heroPortraitResourcePath")?.stringValue;
+                string tPoseResource = serialized.FindProperty("_tPosePlateResourcePath")?.stringValue;
+                string sheetResource = serialized.FindProperty("_characterSheetResourcePath")?.stringValue;
+                string modelResource = serialized.FindProperty("_journalModelResourcePath")?.stringValue;
+                RequireJournalField(issues, heroResource, path, "hero resource path");
+                RequireJournalField(issues, tPoseResource, path, "T-pose resource path");
+                RequireJournalField(issues, sheetResource, path, "character-sheet resource path");
+                RequireJournalField(issues, modelResource, path, "journal-model resource path");
+
+                if (serialized.FindProperty("_journalModelPrefab")?.objectReferenceValue != null ||
+                    serialized.FindProperty("_tPosePlate")?.objectReferenceValue != null ||
+                    serialized.FindProperty("_characterSheet")?.objectReferenceValue != null ||
+                    serialized.FindProperty("_journalIdleClip")?.objectReferenceValue != null)
+                    issues.Add(New(Severity.Error, "journal-lazy-loading", path,
+                        "model, T-pose, character sheet, and idle must use lazy resource paths rather than direct references"));
+                if (profile.Id != "wren-tobin" &&
+                    serialized.FindProperty("_heroPortrait")?.objectReferenceValue != null)
+                    issues.Add(New(Severity.Error, "journal-lazy-loading", path,
+                        "non-Wren hero art must use a lazy resource path"));
+
+                Sprite hero = LoadResourceAsset<Sprite>(heroResource, ".png");
+                Sprite tPose = LoadResourceAsset<Sprite>(tPoseResource, ".png");
+                Sprite sheet = LoadResourceAsset<Sprite>(sheetResource, ".png");
+                if (hero == null || tPose == null || sheet == null)
+                    issues.Add(New(Severity.Error, "journal-art", path,
+                        "one or more People of Hollowfen resource paths do not resolve to imported sprites"));
                 if (profile.Id == "wren-tobin" && (profile.StudySheet == null || profile.FigureFront == null ||
                     profile.FigureBack == null || profile.FigureThreeQuarter == null || profile.KnifePlate == null))
                     issues.Add(New(Severity.Error, "journal-art", path, "Wren profile is missing one or more field-study plates"));
-                if (profile.Id == "wren-tobin")
+
+                if (profile.Category == CharacterProfileData.CharacterCategory.Villager)
                 {
-                    if (profile.JournalModelPrefab == null)
-                        issues.Add(New(Severity.Error, "journal-model", path, "Wren profile has no journal model prefab"));
-                    else
-                    {
-                        GameObject preview = profile.JournalModelPrefab;
-                        var skinned = preview.GetComponentsInChildren<SkinnedMeshRenderer>(true);
-                        long triangles = 0;
-                        foreach (SkinnedMeshRenderer renderer in skinned)
-                        {
-                            Mesh mesh = renderer.sharedMesh;
-                            if (mesh == null) continue;
-                            for (int submesh = 0; submesh < mesh.subMeshCount; submesh++)
-                                triangles += (long)mesh.GetIndexCount(submesh) / 3L;
-                        }
-                        if (skinned.Length == 0)
-                            issues.Add(New(Severity.Error, "journal-model", path, "Wren journal prefab has no skinned renderer"));
-                        if (triangles > WrenJournalModelImporter.TriangleBudget)
-                            issues.Add(New(Severity.Error, "journal-model", path, $"Wren journal model has {triangles:N0} triangles; budget is {WrenJournalModelImporter.TriangleBudget:N0}"));
-                        if (preview.GetComponentsInChildren<Collider>(true).Length > 0)
-                            issues.Add(New(Severity.Error, "journal-model", path, "Wren journal prefab must remain collider-free"));
-                        if (preview.GetComponentsInChildren<MonoBehaviour>(true).Length > 0)
-                            issues.Add(New(Severity.Error, "journal-model", path, "Wren journal prefab must remain visual-only (no MonoBehaviours)"));
-                        Animator animator = preview.GetComponentInChildren<Animator>(true);
-                        if (animator == null || animator.avatar == null || !animator.avatar.isValid)
-                            issues.Add(New(Severity.Error, "journal-model", path, "Wren journal prefab has no valid humanoid avatar"));
-                        else
-                            issues.Add(New(Severity.Info, "journal-model", path, $"Wren journal study: {triangles:N0} triangles across {skinned.Length} skinned renderer(s)"));
-                    }
-                    if (profile.JournalIdleClip == null)
-                        issues.Add(New(Severity.Error, "journal-model", path, "Wren profile has no journal idle clip"));
-                    if (profile.JournalExposure < 0f || profile.JournalExposure > 0.4f)
-                        issues.Add(New(Severity.Error, "journal-model", path, "Wren journal exposure is outside the supported 0..0.4 range"));
+                    if ((profile.Missions?.Length ?? 0) != 0 || (profile.Quotes?.Length ?? 0) != 0)
+                        issues.Add(New(Severity.Error, "journal-content", path,
+                            "ambient villagers must not acquire authored missions or dialogue"));
                 }
+
+                foreach (var mission in profile.Missions ?? System.Array.Empty<CharacterProfileData.MissionEntry>())
+                {
+                    if (mission.Act < 1 || mission.Act > 4 || string.IsNullOrWhiteSpace(mission.QuestId) ||
+                        string.IsNullOrWhiteSpace(mission.Title) || string.IsNullOrWhiteSpace(mission.Summary))
+                        issues.Add(New(Severity.Error, "journal-content", path,
+                            "character has an incomplete mission entry"));
+                    else if (!questIds.Contains(mission.QuestId))
+                        issues.Add(New(Severity.Error, "journal-content", path,
+                            $"character mission references unknown quest id '{mission.QuestId}'"));
+                }
+                foreach (var quote in profile.Quotes ?? System.Array.Empty<CharacterProfileData.QuoteEntry>())
+                {
+                    if (string.IsNullOrWhiteSpace(quote.Text) || string.IsNullOrWhiteSpace(quote.Context))
+                        issues.Add(New(Severity.Error, "journal-content", path,
+                            "character has an incomplete attributed quote"));
+                }
+
+                GameObject preview = LoadResourceAsset<GameObject>(modelResource, ".prefab");
+                if (preview == null)
+                {
+                    issues.Add(New(Severity.Error, "journal-model", path,
+                        "People of Hollowfen profile has no lazy-loaded journal preview prefab"));
+                }
+                else
+                {
+                    Renderer[] renderers = preview.GetComponentsInChildren<Renderer>(true);
+                    long triangles = 0;
+                    foreach (Renderer renderer in renderers)
+                    {
+                        Mesh mesh = null;
+                        var skinned = renderer as SkinnedMeshRenderer;
+                        if (skinned != null) mesh = skinned.sharedMesh;
+                        else
+                        {
+                            MeshFilter filter = renderer.GetComponent<MeshFilter>();
+                            if (filter != null) mesh = filter.sharedMesh;
+                        }
+                        if (mesh == null) continue;
+                        for (int submesh = 0; submesh < mesh.subMeshCount; submesh++)
+                            triangles += (long)mesh.GetIndexCount(submesh) / 3L;
+                    }
+                    if (renderers.Length == 0 || triangles <= 0)
+                        issues.Add(New(Severity.Error, "journal-model", path,
+                            "journal preview prefab has no renderable mesh"));
+                    if (triangles > profile.JournalTriangleBudget)
+                        issues.Add(New(Severity.Error, "journal-model", path,
+                            $"journal preview has {triangles:N0} triangles; manifest budget is {profile.JournalTriangleBudget:N0}"));
+
+                    foreach (Component component in preview.GetComponentsInChildren<Component>(true))
+                    {
+                        if (component == null || component is Transform || component is Renderer || component is MeshFilter)
+                            continue;
+                        issues.Add(New(Severity.Error, "journal-model", path,
+                            $"journal preview must be visual-only; found {component.GetType().Name}"));
+                    }
+                }
+
+                if (profile.JournalExposure < 0f || profile.JournalExposure > 0.4f)
+                    issues.Add(New(Severity.Error, "journal-model", path,
+                        "journal exposure is outside the supported 0..0.4 range"));
             }
+
+            var characterIds = new HashSet<string>();
+            foreach (var profile in peopleProfiles)
+                if (!string.IsNullOrWhiteSpace(profile.Id) && !characterIds.Add(profile.Id))
+                    issues.Add(New(Severity.Error, "journal-content", Path(profile),
+                        $"duplicate character profile id '{profile.Id}'"));
         }
 
         private static void CheckStoryMoments(
@@ -707,6 +1125,7 @@ namespace Hollowfen.EditorTools
             List<DialogueData> dialogues,
             List<StoryCardData> stories,
             List<StoryMomentData> moments,
+            List<EndingData> endings,
             Dictionary<string, string> loc)
         {
             var cardsByQuest = stories
@@ -796,10 +1215,73 @@ namespace Hollowfen.EditorTools
                         issues.Add(New(Severity.Error, "story-moment-art", path, "caption maps to an unavailable image"));
                 }
 
+                if (moment.HasPageText)
+                {
+                    bool hasFallback = !string.IsNullOrWhiteSpace(moment.PageTextFallback);
+                    if (string.IsNullOrWhiteSpace(moment.PageTextId) && !hasFallback)
+                        issues.Add(New(Severity.Error, "story-moment-page-text", path,
+                            "live page text has neither localization id nor fallback"));
+                    else if (!string.IsNullOrWhiteSpace(moment.PageTextId) &&
+                             (loc == null || !loc.ContainsKey(moment.PageTextId)) && !hasFallback)
+                        issues.Add(New(Severity.Error, "story-moment-localization", path,
+                            $"page-text id '{moment.PageTextId}' is missing and has no English fallback"));
+                    if (moment.PageTextImageIndex >= images.Length)
+                        issues.Add(New(Severity.Error, "story-moment-page-text", path,
+                            "live page text targets an unavailable image"));
+                    if (moment.PageTextStartBeat >= captions.Length)
+                        issues.Add(New(Severity.Error, "story-moment-page-text", path,
+                            "live page text starts after the final caption beat"));
+                    int[] paragraphBeats = moment.PageTextParagraphRevealBeats;
+                    if (paragraphBeats != null && paragraphBeats.Length > 0)
+                    {
+                        int paragraphCount = moment.PageText.Split(
+                            new[] { "\n\n" }, System.StringSplitOptions.RemoveEmptyEntries).Length;
+                        if (paragraphBeats.Length != paragraphCount)
+                            issues.Add(New(Severity.Error, "story-moment-page-text", path,
+                                $"{paragraphBeats.Length} paragraph reveal beats for {paragraphCount} page-text paragraphs"));
+                        if (paragraphBeats.Any(beat => beat < moment.PageTextStartBeat || beat >= captions.Length))
+                            issues.Add(New(Severity.Error, "story-moment-page-text", path,
+                                "page-text paragraph reveal beat falls outside the authored caption range"));
+                        for (int index = 1; index < paragraphBeats.Length; index++)
+                            if (paragraphBeats[index] < paragraphBeats[index - 1])
+                                issues.Add(New(Severity.Error, "story-moment-page-text", path,
+                                    "page-text paragraph reveal beats must be nondecreasing"));
+                    }
+                    Rect pageRect = moment.PageTextRect;
+                    if (pageRect.width <= 0f || pageRect.height <= 0f || pageRect.xMin < 0f ||
+                        pageRect.yMin < 0f || pageRect.xMax > 1f || pageRect.yMax > 1f)
+                        issues.Add(New(Severity.Error, "story-moment-page-text", path,
+                            "live page text rect must stay within normalized image bounds"));
+
+                    if (moment.UseCursivePageText)
+                    {
+                        const string cursivePath =
+                            "Assets/_Hollowfen/Resources/Fonts/CedarvilleCursive SDF.asset";
+                        var cursive = AssetDatabase.LoadAssetAtPath<TMPro.TMP_FontAsset>(cursivePath);
+                        if (cursive == null)
+                            issues.Add(New(Severity.Error, "story-moment-page-text", path,
+                                "cursive page text is enabled but its runtime font asset is missing"));
+                        else if (cursive.atlasPopulationMode != TMPro.AtlasPopulationMode.Static)
+                            issues.Add(New(Severity.Error, "story-moment-page-text", cursivePath,
+                                "cursive runtime font must use a pre-baked static atlas"));
+                    }
+                }
+
                 var owningQuests = quests.Where(quest => quest.StoryMoment == moment).ToList();
-                if (owningQuests.Count != 1)
+                int endingOwners = endings.Count(ending => ending.StoryCard == moment.StoryCard &&
+                    ending.ResolutionDialogue != null && ending.ResolutionDialogue.TransitionMoment == moment);
+                if (endingOwners > 0)
+                {
+                    if (endingOwners != 1 || owningQuests.Count != 0)
+                        issues.Add(New(Severity.Error, "story-moment-owner", path,
+                            $"ending moment needs one ending and no quest owner; found " +
+                            $"{endingOwners} endings and {owningQuests.Count} quests"));
+                }
+                else if (owningQuests.Count != 1)
+                {
                     issues.Add(New(Severity.Error, "story-moment-owner", path,
                         $"expected one owning quest; found {owningQuests.Count}"));
+                }
 
                 int dialogueRefs = dialogues.Count(dialogue => dialogue.TransitionMoment == moment);
                 if (moment.Trigger == StoryMomentTrigger.DialogueTransition && dialogueRefs != 1)
@@ -851,6 +1333,8 @@ namespace Hollowfen.EditorTools
                 issues.Add(New(Severity.Error, "localization", "Localization.cs", $"ending id '{id}' missing from _table"));
             foreach (var id in ConsumedRequestIds.Where(id => !loc.ContainsKey(id)))
                 issues.Add(New(Severity.Error, "localization", "Localization.cs", $"request id '{id}' missing from _table"));
+            foreach (var id in ConsumedAccessibilityIds.Where(id => !loc.ContainsKey(id)))
+                issues.Add(New(Severity.Error, "localization", "Localization.cs", $"accessibility id '{id}' missing from _table"));
         }
 
         private static void CheckBuildSettings(List<Issue> issues)
@@ -891,6 +1375,13 @@ namespace Hollowfen.EditorTools
         {
             if (string.IsNullOrWhiteSpace(value))
                 issues.Add(New(Severity.Error, "journal-content", path, $"empty {what}"));
+        }
+
+        private static T LoadResourceAsset<T>(string resourcePath, string extension) where T : Object
+        {
+            if (string.IsNullOrWhiteSpace(resourcePath)) return null;
+            string assetPath = "Assets/_Hollowfen/Resources/" + resourcePath.TrimStart('/') + extension;
+            return AssetDatabase.LoadAssetAtPath<T>(assetPath);
         }
 
         private static Dictionary<string, string> LocalizationTable(List<Issue> issues) =>

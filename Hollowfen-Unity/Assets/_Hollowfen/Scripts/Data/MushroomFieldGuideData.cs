@@ -42,6 +42,8 @@ namespace Hollowfen.Data
         [SerializeField, TextArea(2, 8)] private string _notes;
         [SerializeField] private Sprite _photo;
         [SerializeField] private string _photoCredit;
+        [SerializeField, Tooltip("Hand-drawn two-page spread shown as the primary journal entry.")]
+        private Sprite _journalPage;
         [SerializeField] private GameObject _worldPrefab;
         [SerializeField, Tooltip("Optional dedicated model shown in the Field Guide. Assign only when this species has authored 3D art.")]
         private GameObject _journalPreviewPrefab;
@@ -83,6 +85,7 @@ namespace Hollowfen.Data
         public string Notes => _notes;
         public Sprite Photo => _photo;
         public string PhotoCredit => _photoCredit;
+        public Sprite JournalPage => _journalPage;
         public GameObject WorldPrefab => _worldPrefab;
         public GameObject JournalPreviewPrefab => _journalPreviewPrefab;
         public float JournalExposure => _journalExposure;

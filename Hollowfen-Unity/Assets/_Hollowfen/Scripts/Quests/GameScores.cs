@@ -44,7 +44,7 @@ namespace Hollowfen.Quests
             EnsureHydrated();
             _villageHope = Mathf.Max(0, _villageHope + delta);
             Persist();
-            OnChanged?.Invoke();
+            PublishChanged();
         }
 
         public static void AddKnowledge(int delta)
@@ -53,7 +53,7 @@ namespace Hollowfen.Quests
             EnsureHydrated();
             _knowledge = Mathf.Max(0, _knowledge + delta);
             Persist();
-            OnChanged?.Invoke();
+            PublishChanged();
         }
 
         public static int GetRelationship(string npcId)
@@ -69,7 +69,7 @@ namespace Hollowfen.Quests
             EnsureHydrated();
             _relationships[npcId] = GetRelationship(npcId) + delta;
             Persist();
-            OnChanged?.Invoke();
+            PublishChanged();
         }
 
         public static bool HasFlag(string id)
@@ -86,7 +86,7 @@ namespace Hollowfen.Quests
             EnsureHydrated();
             if (!_flags.Add(id)) return false;
             Persist();
-            OnChanged?.Invoke();
+            PublishChanged();
             return true;
         }
 
@@ -116,7 +116,7 @@ namespace Hollowfen.Quests
                     if (!string.IsNullOrWhiteSpace(flag)) _flags.Add(flag);
             _flags.Add("game_complete");
             Persist();
-            OnChanged?.Invoke();
+            PublishChanged();
             return true;
         }
 
@@ -148,7 +148,7 @@ namespace Hollowfen.Quests
                 foreach (var f in meta.GameFlagIds)
                     if (!string.IsNullOrEmpty(f)) _flags.Add(f);
             _hydrated = true;
-            OnChanged?.Invoke();
+            PublishChanged();
         }
 
         public static void WriteTo(SaveSlotMeta meta)
@@ -194,6 +194,17 @@ namespace Hollowfen.Quests
             catch (Exception e)
             {
                 Debug.LogWarning("[GameScores] Autosave failed: " + e.Message);
+            }
+        }
+
+        private static void PublishChanged()
+        {
+            var handlers = OnChanged;
+            if (handlers == null) return;
+            foreach (Action handler in handlers.GetInvocationList())
+            {
+                var callback = handler;
+                SaveManager.PublishAfterAtomicCommit(callback);
             }
         }
     }

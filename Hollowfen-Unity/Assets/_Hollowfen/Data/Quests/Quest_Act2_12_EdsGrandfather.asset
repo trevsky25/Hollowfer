@@ -18,6 +18,7 @@ MonoBehaviour:
   _act: 2
   _order: 12
   _unlockStoryCardOnComplete: {fileID: 11400000, guid: cd5dc201568454a8aa4f7e12d5a78514, type: 2}
+  _storyMoment: {fileID: 11400000, guid: bb1fe6307b80147c78d524433bed9bd5, type: 2}
   _nextQuest: {fileID: 11400000, guid: 0a89ad7b8f66425ebf9661c6ad668b81, type: 2}
   _waypointLocation: {fileID: 11400000, guid: fab8a7aa03b54084a79a09c0d0e0e530, type: 2}
   _villageHopeDelta: 10
@@ -25,6 +26,4 @@ MonoBehaviour:
   _relationshipNpcIds:
   - edda
   - almy
-  _relationshipDeltas:
-  - 15
-  - 8
+  _relationshipDeltas: 0f00000008000000

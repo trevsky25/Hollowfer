@@ -39,6 +39,7 @@ MonoBehaviour:
     in one hand."
   _photo: {fileID: 0}
   _photoCredit:
+  _journalPage: {fileID: 21300000, guid: 8a0da7cd5076249b38299e99a596730d, type: 3}
   _worldPrefab: {fileID: 0}
   _journalPreviewPrefab: {fileID: 0}
   _journalExposure: 0.42

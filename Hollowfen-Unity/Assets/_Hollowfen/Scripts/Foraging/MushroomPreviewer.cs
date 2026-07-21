@@ -158,6 +158,7 @@ namespace Hollowfen.Foraging
             _current = Instantiate(data.WorldPrefab, _mount);
             _current.transform.localPosition = Vector3.zero;
             _current.transform.localRotation = Quaternion.identity;
+            DisableWorldBehavior(_current);
             SetLayerRecursively(_current, _previewLayer);
             if (silhouette) ApplySilhouette(_current);
             CenterCurrentOnMount();
@@ -256,6 +257,22 @@ namespace Hollowfen.Foraging
             if (!AutoRotate) return;
             _yawDeg += _rotationSpeedDeg * Time.unscaledDeltaTime;
             _mount.localRotation = Quaternion.Euler(_pitchDeg, _yawDeg, 0f);
+        }
+
+        // World prefabs carry harvest state, interaction triggers, and sometimes physics helpers.
+        // A UI clone must remain a render-only specimen: otherwise its MushroomNode starts at the
+        // preview rig's origin, subscribes to gameplay state, and can emit a bogus position-based id.
+        private static void DisableWorldBehavior(GameObject root)
+        {
+            foreach (var behaviour in root.GetComponentsInChildren<MonoBehaviour>(true))
+                behaviour.enabled = false;
+            foreach (var collider in root.GetComponentsInChildren<Collider>(true))
+                collider.enabled = false;
+            foreach (var body in root.GetComponentsInChildren<Rigidbody>(true))
+            {
+                body.isKinematic = true;
+                body.useGravity = false;
+            }
         }
 
         private static void SetLayerRecursively(GameObject go, int layer)

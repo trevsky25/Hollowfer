@@ -1,6 +1,9 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Hollowfen.UI;
+using Hollowfen.Settings;
+using Hollowfen.Quests;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -17,9 +20,8 @@ namespace Hollowfen.EditorTools
     /// </summary>
     public static class ProductionUIVerifier
     {
-        private const float ReferenceWidth = 1920f;
-        private const float ReferenceHeight = 1080f;
-        private const float MinimumReadablePixels = 9f;
+        private const float MinimumReadablePixels = 12f;
+        private const float MinimumParagraphPixels = 14f;
         private const float MinimumHitPixels = 32f;
 
         [MenuItem("Tools/Hollowfen/Verify Active UI Presentation")]
@@ -42,7 +44,9 @@ namespace Hollowfen.EditorTools
             VerifyHitTargets(warnings);
             VerifyMissingComponents(critical);
             VerifyPausePresentation(critical);
+            VerifyOverlayCardPresentation(critical);
             VerifyCuttingPresentation(critical);
+            VerifyQuestHudCopy(critical);
 
             var sb = new StringBuilder();
             sb.Append(critical.Count == 0 ? "PASS" : "FAIL");
@@ -72,13 +76,13 @@ namespace Hollowfen.EditorTools
                     continue;
                 }
 
+                Vector2 expectedReference = AccessibilityPresentationPolicy.ReferenceResolution;
                 if (scaler.uiScaleMode != CanvasScaler.ScaleMode.ScaleWithScreenSize ||
-                    Vector2.Distance(scaler.referenceResolution,
-                        new Vector2(ReferenceWidth, ReferenceHeight)) > 0.1f ||
+                    Vector2.Distance(scaler.referenceResolution, expectedReference) > 0.1f ||
                     Mathf.Abs(scaler.matchWidthOrHeight - 0.5f) > 0.01f)
                 {
                     critical.Add(Path(canvas.transform) +
-                        " does not use the shared 1920×1080 / 0.5 scaling contract.");
+                        " does not use the shared accessible reference resolution / 0.5 scaling contract.");
                 }
             }
         }
@@ -115,9 +119,13 @@ namespace Hollowfen.EditorTools
 
                 Canvas canvas = text.GetComponentInParent<Canvas>();
                 float pixels = text.fontSize * ScreenScale(text.rectTransform, canvas).y;
-                if (pixels < MinimumReadablePixels && !IsDecorativeMicrocopy(text))
+                float minimum = IsParagraphCopy(text)
+                    ? MinimumParagraphPixels
+                    : MinimumReadablePixels;
+                if (pixels < minimum && !IsDecorativeMicrocopy(text))
                     warnings.Add(Path(text.transform) + " renders at " +
-                        pixels.ToString("0.0") + " px: “" + Compact(text.text) + "”.");
+                        pixels.ToString("0.0") + " px (target " +
+                        minimum.ToString("0") + "+): “" + Compact(text.text) + "”.");
             }
         }
 
@@ -125,15 +133,16 @@ namespace Hollowfen.EditorTools
         {
             UIManager manager = UIManager.Instance;
             UIScreen top = manager != null ? manager.TopScreen : null;
-            if (top == null) return;
-            if (!top.gameObject.activeInHierarchy)
-                critical.Add("UIManager top screen “" + top.ScreenId + "” is inactive.");
+            Transform presentation = top != null ? top.transform : FindStandalonePresentation();
+            if (presentation == null) return;
+            if (!presentation.gameObject.activeInHierarchy)
+                critical.Add("Active presentation “" + presentation.name + "” is inactive.");
 
             // Loading and purely cinematic presentations intentionally contain no controls.
             // Requiring a default selection there creates a false failure; focus is only a
             // contract when the active screen actually exposes an interactable selectable.
             bool hasInteractable = false;
-            foreach (Selectable candidate in top.GetComponentsInChildren<Selectable>(true))
+            foreach (Selectable candidate in presentation.GetComponentsInChildren<Selectable>(true))
             {
                 if (candidate.gameObject.activeInHierarchy && candidate.IsInteractable())
                 {
@@ -143,19 +152,49 @@ namespace Hollowfen.EditorTools
             }
             if (!hasInteractable) return;
 
-            GameObject fallback = top.DefaultSelected;
+            GameObject fallback = top != null
+                ? top.DefaultSelected
+                : UIFocusRecovery.FirstInteractable(presentation);
             if (fallback == null)
             {
-                critical.Add("Top screen “" + top.ScreenId + "” has no default focus target.");
+                critical.Add("Active presentation “" + presentation.name +
+                    "” has no default focus target.");
                 return;
             }
 
             Selectable selectable = fallback.GetComponent<Selectable>();
             if (!fallback.activeInHierarchy || selectable == null || !selectable.IsInteractable())
-                critical.Add("Top screen “" + top.ScreenId + "” has an invalid default focus target.");
+                critical.Add("Active presentation “" + presentation.name +
+                    "” has an invalid default focus target.");
 
-            if (EventSystem.current == null || EventSystem.current.currentSelectedGameObject == null)
-                critical.Add("Top screen “" + top.ScreenId + "” has no current EventSystem focus.");
+            GameObject selected = EventSystem.current != null
+                ? EventSystem.current.currentSelectedGameObject
+                : null;
+            if (selected == null)
+                critical.Add("Active presentation “" + presentation.name +
+                    "” has no current EventSystem focus.");
+            else if (!selected.activeInHierarchy || !selected.transform.IsChildOf(presentation))
+                critical.Add("Active presentation “" + presentation.name +
+                    "” has focus outside its active controls: “" + selected.name + "”.");
+        }
+
+        private static Transform FindStandalonePresentation()
+        {
+            Canvas best = null;
+            foreach (Canvas canvas in Resources.FindObjectsOfTypeAll<Canvas>())
+            {
+                if (!IsLive(canvas) || !canvas.enabled || !canvas.gameObject.activeInHierarchy ||
+                    canvas.renderMode == RenderMode.WorldSpace || canvas.sortingOrder < 50) continue;
+                CanvasGroup group = canvas.GetComponent<CanvasGroup>();
+                if (group == null || group.alpha <= .01f || !group.blocksRaycasts ||
+                    !group.interactable) continue;
+                bool hasControl = canvas.GetComponentsInChildren<Selectable>(true).Any(candidate =>
+                    candidate != null && candidate.gameObject.activeInHierarchy &&
+                    candidate.IsInteractable());
+                if (!hasControl) continue;
+                if (best == null || canvas.sortingOrder > best.sortingOrder) best = canvas;
+            }
+            return best != null ? best.transform : null;
         }
 
         private static void VerifyHitTargets(List<string> warnings)
@@ -180,16 +219,20 @@ namespace Hollowfen.EditorTools
                 return Vector2.one;
 
             Canvas root = canvas.rootCanvas;
-            Transform rootTransform = root.transform;
-            float rootX = Mathf.Abs(rootTransform.lossyScale.x);
-            float rootY = Mathf.Abs(rootTransform.lossyScale.y);
-            float relativeX = rootX > 0.0001f ? Mathf.Abs(rect.lossyScale.x) / rootX : 1f;
-            float relativeY = rootY > 0.0001f ? Mathf.Abs(rect.lossyScale.y) / rootY : 1f;
+            if (root.renderMode != RenderMode.WorldSpace)
+            {
+                // For screen-space canvases, CanvasScaler has already folded the complete
+                // reference-to-display conversion into scaleFactor. RectTransform.lossyScale
+                // also contains that conversion in play mode, so multiplying by both reports
+                // every label and hit target substantially smaller than it actually renders.
+                return Vector2.one * root.scaleFactor;
+            }
 
-            // scaleFactor converts root-canvas reference units to pixels. The relative term
-            // adds only presentation/local scaling below the root, avoiding the previous
-            // double-count of the root Canvas transform.
-            return new Vector2(root.scaleFactor * relativeX, root.scaleFactor * relativeY);
+            // World-space canvases do not have a stable screen-pixel conversion without the
+            // active camera. Preserve their transform scale as the most useful approximation.
+            return new Vector2(
+                Mathf.Abs(rect.lossyScale.x),
+                Mathf.Abs(rect.lossyScale.y));
         }
 
         private static void VerifyMissingComponents(List<string> critical)
@@ -237,6 +280,23 @@ namespace Hollowfen.EditorTools
             }
         }
 
+        private static void VerifyQuestHudCopy(List<string> critical)
+        {
+            QuestHUD hud = Object.FindFirstObjectByType<QuestHUD>();
+            if (hud == null || !hud.gameObject.activeInHierarchy) return;
+            TMP_Text objective = hud.GetComponentsInChildren<TMP_Text>(true)
+                .FirstOrDefault(text => text.name == "Objective");
+            if (objective == null || !IsVisible(objective)) return;
+            Canvas.ForceUpdateCanvases();
+            objective.ForceMeshUpdate();
+            float preferred = objective.GetPreferredValues(objective.text,
+                objective.rectTransform.rect.width, 0f).y;
+            if (objective.rectTransform.rect.height + .5f < preferred ||
+                objective.isTextOverflowing)
+                critical.Add("Quest objective escapes its adaptive HUD card: “" +
+                             Compact(objective.text) + "”.");
+        }
+
         private static void VerifyPausePresentation(List<string> critical)
         {
             GameObject presentation = GameObject.Find("PausePresentation");
@@ -258,6 +318,34 @@ namespace Hollowfen.EditorTools
             }
         }
 
+        private static void VerifyOverlayCardPresentation(List<string> critical)
+        {
+            ConfirmModal modal = ConfirmModal.Instance;
+            if (modal != null)
+            {
+                RequireMissingLayer(modal.transform.Find("Canvas/Shadow"),
+                    "Confirmation modal has a detached shadow that renders as a rectangle over light screens.", critical);
+                RequireMissingLayer(modal.transform.Find("Canvas/Card/Grain"),
+                    "Confirmation modal grain is not clipped to the rounded card.", critical);
+                RequireMissingLayer(modal.transform.Find("Canvas/Card/Sheen"),
+                    "Confirmation modal sheen is not clipped to the rounded card.", critical);
+            }
+
+            IntroGuide guide = IntroGuide.Instance;
+            if (guide != null)
+            {
+                RequireMissingLayer(guide.transform.Find("IntroGuideCanvas/Shadow"),
+                    "Intro objective card has a detached rectangular shadow.", critical);
+                RequireMissingLayer(guide.transform.Find("IntroGuideCanvas/StoryObjectiveCard/SurfaceDepth"),
+                    "Intro objective card has an unclipped rectangular depth wash.", critical);
+            }
+        }
+
+        private static void RequireMissingLayer(Transform layer, string message, List<string> critical)
+        {
+            if (layer != null) critical.Add(message + " Layer: " + Path(layer));
+        }
+
         private static bool IsLive(Component component)
         {
             return component != null && component.gameObject.scene.IsValid();
@@ -276,8 +364,14 @@ namespace Hollowfen.EditorTools
         private static bool IsDecorativeMicrocopy(TMP_Text text)
         {
             string name = text.name.ToLowerInvariant();
-            return name.Contains("eyebrow") || name.Contains("edition") ||
-                   name.Contains("counter") || name.Contains("credit");
+            return name.Contains("edition") || name.Contains("counter") ||
+                   name.Contains("credit") || name.Contains("mark");
+        }
+
+        private static bool IsParagraphCopy(TMP_Text text)
+        {
+            return text.text != null && text.text.Length >= 60 &&
+                   text.textWrappingMode != TextWrappingModes.NoWrap;
         }
 
         private static string Compact(string value)

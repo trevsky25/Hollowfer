@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00c9c9bb92b3b44fb84ca335c48467d8, type: 3}
+  m_Name: Dialogue_Relationship_Marra_01
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Dialogue.DialogueData
+  _id: relationship.marra.favor_01
+  _lines:
+  - speaker: Marra
+    text: You have delivered to this kitchen often enough to earn the dangerous side
+      of the table.
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: f7aad134031c34ce7951466812e1618e, type: 3}
+  - speaker: Wren
+    text: The side nearest the knives?
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 2177e5912321c4e1f97ca58080edf89a, type: 3}
+  - speaker: Marra
+    text: The side where I ask whether you have eaten and refuse every dishonest
+      answer.
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: eb707d52f16994e878cfba456a828d6f, type: 3}
+  - speaker: Wren
+    text: Then no. Not properly.
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 820090b8c956042f0973fdcded602045, type: 3}
+  - speaker: Marra
+    text: Sit.
+    isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: af00f92e4c18e4ecf95805e4cb5ceb7a, type: 3}
+  _mushroomHandoff:
+    beforeLineIndex: 0
+    recipientSpeaker: 
+    mushroom: {fileID: 0}
+    presentationHeight: 0
+  _unlockStoryCard: {fileID: 0}
+  _completeQuest: {fileID: 0}
+  _giveItemId: 
+  _grantCoinsCopper: 0
+  _spendsCoinsCopper: 0
+  _sellsForageBasket: 0
+  _basketCopperPerItem: 0
+  _basketBuyer: 0
+  _grantForage: {fileID: 0}
+  _grantForageCount: 1
+  _consumeForage: {fileID: 0}
+  _consumeForageCount: 1
+  _setFlagIds: []
+  _villageHopeDelta: 0
+  _knowledgeDelta: 0
+  _relationshipNpcIds:
+  - marra
+  _relationshipDeltas: 02000000
+  _memoryOutcomes:
+  - npcId: marra
+    memoryId: marra.shared_kitchen_supper
+  _bondOutcomes:
+  - firstNpcId: marra
+    secondNpcId: bram
+    delta: 1
+  _favorOutcomes:
+  - favorId: favor.marra.kitchen_table
+    stage: 1
+  _advanceMinutes: 45
+  _transitionMoment: {fileID: 0}
+  _nextDialog: {fileID: 0}
+  _choices: []

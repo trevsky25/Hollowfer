@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00c9c9bb92b3b44fb84ca335c48467d8, type: 3}
+  m_Name: Dialogue_Relationship_Joren_01
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Dialogue.DialogueData
+  _id: relationship.joren.favor_01
+  _lines:
+  - speaker: Joren
+    text: First proper fire since the roof failed. Bellows are yours if you want
+      the honor.
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: bf88986b3e38941f2880dcd56d112e64, type: 3}
+  - speaker: Wren
+    text: How hard?
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: c06332814df394ff58704bdfcb68f442, type: 3}
+  - speaker: Joren
+    text: Hard enough to wake it. Not hard enough to make it angry.
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 34bea2dc97baf4c68bd04c9f13728a1d, type: 3}
+  - speaker: Wren
+    text: That sounds like advice about more than a forge.
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 3e8f789d4bd434cd182283dcfa3bc554, type: 3}
+  - speaker: Joren
+    text: Most useful advice is stolen from another trade.
+    isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: 4894ffab5d040420fb98e43ee8d3ebda, type: 3}
+  _mushroomHandoff:
+    beforeLineIndex: 0
+    recipientSpeaker: 
+    mushroom: {fileID: 0}
+    presentationHeight: 0
+  _unlockStoryCard: {fileID: 0}
+  _completeQuest: {fileID: 0}
+  _giveItemId: 
+  _grantCoinsCopper: 0
+  _spendsCoinsCopper: 0
+  _sellsForageBasket: 0
+  _basketCopperPerItem: 0
+  _basketBuyer: 0
+  _grantForage: {fileID: 0}
+  _grantForageCount: 1
+  _consumeForage: {fileID: 0}
+  _consumeForageCount: 1
+  _setFlagIds: []
+  _villageHopeDelta: 0
+  _knowledgeDelta: 0
+  _relationshipNpcIds:
+  - joren
+  _relationshipDeltas: 02000000
+  _memoryOutcomes:
+  - npcId: joren
+    memoryId: joren.shared_first_fire
+  _bondOutcomes:
+  - firstNpcId: joren
+    secondNpcId: pell
+    delta: 1
+  _favorOutcomes:
+  - favorId: favor.joren.working_silence
+    stage: 1
+  _advanceMinutes: 40
+  _transitionMoment: {fileID: 0}
+  _nextDialog: {fileID: 0}
+  _choices: []

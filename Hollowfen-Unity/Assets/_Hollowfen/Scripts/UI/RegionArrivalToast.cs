@@ -1,4 +1,5 @@
 using System.Collections;
+using Hollowfen.Settings;
 using Hollowfen.Map;
 using TMPro;
 using UnityEngine;
@@ -23,7 +24,9 @@ namespace Hollowfen.UI
         public string DisplayedSubtitle => _subtitle != null ? _subtitle.text : "";
         public int PresentationCount { get; private set; }
         public bool IsShowing => _routine != null;
+        public float ShownTopInset => -ShownPosition.y;
 
+        private RectTransform _presentation;
         private RectTransform _panel;
         private CanvasGroup _group;
         private TMP_Text _title;
@@ -32,8 +35,11 @@ namespace Hollowfen.UI
         private bool _built;
         private bool _receivedRegionEvent;
 
-        private static readonly Vector2 HiddenPosition = new Vector2(0f, -34f);
-        private static readonly Vector2 ShownPosition = new Vector2(0f, -54f);
+        // The compass pill plus its optional waypoint/distance label own the first 112 reference
+        // pixels at the top of the HUD. Keep a 28-pixel breathing band below both layers so the
+        // arrival title remains separate even after the CanvasScaler adapts to a short display.
+        private static readonly Vector2 HiddenPosition = new Vector2(0f, -120f);
+        private static readonly Vector2 ShownPosition = new Vector2(0f, -140f);
 
         private void OnEnable()
         {
@@ -79,13 +85,13 @@ namespace Hollowfen.UI
             if (_routine != null) StopCoroutine(_routine);
             _routine = null;
             if (_group != null) _group.alpha = 0f;
-            if (_panel != null) _panel.anchoredPosition = HiddenPosition;
+            if (_presentation != null) _presentation.anchoredPosition = HiddenPosition;
         }
 
         private IEnumerator Presentation(float delay)
         {
             _group.alpha = 0f;
-            _panel.anchoredPosition = HiddenPosition;
+            _presentation.anchoredPosition = HiddenPosition;
 
             float t = 0f;
             while (t < delay)
@@ -94,18 +100,29 @@ namespace Hollowfen.UI
                 yield return null;
             }
 
+            if (GameSettings.ReducedMotion)
+            {
+                _group.alpha = 1f;
+                _presentation.anchoredPosition = ShownPosition;
+                yield return new WaitForSecondsRealtime(_holdSeconds);
+                _group.alpha = 0f;
+                _presentation.anchoredPosition = HiddenPosition;
+                _routine = null;
+                yield break;
+            }
+
             t = 0f;
             while (t < _fadeSeconds)
             {
                 t += Time.unscaledDeltaTime;
                 float k = Smooth(_fadeSeconds <= 0f ? 1f : t / _fadeSeconds);
                 _group.alpha = k;
-                _panel.anchoredPosition = Vector2.LerpUnclamped(HiddenPosition, ShownPosition, k);
+                _presentation.anchoredPosition = Vector2.LerpUnclamped(HiddenPosition, ShownPosition, k);
                 yield return null;
             }
 
             _group.alpha = 1f;
-            _panel.anchoredPosition = ShownPosition;
+            _presentation.anchoredPosition = ShownPosition;
             t = 0f;
             while (t < _holdSeconds)
             {
@@ -119,12 +136,12 @@ namespace Hollowfen.UI
                 t += Time.unscaledDeltaTime;
                 float k = Smooth(_fadeSeconds <= 0f ? 1f : t / _fadeSeconds);
                 _group.alpha = 1f - k;
-                _panel.anchoredPosition = Vector2.LerpUnclamped(ShownPosition, HiddenPosition, k);
+                _presentation.anchoredPosition = Vector2.LerpUnclamped(ShownPosition, HiddenPosition, k);
                 yield return null;
             }
 
             _group.alpha = 0f;
-            _panel.anchoredPosition = HiddenPosition;
+            _presentation.anchoredPosition = HiddenPosition;
             _routine = null;
         }
 
@@ -142,20 +159,27 @@ namespace Hollowfen.UI
             canvasObject.GetComponent<CanvasScaler>().Init1080();
             canvasObject.GetComponent<GraphicRaycaster>().enabled = false;
 
-            var panelObject = UICanvasUtil.NewImage("RegionTitle", canvasObject.transform,
+            // Keep the panel and its generated soft shadow beneath one CanvasGroup. AddShadow
+            // intentionally creates a sibling of its target; grouping only the panel used to
+            // leave a large black shadow permanently visible after the arrival card faded out.
+            _presentation = UICanvasUtil.NewRect("RegionTitlePresentation", canvasObject.transform);
+            UICanvasUtil.SetRect(_presentation, new Vector2(.5f, 1f), new Vector2(.5f, 1f),
+                new Vector2(.5f, 1f), new Vector2(650f, 112f), HiddenPosition);
+            _group = _presentation.gameObject.AddComponent<CanvasGroup>();
+            _group.alpha = 0f;
+            _group.interactable = false;
+            _group.blocksRaycasts = false;
+
+            var panelObject = UICanvasUtil.NewImage("RegionTitle", _presentation,
                 new Color(HollowfenPalette.SurfaceBase.r, HollowfenPalette.SurfaceBase.g,
                     HollowfenPalette.SurfaceBase.b, .94f), false);
             _panel = (RectTransform)panelObject.transform;
-            UICanvasUtil.SetRect(_panel, new Vector2(.5f, 1f), new Vector2(.5f, 1f),
-                new Vector2(.5f, 1f), new Vector2(650f, 112f), HiddenPosition);
+            UICanvasUtil.SetRect(_panel, new Vector2(.5f, .5f), new Vector2(.5f, .5f),
+                new Vector2(.5f, .5f), new Vector2(650f, 112f), Vector2.zero);
             var panelImage = panelObject.GetComponent<Image>();
             panelImage.sprite = UICanvasUtil.RoundedRect(18);
             panelImage.type = Image.Type.Sliced;
             UICanvasUtil.AddShadow(_panel, 18, 20, .38f, -6f);
-            _group = panelObject.AddComponent<CanvasGroup>();
-            _group.alpha = 0f;
-            _group.interactable = false;
-            _group.blocksRaycasts = false;
 
             var wash = UICanvasUtil.NewImage("QuietGradient", _panel, Color.white, false);
             UICanvasUtil.Stretch((RectTransform)wash.transform);
@@ -188,7 +212,7 @@ namespace Hollowfen.UI
                 new Color(HollowfenPalette.Parchment.r, HollowfenPalette.Parchment.g,
                     HollowfenPalette.Parchment.b, .72f), FontStyles.Italic,
                 TextAlignmentOptions.Center);
-            _subtitle.enableWordWrapping = false;
+            _subtitle.textWrappingMode = TextWrappingModes.NoWrap;
             UICanvasUtil.SetRect(_subtitle.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f),
                 new Vector2(.5f, 0f), new Vector2(-46f, 24f), new Vector2(0f, 13f));
         }

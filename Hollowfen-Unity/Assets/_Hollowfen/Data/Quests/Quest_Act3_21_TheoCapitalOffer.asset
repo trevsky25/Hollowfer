@@ -18,7 +18,7 @@ MonoBehaviour:
   _act: 3
   _order: 21
   _unlockStoryCardOnComplete: {fileID: 11400000, guid: 8e9ad983a9e99408ca370574d3063d32, type: 2}
-  _storyMoment: {fileID: 0}
+  _storyMoment: {fileID: 11400000, guid: df61a9b93c3d645128be6403cc60ff67, type: 2}
   _nextQuest: {fileID: 11400000, guid: 2279b658c2e24d238bd17796d4b16552, type: 2}
   _waypointLocation: {fileID: 11400000, guid: db768461c2fc44fc0ad14b8091730bff, type: 2}
   _villageHopeDelta: 0

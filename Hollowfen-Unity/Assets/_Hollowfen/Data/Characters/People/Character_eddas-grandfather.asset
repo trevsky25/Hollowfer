@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b4e19f76957446acb794b6622b288e2, type: 3}
+  m_Name: Character_eddas-grandfather
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.CharacterProfileData
+  _id: eddas-grandfather
+  _characterName: Edda's Grandfather
+  _role: Bedridden elder / first life saved
+  _age: Late seventies
+  _home: Edda's cottage
+  _work: Household elder
+  _keepsake: Wooden broth bowl
+  _tagline: The frail elder whose recovery makes the village's new knowledge painfully
+    human.
+  _leadParagraph: Edda's grandfather is thin, white-haired, and usually seen propped
+    beneath a quilt, with the face and hands of a real person rather than an abstract
+    village need.
+  _backgroundParagraph: When he stops eating, Edda asks Wren for help. Brightspore,
+    careful preparation, and a bowl of soup turn the lesson into the first named
+    life saved by mushroom knowledge.
+  _perspectiveParagraph: 'His authored presence is quiet and domestic: a pillow stack,
+    a tonic bottle, both hands around a bowl, and the visible difference between
+    illness and recovery.'
+  _kitItems: []
+  _heroPortrait: {fileID: 0}
+  _pullquote: 
+  _displayNameId: character.eddas_grandfather.name
+  _descriptionId: character.eddas_grandfather.lead
+  _sortOrder: 12
+  _category: 0
+  _edition: 13 / EDDA'S GRANDFATHER
+  _previewScale: 1
+  _tPosePlate: {fileID: 0}
+  _characterSheet: {fileID: 0}
+  _missions:
+  - Act: 2
+    QuestId: edsGrandfather
+    Title: Brightspore at the Bedside
+    Summary: Receive the Brightspore tonic and recover enough to eat a full bowl.
+  - Act: 3
+    QuestId: eddaApprentice
+    Title: Edda Asks
+    Summary: Be well enough for Edda to leave the bedside and begin her apprenticeship.
+  _quotes: []
+  _heroPortraitResourcePath: People/Art/eddas-grandfather_hero
+  _tPosePlateResourcePath: People/Art/eddas-grandfather_tpose
+  _characterSheetResourcePath: People/Art/eddas-grandfather_hero
+  _journalModelResourcePath: People/Models/eddas-grandfather
+  _journalTriangleBudget: 90000
+  _journalTextureSize: 2048
+  _journalModelPrefab: {fileID: 0}
+  _journalIdleClip: {fileID: 0}
+  _journalExposure: 0.15
+  _studySheet: {fileID: 0}
+  _figureFront: {fileID: 0}
+  _figureBack: {fileID: 0}
+  _figureThreeQuarter: {fileID: 0}
+  _knifePlate: {fileID: 0}

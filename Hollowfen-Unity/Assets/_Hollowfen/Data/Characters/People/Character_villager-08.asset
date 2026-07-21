@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b4e19f76957446acb794b6622b288e2, type: 3}
+  m_Name: Character_villager-08
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.CharacterProfileData
+  _id: villager-08
+  _characterName: Villager 08
+  _role: Gooseherd
+  _age: Teenager
+  _home: Hollowfen
+  _work: Goose tending and lane chores
+  _keepsake: Herding switch
+  _tagline: A young gooseherd for the village lanes, commons, and lively crowd edges.
+  _leadParagraph: A teenage gooseherd in plain rural dress, scaled below the adult
+    cast for flock-following and lane activity.
+  _backgroundParagraph: Use this villager with geese, baskets, small deliveries,
+    and festival errands that need an age-appropriate silhouette.
+  _perspectiveParagraph: 'The identity remains observational: alert posture, practical
+    footwear, and attention directed toward animals and paths.'
+  _kitItems: []
+  _heroPortrait: {fileID: 0}
+  _pullquote: 
+  _displayNameId: character.villager_08.name
+  _descriptionId: character.villager_08.lead
+  _sortOrder: 23
+  _category: 2
+  _edition: 24 / VILLAGER 08
+  _previewScale: 0.82
+  _tPosePlate: {fileID: 0}
+  _characterSheet: {fileID: 0}
+  _missions: []
+  _quotes: []
+  _heroPortraitResourcePath: People/Art/villager-08_tpose
+  _tPosePlateResourcePath: People/Art/villager-08_tpose
+  _characterSheetResourcePath: People/Art/villager-08_tpose
+  _journalModelResourcePath: People/Models/villager-08
+  _journalTriangleBudget: 50000
+  _journalTextureSize: 1024
+  _journalModelPrefab: {fileID: 0}
+  _journalIdleClip: {fileID: 0}
+  _journalExposure: 0.15
+  _studySheet: {fileID: 0}
+  _figureFront: {fileID: 0}
+  _figureBack: {fileID: 0}
+  _figureThreeQuarter: {fileID: 0}
+  _knifePlate: {fileID: 0}

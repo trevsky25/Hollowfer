@@ -104,10 +104,11 @@ namespace Hollowfen.UI
 
         public static TMP_Text BuildBottomHint(Transform parent, string localizationId)
         {
-            var hint = UICanvasUtil.NewBody("JournalHint", parent, Localization.Get(localizationId), 15f,
-                new Color(HollowfenPalette.Cream.r, HollowfenPalette.Cream.g, HollowfenPalette.Cream.b, 0.52f),
-                FontStyles.Italic, TextAlignmentOptions.Center);
-            UICanvasUtil.SetRect(hint.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 28f), new Vector2(0f, 16f));
+            var hint = UICanvasUtil.NewBody("JournalHint", parent, Localization.Get(localizationId), 17.5f,
+                new Color(HollowfenPalette.Cream.r, HollowfenPalette.Cream.g, HollowfenPalette.Cream.b, 0.72f),
+                FontStyles.Normal, TextAlignmentOptions.Center);
+            hint.textWrappingMode = TextWrappingModes.NoWrap;
+            UICanvasUtil.SetRect(hint.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 32f), new Vector2(0f, 15f));
             return hint;
         }
 

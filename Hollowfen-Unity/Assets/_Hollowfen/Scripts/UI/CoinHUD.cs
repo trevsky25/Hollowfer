@@ -67,7 +67,8 @@ namespace Hollowfen.UI
 
             if (_hint != null)
             {
-                string next = Gamepad.current != null ? "L3  ·  PURSE" : "P  ·  PURSE";
+                string next = Localization.Get(ControllerGlyphs.IsGamepadActive
+                    ? "hud.purse.gamepad" : "hud.purse.keyboard");
                 if (_hint.text != next) _hint.text = next;
             }
         }
@@ -153,7 +154,7 @@ namespace Hollowfen.UI
             dRT.sizeDelta = new Vector2(1f, 24f);
             dRT.anchoredPosition = new Vector2(-112f, 0f);
 
-            _hint = UICanvasUtil.NewEyebrow("PurseHint", rt, "P  ·  PURSE", 10.5f,
+            _hint = UICanvasUtil.NewEyebrow("PurseHint", rt, Localization.Get("hud.purse.keyboard"), 12.5f,
                 HollowfenPalette.Gold, TextAlignmentOptions.Center);
             var hRT = _hint.rectTransform;
             hRT.anchorMin = new Vector2(1f, 0f); hRT.anchorMax = new Vector2(1f, 1f);

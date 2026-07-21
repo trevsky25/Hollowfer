@@ -15,8 +15,8 @@ using UnityEngine;
 namespace Hollowfen.EditorTools
 {
     /// <summary>
-    /// State-mutating Play Mode verifier for the repeatable game-loop foundation. Back up the
-    /// save directory before running; the automation wrapper restores it after leaving Play Mode.
+    /// State-mutating Play Mode verifier for the repeatable game-loop foundation. It refuses to
+    /// run until automation supplies an isolated EditorSaveDirectoryOverride.
     /// </summary>
     public static class GameplayFoundationVerifier
     {
@@ -25,17 +25,20 @@ namespace Hollowfen.EditorTools
             Require(EditorApplication.isPlaying, "run this verifier in Play Mode");
             var species = LoadSpecies();
             int originalSlot = SaveManager.ActiveSlot;
-            SaveManager.SetActiveSlot(3);
+            Require(!string.IsNullOrWhiteSpace(SaveManager.EditorSaveDirectoryOverride),
+                "set SaveManager.EditorSaveDirectoryOverride to an isolated directory first");
+            SaveCoordinator.StartNewGame(3);
             try
             {
                 int wildNodes = VerifyAuthoredWorld(species);
+                VerifyIdentificationGate(species);
                 VerifyBuyerEconomy(species);
                 VerifyForageLifecycle();
                 VerifyCultivation(species);
                 VerifyClockBoundaries();
 
                 int cultivable = species.Count(entry => entry.Cultivable);
-                return $"GAMEPLAY FOUNDATION — PASS: {wildNodes} stable authored wild nodes + rest point, non-mutating buyer quotes, species-aware refusals/copper + purse-ledger persistence, forage save/respawn round-trip, " +
+                return $"GAMEPLAY FOUNDATION — PASS: {wildNodes} stable wild nodes + rest point, 21 persistent field-identification harvest gates, non-mutating buyer quotes, species-aware refusals/copper + purse-ledger persistence, forage save/respawn round-trip, " +
                        cultivable + " data-authored cultivation recipes, and ordered sundown/dawn clock boundaries";
             }
             finally
@@ -63,8 +66,14 @@ namespace Hollowfen.EditorTools
             Require(wild.Length >= 21, "expected at least one authored wild node per mushroom species");
             Require(wild.All(node => node.Data != null && !string.IsNullOrWhiteSpace(node.NodeId)),
                 "a wild mushroom is missing its species or stable node id");
-            Require(wild.All(node => node.NodeId.StartsWith("wild." + node.Data.Id + ".", StringComparison.Ordinal)),
+            var authored = wild.Where(node =>
+                !node.NodeId.StartsWith("wild.generated.", StringComparison.Ordinal)).ToArray();
+            Require(authored.All(node => node.NodeId.StartsWith(
+                    "wild." + node.Data.Id + ".", StringComparison.Ordinal)),
                 "a wild mushroom node id does not match its species");
+            Require(wild.Where(node => node.NodeId.StartsWith("wild.generated.", StringComparison.Ordinal))
+                    .All(node => node.NodeId.Split('.').Length >= 4),
+                "a generated ecology node lacks its stable habitat/index id");
             Require(wild.Select(node => node.NodeId).Distinct(StringComparer.Ordinal).Count() == wild.Length,
                 "wild mushroom node ids are not unique");
             var profileIds = new HashSet<string>(species.Select(entry => entry.Id), StringComparer.Ordinal);
@@ -74,6 +83,34 @@ namespace Hollowfen.EditorTools
             var rest = UnityEngine.Object.FindObjectsByType<RestSpot>(FindObjectsInactive.Include);
             Require(rest.Length == 1, "expected exactly one mill-hearth rest point");
             return wild.Length;
+        }
+
+        private static void VerifyIdentificationGate(MushroomFieldGuideData[] species)
+        {
+            string[] storyFlags = species.Select(entry => entry.RequiredForageFlagId)
+                .Where(id => !string.IsNullOrWhiteSpace(id))
+                .Distinct(StringComparer.Ordinal)
+                .Append("journal_found")
+                .ToArray();
+            MushroomDiscovery.HydrateFrom(species.Select(entry => entry.Id).ToArray());
+            GameScores.HydrateFrom(new SaveSlotMeta { GameFlagIds = storyFlags });
+
+            Require(species.All(entry => !MushroomRules.CanHarvest(entry)),
+                "a journal-discovered species can be harvested without its field test");
+            string[] commonIds = { "fieldMushroom", "woodEar", "pinecrest" };
+            Require(commonIds.All(id => species.Any(entry => entry.Id == id)),
+                "the common-species identification coverage set drifted");
+            Require(species.Where(entry => commonIds.Contains(entry.Id))
+                    .All(entry => !MushroomRules.CanHarvest(entry)),
+                "Field Mushroom, Wood Ear, or Pinecrest bypassed field identification");
+
+            string[] verifiedFlags = storyFlags.Concat(species.Select(entry =>
+                    "mushroom_identified_" + entry.Id))
+                .Distinct(StringComparer.Ordinal)
+                .ToArray();
+            GameScores.HydrateFrom(new SaveSlotMeta { GameFlagIds = verifiedFlags });
+            Require(species.All(MushroomRules.CanHarvest),
+                "a field-identified species with its story lesson unlocked remains unharvestable");
         }
 
         private static void VerifyBuyerEconomy(MushroomFieldGuideData[] species)

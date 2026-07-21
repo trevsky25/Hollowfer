@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Hollowfen.Save;
+using Hollowfen.Weather;
 using UnityEngine;
 
 namespace Hollowfen.Foraging
@@ -33,8 +34,9 @@ namespace Hollowfen.Foraging
         {
             if (string.IsNullOrEmpty(nodeId)) return true;
             EnsureHydrated();
-            return !HarvestedDays.TryGetValue(nodeId, out var cutDay) ||
-                   currentDay >= cutDay + Mathf.Max(1, respawnDays);
+            if (!HarvestedDays.TryGetValue(nodeId, out var cutDay)) return true;
+            int adjustedDays = WeatherSystem.AdjustedWildRespawnDays(respawnDays, cutDay);
+            return currentDay >= cutDay + adjustedDays;
         }
 
         public static void MarkHarvested(string nodeId, int day)

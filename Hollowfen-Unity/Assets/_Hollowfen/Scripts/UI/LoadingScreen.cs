@@ -74,8 +74,8 @@ namespace Hollowfen.UI
         // visibly MOVING loading screen: phase-aware fill + a clipped sheen + motes; the text flips to
         // "entering Hollowfen" right before the scene-integration stall so the brief hitch reads
         // as arrival, not a freeze).
-        private const string LoadingText = "gathering the last light";
-        private const string EnteringText = "entering Hollowfen";
+        private const string LoadingTextKey = "loading.phase.gathering";
+        private const string EnteringTextKey = "loading.phase.entering";
         private int _welcomeState; // 0 = loading, 2 = activating/entering
 
         private readonly List<RectTransform> _motes = new List<RectTransform>();
@@ -119,8 +119,12 @@ namespace Hollowfen.UI
                 BuildCinematic();
                 ResetLoadProgress();
                 // Per-open copy (BuildCinematic is guarded build-once, so set the text every open).
-                if (_eyebrowTmp != null) _eyebrowTmp.text = returning ? _returnEyebrow : _welcomeEyebrow;
-                if (_titleTmp != null) _titleTmp.text = returning ? _returnTitle : _welcomeTitle;
+                if (_eyebrowTmp != null) _eyebrowTmp.text = returning
+                    ? Localization.Get("loading.return.eyebrow", _returnEyebrow)
+                    : Localization.Get("loading.welcome.eyebrow", _welcomeEyebrow);
+                if (_titleTmp != null) _titleTmp.text = returning
+                    ? Localization.Get("loading.return.title", _returnTitle)
+                    : Localization.Get("loading.welcome.title", _welcomeTitle);
                 if (_cineRoot != null) _cineRoot.gameObject.SetActive(true);
                 if (_label != null) _label.gameObject.SetActive(false);
                 if (CanvasGroup != null) CanvasGroup.alpha = 1f;
@@ -144,7 +148,7 @@ namespace Hollowfen.UI
             if (_dotAnim != null) { StopCoroutine(_dotAnim); _dotAnim = null; }
             if (_welcomePop != null) { StopCoroutine(_welcomePop); _welcomePop = null; }
             if (_loadingLineAnim != null) { StopCoroutine(_loadingLineAnim); _loadingLineAnim = null; }
-            if (_label != null) _label.text = _baseText;
+            if (_label != null) _label.text = Localization.Get("loading.base", _baseText);
             if (CanvasGroup != null) CanvasGroup.alpha = 1f;
         }
 
@@ -311,7 +315,8 @@ namespace Hollowfen.UI
             _welcomeGroup.anchoredPosition = new Vector2(0f, LetterboxHeight + 46f);
             _welcomeCg = wg.GetComponent<CanvasGroup>();
 
-            var eyebrow = UICanvasUtil.NewEyebrow("WelcomeEyebrow", _welcomeGroup, _welcomeEyebrow, 24f,
+            var eyebrow = UICanvasUtil.NewEyebrow("WelcomeEyebrow", _welcomeGroup,
+                Localization.Get("loading.welcome.eyebrow", _welcomeEyebrow), 24f,
                 new Color(0.78f, 0.66f, 0.42f, 1f));
             _eyebrowTmp = eyebrow;
             eyebrow.alignment = TextAlignmentOptions.Center;
@@ -319,19 +324,20 @@ namespace Hollowfen.UI
             eRT.anchorMin = new Vector2(0f, 0f); eRT.anchorMax = new Vector2(1f, 0f); eRT.pivot = new Vector2(0.5f, 0f);
             eRT.sizeDelta = new Vector2(0f, 30f); eRT.anchoredPosition = new Vector2(0f, 92f);
 
-            var title = UICanvasUtil.NewHeading("WelcomeTitle", _welcomeGroup, _welcomeTitle, 72f,
+            var title = UICanvasUtil.NewHeading("WelcomeTitle", _welcomeGroup,
+                Localization.Get("loading.welcome.title", _welcomeTitle), 72f,
                 new Color(0.96f, 0.93f, 0.85f, 1f), FontStyles.Normal, TextAlignmentOptions.Center);
             _titleTmp = title;
             var tRT = title.rectTransform;
             tRT.anchorMin = new Vector2(0f, 0f); tRT.anchorMax = new Vector2(1f, 0f); tRT.pivot = new Vector2(0.5f, 0f);
             tRT.sizeDelta = new Vector2(0f, 90f); tRT.anchoredPosition = new Vector2(0f, 0f);
 
-            var ll = UICanvasUtil.NewBody("LoadingLine", root, LoadingText, 15f,
-                new Color(0.90f, 0.88f, 0.80f, 0.4f), FontStyles.Italic, TextAlignmentOptions.Center);
+            var ll = UICanvasUtil.NewBody("LoadingLine", root, Localization.Get(LoadingTextKey), 16f,
+                new Color(0.90f, 0.88f, 0.80f, 0.60f), FontStyles.Italic, TextAlignmentOptions.Center);
             _loadingLine = ll.rectTransform;
             _loadingLine.anchorMin = new Vector2(0.5f, 0f); _loadingLine.anchorMax = new Vector2(0.5f, 0f);
             _loadingLine.pivot = new Vector2(0.5f, 0f);
-            _loadingLine.sizeDelta = new Vector2(700f, 24f);
+            _loadingLine.sizeDelta = new Vector2(700f, 28f);
             _loadingLine.anchoredPosition = new Vector2(0f, LetterboxHeight * 0.42f);
 
             // Phase-aware progress bar. AsyncOperation + activation milestones accelerate the
@@ -489,9 +495,9 @@ namespace Hollowfen.UI
             while (true)
             {
                 t += Time.unscaledDeltaTime;
-                string phase = _welcomeState == 2 ? EnteringText : LoadingText;
+                string phase = Localization.Get(_welcomeState == 2 ? EnteringTextKey : LoadingTextKey);
                 int percent = Mathf.Clamp(Mathf.RoundToInt(_displayedProgress * 100f), 0, 100);
-                tmp.text = phase + "  ·  " + percent + "%";
+                tmp.text = string.Format(Localization.Get("loading.progress"), phase, percent);
                 cg.alpha = _welcomeState == 2 ? 0.9f : 0.68f + 0.12f * Mathf.Sin(t * 2.2f);
                 yield return null;
             }
@@ -502,7 +508,8 @@ namespace Hollowfen.UI
             int dots = 0;
             while (true)
             {
-                if (_label != null) _label.text = _baseText + new string('.', dots);
+                if (_label != null)
+                    _label.text = Localization.Get("loading.base", _baseText) + new string('.', dots);
                 dots = (dots + 1) % 4;
                 yield return new WaitForSecondsRealtime(_dotInterval);
             }

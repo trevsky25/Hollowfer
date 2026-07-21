@@ -1,0 +1,231 @@
+{
+  "version": 1,
+  "sequences": [
+    {
+      "number": 1,
+      "cardAsset": "StoryCard_01_Homecoming",
+      "questAsset": "Quest_Act1_01_Arrive",
+      "dialogueAsset": "Dialogue_Act1_Homecoming_Bram",
+      "momentAsset": "StoryMoment_01_Homecoming",
+      "middleVisual": "Wren descends the muddy village road at dusk, seeing Hollowfen's boarded cottages, silent millstream, wrong river course, and too few smoking chimneys.",
+      "finalVisual": "Old Bram waits alone beside the weathered village well and the dim Crooked Pintle as Wren approaches with her travel bag, the first familiar face of home."
+    },
+    {
+      "number": 2,
+      "cardAsset": "StoryCard_02_CrookedPintle",
+      "questAsset": "Quest_Act1_02_SpeakBram",
+      "dialogueAsset": "Dialogue_Act1_CrookedPintle_BramKey",
+      "momentAsset": "StoryMoment_02_CrookedPintle",
+      "middleVisual": "Bram gestures toward the dry millstream and the displaced Wend beyond the village while explaining how the river changed course three winters ago.",
+      "finalVisual": "Live in-world cinematic hero reveal of Tobin's old iron mill key after the painted conversation and river-history beats have fully finished.",
+      "liveFinale": true
+    },
+    {
+      "number": 7,
+      "cardAsset": "StoryCard_07_AlmyDoorway",
+      "questAsset": "Quest_Act1_07_MeetAlmy",
+      "dialogueAsset": "Dialogue_Act1_AlmyDoorway_FirstVisit",
+      "momentAsset": "StoryMoment_07_AlmyDoorway",
+      "middleVisual": "At the mill threshold, stern elderly Sister Almy tells Wren that her grandmother knew the forbidden old foraging lore, holding Wren's gaze without softness.",
+      "finalVisual": "Wren stands alone in the mill doorway after Almy leaves, gripping her father's journal as morning light catches the old family mill behind her."
+    },
+    {
+      "number": 9,
+      "cardAsset": "StoryCard_09_JorensForge",
+      "questAsset": "Quest_Act2_09_ForgeKnife",
+      "dialogueAsset": "Dialogue_Act2_Joren_Handoff",
+      "momentAsset": "StoryMoment_09_JorensForge",
+      "middleVisual": "Joren studies the unusual mushrooms in Wren's basket beside his anvil, curiosity overcoming his guarded expression as the forge burns warmly behind him.",
+      "finalVisual": "Joren wraps a finished curved foraging knife with a horn handle in a worn kerchief and hands it to Wren, hiding a brief proud smile."
+    },
+    {
+      "number": 10,
+      "cardAsset": "StoryCard_10_VossFirstVisit",
+      "questAsset": "Quest_Act2_10_FirstTax",
+      "dialogueAsset": "Dialogue_Act2_Voss_Payment",
+      "momentAsset": "StoryMoment_10_VossFirstVisit",
+      "middleVisual": "Wren places a hard-earned stack of silver on the tax ledger before the severe, plainly dressed Master Voss while anxious villagers watch from the square.",
+      "finalVisual": "The Wenmar family removes the foreclosure notice from their cottage door as neighbors realize Wren's foraging money has kept the family in Hollowfen."
+    },
+    {
+      "number": 11,
+      "cardAsset": "StoryCard_11_TheoTrade",
+      "questAsset": "Quest_Act2_11_TheoTrade",
+      "dialogueAsset": "Dialogue_Act2_Theo_FirstSale",
+      "momentAsset": "StoryMoment_11_TheoTrade",
+      "middleVisual": "At Theo's colorful merchant wagon, Theo shows Wren a handwritten market ledger comparing mushroom prices in Veyrwick and the Capital.",
+      "finalVisual": "Theo's wagon leaves Hollowfen loaded with mushroom baskets while villagers count new coins and repaired farm tools arrive in trade."
+    },
+    {
+      "number": 12,
+      "cardAsset": "StoryCard_12_EddaGrandfather",
+      "questAsset": "Quest_Act2_12_EdsGrandfather",
+      "dialogueAsset": "Dialogue_Act2_Edda_Recovery",
+      "momentAsset": "StoryMoment_12_EddaGrandfather",
+      "middleVisual": "Edda's frail grandfather sits upright in a humble cottage bed and finishes a steaming bowl of Brightspore tonic while Edda watches in astonished relief.",
+      "finalVisual": "Outside the recovered household at dawn, normally silent teenage Edda looks directly at Wren and speaks a full grateful sentence."
+    },
+    {
+      "number": 13,
+      "cardAsset": "StoryCard_13_HollinArrives",
+      "questAsset": "Quest_Act2_13_MeetHollin",
+      "dialogueAsset": "Dialogue_Act2_Hollin_FirstMeeting",
+      "momentAsset": "StoryMoment_13_HollinArrives",
+      "middleVisual": "Quiet traveler Hollin sits opposite Wren in a shadowed inn corner and says only that she has come back, not revealing what she seeks.",
+      "finalVisual": "Wren and Hollin hold a long, wary look across the inn table, recognizing an inexplicable shared inheritance while rain streaks the window."
+    },
+    {
+      "number": 14,
+      "cardAsset": "StoryCard_14_CottagesReopen",
+      "questAsset": "Quest_Act2_14_CottagesReopen",
+      "dialogueAsset": "Dialogue_Act2_Pell_LedgerLine",
+      "momentAsset": "StoryMoment_14_CottagesReopen",
+      "middleVisual": "A returning family removes weathered boards from a long-empty cottage and hangs new shutters while neighbors carry in simple furniture.",
+      "finalVisual": "Elder Pell writes the season into his great village ledger as reopened cottage windows glow behind him and a newcomer asks about work."
+    },
+    {
+      "number": 15,
+      "cardAsset": "StoryCard_15_CaldensDoubt",
+      "questAsset": "Quest_Act2_15_CaldenWarning",
+      "dialogueAsset": "Dialogue_Act2_Calden_Warning",
+      "momentAsset": "StoryMoment_15_CaldensDoubt",
+      "middleVisual": "Father Calden sits formally in Wren's mill kitchen and admits he knew her father and fears what waits in the deeper Old Wood.",
+      "finalVisual": "Calden closes and locks the iron gate of the overgrown chapel garden while Wren watches from the lane, hurt but resolute."
+    },
+    {
+      "number": 16,
+      "cardAsset": "StoryCard_16_HollinInheritance",
+      "questAsset": "Quest_Act3_16_HollinReveals",
+      "dialogueAsset": "Dialogue_Act3_Hollin_Inheritance",
+      "momentAsset": "StoryMoment_16_HollinInheritance",
+      "middleVisual": "Hollin and Wren compare two inherited fragments at a rough table—an old seed token and Tobin's journal—realizing their severed family stories belong together.",
+      "finalVisual": "Elderly Sister Almy turns away near the hearth and quietly weeps after hearing the name Sable, while Wren and Hollin sit in stunned silence."
+    },
+    {
+      "number": 17,
+      "cardAsset": "StoryCard_17_WitchCottage",
+      "questAsset": "Quest_Act3_17_FindWitchCottage",
+      "dialogueAsset": "Dialogue_Act3_Cottage_Arrival",
+      "momentAsset": "StoryMoment_17_WitchCottage",
+      "middleVisual": "Inside the vine-covered witch's cottage, Wren, Hollin, and Sister Almy uncover a weathered seedbook beneath dust and collapsed herbs.",
+      "finalVisual": "The three women study luminous sketches of Moonring, Hollowheart, and Wendlight mushrooms by firelight as the recovered lore opens the Deep Wood to them."
+    },
+    {
+      "number": 18,
+      "cardAsset": "StoryCard_18_WendTruth",
+      "questAsset": "Quest_Act3_18_WendlightFound",
+      "dialogueAsset": "Dialogue_Act3_Wend_Truth",
+      "momentAsset": "StoryMoment_18_WendTruth",
+      "middleVisual": "At night, a trail of pale Wendlight mushrooms traces the Wend's abandoned channel across dry earth, revealing where the river once flowed.",
+      "finalVisual": "Wren overlooks the scarred upstream hills at dawn, seeing the deforested slope that diverted the river while Lord Aldric's marked timber wagons move in the distance."
+    },
+    {
+      "number": 19,
+      "cardAsset": "StoryCard_19_ChapelGarden",
+      "questAsset": "Quest_Act3_19_CaldenReconcile",
+      "dialogueAsset": "Dialogue_Act3_Calden_Reconcile",
+      "momentAsset": "StoryMoment_19_ChapelGarden",
+      "middleVisual": "Father Calden shows Wren old church records that document the deliberate suppression of local foraging knowledge, his shame visible in the candlelight.",
+      "finalVisual": "Calden unlocks the chapel garden and places its iron key in Wren's hand as the neglected beds open beneath clear morning light."
+    },
+    {
+      "number": 20,
+      "cardAsset": "StoryCard_20_EddaApprentice",
+      "questAsset": "Quest_Act3_20_EddaApprentice",
+      "dialogueAsset": "Dialogue_Act3_Edda_Apprentice",
+      "momentAsset": "StoryMoment_20_EddaApprentice",
+      "middleVisual": "Wren and teenage Edda kneel over the open field journal, comparing cap, gill, and stem features of freshly gathered mushrooms with disciplined care.",
+      "finalVisual": "At the forest edge, Edda carries her first apprentice basket and follows Wren along the path as early sun enters the trees."
+    },
+    {
+      "number": 21,
+      "cardAsset": "StoryCard_21_TheoCapitalOffer",
+      "questAsset": "Quest_Act3_21_TheoCapitalOffer",
+      "dialogueAsset": "Dialogue_Act3_Theo_Capital_Leave",
+      "momentAsset": "StoryMoment_21_TheoCapitalOffer",
+      "middleVisual": "In the empty Crooked Pintle after closing, Theo gently lays out a Capital partnership contract and prosperous trade map, making the offer without greed.",
+      "finalVisual": "Alone after Theo leaves, Wren stands between the warmly lit village window and the distant road toward the Capital, weighing two futures."
+    },
+    {
+      "number": 22,
+      "cardAsset": "StoryCard_22_FirstFestival",
+      "questAsset": "Quest_Act3_22_FestivalHosted",
+      "dialogueAsset": "Dialogue_Act3_Festival",
+      "momentAsset": "StoryMoment_22_FirstFestival",
+      "middleVisual": "Elder Pell ceremonially records the festival season as Hollowfen's turning point in his ledger before gathered villagers.",
+      "finalVisual": "The lantern-lit village square is full for the first time in years, with Marra's mushroom dishes, music, dancing, and Wren quietly watching the joy she helped restore."
+    },
+    {
+      "number": 23,
+      "cardAsset": "StoryCard_23_SealedLetter",
+      "questAsset": "Quest_Act3_23_AldricLetter",
+      "dialogueAsset": "Dialogue_Act3_Voss_Letter",
+      "momentAsset": "StoryMoment_23_SealedLetter",
+      "middleVisual": "A tired, plainly dressed Master Voss privately hands Wren a sealed letter bearing Lord Aldric's dark wax crest, his official composure beginning to crack.",
+      "finalVisual": "Wren sits alone at the mill table before the still-sealed letter, lamplight on the wax while the Old Wood waits beyond the window."
+    },
+    {
+      "number": 24,
+      "cardAsset": "StoryCard_24_AldricOffer",
+      "questAsset": "Quest_Act4_24_AldricOfferRead",
+      "dialogueAsset": "Dialogue_Act4_Aldric_Offer",
+      "momentAsset": "StoryMoment_24_AldricOffer",
+      "middleVisual": "Wren reads Aldric's elegant monopoly terms spread across the mill table: generous prices, repaired roads, and the village bound beneath his crest.",
+      "finalVisual": "After reading the letter a third time, Wren looks from the polished offer to the independent village outside, understanding the iron beneath the velvet promise."
+    },
+    {
+      "number": 25,
+      "cardAsset": "StoryCard_25_WendSource",
+      "questAsset": "Quest_Act4_25_WendSource",
+      "dialogueAsset": "Dialogue_Act4_WendSource",
+      "momentAsset": "StoryMoment_25_WendSource",
+      "middleVisual": "Wren crosses the vast upstream clear-cut where black stumps cover a shaved hillside and runoff has carved the soil toward the displaced Wend.",
+      "finalVisual": "At the surviving alder fringe, Wren discovers layered Aldermark mushrooms thriving on damaged roots, a living proof and bargaining tool against Aldric."
+    },
+    {
+      "number": 26,
+      "cardAsset": "StoryCard_26_MeetingAldric",
+      "questAsset": "Quest_Act4_26_MeetAldric",
+      "dialogueAsset": "Dialogue_Act4_MeetAldric",
+      "momentAsset": "StoryMoment_26_MeetingAldric",
+      "middleVisual": "Across a polished manor table, Lord Aldric calmly presents his partnership terms while Wren places evidence of the ruined watershed beside his ledger.",
+      "finalVisual": "Close final standoff between Wren and Aldric in the manor's cold morning light, both composed as Wren prepares to choose Hollowfen's future."
+    },
+    {
+      "number": 27,
+      "cardAsset": "StoryCard_27_EndingFreeHollow",
+      "questAsset": "",
+      "dialogueAsset": "Dialogue_Ending_FreeHollow",
+      "momentAsset": "StoryMoment_27_EndingFreeHollow",
+      "middleVisual": "Seasons later, an independent Hollowfen market bustles with free foragers, herbalists, repaired cottages, and no lord's banner above the square.",
+      "finalVisual": "Older Wren stands at the village edge beside a thriving free community, weathered by difficult years but certain the choice was theirs."
+    },
+    {
+      "number": 28,
+      "cardAsset": "StoryCard_28_EndingLordlyPatronage",
+      "questAsset": "",
+      "dialogueAsset": "Dialogue_Ending_LordlyPatronage",
+      "momentAsset": "StoryMoment_28_EndingLordlyPatronage",
+      "middleVisual": "Prosperous Hollowfen under Aldric's black-and-gold banner: repaired roofs, crowded stalls, uniform trade crates, and officials recording every basket.",
+      "finalVisual": "Wren watches Theo's wagon and Edda depart the altered village while new wealth gleams behind her, the cost of her bargain quietly visible."
+    },
+    {
+      "number": 29,
+      "cardAsset": "StoryCard_29_EndingCapital",
+      "questAsset": "",
+      "dialogueAsset": "Dialogue_Ending_Capital",
+      "momentAsset": "StoryMoment_29_EndingCapital",
+      "middleVisual": "In a refined Capital kitchen one year later, Wren leads a celebrated mushroom service while wealthy diners and apprentices repeat her name.",
+      "finalVisual": "Back in Hollowfen, Hollin teaches a young forager from Tobin's weathered journal as Wren's distant city success becomes village legend."
+    },
+    {
+      "number": 30,
+      "cardAsset": "StoryCard_30_EndingWitchsPath",
+      "questAsset": "",
+      "dialogueAsset": "Dialogue_Ending_WitchsPath",
+      "momentAsset": "StoryMoment_30_EndingWitchsPath",
+      "middleVisual": "Wren and Hollin restore the old witch's cottage as a quiet school, drying herbs and annotating mushroom lore together without ceremony.",
+      "finalVisual": "At twilight, Wren and Hollin lead Edda and two villagers into the luminous Old Wood, carrying baskets and journals as a renewed lineage."
+    }
+  ]
+}

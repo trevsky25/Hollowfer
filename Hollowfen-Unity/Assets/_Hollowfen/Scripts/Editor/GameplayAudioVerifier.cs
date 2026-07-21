@@ -26,7 +26,7 @@ namespace Hollowfen.EditorTools
 
         private static void VerifyFootsteps()
         {
-            var controller = UnityEngine.Object.FindFirstObjectByType<ThirdPersonController>();
+            var controller = UnityEngine.Object.FindAnyObjectByType<ThirdPersonController>();
             Require(controller != null, "player ThirdPersonController is missing");
             Require(controller.FootstepAudioClips != null && controller.FootstepAudioClips.Length >= 6,
                 "player footstep variation bank is missing");
@@ -62,7 +62,7 @@ namespace Hollowfen.EditorTools
 
         private static int VerifyVoiceCoverage(DialogueData[] dialogues)
         {
-            Require(dialogues.Length == 75, "expected 75 authored dialogues, found " + dialogues.Length);
+            Require(dialogues.Length == 145, "expected 145 authored dialogues, found " + dialogues.Length);
             int lineCount = 0;
             int wrenLines = 0;
             int castLines = 0;
@@ -84,8 +84,8 @@ namespace Hollowfen.EditorTools
                     else castLines++;
                 }
             }
-            Require(lineCount == 267, "expected 267 dialogue lines, found " + lineCount);
-            Require(wrenLines == 107 && castLines == 160,
+            Require(lineCount == 410, "expected 410 dialogue lines, found " + lineCount);
+            Require(wrenLines == 150 && castLines == 260,
                 $"cast split drifted (Wren {wrenLines}, other cast {castLines})");
             return lineCount;
         }

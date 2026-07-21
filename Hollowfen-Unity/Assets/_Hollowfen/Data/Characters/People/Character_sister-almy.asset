@@ -1,0 +1,86 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b4e19f76957446acb794b6622b288e2, type: 3}
+  m_Name: Character_sister-almy
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.CharacterProfileData
+  _id: sister-almy
+  _characterName: Sister Almy
+  _role: Vine-tender / cultivation mentor
+  _age: Late fifties to early sixties
+  _home: Almy's garden and the chapel garden
+  _work: Cultivation, medicinal lore, and teaching
+  _keepsake: The old seedbook
+  _tagline: The severe teacher whose hands remember what the village tried to forget.
+  _leadParagraph: Sister Almy is slight, wiry, and direct, a vine-tender whose weathered
+    hands make every cultivation lesson look precise and necessary.
+  _backgroundParagraph: She recognizes knowledge in Wren that the younger woman did
+    not know she carried and begins teaching her how to read rot, feed it, and leave
+    enough behind.
+  _perspectiveParagraph: Almy treats patience as a discipline and names as responsibilities.
+    Most useful lessons sound like warnings when she gives them.
+  _kitItems: []
+  _heroPortrait: {fileID: 0}
+  _pullquote: Do not rush growth. Rushed mushrooms teach regret.
+  _displayNameId: character.sister_almy.name
+  _descriptionId: character.sister_almy.lead
+  _sortOrder: 4
+  _category: 0
+  _edition: 05 / SISTER ALMY
+  _previewScale: 1
+  _tPosePlate: {fileID: 0}
+  _characterSheet: {fileID: 0}
+  _missions:
+  - Act: 1
+    QuestId: meetAlmy
+    Title: A Knock at the Door
+    Summary: Tell Wren that her family's knowledge reaches back another generation.
+  - Act: 2
+    QuestId: almyTeach
+    Title: The Vine-Tender's Lessons
+    Summary: Teach Wren the foundations of mushroom cultivation.
+  - Act: 2
+    QuestId: edsGrandfather
+    Title: Brightspore at the Bedside
+    Summary: Explain the medicinal use and careful harvest of Brightspore.
+  - Act: 3
+    QuestId: hollinReveals
+    Title: Hollin's Inheritance
+    Summary: Recognize the name and page Hollin carries.
+  - Act: 3
+    QuestId: findWitchCottage
+    Title: The Witch's Cottage
+    Summary: Walk the old path with Wren and Hollin.
+  - Act: 3
+    QuestId: caldenReconcile
+    Title: The Chapel Garden Opens
+    Summary: See the chapel garden returned to useful work.
+  _quotes:
+  - Text: No. But your hands do.
+    Context: Answering Wren's claim that she does not remember her grandmother.
+  - Text: Most useful lessons are.
+    Context: On lessons that sound like warnings.
+  - Text: Do not rush growth. Rushed mushrooms teach regret.
+    Context: Beginning Wren's cultivation work.
+  _heroPortraitResourcePath: People/Art/sister-almy_hero
+  _tPosePlateResourcePath: People/Art/sister-almy_tpose
+  _characterSheetResourcePath: People/Art/sister-almy_hero
+  _journalModelResourcePath: People/Models/sister-almy
+  _journalTriangleBudget: 90000
+  _journalTextureSize: 2048
+  _journalModelPrefab: {fileID: 0}
+  _journalIdleClip: {fileID: 0}
+  _journalExposure: 0.15
+  _studySheet: {fileID: 0}
+  _figureFront: {fileID: 0}
+  _figureBack: {fileID: 0}
+  _figureThreeQuarter: {fileID: 0}
+  _knifePlate: {fileID: 0}

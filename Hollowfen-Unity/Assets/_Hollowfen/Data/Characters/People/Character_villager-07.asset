@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b4e19f76957446acb794b6622b288e2, type: 3}
+  m_Name: Character_villager-07
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.CharacterProfileData
+  _id: villager-07
+  _characterName: Villager 07
+  _role: Stable hand
+  _age: Teenager
+  _home: Hollowfen
+  _work: Animal care and stable chores
+  _keepsake: Grooming brush
+  _tagline: A young stable hand scaled for quick chores, feed sacks, and animal care.
+  _leadParagraph: A teenage stable hand in worn work clothes, designed for smaller
+    stature and practical animal-care activity.
+  _backgroundParagraph: Use this villager for feed, brushing, mucking, gate, and
+    wagon-adjacent routines rather than adult labor staging.
+  _perspectiveParagraph: The character should read as young through scale and motion
+    while remaining a worker, not a sentimental child figure.
+  _kitItems: []
+  _heroPortrait: {fileID: 0}
+  _pullquote: 
+  _displayNameId: character.villager_07.name
+  _descriptionId: character.villager_07.lead
+  _sortOrder: 22
+  _category: 2
+  _edition: 23 / VILLAGER 07
+  _previewScale: 0.78
+  _tPosePlate: {fileID: 0}
+  _characterSheet: {fileID: 0}
+  _missions: []
+  _quotes: []
+  _heroPortraitResourcePath: People/Art/villager-07_tpose
+  _tPosePlateResourcePath: People/Art/villager-07_tpose
+  _characterSheetResourcePath: People/Art/villager-07_tpose
+  _journalModelResourcePath: People/Models/villager-07
+  _journalTriangleBudget: 50000
+  _journalTextureSize: 1024
+  _journalModelPrefab: {fileID: 0}
+  _journalIdleClip: {fileID: 0}
+  _journalExposure: 0.15
+  _studySheet: {fileID: 0}
+  _figureFront: {fileID: 0}
+  _figureBack: {fileID: 0}
+  _figureThreeQuarter: {fileID: 0}
+  _knifePlate: {fileID: 0}

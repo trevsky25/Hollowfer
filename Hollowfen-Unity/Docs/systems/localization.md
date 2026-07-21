@@ -2,9 +2,9 @@
 Player-facing strings resolve through `Localization.Get`; never add literal display text directly to UI scripts. The live LUT is English today, with Simplified Chinese required for EA.
 Key script: `Assets/_Hollowfen/Scripts/Localization.cs`; `Get(id)` reports the raw id on a miss, while batch-63 `Get(id, englishFallback)` keeps SO-backed content readable until its translation row exists.
 ID conventions: `story.<id>.<field>`, `mushroom.<id>.<field>`, `character.<id>.<field>`, `prompt.<context>.verb`, plus fixed `journal.*` and `ending.*` chrome IDs.
-Localized/routed today: quest/objective text, prompt verbs/NPC names, map/location content, modal copy, the journal family, and ending decision/credit chrome.
-Known unrouted areas: dialogue and epilogue prose, QuestHUD eyebrow, StoryBeats captions, parts of map chrome, and the slot row's cached `SaveSlotMeta.CurrentQuest` display string. `CurrentQuestId` now accompanies it for stable logic.
-Status: infrastructure live; journal routing is complete, but its Chinese translations and per-content LUT rows remain a pre-EA content pass.
+Localized/routed today: quest/objective text, prompt verbs/NPC names, map/location content and chrome, modal copy, loading/save-slot presentation, the journal family (including candidate-page browsing and enlarged-spread controls), mushroom content outside the journal, ending decisions/epilogues/credits, quest HUD chrome, the six-beat homecoming opening, and live text painted onto story-moment pages.
+Known unrouted areas: dialogue lines and choices, plus the Act I completion captions in StoryBeats. Dialogue still has no stable per-line or per-choice localization IDs. `CurrentQuestId` is now preferred over the slot row's cached English display string.
+Status: infrastructure live; journal routing is complete, the hidden-journal letter resolves as localized live page text in its dedicated cursive role, and voiced story moments cannot hide their matching caption. Simplified Chinese is not yet shippable: there is no language store/selector, translated table, or CJK-capable TMP fallback, and several runtime surfaces still contain English literals.
 
 > Self-healing doc: if you change this system, update this doc (including the 7-line header) in the same batch, and note the change in the batch worksheet.
 
@@ -13,10 +13,12 @@ Status: infrastructure live; journal routing is complete, but its Chinese transl
 ## Resolution rules
 
 - Fixed chrome calls `Localization.Get("journal.…")`; every consumed fixed journal ID is asserted by `DataIntegrity`.
+- First-identification browser chrome uses fixed `inspect.browser.*`, `inspect.lens.*`, `inspect.quiz.*`, and `inspect.discovery.*` IDs. Species names remain inside the authored candidate spreads during Match; no separate target-name string may be rendered until `IsFieldIdentified` succeeds. Candidate-specific wrong feedback formats a localized sentence around one localized species feature. Discovery annotation copy formats the localized species/place at display time while its save record retains only stable IDs.
 - SO-backed journal copy calls `Localization.Get(derivedId, englishFallback)` through `JournalText`. This is deliberate: the canonical English remains on the SO, while an authored LUT entry overrides it without changing screen code.
 - Stable derived examples: `story.homecoming.title`, `mushroom.flyAgaric.name`, `mushroom.flyAgaric.feature.0`, `character.wrenTobin.kit.0.name`.
 - Array members use their canonical index in the ID. Reordering beats/features/kit items changes the semantic key and must be treated as a content migration.
 - `IInteractable.PromptVerb` returns a localization key, not display text; the HUD resolves it.
+- `StoryMomentData.PageText` resolves `_pageTextId` with `_pageTextFallback`; the cinematic overlay draws that result on the authored image rect rather than baking English into the art. Optional paragraph reveal beats keep the localized writing synchronized with its caption and VO, while `_useCursivePageText` changes typography without changing the localized string.
 - Target languages at EA: English and Simplified Chinese.
 
 ## Journal implementation
@@ -37,5 +39,5 @@ Remaining localization work:
 
 1. Add Simplified Chinese storage/selection to the localization service.
 2. Export the derived content-ID inventory and author English/Chinese rows.
-3. Move the remaining unrouted dialogue, narration, map chrome, and saved quest display text onto stable IDs.
+3. Move dialogue lines/choices and the remaining Act I completion captions onto stable IDs.
 4. Promote translated-language layout checks at 1280×800 into the Play-mode verification pass.

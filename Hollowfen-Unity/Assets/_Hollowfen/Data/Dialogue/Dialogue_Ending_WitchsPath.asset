@@ -34,6 +34,11 @@ MonoBehaviour:
     text: Names arrive after work.
     isCloseup: 1
     voiceClip: {fileID: 8300000, guid: a4303f671c6e14599b0952c69ff12e73, type: 3}
+  _mushroomHandoff:
+    beforeLineIndex: 0
+    recipientSpeaker: 
+    mushroom: {fileID: 0}
+    presentationHeight: 0
   _unlockStoryCard: {fileID: 0}
   _completeQuest: {fileID: 0}
   _giveItemId: 
@@ -51,6 +56,10 @@ MonoBehaviour:
   _knowledgeDelta: 0
   _relationshipNpcIds: []
   _relationshipDeltas: 
-  _transitionMoment: {fileID: 0}
+  _memoryOutcomes: []
+  _bondOutcomes: []
+  _favorOutcomes: []
+  _advanceMinutes: 0
+  _transitionMoment: {fileID: 11400000, guid: a99f7d81c1ad24d099d3e357c1364886, type: 2}
   _nextDialog: {fileID: 0}
   _choices: []

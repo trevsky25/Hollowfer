@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95267338c201c4c76b2d6ee20a231830, type: 3}
+  m_Name: Request_Apothecary_Theo_FieldInkRepeat
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Requests.VillageRequestData
+  _id: apothecary_theo_field_ink_repeat
+  _npcId: theo
+  _kind: 2
+  _titleId: request.apothecary.theo_ink_repeat.title
+  _descriptionId: request.apothecary.theo_ink_repeat.body
+  _requesterLineId: request.apothecary.theo_ink_repeat.line
+  _heroImage: {fileID: 21300000, guid: e425fc24287e148a086b09ef036f3696, type: 3}
+  _requiredSpecies: []
+  _requiredCounts: 
+  _requiredPreparations:
+  - {fileID: 11400000, guid: 2b006a3dc88e44d6aa20169f983a6b69, type: 2}
+  _requiredPreparationCounts: 01000000
+  _rewardCopper: 18
+  _wetWeatherBonusCopper: 4
+  _firstCompletionRelationshipDelta: 1
+  _firstCompletionKnowledgeDelta: 0
+  _requiredFlagIds:
+  - apothecary_field_ink_delivered
+  _requiredCompletedQuestIds: []
+  _activeQuestId: 
+  _oneShot: 0
+  _completionFlagIds: []
+  _completeQuest: {fileID: 0}
+  _completionDialogue: {fileID: 0}

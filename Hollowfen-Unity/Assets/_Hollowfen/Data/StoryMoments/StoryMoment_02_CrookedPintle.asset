@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d0fced8610445dd87f9c05997c7c4b4, type: 3}
+  m_Name: StoryMoment_02_CrookedPintle
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.StoryMomentData
+  _id: story.crooked_pintle.illustrated
+  _presentation: 0
+  _trigger: 0
+  _storyCard: {fileID: 11400000, guid: 4d3b302c8f5404f1e9b2d48978d76977, type: 2}
+  _captionIds:
+  - story.crooked_pintle.beat.0
+  - story.crooked_pintle.beat.1
+  _captionFallbacks:
+  - Bram welcomes Wren home and remembers her childhood at the Pintle.
+  - The Wend changed course three winters ago and killed the mill wheel.
+  _voiceClips:
+  - {fileID: 8300000, guid: ec4bcd1f9352c4db2a5e75886939190c, type: 3}
+  - {fileID: 8300000, guid: d5e636a7ae5c84f05afbfeb549741923, type: 3}
+  _images:
+  - {fileID: 21300000, guid: 1494a1c8424ec4747919ee6f6d71d45d, type: 3}
+  - {fileID: 21300000, guid: 59a74d3f287d74bbcb5119128e19aa05, type: 3}
+  _beatImages: 0000000001000000
+  _showStoryCardTitle: 0
+  _showCaptions: 1
+  _fadeIn: 1
+  _holdSeconds: 0
+  _pageTextId: 
+  _pageTextFallback: 
+  _pageTextImageIndex: -1
+  _pageTextStartBeat: 0
+  _pageTextParagraphRevealBeats: 
+  _pageTextRect:
+    serializedVersion: 2
+    x: 0.2
+    y: 0.2
+    width: 0.6
+    height: 0.6
+  _pageTextRotation: 0
+  _pageTextFontSize: 30
+  _pageTextColor: {r: 0.16, g: 0.1, b: 0.05, a: 0.86}
+  _focusContext: 0
+  _focusDistance: 0.4
+  _focusHeight: 0.05
+  _focusFov: 30
+  _focusPushSeconds: 1.2
+  _focusHoldSeconds: 1.6
+  _focusRestoreSeconds: 0.2

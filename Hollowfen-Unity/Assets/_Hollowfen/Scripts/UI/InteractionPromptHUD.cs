@@ -26,6 +26,8 @@ namespace Hollowfen.UI
         private TMP_Text _label;
         private float _targetAlpha;
         private bool _built;
+        private string _lastGlyph;
+        private IInteractable _currentFocus;
 
         private void Awake()
         {
@@ -38,12 +40,14 @@ namespace Hollowfen.UI
         {
             BuildIfNeeded();
             PlayerInteractor.OnFocusChanged += HandleFocus;
+            _lastGlyph = ResolveActiveGlyph();
             HandleFocus(PlayerInteractor.Current);
         }
 
         private void OnDisable()
         {
             PlayerInteractor.OnFocusChanged -= HandleFocus;
+            _currentFocus = null;
             _targetAlpha = 0f;
             if (_group != null) _group.alpha = 0f;
         }
@@ -84,19 +88,20 @@ namespace Hollowfen.UI
             ruleImg.type = Image.Type.Sliced;
             UICanvasUtil.Stretch((RectTransform)rule.transform);
 
-            // Label — keyboard glyph + slash + gamepad glyph + verb + target
+            // Label — active-device glyph + verb + target.
             _label = UICanvasUtil.NewBody("Label", transform, "", 22f, HollowfenPalette.Cream,
                 TMPro.FontStyles.Normal, TMPro.TextAlignmentOptions.Center);
             var lblRT = _label.rectTransform;
             UICanvasUtil.Stretch(lblRT);
             lblRT.offsetMin = new Vector2(20f, 0f);
             lblRT.offsetMax = new Vector2(-20f, -2f);
-            _label.enableWordWrapping = false;
+            _label.textWrappingMode = TextWrappingModes.NoWrap;
             _label.overflowMode = TextOverflowModes.Ellipsis;
         }
 
         private void HandleFocus(IInteractable focus)
         {
+            _currentFocus = focus;
             if (focus == null)
             {
                 _targetAlpha = 0f;
@@ -104,22 +109,34 @@ namespace Hollowfen.UI
             }
             string verb = Hollowfen.Localization.Get(focus.PromptVerb);
             string target = focus.PromptTarget;
-            // Use rich-text color tag on the gold glyph cluster for a tiny lift over cream body.
-            // Interact = Player/Interact (buttonNorth) → brand icon/letter when a pad is present.
-            string padGlyph = UnityEngine.InputSystem.Gamepad.current != null
-                ? " / " + ControllerGlyphs.For(ControllerGlyphs.Face.North)
-                : "";
-            string glyphs = $"<color=#{ColorUtility.ToHtmlStringRGB(HollowfenPalette.Gold)}>{_keyboardGlyph}{padGlyph}</color>";
-            _label.text = $"{glyphs}  {verb} {target}";
+            // Interact = Player/Interact (buttonNorth). A connected controller owns the prompt;
+            // keyboard is the fallback only when no enabled controller is available.
+            string activeGlyph = ResolveActiveGlyph();
+            _lastGlyph = activeGlyph;
+            string glyphs = $"<color=#{ColorUtility.ToHtmlStringRGB(HollowfenPalette.Gold)}>{activeGlyph}</color>";
+            _label.text = string.Format(Localization.Get("prompt.interaction.format"), glyphs, verb, target);
             _targetAlpha = 1f;
         }
 
         private void Update()
         {
             if (_group == null) return;
+            string glyph = ResolveActiveGlyph();
+            if (glyph != _lastGlyph)
+            {
+                _lastGlyph = glyph;
+                if (_currentFocus != null) HandleFocus(_currentFocus);
+            }
             if (Mathf.Approximately(_group.alpha, _targetAlpha)) return;
             float speed = _fadeSeconds <= 0f ? 999f : 1f / _fadeSeconds;
             _group.alpha = Mathf.MoveTowards(_group.alpha, _targetAlpha, Time.unscaledDeltaTime * speed);
+        }
+
+        private string ResolveActiveGlyph()
+        {
+            return ControllerGlyphs.IsGamepadActive
+                ? ControllerGlyphs.For(ControllerGlyphs.Face.North)
+                : _keyboardGlyph;
         }
     }
 }

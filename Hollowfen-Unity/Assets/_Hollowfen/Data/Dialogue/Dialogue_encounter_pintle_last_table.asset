@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00c9c9bb92b3b44fb84ca335c48467d8, type: 3}
+  m_Name: Dialogue_encounter_pintle_last_table
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Dialogue.DialogueData
+  _id: encounter.pintle_last_table
+  _lines:
+  - speaker: Bram
+    text: One bowl left. In the old days Tobin would arrive just late enough to claim
+      it was an accident.
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: c025e01f51e14493da1dcd46908e42cb, type: 3}
+  - speaker: Marra
+    text: In the old days I always made one bowl too many.
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 0c8b55ab34da5403194580d8a89acab8, type: 3}
+  - speaker: Wren
+    text: Then set three places tonight.
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: c8c0ff8dcaec248e6b3014c7d7e9b9c0, type: 3}
+  - speaker: Bram
+    text: For whom?
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 8b728dade195b4d26a70c08b0233882f, type: 3}
+  - speaker: Marra
+    text: For whoever comes through the door needing not to explain themselves.
+    isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: a211277548ca346d39b1ade8d8c09f72, type: 3}
+  _mushroomHandoff:
+    beforeLineIndex: 0
+    recipientSpeaker: 
+    mushroom: {fileID: 0}
+    presentationHeight: 0
+  _unlockStoryCard: {fileID: 0}
+  _completeQuest: {fileID: 0}
+  _giveItemId: 
+  _grantCoinsCopper: 0
+  _spendsCoinsCopper: 0
+  _sellsForageBasket: 0
+  _basketCopperPerItem: 0
+  _basketBuyer: 0
+  _grantForage: {fileID: 0}
+  _grantForageCount: 1
+  _consumeForage: {fileID: 0}
+  _consumeForageCount: 1
+  _setFlagIds:
+  - encounter.pintle_last_table_seen
+  _villageHopeDelta: 1
+  _knowledgeDelta: 0
+  _relationshipNpcIds:
+  - bram
+  - marra
+  _relationshipDeltas: 0100000001000000
+  _memoryOutcomes:
+  - npcId: bram
+    memoryId: bram.set_last_pintle_table
+  - npcId: marra
+    memoryId: marra.set_last_pintle_table
+  _bondOutcomes:
+  - firstNpcId: bram
+    secondNpcId: marra
+    delta: 2
+  _favorOutcomes: []
+  _advanceMinutes: 30
+  _atomicSocialOutcomes: 1
+  _transitionMoment: {fileID: 0}
+  _nextDialog: {fileID: 0}
+  _choices: []

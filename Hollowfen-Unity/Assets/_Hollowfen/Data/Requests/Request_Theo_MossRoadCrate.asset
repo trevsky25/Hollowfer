@@ -23,13 +23,16 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8ef0eedcc9a4f49e998202c235dd5881, type: 2}
   - {fileID: 11400000, guid: 1af653a6e5104453ea0722f2672205ab, type: 2}
   _requiredCounts: 0200000001000000
+  _requiredPreparations: []
+  _requiredPreparationCounts: 
   _rewardCopper: 36
+  _wetWeatherBonusCopper: 0
   _firstCompletionRelationshipDelta: 1
   _firstCompletionKnowledgeDelta: 0
   _requiredFlagIds:
   - theo_met
   _requiredCompletedQuestIds: []
-  _activeQuestId:
+  _activeQuestId: 
   _oneShot: 0
   _completionFlagIds: []
   _completeQuest: {fileID: 0}

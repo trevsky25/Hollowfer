@@ -28,7 +28,7 @@ keep display-mode changes from silently replacing the pacing policy.
 
 ## Verification evidence
 
-- Static audit: PC quality = native render scale, full mipmaps, anisotropic filtering, LOD bias 2; PC URP =
+- Static audit: PC quality = native render scale, full mipmaps, anisotropic filtering, LOD bias 1.25 (rebalanced July 19 after a 46,762-LOD vendor-world audit); PC URP =
   HDR, Forward+, SRP Batcher, 2K four-cascade high soft shadows, full-resolution SSAO, reflection blending.
 - C# validation: zero errors; initial compile completed with no new compile errors. Removed the only new
   Unity 6 deprecation warning (`GetInstanceID`) before runtime verification.

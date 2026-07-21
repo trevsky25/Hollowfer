@@ -12,6 +12,15 @@ namespace Hollowfen.Map
         private string _lastEvent = "";
         private float _lastEventTime = -10f;
 
+        private void Awake()
+        {
+#if !UNITY_EDITOR && !DEVELOPMENT_BUILD
+            // This overlay can reveal every map marker and mutate discovery state. Keep the
+            // component available to authored scenes, but make it inert in shipping players.
+            enabled = false;
+#endif
+        }
+
         private void OnEnable()
         {
             LocationRegistry.LocationDiscovered += HandleDiscovered;

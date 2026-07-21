@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using System;
 using System.Linq;
+using Hollowfen.Apothecary;
 using Hollowfen.Foraging;
 using Hollowfen.GameTime;
 using Hollowfen.Items;
@@ -26,7 +27,7 @@ namespace Hollowfen.EditorTools
                 var clock = TimeManager.Instance;
                 Require(clock != null, "TimeManager is missing from the gameplay scene");
                 var requests = LoadRequests();
-                Require(requests.Length == 10, "expected ten authored village requests");
+                Require(requests.Length == 16, "expected sixteen authored village requests");
                 VerifyWorldSource();
 
                 QuestManager.ResetForSlotSwitch();
@@ -57,12 +58,13 @@ namespace Hollowfen.EditorTools
                 Require(VillageRequests.TrackedRequest == marraDay20,
                     "tracked request failed its in-memory save round-trip");
 
-                FillBasket(marraDay20);
+                FillRequirements(marraDay20);
                 int relationshipBefore = GameScores.GetRelationship("marra");
+                int expectedMarraReward = VillageRequests.RewardFor(marraDay20);
                 var first = VillageRequests.Complete(marraDay20);
-                Require(first.Success && first.Copper == marraDay20.RewardCopper && first.FirstCompletion,
+                Require(first.Success && first.Copper == expectedMarraReward && first.FirstCompletion,
                     "first recurring Marra delivery returned the wrong result");
-                Require(CoinPurse.TotalCopper == marraDay20.RewardCopper,
+                Require(CoinPurse.TotalCopper == expectedMarraReward,
                     "recurring request did not pay its authored copper reward");
                 Require(GameScores.GetRelationship("marra") == relationshipBefore +
                         marraDay20.FirstCompletionRelationshipDelta,
@@ -83,7 +85,7 @@ namespace Hollowfen.EditorTools
                 clock.SetTime(23, 8f);
                 var marraDay23 = RequireCurrent("marra");
                 Require(marraDay23.Id == marraDay20.Id, "three-request rotation did not cycle deterministically");
-                FillBasket(marraDay23);
+                FillRequirements(marraDay23);
                 int relationshipAfterFirst = GameScores.GetRelationship("marra");
                 var repeat = VillageRequests.Complete(marraDay23);
                 Require(repeat.Success && !repeat.FirstCompletion,
@@ -94,6 +96,7 @@ namespace Hollowfen.EditorTools
                 RequireCurrent("edda");
                 RequireCurrent("theo");
                 VerifyRequestCard(clock);
+                VerifyApothecaryStoryDeliveries(clock, requests);
 
                 // The festival outranks an already-claimed Marra workday and persists as story state.
                 var festival = requests.Single(request => request.Id == "festival_four_dishes");
@@ -103,7 +106,7 @@ namespace Hollowfen.EditorTools
                 GameScores.SetFlag("festival_gathering_active");
                 Require(VillageRequests.CurrentForNpc("marra") == festival,
                     "active festival gathering did not outrank rotating kitchen work");
-                FillBasket(festival);
+                FillRequirements(festival);
                 var story = VillageRequests.Complete(festival);
                 Require(story.Success && story.Copper == 0,
                     "festival delivery did not commit as story work");
@@ -125,7 +128,7 @@ namespace Hollowfen.EditorTools
                 Require(VillageRequests.ToSnapshot().CompletedOneShotIds.Contains(festival.Id),
                     "completed gathering failed save hydration");
 
-                return "VILLAGE REQUESTS — PASS: 9 deterministic dawn-rotating NPC orders, one-per-NPC daily claims, atomic basket/payment saves, first-only relationship rewards, tracker expiry, controller request card, medicinal/trader availability, and four-dish festival quest handoff";
+                return "VILLAGE REQUESTS — PASS: 12 deterministic dawn-rotating NPC orders, three sequential apothecary story deliveries, atomic raw/prepared stock and payment saves, rollback, first-only relationship rewards, tracker expiry, controller request card, and four-dish festival quest handoff";
             }
             finally
             {
@@ -147,7 +150,7 @@ namespace Hollowfen.EditorTools
             return request;
         }
 
-        private static void FillBasket(VillageRequestData request)
+        private static void FillRequirements(VillageRequestData request)
         {
             var ids = new string[request.RequirementCount];
             var counts = new int[request.RequirementCount];
@@ -157,14 +160,71 @@ namespace Hollowfen.EditorTools
                 counts[i] = request.RequiredCountAt(i);
             }
             InventoryRuntime.HydrateFrom(new InventorySnapshot { Ids = ids, Counts = counts });
-            Require(VillageRequests.CanDeliver(request), "freshly filled basket is not deliverable");
+            var productIds = new string[request.PreparationRequirementCount];
+            var productCounts = new int[request.PreparationRequirementCount];
+            for (int i = 0; i < request.PreparationRequirementCount; i++)
+            {
+                productIds[i] = request.RequiredPreparations[i].ResultId;
+                productCounts[i] = request.RequiredPreparationCountAt(i);
+            }
+            ApothecaryRuntime.HydrateFrom(new ApothecarySnapshot
+            {
+                ProductIds = productIds,
+                ProductCounts = productCounts,
+            });
+            Require(VillageRequests.CanDeliver(request), "freshly filled delivery is not deliverable");
         }
 
         private static bool BasketIsEmptyFor(VillageRequestData request)
         {
             for (int i = 0; i < request.RequirementCount; i++)
                 if (InventoryRuntime.GetCount(request.RequiredSpecies[i]) != 0) return false;
+            for (int i = 0; i < request.PreparationRequirementCount; i++)
+                if (ApothecaryRuntime.ProductCount(request.RequiredPreparations[i].ResultId) != 0)
+                    return false;
             return true;
+        }
+
+        private static void VerifyApothecaryStoryDeliveries(TimeManager clock,
+            VillageRequestData[] requests)
+        {
+            clock.SetTime(30, 10f);
+            GameScores.SetFlag("apothecary_almy_lesson_seen");
+            GameScores.SetFlag("theo_met");
+            var theo = requests.Single(request => request.Id == "apothecary_theo_field_ink_story");
+            GameScores.SetFlag("apothecary_prepared_field_ink");
+            Require(VillageRequests.CurrentForNpc("theo") == theo,
+                "prepared Field Ink did not open Theo's story delivery");
+            FillRequirements(theo);
+            SaveManager.EditorRejectNextAtomicCommit = true;
+            var rejected = VillageRequests.Complete(theo);
+            Require(!rejected.Success && ApothecaryRuntime.ProductCount("preparation.field_ink") == 1 &&
+                    !GameScores.HasFlag("apothecary_field_ink_delivered"),
+                "failed Field Ink save consumed stock or leaked story state");
+            var ink = VillageRequests.Complete(theo);
+            Require(ink.Success && BasketIsEmptyFor(theo) &&
+                    GameScores.HasFlag("apothecary_field_ink_delivered") &&
+                    VillageRequests.CurrentForNpc("theo") != theo,
+                "Field Ink handoff did not atomically consume stock and advance the story");
+
+            var marra = requests.Single(request => request.Id == "apothecary_marra_goldfoot_story");
+            GameScores.SetFlag("apothecary_prepared_goldfoot_broth");
+            Require(VillageRequests.CurrentForNpc("marra") == marra,
+                "Field Ink handoff did not unlock Marra's covered-jar delivery");
+            FillRequirements(marra);
+            Require(VillageRequests.Complete(marra).Success && BasketIsEmptyFor(marra) &&
+                    GameScores.HasFlag("apothecary_goldfoot_delivered"),
+                "Goldfoot Broth handoff did not advance the apothecary story");
+
+            var edda = requests.Single(request => request.Id == "apothecary_edda_tonic_story");
+            GameScores.SetFlag("apothecary_prepared_brightspore_tonic");
+            Require(VillageRequests.CurrentForNpc("edda") == edda,
+                "Goldfoot handoff did not unlock Edda's shelf delivery");
+            FillRequirements(edda);
+            Require(VillageRequests.Complete(edda).Success && BasketIsEmptyFor(edda) &&
+                    GameScores.HasFlag("apothecary_tonic_delivered") &&
+                    GameScores.HasFlag("apothecary_story_complete"),
+                "Brightspore shelf handoff did not close the apothecary story");
         }
 
         private static void VerifyRequestCard(TimeManager clock)

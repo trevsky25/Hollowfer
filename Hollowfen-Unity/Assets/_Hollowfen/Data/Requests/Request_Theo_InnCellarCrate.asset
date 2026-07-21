@@ -23,14 +23,17 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3dd19c08a2bb84669911b56064b49cfd, type: 2}
   - {fileID: 11400000, guid: 90f27460456424bcb8e40519159e3216, type: 2}
   _requiredCounts: 0200000002000000
+  _requiredPreparations: []
+  _requiredPreparationCounts: 
   _rewardCopper: 34
+  _wetWeatherBonusCopper: 0
   _firstCompletionRelationshipDelta: 1
   _firstCompletionKnowledgeDelta: 0
   _requiredFlagIds:
   - theo_met
   - foraging_knife_unlocked
   _requiredCompletedQuestIds: []
-  _activeQuestId:
+  _activeQuestId: 
   _oneShot: 0
   _completionFlagIds: []
   _completeQuest: {fileID: 0}

@@ -31,6 +31,11 @@ MonoBehaviour:
       stop being the reason this place holds together.'
     isCloseup: 1
     voiceClip: {fileID: 8300000, guid: b41874b01ef9d45169efaaf756902717, type: 3}
+  _mushroomHandoff:
+    beforeLineIndex: 0
+    recipientSpeaker: 
+    mushroom: {fileID: 0}
+    presentationHeight: 0
   _unlockStoryCard: {fileID: 0}
   _completeQuest: {fileID: 0}
   _giveItemId: 
@@ -48,6 +53,10 @@ MonoBehaviour:
   _knowledgeDelta: 0
   _relationshipNpcIds: []
   _relationshipDeltas: 
+  _memoryOutcomes: []
+  _bondOutcomes: []
+  _favorOutcomes: []
+  _advanceMinutes: 0
   _transitionMoment: {fileID: 0}
   _nextDialog: {fileID: 0}
   _choices: []

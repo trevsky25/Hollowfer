@@ -23,10 +23,14 @@ namespace Hollowfen.GameTime
         private float _newGameHour = 14f;
         [SerializeField, Tooltip("Hour at which OnSundown fires.")]
         private float _sundownHour = 19f;
+        private const float PlaytimeAutosaveSeconds = 60f;
+        private double _totalPlayTimeSeconds;
+        private float _playtimeSinceAutosave;
 
         public int Day { get; private set; } = 1;
         public float Hour { get; private set; } = 14f;
         public bool IsNight => Hour < 5.5f || Hour >= 20.5f;
+        public float TotalPlayTimeSeconds => (float)Math.Min(_totalPlayTimeSeconds, float.MaxValue);
 
         public static event Action<int> OnDayChanged;
         public static event Action OnSundown;
@@ -55,6 +59,10 @@ namespace Hollowfen.GameTime
 
             // Hydrate from the active slot; fresh saves start day 1 at the configured hour.
             var meta = SaveManager.GetSlotMeta(SaveManager.ActiveSlot);
+            _totalPlayTimeSeconds = meta != null && !float.IsNaN(meta.TotalPlayTimeSeconds) &&
+                                    !float.IsInfinity(meta.TotalPlayTimeSeconds)
+                ? Math.Max(0d, meta.TotalPlayTimeSeconds)
+                : 0d;
             if (meta != null && meta.GameDay > 0)
             {
                 Day = meta.GameDay;
@@ -75,6 +83,20 @@ namespace Hollowfen.GameTime
 
         private void Update()
         {
+            if (Application.isFocused)
+            {
+                // Unscaled time counts reading/dialogue/pause as play, but clamps focus/suspend
+                // spikes so leaving the application cannot add hours to a journal.
+                float played = Mathf.Clamp(Time.unscaledDeltaTime, 0f, 1f);
+                _totalPlayTimeSeconds += played;
+                _playtimeSinceAutosave += played;
+                if (_playtimeSinceAutosave >= PlaytimeAutosaveSeconds)
+                {
+                    _playtimeSinceAutosave = 0f;
+                    SaveManager.AutoSaveClockAndPlaytime(Day, Hour, TotalPlayTimeSeconds);
+                }
+            }
+
             float prev = Hour;
             float hoursPerSecond = 24f / (Mathf.Max(1f, _minutesPerGameDay) * 60f);
             Hour += Time.deltaTime * hoursPerSecond;
@@ -154,6 +176,17 @@ namespace Hollowfen.GameTime
             if (meta == null) return;
             meta.GameDay = Day;
             meta.GameHour = Hour;
+            meta.TotalPlayTimeSeconds = TotalPlayTimeSeconds;
+        }
+
+        private void OnApplicationPause(bool paused)
+        {
+            if (paused) SaveManager.AutoSaveClockAndPlaytime(Day, Hour, TotalPlayTimeSeconds);
+        }
+
+        private void OnApplicationQuit()
+        {
+            SaveManager.AutoSaveClockAndPlaytime(Day, Hour, TotalPlayTimeSeconds);
         }
 
         private void ApplyLighting()

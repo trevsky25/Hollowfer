@@ -25,7 +25,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 30cd7d9e1afb84c79a102356a0263f3a, type: 2}
   - {fileID: 11400000, guid: 60b9b87ae9cc149b2aaca2adedec80ba, type: 2}
   _requiredCounts: 01000000010000000100000001000000
+  _requiredPreparations: []
+  _requiredPreparationCounts: 
   _rewardCopper: 0
+  _wetWeatherBonusCopper: 0
   _firstCompletionRelationshipDelta: 0
   _firstCompletionKnowledgeDelta: 0
   _requiredFlagIds:

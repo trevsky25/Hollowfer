@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25f24c93bd8a744f694b0ec9c17f5f22, type: 3}
+  m_Name: Case_TheoRoadCold
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Apothecary.ApothecaryCaseData
+  _id: theo_road_cold
+  _patientNpcId: theo
+  _patientProfile: {fileID: 11400000, guid: 39debd1a355004d3b9d06783f965489e, type: 2}
+  _mentorNpcId: edda
+  _requiredFlagId: apothecary_story_complete
+  _requiresResolvedCase: {fileID: 11400000, guid: 186683c38e86e4993859ad291765e759, type: 2}
+  _unlockDelayDays: 1
+  _clues:
+  - id: cloak
+  - id: voice
+  _interviews:
+  - id: crossing
+  - id: camp
+  _decisions:
+  - id: careful
+    preparation: {fileID: 11400000, guid: 1630927f52dea4aadac81181cb0e0782, type: 2}
+    grade: 2
+    followUpDays: 1
+    villageHope: 1
+    knowledge: 1
+    relationshipDelta: 2
+    mentorBondDelta: 2
+    memoryId: case.theo_road_cold.careful
+  - id: supportive
+    preparation: {fileID: 11400000, guid: 05d02b2a37a3b4002a9a8e42d5701fd7, type: 2}
+    grade: 1
+    followUpDays: 2
+    villageHope: 0
+    knowledge: 1
+    relationshipDelta: 1
+    mentorBondDelta: 1
+    memoryId: case.theo_road_cold.supportive
+  - id: mistaken
+    preparation: {fileID: 11400000, guid: 2b006a3dc88e44d6aa20169f983a6b69, type: 2}
+    grade: 0
+    followUpDays: 2
+    villageHope: 0
+    knowledge: 1
+    relationshipDelta: 0
+    mentorBondDelta: 1
+    memoryId: case.theo_road_cold.mistaken
+  _intakeDialogue: {fileID: 11400000, guid: 52b5c6b0c6e1645eca6dfe81755afe45, type: 2}
+  _followUpDialogue: {fileID: 11400000, guid: 32d3c243cab304902b499efc8b8ab842, type: 2}

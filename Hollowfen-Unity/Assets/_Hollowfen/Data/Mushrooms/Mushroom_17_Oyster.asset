@@ -38,6 +38,7 @@ MonoBehaviour:
     next year's flush."
   _photo: {fileID: 0}
   _photoCredit:
+  _journalPage: {fileID: 21300000, guid: 9a4ce42db5a144c67aff7e16af5ae985, type: 3}
   _worldPrefab: {fileID: 3850825029347941045, guid: 99e2069f433504143a700c5031aaf812, type: 3}
   _journalPreviewPrefab: {fileID: 215436814281927653, guid: 6b8246752ed85475c9bfc309d3a64bd2, type: 3}
   _journalExposure: 0.52

@@ -84,6 +84,11 @@ MonoBehaviour:
       I''ll tell you twice and not three times.'
     isCloseup: 0
     voiceClip: {fileID: 8300000, guid: ca4ed795156a84894ac63ce75f89271f, type: 3}
+  _mushroomHandoff:
+    beforeLineIndex: 10
+    recipientSpeaker: Marra
+    mushroom: {fileID: 11400000, guid: 8ef0eedcc9a4f49e998202c235dd5881, type: 2}
+    presentationHeight: 0.27
   _unlockStoryCard: {fileID: 0}
   _completeQuest: {fileID: 0}
   _giveItemId: 
@@ -101,6 +106,10 @@ MonoBehaviour:
   _knowledgeDelta: 0
   _relationshipNpcIds: []
   _relationshipDeltas: 
+  _memoryOutcomes: []
+  _bondOutcomes: []
+  _favorOutcomes: []
+  _advanceMinutes: 0
   _transitionMoment: {fileID: 11400000, guid: 926c6cd25cb043ccb75ae265fb4ae05f, type: 2}
   _nextDialog: {fileID: 11400000, guid: ec2017c785124fd6a5003b6dedf73e29, type: 2}
   _choices: []

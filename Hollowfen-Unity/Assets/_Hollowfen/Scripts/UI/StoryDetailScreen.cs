@@ -79,7 +79,8 @@ namespace Hollowfen.UI
 
             _current = card;
             _hero.SetSprite(card.Image, new Color(0.09f, 0.10f, 0.08f, 1f));
-            _eyebrow.text = (JournalText.StoryAct(card) + " · " + JournalText.StoryScene(card)).ToUpperInvariant();
+            _eyebrow.text = string.Format(Localization.Get("format.pair"),
+                JournalText.StoryAct(card), JournalText.StoryScene(card)).ToUpperInvariant();
             _title.text = JournalText.StoryTitle(card);
             _subtitle.text = JournalText.StorySubtitle(card);
             _body.text = JournalText.StoryBody(card);
@@ -291,7 +292,7 @@ namespace Hollowfen.UI
             button.targetGraphic = image;
 
             var direction = UICanvasUtil.NewEyebrow("Direction", rt,
-                Localization.Get(previous ? "journal.previous" : "journal.next"), 10f, Subtle,
+                Localization.Get(previous ? "journal.previous" : "journal.next"), 12.5f, Subtle,
                 previous ? TextAlignmentOptions.Left : TextAlignmentOptions.Right);
             UICanvasUtil.SetRect(direction.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(previous ? 0f : 1f, 1f), new Vector2(0f, 18f), new Vector2(0f, -10f));
             label = UICanvasUtil.NewHeading("Label", rt, "", 19f, Cream, FontStyles.Italic,

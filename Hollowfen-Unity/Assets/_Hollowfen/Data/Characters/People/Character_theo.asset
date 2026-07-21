@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b4e19f76957446acb794b6622b288e2, type: 3}
+  m_Name: Character_theo
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.CharacterProfileData
+  _id: theo
+  _characterName: Theo
+  _role: Trader / market access
+  _age: Late thirties
+  _home: Theo's wagon and the road
+  _work: Trade, market orders, and wagon routes
+  _keepsake: Trade ledger
+  _tagline: The worldly trader who can price a mushroom, a story, and an open road.
+  _leadParagraph: Theo is a well-groomed traveler with a trim beard, a better coat
+    than most Hollowfen villagers, and a ledger never far from hand.
+  _backgroundParagraph: His wagon gives Wren access to buyers beyond the village
+    and turns unusual mushrooms into a trade that can survive the axle ruts.
+  _perspectiveParagraph: Theo prefers an honest bargain because it saves time. He
+    sees opportunity quickly and is careful to name the cost when it matters.
+  _kitItems: []
+  _heroPortrait: {fileID: 0}
+  _pullquote: Cruel answer. I respect it.
+  _displayNameId: character.theo.name
+  _descriptionId: character.theo.lead
+  _sortOrder: 7
+  _category: 0
+  _edition: 08 / THEO
+  _previewScale: 1
+  _tPosePlate: {fileID: 0}
+  _characterSheet: {fileID: 0}
+  _missions:
+  - Act: 2
+    QuestId: theoTrade
+    Title: The Trader's Ledger
+    Summary: Buy Wren's basket and establish a regular route through Hollowfen.
+  - Act: 3
+    QuestId: theoCapitalOffer
+    Title: Theo's Capital
+    Summary: Offer Wren a larger market and state its cost plainly.
+  _quotes:
+  - Text: Cruel answer. I respect it.
+    Context: When Wren says she found Goldfoot near trees.
+  - Text: When it saves time.
+    Context: Explaining his selective honesty.
+  - Text: It would cost Hollowfen you.
+    Context: Making his Capital offer cleanly.
+  _heroPortraitResourcePath: People/Art/theo_hero
+  _tPosePlateResourcePath: People/Art/theo_tpose
+  _characterSheetResourcePath: People/Art/theo_hero
+  _journalModelResourcePath: People/Models/theo
+  _journalTriangleBudget: 90000
+  _journalTextureSize: 2048
+  _journalModelPrefab: {fileID: 0}
+  _journalIdleClip: {fileID: 0}
+  _journalExposure: 0.15
+  _studySheet: {fileID: 0}
+  _figureFront: {fileID: 0}
+  _figureBack: {fileID: 0}
+  _figureThreeQuarter: {fileID: 0}
+  _knifePlate: {fileID: 0}

@@ -1,0 +1,80 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b4e19f76957446acb794b6622b288e2, type: 3}
+  m_Name: Character_marra
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.CharacterProfileData
+  _id: marra
+  _characterName: Marra
+  _role: Cook / recipe mentor
+  _age: Mid-fifties
+  _home: The Crooked Pintle kitchen
+  _work: Cooking, recipes, and kitchen orders
+  _keepsake: Copper cooking pot
+  _tagline: The cook who can make a meal, a lesson, and a warning from one basket.
+  _leadParagraph: Marra is Hollowfen's compact force of kitchen authority, with rolled
+    sleeves, strong arms, and no patience for careless handling of good ingredients.
+  _backgroundParagraph: She turns Wren's first forage into a meal that brings people
+    back to the Crooked Pintle, then becomes the village's recipe mentor and most
+    exacting buyer.
+  _perspectiveParagraph: Marra trusts texture, temperature, and useful work. Gratitude
+    comes out as instruction, and hope is something she prefers to serve in a bowl.
+  _kitItems: []
+  _heroPortrait: {fileID: 0}
+  _pullquote: I'll tell you twice and not three times.
+  _displayNameId: character.marra.name
+  _descriptionId: character.marra.lead
+  _sortOrder: 2
+  _category: 0
+  _edition: 03 / MARRA
+  _previewScale: 1
+  _tPosePlate: {fileID: 0}
+  _characterSheet: {fileID: 0}
+  _missions:
+  - Act: 1
+    QuestId: firstSale
+    Title: Marra's Kitchen
+    Summary: Inspect Wren's first basket and turn it into a proper meal.
+  - Act: 2
+    QuestId: edsGrandfather
+    Title: Brightspore at the Bedside
+    Summary: Prepare the bitter tonic for Edda's grandfather.
+  - Act: 2
+    QuestId: cottagesReopen
+    Title: Two Boards Come Down
+    Summary: Prepare for returning households that will need bread.
+  - Act: 3
+    QuestId: festivalHosted
+    Title: The First Festival in Three Years
+    Summary: Name and cook the four festival dishes.
+  _quotes:
+  - Text: You wash these in cold water. Not hot. Hot bruises them and makes liars
+      of the texture.
+    Context: Teaching Wren how to handle the first basket.
+  - Text: I'll tell you twice and not three times.
+    Context: Establishing the rules of her kitchen.
+  - Text: Four dishes by sundown. If anyone calls it rustic, I will make them eat
+      the garnish.
+    Context: Opening the festival gathering.
+  _heroPortraitResourcePath: People/Art/marra_hero
+  _tPosePlateResourcePath: People/Art/marra_tpose
+  _characterSheetResourcePath: People/Art/marra_hero
+  _journalModelResourcePath: People/Models/marra
+  _journalTriangleBudget: 90000
+  _journalTextureSize: 2048
+  _journalModelPrefab: {fileID: 0}
+  _journalIdleClip: {fileID: 0}
+  _journalExposure: 0.15
+  _studySheet: {fileID: 0}
+  _figureFront: {fileID: 0}
+  _figureBack: {fileID: 0}
+  _figureThreeQuarter: {fileID: 0}
+  _knifePlate: {fileID: 0}

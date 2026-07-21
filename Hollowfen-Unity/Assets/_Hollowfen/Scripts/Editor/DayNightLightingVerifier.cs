@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using System;
 using Hollowfen.GameTime;
+using Hollowfen.Weather;
 using UnityEditor;
 using UnityEngine;
 
@@ -20,8 +21,13 @@ namespace Hollowfen.EditorTools
 
             int day = clock.Day;
             float hour = clock.Hour;
+            var weather = WeatherSystem.Instance;
             try
             {
+                // This verifier owns the pure time-of-day contract. Dynamic weather is covered
+                // independently and can resolve to different profiles at noon and 23:00, which
+                // makes a ratio between those hours describe the forecast rather than the clock.
+                lighting.SetWeatherModifier(DayNightLighting.WeatherModifier.Neutral);
                 clock.SetTime(day, 12f);
                 float dayExposure = lighting.CurrentExposure;
                 float daySky = lighting.CurrentSkyExposure;
@@ -48,7 +54,8 @@ namespace Hollowfen.EditorTools
                     "exposure does not transition progressively through dusk");
 
                 var practicals = UnityEngine.Object.FindObjectsByType<NightLight>(FindObjectsInactive.Include);
-                Require(practicals.Length == 6, "expected six authored village practical lights");
+                Require(practicals.Length == 17,
+                    "expected six village, four cottage, four bridge, and three project-owned expansion practical lights; the purchased apothecary owns its interior lighting");
                 foreach (var practical in practicals)
                 {
                     practical.RefreshImmediate();
@@ -63,11 +70,12 @@ namespace Hollowfen.EditorTools
                     Require(!practical.Light.enabled, practical.name + " remained on at noon");
                 }
 
-                return "DAY / NIGHT LIGHTING — PASS: smooth dawn/day/golden-hour/dusk/night exposure, cool readable moonlight, darker sky and ambient, deeper night fog, and 6 warm village practicals";
+                return "DAY / NIGHT LIGHTING — PASS: smooth dawn/day/golden-hour/dusk/night exposure, cool readable moonlight, darker sky and ambient, deeper night fog, and 17 warm village/restoration practicals plus purchased apothecary interior lighting";
             }
             finally
             {
                 clock.SetTime(day, hour);
+                if (weather != null) weather.RefreshImmediate();
                 foreach (var practical in UnityEngine.Object.FindObjectsByType<NightLight>(FindObjectsInactive.Include))
                     practical.RefreshImmediate();
             }

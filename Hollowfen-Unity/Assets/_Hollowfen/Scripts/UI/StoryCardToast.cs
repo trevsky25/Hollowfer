@@ -137,10 +137,13 @@ namespace Hollowfen.UI
                 }
             }
             // Eyebrow: "ACT I  ·  SCENE 1" — fall back to data's raw strings
-            string actLine = (string.IsNullOrEmpty(data.Act) ? "" : data.Act);
-            string sceneLine = (string.IsNullOrEmpty(data.Scene) ? "" : data.Scene);
+            string actLine = JournalText.StoryAct(data);
+            string sceneLine = JournalText.StoryScene(data);
             string brow = actLine;
-            if (!string.IsNullOrEmpty(sceneLine)) brow = string.IsNullOrEmpty(brow) ? sceneLine : brow + "  ·  " + sceneLine;
+            if (!string.IsNullOrEmpty(sceneLine))
+                brow = string.IsNullOrEmpty(brow)
+                    ? sceneLine
+                    : string.Format(Localization.Get("format.pair"), brow, sceneLine);
             _eyebrow.text = brow.ToUpperInvariant();
             _title.text = JournalText.StoryTitle(data);
             _subtitle.text = JournalText.StorySubtitle(data);
@@ -236,7 +239,7 @@ namespace Hollowfen.UI
                 new Vector2(0f, 0.5f), new Vector2(4f, 0f), Vector2.zero);
 
             _newEntryTag = UICanvasUtil.NewEyebrow("NewEntry", _card,
-                Localization.Get("journal.story.toast_added"), 12.5f, HollowfenPalette.Gold, TextAlignmentOptions.Right);
+                Localization.Get("journal.story.toast_added"), 18f, HollowfenPalette.Gold, TextAlignmentOptions.Right);
             var neRT = _newEntryTag.rectTransform;
             neRT.anchorMin = new Vector2(0f, 1f); neRT.anchorMax = new Vector2(1f, 1f);
             neRT.pivot = new Vector2(0.5f, 1f);
@@ -267,7 +270,7 @@ namespace Hollowfen.UI
             float textLeft = padX + photoSize + 24f;
             float textWidth = _cardSize.x - textLeft - 20f;
 
-            _eyebrow = UICanvasUtil.NewEyebrow("CardEyebrow", _card, "", 13f,
+            _eyebrow = UICanvasUtil.NewEyebrow("CardEyebrow", _card, "", 18f,
                 HollowfenPalette.Gold, TextAlignmentOptions.TopLeft);
             _eyebrow.fontStyle = FontStyles.Bold;
             var eRT = _eyebrow.rectTransform;
@@ -285,7 +288,7 @@ namespace Hollowfen.UI
             tRT.sizeDelta = new Vector2(textWidth, 66f);
             tRT.anchoredPosition = new Vector2(textLeft, -62f);
 
-            _subtitle = UICanvasUtil.NewBody("CardSubtitle", _card, "", 15f,
+            _subtitle = UICanvasUtil.NewBody("CardSubtitle", _card, "", 18f,
                 new Color(HollowfenPalette.Parchment.r, HollowfenPalette.Parchment.g, HollowfenPalette.Parchment.b, 0.76f),
                 FontStyles.Italic, TextAlignmentOptions.TopLeft);
             _subtitle.textWrappingMode = TextWrappingModes.Normal;
@@ -296,7 +299,7 @@ namespace Hollowfen.UI
             sRT.anchoredPosition = new Vector2(textLeft, -126f);
 
             var journalHint = UICanvasUtil.NewBody("JournalHint", _card,
-                Localization.Get("journal.story.toast_hint"), 13.5f,
+                Localization.Get("journal.story.toast_hint"), 18f,
                 new Color(HollowfenPalette.Cream.r, HollowfenPalette.Cream.g, HollowfenPalette.Cream.b, 0.62f),
                 FontStyles.Italic, TextAlignmentOptions.BottomLeft);
             var jRT = journalHint.rectTransform;

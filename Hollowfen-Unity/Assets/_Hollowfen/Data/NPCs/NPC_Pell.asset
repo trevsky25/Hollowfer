@@ -15,9 +15,275 @@ MonoBehaviour:
   _id: pell
   _displayNameId: npc.pell.name
   _dialogueEntries:
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: forge_in_use
+    blockedByFlagId: encounter.forge_ledger_seen
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: Settling the forge ledger
+    requiresPartnerNpcId: joren
+    requiresPartnerScheduleSlotLabel: Settling the forge ledger
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: a9aaf6c4dce9045d9bfaf9b15e642169, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: apothecary_case_resolved_pell_fading_ledger
+    blockedByFlagId: apothecary_case_followup_seen_pell_fading_ledger
+    requiresNoActiveQuest: 1
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 889012c74851e4316880659b62ec8532, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: apothecary_case_active_pell_fading_ledger
+    blockedByFlagId: apothecary_case_intake_pell_fading_ledger
+    requiresNoActiveQuest: 1
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 1b23e1e712bf94328a2e9c2fad16223d, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: ending_free_hollow
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: pell.ending_free_hollow_reaction
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 621520af118e943b6b359e5e5ae7b616, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: ending_lordly_patronage
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: pell.ending_lordly_patronage_reaction
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: f07d541289e394f648ab3e71f6160c92, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: ending_capital
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: pell.ending_capital_reaction
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 625963a00bbc54cdfac99a94bcee31a2, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: ending_witch_path
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: pell.ending_witch_path_reaction
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 9d154a937de3848e991ca870f388bf24, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: final_choice_available
+    blockedByFlagId: game_complete
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: pell.weighed_final_choice
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: eb74deb37904f4978adc947ab518698b, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: festival_hosted
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: pell.entered_returning_names
+    blockedByMemoryId: pell.walked_occupied_cottages
+    favorId: favor.pell.village_ledger
+    minimumFavorStage: 1
+    maximumFavorStage: 1
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: ff29d82958cd14cfd80d4547870b0665, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: cottages_reopened_2
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: pell.entered_returning_names
+    favorId: favor.pell.village_ledger
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 2c5835c0750ae4461b6dca62ca1c8938, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: festival_hosted
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: pell.walked_occupied_cottages
+    blockedByMemoryId: 
+    favorId: favor.pell.village_ledger
+    minimumFavorStage: 2
+    maximumFavorStage: 0
+    usesMinimumRelationship: 1
+    minimumRelationship: 4
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 56f4ee9a013fb403eb7c852c9f88cb07, type: 2}
+  - activeQuest: {fileID: 0}
+    requiresQuestCompleted: {fileID: 0}
+    requiresFlagId: tobin_workshop_work_started
+    blockedByFlagId: tobin_workshop_restored
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
+    requiresCoinsCopper: 0
+    requiresBasketNonEmpty: 0
+    requiresForage: {fileID: 0}
+    dialog: {fileID: 11400000, guid: 40e901a412cfe4fecb4eb8c3bb442095, type: 2}
   - activeQuest: {fileID: 11400000, guid: 526e25bd081e4e6a9029e8273760d303, type: 2}
     requiresQuestCompleted: {fileID: 0}
     requiresFlagId: cottages_reopened_2
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
     requiresCoinsCopper: 0
     requiresBasketNonEmpty: 0
     requiresForage: {fileID: 0}
@@ -25,6 +291,20 @@ MonoBehaviour:
   - activeQuest: {fileID: 11400000, guid: 526e25bd081e4e6a9029e8273760d303, type: 2}
     requiresQuestCompleted: {fileID: 0}
     requiresFlagId: shutters_funded
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
     requiresCoinsCopper: 0
     requiresBasketNonEmpty: 0
     requiresForage: {fileID: 0}
@@ -32,6 +312,20 @@ MonoBehaviour:
   - activeQuest: {fileID: 11400000, guid: 526e25bd081e4e6a9029e8273760d303, type: 2}
     requiresQuestCompleted: {fileID: 0}
     requiresFlagId: 
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
     requiresCoinsCopper: 24
     requiresBasketNonEmpty: 0
     requiresForage: {fileID: 0}
@@ -39,6 +333,20 @@ MonoBehaviour:
   - activeQuest: {fileID: 11400000, guid: 526e25bd081e4e6a9029e8273760d303, type: 2}
     requiresQuestCompleted: {fileID: 0}
     requiresFlagId: 
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
     requiresCoinsCopper: 0
     requiresBasketNonEmpty: 0
     requiresForage: {fileID: 0}
@@ -46,6 +354,20 @@ MonoBehaviour:
   - activeQuest: {fileID: 0}
     requiresQuestCompleted: {fileID: 11400000, guid: 526e25bd081e4e6a9029e8273760d303, type: 2}
     requiresFlagId: 
+    blockedByFlagId: 
+    requiresNoActiveQuest: 0
+    requiresScheduleSlotLabel: 
+    requiresPartnerNpcId: 
+    requiresPartnerScheduleSlotLabel: 
+    requiresMemoryId: 
+    blockedByMemoryId: 
+    favorId: 
+    minimumFavorStage: 0
+    maximumFavorStage: 0
+    usesMinimumRelationship: 0
+    minimumRelationship: 0
+    usesMaximumRelationship: 0
+    maximumRelationship: 0
     requiresCoinsCopper: 0
     requiresBasketNonEmpty: 0
     requiresForage: {fileID: 0}

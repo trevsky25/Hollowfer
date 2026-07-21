@@ -1,0 +1,78 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b4e19f76957446acb794b6622b288e2, type: 3}
+  m_Name: Character_edda
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.CharacterProfileData
+  _id: edda
+  _characterName: Edda
+  _role: Apprentice / village future
+  _age: Fourteen
+  _home: Edda's cottage
+  _work: Apprentice foraging and medicinal deliveries
+  _keepsake: Apprentice notes
+  _tagline: The watchful girl at the path's edge who wants to learn properly.
+  _leadParagraph: Edda is small, serious, and intensely observant, watching Wren's
+    work from the edge until she is ready to ask for a place in it.
+  _backgroundParagraph: She carries a small basket, cares closely for her grandfather,
+    and treats mushroom knowledge as something practical enough to save a household.
+  _perspectiveParagraph: Edda listens before speaking and tests every lesson against
+    what it can do. She is less interested in grand words than in names, false names,
+    and where to cut.
+  _kitItems: []
+  _heroPortrait: {fileID: 0}
+  _pullquote: Do not make me say the obvious part. I practiced the other part.
+  _displayNameId: character.edda.name
+  _descriptionId: character.edda.lead
+  _sortOrder: 3
+  _category: 0
+  _edition: 04 / EDDA
+  _previewScale: 0.83
+  _tPosePlate: {fileID: 0}
+  _characterSheet: {fileID: 0}
+  _missions:
+  - Act: 1
+    QuestId: firstForage
+    Title: The First Forage
+    Summary: Watch Wren enter the Edge Woods and gather safely.
+  - Act: 2
+    QuestId: edsGrandfather
+    Title: Brightspore at the Bedside
+    Summary: Ask Wren to help a grandfather who has stopped eating.
+  - Act: 3
+    QuestId: eddaApprentice
+    Title: Edda Asks
+    Summary: Ask to become Wren's formal apprentice.
+  - Act: 3
+    QuestId: festivalHosted
+    Title: The First Festival in Three Years
+    Summary: Help at the square and notice when Wren is hiding with dishes.
+  _quotes:
+  - Text: Grandfather hasn't eaten since Monday.
+    Context: Asking Wren for help.
+  - Text: That is not a big enough word.
+    Context: Answering Wren after her grandfather eats a full bowl.
+  - Text: Do not make me say the obvious part. I practiced the other part.
+    Context: Making her apprenticeship request.
+  _heroPortraitResourcePath: People/Art/edda_hero
+  _tPosePlateResourcePath: People/Art/edda_tpose
+  _characterSheetResourcePath: People/Art/edda_hero
+  _journalModelResourcePath: People/Models/edda
+  _journalTriangleBudget: 90000
+  _journalTextureSize: 2048
+  _journalModelPrefab: {fileID: 0}
+  _journalIdleClip: {fileID: 0}
+  _journalExposure: 0.15
+  _studySheet: {fileID: 0}
+  _figureFront: {fileID: 0}
+  _figureBack: {fileID: 0}
+  _figureThreeQuarter: {fileID: 0}
+  _knifePlate: {fileID: 0}

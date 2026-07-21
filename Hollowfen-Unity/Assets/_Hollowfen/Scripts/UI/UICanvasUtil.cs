@@ -1,4 +1,5 @@
 using TMPro;
+using Hollowfen.Settings;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,9 +11,11 @@ namespace Hollowfen.UI
     {
         private static TMP_FontAsset _heading;
         private static TMP_FontAsset _body;
+        private static TMP_FontAsset _cursive;
 
         public static void SetHeadingFont(TMP_FontAsset f) { if (f != null) _heading = f; }
         public static void SetBodyFont(TMP_FontAsset f)    { if (f != null) _body = f; }
+        public static void SetCursiveFont(TMP_FontAsset f) { if (f != null) _cursive = f; }
 
         public static TMP_FontAsset HeadingFont
         {
@@ -37,6 +40,24 @@ namespace Hollowfen.UI
                 _body = TMP_Settings.defaultFontAsset;
                 if (_body == null) _body = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
                 return _body;
+            }
+        }
+
+        public static TMP_FontAsset CursiveFont
+        {
+            get
+            {
+                if (_cursive != null) return _cursive;
+                // This font is deliberately a Resources asset: NarrationOverlay is created at
+                // runtime and has no scene-authored font reference for Tobin's live journal page.
+                _cursive = Resources.Load<TMP_FontAsset>("Fonts/CedarvilleCursive SDF");
+#if UNITY_EDITOR
+                if (_cursive == null)
+                    _cursive = UnityEditor.AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(
+                        "Assets/_Hollowfen/Resources/Fonts/CedarvilleCursive SDF.asset");
+#endif
+                if (_cursive == null) _cursive = HeadingFont;
+                return _cursive;
             }
         }
 
@@ -74,7 +95,7 @@ namespace Hollowfen.UI
             text.color = color;
             text.fontStyle = TranslateFontStyle(style);
             text.alignment = TranslateAnchor(anchor);
-            text.enableWordWrapping = true;
+            text.textWrappingMode = TextWrappingModes.Normal;
             text.overflowMode = TextOverflowModes.Truncate;
             text.raycastTarget = false;
             return text;
@@ -91,7 +112,7 @@ namespace Hollowfen.UI
             t.color = color;
             t.fontStyle = style;
             t.alignment = align;
-            t.enableWordWrapping = true;
+            t.textWrappingMode = TextWrappingModes.Normal;
             t.overflowMode = TextOverflowModes.Overflow;
             t.raycastTarget = false;
             // IM Fell English is a narrow, calligraphic old-style face — it needs far less
@@ -114,7 +135,7 @@ namespace Hollowfen.UI
             t.fontStyle = TMPro.FontStyles.Bold;
             t.alignment = align;
             t.characterSpacing = 24f;     // ~0.32em letter-spacing feel
-            t.enableWordWrapping = false;
+            t.textWrappingMode = TextWrappingModes.NoWrap;
             t.overflowMode = TextOverflowModes.Overflow;
             t.raycastTarget = false;
             return t;
@@ -131,7 +152,7 @@ namespace Hollowfen.UI
             t.color = color;
             t.fontStyle = style;
             t.alignment = align;
-            t.enableWordWrapping = true;
+            t.textWrappingMode = TextWrappingModes.Normal;
             t.overflowMode = TextOverflowModes.Overflow;
             t.lineSpacing = 4f;
             t.raycastTarget = false;
@@ -187,7 +208,7 @@ namespace Hollowfen.UI
         public static CanvasScaler Init1080(this CanvasScaler scaler)
         {
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1920f, 1080f);
+            scaler.referenceResolution = AccessibilityPresentationPolicy.ReferenceResolution;
             scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
             scaler.matchWidthOrHeight = 0.5f;
             return scaler;

@@ -18,6 +18,7 @@ namespace Hollowfen.Settings
     public sealed class ProductionPerformancePolicy : MonoBehaviour
     {
         public const int TargetFrameRate = 60;
+        public const float PcLodBias = 1.25f;
 
         private const double RefreshMatchToleranceHz = 1.0;
         private const float DisplayRecheckSeconds = 2f;
@@ -64,6 +65,7 @@ namespace Hollowfen.Settings
             // mipmaps, four-cascade 2K soft shadows, SSAO, HDR, and Forward+. Keep the highest
             // fidelity texture sampling active without mutating the player's selected level.
             QualitySettings.anisotropicFiltering = AnisotropicFiltering.ForceEnable;
+            ApplyLodBudget();
             OnDemandRendering.renderFrameInterval = 1;
             ApplyFramePacing(true);
         }
@@ -141,6 +143,7 @@ namespace Hollowfen.Settings
             // the fallback deterministic if a monitor switch requires VSync to be disabled.
             Application.targetFrameRate = TargetFrameRate;
             QualitySettings.vSyncCount = vSyncCount;
+            ApplyLodBudget();
             OnDemandRendering.renderFrameInterval = 1;
 
             _lastRefreshRate = refreshRate;
@@ -153,7 +156,17 @@ namespace Hollowfen.Settings
                 ? $"hardware VSync every {vSyncCount} refresh(es)"
                 : "60 fps software cap (display is not a clean 60 Hz multiple)";
             Debug.Log($"[Performance] {TargetFrameRate} FPS production target · " +
-                      $"{refreshRate:0.##} Hz display · {pacing} · quality {QualitySettings.names[QualitySettings.GetQualityLevel()]}");
+                      $"{refreshRate:0.##} Hz display · {pacing} · quality {QualitySettings.names[QualitySettings.GetQualityLevel()]} · LOD bias {QualitySettings.lodBias:0.##}");
+        }
+
+        private static void ApplyLodBudget()
+        {
+            int quality = QualitySettings.GetQualityLevel();
+            string qualityName = quality >= 0 && quality < QualitySettings.names.Length
+                ? QualitySettings.names[quality]
+                : string.Empty;
+            QualitySettings.lodBias = string.Equals(qualityName, "PC",
+                StringComparison.OrdinalIgnoreCase) ? PcLodBias : 1f;
         }
 
         private static double CurrentRefreshRate()

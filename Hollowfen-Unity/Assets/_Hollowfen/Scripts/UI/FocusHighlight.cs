@@ -1,4 +1,5 @@
 using System.Collections;
+using Hollowfen.Settings;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -183,7 +184,9 @@ namespace Hollowfen.UI
             if (_swapColor && _targetGraphic != null)
                 _targetGraphic.color = Color.Lerp(_baseColor, _focusedColor, t);
             if (_swapScale && _scaleTarget != null)
-                _scaleTarget.localScale = Vector3.Lerp(_baseScale, _baseScale * _focusedScale, t);
+                _scaleTarget.localScale = GameSettings.ReducedMotion
+                    ? _baseScale
+                    : Vector3.Lerp(_baseScale, _baseScale * _focusedScale, t);
             if (_glowGraphic != null)
                 SetGlowAlpha(Mathf.Lerp(0f, _baseGlowAlpha > 0.01f ? _baseGlowAlpha : 1f, t));
         }

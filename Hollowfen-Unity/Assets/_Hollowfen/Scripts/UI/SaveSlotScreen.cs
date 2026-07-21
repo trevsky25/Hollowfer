@@ -57,6 +57,7 @@ namespace Hollowfen.UI
             var canvas = GetComponentInChildren<Canvas>(true);
             if (canvas != null)
             {
+                LocalizeSceneCopy(canvas);
                 NormalizeLegacyCanvas(canvas);
                 _closeButton = JournalChrome.BuildCloseButton(_presentationRoot != null
                     ? _presentationRoot : canvas.transform, () =>
@@ -68,6 +69,15 @@ namespace Hollowfen.UI
             else
             {
                 Debug.LogError("[SaveSlotScreen] Missing child Canvas; close control could not be built.");
+            }
+        }
+
+        private static void LocalizeSceneCopy(Canvas canvas)
+        {
+            foreach (TMP_Text label in canvas.GetComponentsInChildren<TMP_Text>(true))
+            {
+                if (label.name == "Title") label.text = Localization.Get("save.title");
+                else if (label.name == "Footer") label.text = Localization.Get("save.footer");
             }
         }
 
@@ -128,28 +138,53 @@ namespace Hollowfen.UI
                 // Autosaves follow the ACTIVE slot (see systems/save.md), so no slot is "the"
                 // autosave — neutral journal naming instead (decision: QUESTIONS.md Q2, 2026-07-11).
                 if (_slotLabels[i] != null)
-                    _slotLabels[i].text = "Journal " + (i + 1);
+                    _slotLabels[i].text = string.Format(Localization.Get("save.slot.label"), i + 1);
 
                 if (_slotMetas[i] == null) continue;
 
-                if (SaveManager.SlotHasData(i))
+                var inspection = SaveManager.InspectSlot(i);
+                if (inspection.CanLoad)
                 {
-                    var meta = SaveManager.GetSlotMeta(i);
+                    var meta = inspection.Meta;
                     if (meta != null)
                     {
                         var play = TimeSpan.FromSeconds(Mathf.Max(0f, meta.TotalPlayTimeSeconds));
-                        var date = DateTimeOffset.FromUnixTimeSeconds(meta.TimestampUnix).LocalDateTime;
+                        DateTime date;
+                        try { date = DateTimeOffset.FromUnixTimeSeconds(meta.TimestampUnix).LocalDateTime; }
+                        catch (ArgumentOutOfRangeException) { date = DateTime.MinValue; }
+                        string dateLabel = date == DateTime.MinValue
+                            ? Localization.Get("save.date.unknown")
+                            : date.ToString(Localization.Get("save.date.format"));
                         _slotMetas[i].text = string.Format(
-                            "{0}  ·  Act {1}  ·  {2:00}:{3:00}  ·  {4:yyyy-MM-dd}",
-                            string.IsNullOrEmpty(meta.CurrentQuest) ? "—" : meta.CurrentQuest,
+                            Localization.Get("save.slot.meta"),
+                            ResolveQuestLabel(meta),
                             meta.CurrentAct,
                             (int)play.TotalHours, play.Minutes,
-                            date);
+                            dateLabel);
                     }
-                    else _slotMetas[i].text = "(corrupted)";
+                    else _slotMetas[i].text = Localization.Get("save.corrupt.short");
                 }
-                else _slotMetas[i].text = "New Game";
+                else if (inspection.Status == SaveInspectionStatus.Corrupt)
+                    _slotMetas[i].text = Localization.Get("save.corrupt.body");
+                else if (inspection.Status == SaveInspectionStatus.IncompatibleNewerVersion)
+                    _slotMetas[i].text = Localization.Get("save.newer_version");
+                else
+                    _slotMetas[i].text = Localization.Get("save.new_game");
             }
+        }
+
+        private static string ResolveQuestLabel(SaveSlotMeta meta)
+        {
+            if (meta == null) return "—";
+            if (meta.CurrentQuestId == "game_complete") return Localization.Get("ending.save.complete");
+            if (meta.CurrentQuestId == "final_choice_available") return Localization.Get("ending.save.choose");
+            if (!string.IsNullOrEmpty(meta.CurrentQuestId))
+            {
+                string key = "quest." + meta.CurrentQuestId + ".name";
+                string localized = Localization.Get(key);
+                if (localized != key) return localized;
+            }
+            return string.IsNullOrEmpty(meta.CurrentQuest) ? "—" : meta.CurrentQuest;
         }
 
         private const string GameplaySceneName = "Scene_Hollowfen";
@@ -178,7 +213,8 @@ namespace Hollowfen.UI
 
         private void OnSlotSelected(int slot)
         {
-            bool newGame = !SaveManager.SlotHasData(slot);
+            var inspection = SaveManager.InspectSlot(slot);
+            bool newGame = inspection.Status == SaveInspectionStatus.Empty;
             if (newGame)
             {
                 Debug.Log($"[SaveSlot] Start new game in slot {slot}");
@@ -187,8 +223,21 @@ namespace Hollowfen.UI
             }
             else
             {
+                if (!inspection.CanLoad)
+                {
+                    UISfx.Error();
+                    string message = inspection.Status == SaveInspectionStatus.IncompatibleNewerVersion
+                        ? Localization.Get("save.unavailable.newer")
+                        : Localization.Get("save.unavailable.corrupt");
+                    ConfirmModal.Show(Localization.Get("save.unavailable.title"), message, () => { });
+                    return;
+                }
                 Debug.Log($"[SaveSlot] Load slot {slot}");
-                SaveCoordinator.LoadSlot(slot);
+                if (!SaveCoordinator.TryLoadSlot(slot, out inspection))
+                {
+                    UISfx.Error();
+                    return;
+                }
             }
             // New game gets the cinematic welcome→intro handoff (batch-38); load/continue gets the SAME
             // cinematic welcome card but fades to the game (no seamless handoff) — batch-50.
@@ -216,8 +265,8 @@ namespace Hollowfen.UI
 
             int slotCopy = slot;
             ConfirmModal.Show(
-                title: "Delete Save?",
-                message: "Journal " + (slot + 1) + " will be permanently deleted.",
+                title: Localization.Get("save.delete.title"),
+                message: string.Format(Localization.Get("save.delete.message"), slot + 1),
                 onConfirm: () =>
                 {
                     SaveManager.DeleteSlot(slotCopy);

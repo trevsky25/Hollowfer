@@ -1,4 +1,5 @@
 using Hollowfen.Input;
+using Hollowfen.UI;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -299,6 +300,7 @@ namespace Hollowfen.Foraging
             if (_focusedTarget == null) return;
             if (InspectScreen.Instance != null && InspectScreen.Instance.IsOpen) return;
             if (InventoryScreen.Instance != null && InventoryScreen.Instance.IsOpen) return;
+            if (!UIManager.GameplayShortcutAllowed) return;
             PlayerInteractor.DismissCurrent();
         }
     }

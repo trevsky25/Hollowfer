@@ -146,14 +146,14 @@ namespace Hollowfen.Foraging
             BuildStickWell(panel, "SawStick", new Vector2(924f, -145f), out _rightWell, out _rightDot);
 
             var leftLabel = UICanvasUtil.NewEyebrow("BraceLabel", panel,
-                Localization.Get("forage.cut.brace_label"), 10.5f, HollowfenPalette.Moss,
+                Localization.Get("forage.cut.brace_label"), 12.5f, HollowfenPalette.Moss,
                 TextAlignmentOptions.Center);
             UICanvasUtil.SetRect(leftLabel.rectTransform,
                 new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0.5f, 1f),
                 new Vector2(190f, 20f), new Vector2(116f, -78f));
 
             var rightLabel = UICanvasUtil.NewEyebrow("SawLabel", panel,
-                Localization.Get("forage.cut.saw_label"), 10.5f, HollowfenPalette.Moss,
+                Localization.Get("forage.cut.saw_label"), 12.5f, HollowfenPalette.Moss,
                 TextAlignmentOptions.Center);
             UICanvasUtil.SetRect(rightLabel.rectTransform,
                 new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0.5f, 1f),
@@ -197,7 +197,7 @@ namespace Hollowfen.Foraging
                     new Vector2(2f, 16f), new Vector2(x, 0f));
             }
 
-            _strokeCounter = UICanvasUtil.NewEyebrow("StrokeCounter", panel, "", 10.5f,
+            _strokeCounter = UICanvasUtil.NewEyebrow("StrokeCounter", panel, "", 12.5f,
                 HollowfenPalette.Moss, TextAlignmentOptions.Center);
             UICanvasUtil.SetRect(_strokeCounter.rectTransform,
                 new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f),

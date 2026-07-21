@@ -14,13 +14,28 @@ namespace Hollowfen.UI
         private static readonly Color Cream = new Color(0.961f, 0.925f, 0.855f, 1f);
         private static readonly Color Body = new Color(0.961f, 0.925f, 0.855f, 0.91f);
         private static readonly Color Subtle = new Color(0.961f, 0.925f, 0.855f, 0.62f);
-        private static readonly Color Faint = new Color(0.961f, 0.925f, 0.855f, 0.44f);
+        private static readonly Color Faint = new Color(0.961f, 0.925f, 0.855f, 0.54f);
         private static readonly Color Gold = new Color(0.851f, 0.741f, 0.427f, 1f);
         private static readonly Color Hairline = HollowfenPalette.DividerLine;
         private const float GamepadRotateSpeed = 125f;
         private const float GamepadZoomSpeed = 1.15f;
 
         private JournalMushroomModelPresenter _model;
+        private RectTransform _illustratedSpread;
+        private RectTransform _specimenSpread;
+        private Image _journalPage;
+        private TMP_Text _journalStatus;
+        private GameObject _fieldAnnotationRoot;
+        private TMP_Text _fieldAnnotationName;
+        private TMP_Text _fieldAnnotationMeta;
+        private TMP_Text _safetyDisclaimer;
+        private Button _viewToggle;
+        private TMP_Text _viewToggleLabel;
+        private Button _illustratedPrevButton;
+        private Button _illustratedNextButton;
+        private TMP_Text _illustratedPrevLabel;
+        private TMP_Text _illustratedNextLabel;
+        private TMP_Text _illustratedPageNumber;
         private TMP_Text _modelPending;
         private TMP_Text _modelCaption;
         private JournalArtPresenter _photo;
@@ -46,6 +61,7 @@ namespace Hollowfen.UI
         private bool _built;
         private MushroomFieldGuideData _current;
         private MushroomFieldGuideDatabase _database;
+        private bool _showIllustratedPage;
 
         public override GameObject DefaultSelected => _closeButton != null ? _closeButton.gameObject : base.DefaultSelected;
 
@@ -105,6 +121,13 @@ namespace Hollowfen.UI
             if (database != null) _database = database;
             if (entry == null || !IsAvailable(entry)) return;
             _current = entry;
+            Hollowfen.Foraging.MushroomKnowledge.StudyPage(entry);
+
+            _journalPage.sprite = entry.JournalPage;
+            _journalPage.enabled = entry.JournalPage != null;
+            _journalStatus.text = PageStatus(entry);
+            UpdateFieldAnnotation(entry);
+            SetView(entry.JournalPage != null);
 
             _model.SetEntry(entry);
             bool hasModel = entry.JournalPreviewPrefab != null;
@@ -145,7 +168,10 @@ namespace Hollowfen.UI
             var bg = UICanvasUtil.NewImage("BG", transform, Bg, true);
             UICanvasUtil.Stretch(bg.GetComponent<RectTransform>());
 
-            var page = UICanvasUtil.NewRect("SpecimenSpread", transform);
+            _illustratedSpread = BuildIllustratedSpread();
+
+            var page = UICanvasUtil.NewRect("SpecimenStudy", transform);
+            _specimenSpread = page;
             UICanvasUtil.SetRect(page, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(1600f, 900f), Vector2.zero);
 
             BuildModelLeaf(page);
@@ -155,8 +181,165 @@ namespace Hollowfen.UI
             {
                 if (UIManager.Instance != null) UIManager.Instance.Back();
             });
+            BuildViewToggle();
             JournalChrome.BuildBottomHint(transform, "journal.hint.specimen");
             WireNavigation();
+        }
+
+        private RectTransform BuildIllustratedSpread()
+        {
+            var spread = UICanvasUtil.NewRect("IllustratedJournalSpread", transform);
+            UICanvasUtil.SetRect(spread, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
+                new Vector2(0.5f, 0.5f), new Vector2(1600f, 900f), Vector2.zero);
+            var backdrop = spread.gameObject.AddComponent<Image>();
+            backdrop.color = new Color(0.018f, 0.014f, 0.010f, 1f);
+            backdrop.raycastTarget = true;
+            UICanvasUtil.Roundify(backdrop, 18);
+
+            var art = UICanvasUtil.NewRect("PageArt", spread);
+            UICanvasUtil.Stretch(art);
+            _journalPage = art.gameObject.AddComponent<Image>();
+            _journalPage.preserveAspect = true;
+            _journalPage.raycastTarget = false;
+
+            var statusBg = UICanvasUtil.NewImage("KnowledgeState", spread,
+                new Color(0.055f, 0.043f, 0.029f, 0.76f), false);
+            var statusRt = statusBg.GetComponent<RectTransform>();
+            UICanvasUtil.SetRect(statusRt, new Vector2(0f, 1f), new Vector2(0f, 1f),
+                new Vector2(0f, 1f), new Vector2(440f, 46f), new Vector2(34f, 66f));
+            UICanvasUtil.Roundify(statusBg.GetComponent<Image>(), 8);
+            _journalStatus = UICanvasUtil.NewEyebrow("Label", statusRt, "", 13f, Gold,
+                TextAlignmentOptions.Center);
+            UICanvasUtil.Stretch(_journalStatus.rectTransform);
+
+            var navBg = UICanvasUtil.NewImage("PageNavigation", spread,
+                new Color(0.025f, 0.019f, 0.013f, 0.76f), false);
+            var nav = navBg.GetComponent<RectTransform>();
+            UICanvasUtil.SetRect(nav, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f),
+                new Vector2(0.5f, 1f), new Vector2(660f, 58f), new Vector2(0f, 66f));
+            UICanvasUtil.Roundify(navBg.GetComponent<Image>(), 10);
+            _illustratedPrevButton = BuildNavButton(nav, true, out _illustratedPrevLabel);
+            var prevRt = (RectTransform)_illustratedPrevButton.transform;
+            prevRt.anchorMin = new Vector2(0f, 0f);
+            prevRt.anchorMax = new Vector2(0.42f, 1f);
+            prevRt.offsetMin = Vector2.zero;
+            prevRt.offsetMax = Vector2.zero;
+            _illustratedPrevButton.onClick.AddListener(GoPrev);
+            _illustratedPageNumber = UICanvasUtil.NewBody("Page", nav, "", 15f, Subtle,
+                FontStyles.Italic, TextAlignmentOptions.Center);
+            UICanvasUtil.SetRect(_illustratedPageNumber.rectTransform, new Vector2(0.42f, 0f),
+                new Vector2(0.58f, 1f), new Vector2(0.5f, 0.5f), Vector2.zero, Vector2.zero);
+            _illustratedNextButton = BuildNavButton(nav, false, out _illustratedNextLabel);
+            var nextRt = (RectTransform)_illustratedNextButton.transform;
+            nextRt.anchorMin = new Vector2(0.58f, 0f);
+            nextRt.anchorMax = new Vector2(1f, 1f);
+            nextRt.offsetMin = Vector2.zero;
+            nextRt.offsetMax = Vector2.zero;
+            _illustratedNextButton.onClick.AddListener(GoNext);
+
+            _fieldAnnotationRoot = UICanvasUtil.NewImage("WrenFieldNote", spread,
+                new Color(0.88f, 0.82f, 0.69f, 0.97f), false);
+            var annotationRT = (RectTransform)_fieldAnnotationRoot.transform;
+            annotationRT.anchorMin = annotationRT.anchorMax = new Vector2(1f, 0f);
+            annotationRT.pivot = new Vector2(1f, 0f);
+            annotationRT.sizeDelta = new Vector2(540f, 132f);
+            annotationRT.anchoredPosition = new Vector2(-36f, 34f);
+            annotationRT.localRotation = Quaternion.Euler(0f, 0f, -1.2f);
+            UICanvasUtil.Roundify(_fieldAnnotationRoot.GetComponent<Image>(), 10);
+            JournalChrome.AddStructuralBorder(annotationRT, 10, 0.18f);
+            _fieldAnnotationName = UICanvasUtil.NewBody("Name", annotationRT, "", 27f,
+                new Color(0.20f, 0.12f, 0.08f, 1f), FontStyles.Normal,
+                TextAlignmentOptions.Center);
+            _fieldAnnotationName.font = UICanvasUtil.CursiveFont;
+            _fieldAnnotationName.characterSpacing = 1.2f;
+            UICanvasUtil.SetRect(_fieldAnnotationName.rectTransform,
+                new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f),
+                new Vector2(-34f, 54f), new Vector2(0f, -15f));
+            _fieldAnnotationName.enableAutoSizing = true;
+            _fieldAnnotationName.fontSizeMin = 19f;
+            _fieldAnnotationName.fontSizeMax = 27f;
+            _fieldAnnotationMeta = UICanvasUtil.NewBody("Context", annotationRT, "", 15f,
+                new Color(0.27f, 0.19f, 0.13f, 0.86f), FontStyles.Italic,
+                TextAlignmentOptions.Center);
+            UICanvasUtil.SetRect(_fieldAnnotationMeta.rectTransform,
+                new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f),
+                new Vector2(-42f, 42f), new Vector2(0f, 17f));
+            _fieldAnnotationRoot.SetActive(false);
+            return spread;
+        }
+
+        private void UpdateFieldAnnotation(MushroomFieldGuideData entry)
+        {
+            bool verified = entry != null &&
+                            Hollowfen.Foraging.MushroomKnowledge.IsFieldIdentified(entry);
+            if (_fieldAnnotationRoot == null) return;
+            _fieldAnnotationRoot.SetActive(verified);
+            if (!verified) return;
+
+            Hollowfen.Foraging.MushroomFieldNote note =
+                Hollowfen.Foraging.MushroomFieldNotes.ForDisplay(entry);
+            _fieldAnnotationName.text = string.Format(Localization.Get(
+                "inspect.discovery.annotation.name"), JournalText.MushroomName(entry));
+            _fieldAnnotationMeta.text = note.HasRecordedContext
+                ? string.Format(Localization.Get("inspect.discovery.annotation.context"), note.Day,
+                    Hollowfen.Foraging.MushroomFieldNotes.PlaceName(note))
+                : Localization.Get("inspect.discovery.annotation.legacy");
+        }
+
+        private void BuildViewToggle()
+        {
+            var rt = UICanvasUtil.NewRect("ViewToggle", transform);
+            UICanvasUtil.SetRect(rt, new Vector2(1f, 1f), new Vector2(1f, 1f),
+                new Vector2(1f, 1f), new Vector2(250f, 46f), new Vector2(-168f, -42f));
+            var image = rt.gameObject.AddComponent<Image>();
+            image.color = new Color(0.055f, 0.043f, 0.029f, 0.94f);
+            UICanvasUtil.Roundify(image, 9);
+            _viewToggle = rt.gameObject.AddComponent<Button>();
+            _viewToggle.transition = Selectable.Transition.None;
+            _viewToggle.targetGraphic = image;
+            _viewToggleLabel = UICanvasUtil.NewEyebrow("Label", rt, "", 13f, Cream,
+                TextAlignmentOptions.Center);
+            UICanvasUtil.Stretch(_viewToggleLabel.rectTransform);
+            _viewToggle.onClick.AddListener(() => SetView(!_showIllustratedPage));
+            var focus = rt.gameObject.AddComponent<FocusHighlight>();
+            focus.Configure(_viewToggleLabel, rt, Gold, 1.025f);
+
+            _safetyDisclaimer = UICanvasUtil.NewBody("SafetyDisclaimer", transform,
+                Localization.Get("journal.field.safety_disclaimer"), 12.5f, Faint,
+                FontStyles.Italic, TextAlignmentOptions.Center);
+            UICanvasUtil.SetRect(_safetyDisclaimer.rectTransform, new Vector2(0.5f, 0f),
+                new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(1200f, 24f),
+                new Vector2(0f, 50f));
+        }
+
+        private void SetView(bool illustrated)
+        {
+            bool canIllustrate = _current != null && _current.JournalPage != null;
+            _showIllustratedPage = illustrated && canIllustrate;
+            if (_illustratedSpread != null) _illustratedSpread.gameObject.SetActive(_showIllustratedPage);
+            if (_specimenSpread != null) _specimenSpread.gameObject.SetActive(!_showIllustratedPage);
+            if (_viewToggle != null)
+            {
+                _viewToggle.gameObject.SetActive(canIllustrate);
+                _viewToggleLabel.text = Localization.Get(_showIllustratedPage
+                    ? "journal.field.specimen_study"
+                    : "journal.field.illustrated_page");
+            }
+            if (_showIllustratedPage) WireIllustratedNavigation();
+            else WireNavigation();
+        }
+
+        private static string PageStatus(MushroomFieldGuideData entry)
+        {
+            switch (Hollowfen.Foraging.MushroomKnowledge.PageState(entry))
+            {
+                case Hollowfen.Foraging.MushroomJournalPageState.FieldVerified:
+                    return Localization.Get("journal.field.field_verified");
+                case Hollowfen.Foraging.MushroomJournalPageState.Studied:
+                    return Localization.Get("journal.field.reference_studied");
+                default:
+                    return Localization.Get("journal.field.reference_available");
+            }
         }
 
         private void BuildModelLeaf(RectTransform page)
@@ -224,7 +407,7 @@ namespace Hollowfen.UI
             UICanvasUtil.SetRect(rule.GetComponent<RectTransform>(), new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 1f), Vector2.zero);
 
             BuildScroll(right);
-            BuildNav(right);
+            BuildNav(page);
         }
 
         private void BuildScroll(RectTransform right)
@@ -232,7 +415,7 @@ namespace Hollowfen.UI
             var scrollRt = UICanvasUtil.NewRect("Scroll", right);
             scrollRt.anchorMin = Vector2.zero;
             scrollRt.anchorMax = Vector2.one;
-            scrollRt.offsetMin = new Vector2(42f, 92f);
+            scrollRt.offsetMin = new Vector2(42f, 38f);
             scrollRt.offsetMax = new Vector2(-42f, -212f);
             var scrollImage = scrollRt.gameObject.AddComponent<Image>();
             scrollImage.color = new Color(0f, 0f, 0f, 0f);
@@ -290,7 +473,7 @@ namespace Hollowfen.UI
             photoColumnLayout.minWidth = 230f;
             photoColumnLayout.preferredWidth = 230f;
             photoColumnLayout.preferredHeight = 270f;
-            var photoHeading = UICanvasUtil.NewEyebrow("Heading", photoColumn, Localization.Get("journal.field.photo_heading"), 10f, Gold, TextAlignmentOptions.Center);
+            var photoHeading = UICanvasUtil.NewEyebrow("Heading", photoColumn, Localization.Get("journal.field.photo_heading"), 12.5f, Gold, TextAlignmentOptions.Center);
             UICanvasUtil.SetRect(photoHeading.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, 20f), Vector2.zero);
             _photo = JournalArtPresenter.Create("FieldPhoto", photoColumn, true, HollowfenPalette.SurfaceQuiet);
             UICanvasUtil.SetRect(_photo.Frame, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(220f, 190f), new Vector2(0f, -30f));
@@ -375,7 +558,7 @@ namespace Hollowfen.UI
             layout.childForceExpandHeight = false;
             var fitter = cell.gameObject.AddComponent<ContentSizeFitter>();
             fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-            var label = UICanvasUtil.NewEyebrow("Label", cell, Localization.Get(key), 11f, Faint);
+            var label = UICanvasUtil.NewEyebrow("Label", cell, Localization.Get(key), 12.5f, Faint);
             JournalChrome.FitText(label, 20f);
             var value = UICanvasUtil.NewBody("Value", cell, "", 18f, Body);
             JournalChrome.FitText(value, 48f);
@@ -391,12 +574,15 @@ namespace Hollowfen.UI
             return selectable;
         }
 
-        private void BuildNav(RectTransform right)
+        private void BuildNav(RectTransform parent)
         {
-            var nav = UICanvasUtil.NewRect("Nav", right);
-            UICanvasUtil.SetRect(nav, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(-84f, 68f), new Vector2(0f, 18f));
-            var line = UICanvasUtil.NewImage("Line", nav, Hairline, false);
-            UICanvasUtil.SetRect(line.GetComponent<RectTransform>(), new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, 1f), Vector2.zero);
+            var nav = UICanvasUtil.NewRect("Nav", parent);
+            UICanvasUtil.SetRect(nav, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f),
+                new Vector2(0.5f, 1f), new Vector2(660f, 58f), new Vector2(0f, 66f));
+            var navImage = nav.gameObject.AddComponent<Image>();
+            navImage.color = new Color(0.025f, 0.019f, 0.013f, 0.76f);
+            navImage.raycastTarget = false;
+            UICanvasUtil.Roundify(navImage, 10);
             _prevButton = BuildNavButton(nav, true, out _prevLabel);
             var prevRt = (RectTransform)_prevButton.transform;
             prevRt.anchorMin = new Vector2(0f, 0f);
@@ -423,15 +609,17 @@ namespace Hollowfen.UI
             var button = rt.gameObject.AddComponent<Button>();
             button.transition = Selectable.Transition.None;
             button.targetGraphic = image;
-            var direction = UICanvasUtil.NewEyebrow("Direction", rt, Localization.Get(previous ? "journal.previous" : "journal.next"), 10f, Subtle,
+            var direction = UICanvasUtil.NewEyebrow("Direction", rt, Localization.Get(previous ? "journal.previous" : "journal.next"), 12.5f, Subtle,
                 previous ? TextAlignmentOptions.Left : TextAlignmentOptions.Right);
-            UICanvasUtil.SetRect(direction.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(previous ? 0f : 1f, 1f), new Vector2(0f, 18f), new Vector2(0f, -8f));
-            label = UICanvasUtil.NewHeading("Label", rt, "", 18f, Cream, FontStyles.Italic,
+            UICanvasUtil.SetRect(direction.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f),
+                new Vector2(previous ? 0f : 1f, 1f), new Vector2(0f, 16f), new Vector2(0f, -5f));
+            label = UICanvasUtil.NewHeading("Label", rt, "", 17f, Cream, FontStyles.Italic,
                 previous ? TextAlignmentOptions.BottomLeft : TextAlignmentOptions.BottomRight);
-            UICanvasUtil.SetRect(label.rectTransform, Vector2.zero, Vector2.one, new Vector2(previous ? 0f : 1f, 0.5f), new Vector2(0f, -20f), Vector2.zero);
+            UICanvasUtil.SetRect(label.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f),
+                new Vector2(previous ? 0f : 1f, 0f), new Vector2(0f, 24f), new Vector2(0f, 5f));
             label.enableAutoSizing = true;
             label.fontSizeMin = 13f;
-            label.fontSizeMax = 18f;
+            label.fontSizeMax = 17f;
             var focus = rt.gameObject.AddComponent<FocusHighlight>();
             focus.Configure(label, rt, Gold, 1.035f);
             return button;
@@ -468,13 +656,21 @@ namespace Hollowfen.UI
         private void GoPrev()
         {
             int index = AdjacentIndex(-1);
-            if (index >= 0) SetEntry(_database.Entries[index], _database);
+            if (index >= 0)
+            {
+                if (_showIllustratedPage) UISfx.PageTurn();
+                SetEntry(_database.Entries[index], _database);
+            }
         }
 
         private void GoNext()
         {
             int index = AdjacentIndex(1);
-            if (index >= 0) SetEntry(_database.Entries[index], _database);
+            if (index >= 0)
+            {
+                if (_showIllustratedPage) UISfx.PageTurn();
+                SetEntry(_database.Entries[index], _database);
+            }
         }
 
         private int AdjacentIndex(int direction)
@@ -496,7 +692,31 @@ namespace Hollowfen.UI
             _prevLabel.text = previous >= 0 ? JournalText.MushroomName(_database.Entries[previous]) : "";
             _nextLabel.text = next >= 0 ? JournalText.MushroomName(_database.Entries[next]) : "";
             _page.text = position > 0 ? string.Format(Localization.Get("journal.page"), position, total) : "";
-            WireNavigation();
+            if (_illustratedPrevButton != null)
+            {
+                _illustratedPrevButton.interactable = previous >= 0;
+                _illustratedNextButton.interactable = next >= 0;
+                _illustratedPrevLabel.text = previous >= 0 ? JournalText.MushroomName(_database.Entries[previous]) : "";
+                _illustratedNextLabel.text = next >= 0 ? JournalText.MushroomName(_database.Entries[next]) : "";
+                _illustratedPageNumber.text = position > 0
+                    ? string.Format(Localization.Get("journal.page"), position, total)
+                    : "";
+            }
+            if (_showIllustratedPage) WireIllustratedNavigation();
+            else WireNavigation();
+        }
+
+        private void WireIllustratedNavigation()
+        {
+            if (_closeButton == null || _viewToggle == null || _illustratedPrevButton == null ||
+                _illustratedNextButton == null) return;
+            JournalChrome.SetNavigation(_closeButton, _illustratedNextButton, _viewToggle);
+            JournalChrome.SetNavigation(_viewToggle, _closeButton, _illustratedPrevButton,
+                _illustratedPrevButton, _illustratedNextButton);
+            JournalChrome.SetNavigation(_illustratedPrevButton, _viewToggle, _closeButton, null,
+                _illustratedNextButton.interactable ? _illustratedNextButton : null);
+            JournalChrome.SetNavigation(_illustratedNextButton, _viewToggle, _closeButton,
+                _illustratedPrevButton.interactable ? _illustratedPrevButton : null, null);
         }
 
         private void WireNavigation()
@@ -524,7 +744,7 @@ namespace Hollowfen.UI
 
         private static bool IsAvailable(MushroomFieldGuideData entry)
         {
-            return entry != null && Hollowfen.Foraging.MushroomDiscovery.IsDiscovered(entry.Id);
+            return entry != null && Hollowfen.Foraging.MushroomKnowledge.CanReadPage(entry);
         }
 
         private void EnsureCanvas()

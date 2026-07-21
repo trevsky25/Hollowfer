@@ -86,48 +86,31 @@ The village did not greet her. No children ran the lane. No cart rattled down fr
 
 At the inn, a man was sweeping the same three leaves across the same patch of threshold without improving either one. He was broader in Wren's memory. Louder too. Old Bram had once laughed from the bar so hard that mugs trembled. Now he leaned on the broom as if it had become a third leg.
 
-He looked up when her boots struck the packed earth of the square.
+He looked up when her boots struck the packed earth of the square. For half a breath he did not know her. Then his face changed.
 
-For half a breath he did not know her.
+Wren stopped beside the well, with the old inn sign creaking beyond him.
 
-Then his face changed.
+"Old Bram! How I've missed you. It's been so long. I thought of the Pintle every winter in Veyrwick - your fire, Marra's oatcakes, Dad pretending not to notice when I stayed past supper."
 
-"Wren?"
+Bram took one step forward, then stopped himself, as if unsure whether a girl who had gone away might still be hugged by a man who had known her as a child. His eyes went to her face, her pack, the knife at her belt, and back to her face.
 
-She stopped with the well between them and the old inn sign creaking overhead.
+"Wren? Lord help me, it is you. Come here and let an old innkeeper look at you. Three winters, and you've come home with your father's height and your mother's eyes. I only wish the village had kept more of itself to welcome you."
 
-"Evening, Bram."
-
-He took one step forward, then stopped himself, as if unsure whether a girl who had gone away might still be hugged by a man who had known her as a child. His eyes went to her face, her pack, the knife at her belt, and back to her face.
-
-"Lord help me," he said softly. "You've got your father's height."
-
-That was the first time anyone had spoken Tobin's name without speaking it.
-
-Wren looked past him to the inn door, half open on firelight and shadow. The Crooked Pintle still stood. The paint on the sign had faded. The doorframe sagged. But there was warmth inside, and the smell of onions, and the old iron boot-scraper beside the step.
-
-"I came as soon as I could," Wren said.
-
-Bram's hand tightened on the broom handle.
-
-"Aye," he said. "I know."
-
-He looked toward the east lane, where the mill waited in the failing light.
-
-"I've got the key inside."
+That was Bram: the man who had once laughed hard enough to tremble every mug in the Pintle, trying to make room for grief by speaking around it.
 
 ### Gameplay Mission
 
 **Mission title:** Homecoming  
 **Quest ID:** `arrive`  
-**Location:** East road into Hollowfen, village square, exterior of The Crooked Pintle  
+**Location:** East road into Hollowfen and the village well
+
 **Player goal:** Walk into Hollowfen and approach Bram.
 
 ### Objectives
 
 - Follow the road into Hollowfen.
 - Observe the village square.
-- Approach Old Bram outside The Crooked Pintle.
+- Approach Old Bram beside the village well.
 
 ### Player-Facing Quest Text
 
@@ -147,12 +130,8 @@ He looked toward the east lane, where the mill waited in the failing light.
 
 | Speaker | Line |
 |---|---|
-| Bram | "Wren?" |
-| Wren | "Evening, Bram." |
-| Bram | "Lord help me. You've got your father's height." |
-| Wren | "I came as soon as I could." |
-| Bram | "Aye. I know." |
-| Bram | "I've got the key inside." |
+| Wren | "Old Bram! How I've missed you. It's been so long. I thought of the Pintle every winter in Veyrwick - your fire, Marra's oatcakes, Dad pretending not to notice when I stayed past supper." |
+| Bram | "Wren? Lord help me, it is you. Come here and let an old innkeeper look at you. Three winters, and you've come home with your father's height and your mother's eyes. I only wish the village had kept more of itself to welcome you." |
 
 ### Optional Ambient Lines
 
@@ -172,7 +151,7 @@ Unlock `homecoming` when the player enters the village square or completes the a
 
 - This scene can be mostly on rails or lightly guided.
 - Do not overload the player with UI yet. Let the road, village, and Bram carry the opening.
-- The first quest marker should be subtle and diegetic if possible: lantern glow at the inn, Bram sweeping, or a compass label reading "Old Bram."
+- The first quest marker should be subtle and diegetic if possible: lantern glow at the well, Bram sweeping, or a compass label reading "Old Bram."
 
 ---
 
@@ -186,78 +165,38 @@ Give the player the first real conversation, the mill key, and the first explana
 
 ### Narrative Passage
 
-The common room of The Crooked Pintle was smaller than Wren remembered.
+The well stood between them and The Crooked Pintle, its windows half-lit against the dusk. Bram's broom lay forgotten in the road. He kept one hand inside his coat, closed around something he had carried too long.
 
-That was impossible, of course. The beams had not lowered. The hearth had not crept inward. The long bar still ran along the left wall, scarred by thirty years of cups, knives, elbows, and weather. But half the tables were stacked in the corner now. The window nearest the road was boarded from the inside. A row of copper pots hung dark above the kitchen door, polished only where hands still touched them.
+"Dad's letters grew shorter, then stopped," Wren said. "He wrote about the flooded fields, never how bad it was. I should have come sooner, Bram. Tell me what happened - and why you have the mill key."
 
-Bram went behind the bar and set the broom carefully against the wall.
+Bram drew out a grey rag folded around something small. The key inside was iron, black with age, the bow worn smooth where generations of Tobins had turned it in their fingers.
 
-"Marra's in back," he said. "She'll want to see you. Only she won't say so in a way you'll enjoy."
+"Your father made every hardship sound like weather. The Wend changed course three winters ago and left the wheel over dry stones. When he took poorly, he brought me this key and asked me to keep the damp out until you came home. I did what I could. He was a good man, Wren, and a dear friend. I am sorry."
 
-Wren almost smiled.
+There it was. The thing everyone would say because there was no useful thing to say instead. But Bram had given it weight: three winters of turning the key in his pocket, walking the mill lane, and waiting beside the well.
 
-"That sounds like Marra."
+Wren closed her fingers around the iron.
 
-"Aye."
-
-He bent below the bar and came up with a grey rag folded around something small. He did not hand it over at once. He held it in both palms.
-
-"Your da left this with me when he took poorly."
-
-Wren looked at the rag.
-
-"He knew?"
-
-Bram's face worked once, like a man swallowing a crust too dry.
-
-"He knew enough."
-
-The key inside was iron, black with age, the bow worn smooth where generations of Tobins had turned it in their fingers. Bram placed it on the bar between them.
-
-"You'll find the mill in a state," he said. "I went by when I could. Kept the worst of the damp out. But the wheel hasn't turned since the Wend went and changed its mind about where it was going."
-
-"Three winters ago?"
-
-"Aye."
-
-"Father wrote that the lower fields flooded."
-
-"He would have written it tidy."
-
-Wren touched the key but did not pick it up.
-
-Bram looked down at his hands.
-
-"He was a good man, your da. Quiet. Kept accounts better than any lord's clerk. Fixed my hinge in spring and never sent a bill."
-
-"That sounds like him."
-
-"I'm sorry, Wren."
-
-There it was. The thing everyone would say because there was no useful thing to say instead.
-
-Wren closed her fingers around the key.
-
-"So am I."
+"Thank you for keeping faith with him. I'll take the key now - and whatever waits at the mill. I've spent long enough being absent."
 
 ### Gameplay Mission
 
 **Mission title:** The Crooked Pintle  
 **Quest ID:** `speakBram`  
-**Location:** The Crooked Pintle interior  
+**Location:** Village well, within sight of The Crooked Pintle
+
 **Player goal:** Speak to Bram and receive the mill key.
 
 ### Objectives
 
-- Enter The Crooked Pintle.
-- Speak with Old Bram.
+- Speak with Old Bram beside the well.
 - Receive the mill key.
 - Leave for Tobin's mill.
 
 ### Player-Facing Quest Text
 
 **Quest updated:** The Crooked Pintle  
-**Objective:** Bram has your father's key. Speak with him inside the inn.
+**Objective:** Bram has your father's key. Speak with him at the well.
 
 ### Required Dialogue
 
@@ -265,21 +204,9 @@ Wren closed her fingers around the key.
 
 | Speaker | Line |
 |---|---|
-| Bram | "Marra's in back. She'll want to see you. Only she won't say so in a way you'll enjoy." |
-| Wren | "That sounds like Marra." |
-| Bram | "Your da left this with me when he took poorly." |
-| Wren | "He knew?" |
-| Bram | "He knew enough." |
-| Bram | "You'll find the mill in a state. I went by when I could." |
-| Bram | "Wheel hasn't turned since the Wend went and changed its mind about where it was going." |
-| Wren | "Three winters ago?" |
-| Bram | "Aye." |
-| Wren | "Father wrote that the lower fields flooded." |
-| Bram | "He would have written it tidy." |
-| Bram | "He was a good man, your da." |
-| Wren | "That sounds like him." |
-| Bram | "I'm sorry, Wren." |
-| Wren | "So am I." |
+| Wren | "Dad's letters grew shorter, then stopped. He wrote about the flooded fields, never how bad it was. I should have come sooner, Bram. Tell me what happened - and why you have the mill key." |
+| Bram | "Your father made every hardship sound like weather. The Wend changed course three winters ago and left the wheel over dry stones. When he took poorly, he brought me this key and asked me to keep the damp out until you came home. I did what I could. He was a good man, Wren, and a dear friend. I am sorry." |
+| Wren | "Thank you for keeping faith with him. I'll take the key now - and whatever waits at the mill. I've spent long enough being absent." |
 
 ### Optional Follow-Up Dialogue
 
@@ -289,9 +216,7 @@ Available if the player talks to Bram again before leaving.
 
 | Speaker | Line |
 |---|---|
-| Bram | "Mill lane's east of the well. You'll know the turn, I expect." |
-| Wren | "I know it." |
-| Bram | "Course you do. Sorry." |
+| Bram | "Mill lane runs east from the well. You'll know the turn. Of course you will - old habit, Wren. Forgive me." |
 
 ### Item Acquired
 
@@ -306,7 +231,7 @@ Unlock `crooked_pintle` when Bram gives Wren the key.
 ### Implementation Notes
 
 - Bram should not overexplain the village collapse. The player should leave with two facts: the Wend changed course, and the mill died with it.
-- This scene should also establish Bram's apologetic rhythm. He apologizes when he is helpless.
+- Bram's introduction should establish three things without extra turns: he has kept the Pintle since Wren's childhood, he loved her parents, and he apologizes when he is helpless.
 
 ---
 
@@ -342,7 +267,7 @@ When she was small, the wheel had filled the house with sound. It had spoken thr
 
 She took off her cloak. Folded it once. Then unfolded it because there was no reason to be tidy for a dead man and every reason.
 
-"All right, Da," she said to the room.
+"All right, Dad," she said to the room.
 
 The room said nothing back.
 
@@ -446,7 +371,7 @@ The forest was always our family's secret. Your grandmother knew. Your mother kn
 
 I am sorry I waited too long.
 
-- Da
+- Dad
 
 Wren held the page open until the light shifted on the floor.
 
@@ -488,11 +413,13 @@ Then she closed the book, opened it again, and began at the first entry.
 
 | Speaker | Line |
 |---|---|
-| Tobin's journal | "If you're reading this, I never told you." |
-| Tobin's journal | "The forest was always our family's secret. Your grandmother knew. Your mother knew." |
-| Tobin's journal | "I was waiting until you were old enough." |
-| Tobin's journal | "I am sorry I waited too long." |
-| Wren | "Da." |
+| Wren's narration | "It was no mill ledger. The worn book was a field journal, wrapped in oilcloth to survive the damp." |
+| Wren's narration | "Part recipe book, part mushroom guide, part family record. Her mother's recipes came first; then her father's hand: Field Cap. Wood Ear. Pinecrest." |
+| Wren's narration | "Each entry recorded cap, gills, stem, where it grew, how to prepare it, and what could kill a careless forager. Under one warning, the pencil had torn the page: Never eat what you cannot name twice." |
+| Wren's narration | "At the back, the field notes gave way to a letter: If you're reading this, I never told you." |
+| Tobin's journal | "The forest was always our family's secret. Your grandmother knew. Your mother knew. I was waiting until you were old enough." |
+| Tobin's journal | "I am sorry I waited too long. - Dad" |
+| Wren | "Dad." |
 
 ### Tutorial Text
 
@@ -513,6 +440,7 @@ Unlock `hidden_journal` when the player opens the journal.
 - The journal should become a major UI object after this scene.
 - Tobin's note should be replayable from the journal.
 - This is the first moment the player sees a hard rule: identification before harvesting.
+- The final blank-page painting carries Tobin's farewell as live localized text, including his "Dad" sign-off; reveal its paragraphs on narration beats 3, 4, and 5 so the writing and spoken/subtitle copy stay synchronized. Do not bake one language into the art.
 
 ---
 
@@ -1219,11 +1147,11 @@ Introduce the tax pressure and make the economy morally urgent. This is the firs
 
 Master Voss arrived in a clean coat on a muddy road.
 
-That was the first thing Wren disliked about him. Hollowfen marked everyone who entered it: wet hems, road dust, smoke in the hair. Voss sat in The Crooked Pintle with dry cuffs, a small ledger, and the patience of a locked door.
+That was the first thing Wren disliked about him. Hollowfen marked everyone who entered it: wet hems, road dust, smoke in the hair. Voss stood beneath the awning on the eastern market road with dry cuffs, a small ledger, and the patience of a locked door. Behind him, the trader's pitch was still empty. Theo's wagon would not arrive until dawn.
 
 "His Lordship requires twelve silver from this village," he said. "I am aware your fields have not yielded. I am not unsympathetic, but I am also not paid to be sympathetic."
 
-The Wenmar family sat on the bench nearest the hearth. No fire had been lit. Their son looked at his boots as if memorizing them before they were taken too.
+The Wenmar family stood beside the shuttered stall. Their son looked at his boots as if memorizing them before they were taken too.
 
 Wren counted her coins twice in her pocket. Mushroom money. Knife money. Roof money. Money that already belonged to three futures she had not named.
 
@@ -1239,21 +1167,22 @@ Voss looked at her for the first time as if she were not part of the furniture.
 
 "Very well, Miss Tobin."
 
-The Wenmar woman covered her mouth. Bram turned away before anyone could see his face.
+The Wenmar woman covered her mouth. Someone at the edge of the market let out the breath they had been holding.
 
 ### Gameplay Mission
 
 **Mission title:** Twelve Silver by Yule  
 **Quest ID:** `firstTax`  
-**Location:** The Crooked Pintle  
+**Location:** Eastern market road
 **Player goal:** Earn enough coin through foraging/cooking/trade to help pay the Wenmar family's tax.
 
 ### Objectives
 
-- Hear Voss's demand at the inn.
-- Learn the tax deadline.
+- Hear Voss's demand at the empty trader's pitch.
+- Learn the tax deadline and the first-sundown warning.
 - Earn or contribute the required amount.
-- Return to Voss before sundown.
+- Return to Voss as soon as possible. The first sundown after his demand is a grace warning;
+  later missed sundowns cost Village Hope until the debt is paid.
 - Prevent the Wenmar cottage from being seized.
 
 ### Required Dialogue

@@ -14,36 +14,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Dialogue.DialogueData
   _id: act2.almy_lessons.lesson
   _lines:
-  - speaker: Almy
-    text: Your grandmother taught me three things. How to read rot. How to feed it.
-      How to leave enough behind.
-    isCloseup: 0
-    voiceClip: {fileID: 8300000, guid: d8fe2462b23134877901ba669f2ca812, type: 3}
-  - speaker: Wren
-    text: That sounds less like a lesson and more like a warning.
-    isCloseup: 0
-    voiceClip: {fileID: 8300000, guid: 83ebba41d0a9545a9b0838fa881bcb6f, type: 3}
-  - speaker: Almy
-    text: Most useful lessons are.
-    isCloseup: 0
-    voiceClip: {fileID: 8300000, guid: 6beb3b0b7cbbd48b1aa7857a2e628307, type: 3}
   - speaker: Wren
     text: Why teach me now?
     isCloseup: 0
-    voiceClip: {fileID: 8300000, guid: c80308a5f445249909e0c66d8b3c0f7d, type: 3}
+    voiceClip: {fileID: 8300000, guid: 2655ca6586615433e84932e93e605bf9, type: 3}
   - speaker: Almy
     text: Because you came back. Nobody else has, in twenty-six years.
     isCloseup: 1
-    voiceClip: {fileID: 8300000, guid: 6c5b1f6e55f8b48f0b00b2fd48cd3e7d, type: 3}
+    voiceClip: {fileID: 8300000, guid: c25dee48a71dc4340b54fdbe8c155d4f, type: 3}
   - speaker: Wren
     text: Then teach me properly. Start to finish.
     isCloseup: 0
-    voiceClip: {fileID: 8300000, guid: d0d5b0d858a4742e7a48f0ebc3622f5d, type: 3}
-  - speaker: Almy
-    text: "Do not rush growth. Rushed mushrooms teach regret.\n\nThe beds wait by
-      your mill wall. Two plugs of Wood Ear spawn \u2014 show me you listened."
-    isCloseup: 0
-    voiceClip: {fileID: 8300000, guid: 7c13e8a59f29a4f298ae4f4ed6fc2a4e, type: 3}
+    voiceClip: {fileID: 8300000, guid: e6bc5e6e015ce4940ad02af0168e6a19, type: 3}
+  _mushroomHandoff:
+    beforeLineIndex: 0
+    recipientSpeaker: 
+    mushroom: {fileID: 0}
+    presentationHeight: 0
   _unlockStoryCard: {fileID: 0}
   _completeQuest: {fileID: 0}
   _giveItemId: 
@@ -63,6 +50,10 @@ MonoBehaviour:
   _relationshipNpcIds:
   - almy
   _relationshipDeltas: 0c000000
-  _transitionMoment: {fileID: 0}
+  _memoryOutcomes: []
+  _bondOutcomes: []
+  _favorOutcomes: []
+  _advanceMinutes: 0
+  _transitionMoment: {fileID: 11400000, guid: 3f6f6908584734f1f9108d56c23c9709, type: 2}
   _nextDialog: {fileID: 0}
   _choices: []

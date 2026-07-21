@@ -1,4 +1,5 @@
 using TMPro;
+using Hollowfen.Cinematics;
 using Hollowfen.Items;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,6 +23,7 @@ namespace Hollowfen.UI
         private TMP_Text _saveLabel;
         private TMP_Text _purseLabel;
         private bool _builtRefined;
+        private NarrativePresentationSession.Lease _presentationLease;
 
         public override GameObject DefaultSelected =>
             _resumeButton != null ? _resumeButton.gameObject : base.DefaultSelected;
@@ -42,7 +44,9 @@ namespace Hollowfen.UI
         public override void OnOpen()
         {
             base.OnOpen();
-            Time.timeScale = 0f;
+            if (_presentationLease == null)
+                _presentationLease = NarrativePresentationSession.AcquireIfGameplay(
+                    this, NarrativePresentationSession.Modal);
             if (_saveLabel != null) _saveLabel.text = Localization.Get("ui.pause.save");
             if (_purseLabel != null)
                 _purseLabel.text = string.Format(Localization.Get("ui.pause.purse_balance"),
@@ -52,7 +56,15 @@ namespace Hollowfen.UI
         public override void OnClose()
         {
             base.OnClose();
-            Time.timeScale = 1f;
+            ReleasePresentation();
+        }
+
+        private void OnDestroy() => ReleasePresentation();
+
+        private void ReleasePresentation()
+        {
+            _presentationLease?.Dispose();
+            _presentationLease = null;
         }
 
         private void OnResume()
@@ -84,7 +96,7 @@ namespace Hollowfen.UI
         {
             Hollowfen.Save.SaveCoordinator.SaveAllWithPlayer();
             Debug.Log($"[Pause] Saved to slot {Hollowfen.Save.SaveManager.ActiveSlot}");
-            if (_saveLabel != null) _saveLabel.text = "Saved <sprite name=\"ui_check\">"; // batch-48: ✓ had no font glyph
+            if (_saveLabel != null) _saveLabel.text = Localization.Get("ui.pause.saved"); // batch-48: ✓ had no font glyph
         }
 
         private const string MainMenuSceneName = "Scene_MainMenu";
@@ -96,7 +108,6 @@ namespace Hollowfen.UI
                 message: Localization.Get("ui.pause.quit_message"),
                 onConfirm: () =>
                 {
-                    Time.timeScale = 1f; // restore before scene load so the next scene starts unpaused
                     if (UIManager.Instance != null)
                         UIManager.Instance.LoadSceneAndOpen(MainMenuSceneName, "main-menu");
                 });
@@ -159,7 +170,7 @@ namespace Hollowfen.UI
             innerRT.offsetMax = new Vector2(-10f, -10f);
 
             // Header
-            var eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", card, Localization.Get("ui.pause.eyebrow"), 13f, HollowfenPalette.Gold, TextAlignmentOptions.Center);
+            var eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", card, Localization.Get("ui.pause.eyebrow"), 13f, HollowfenPalette.PaperAccentInk, TextAlignmentOptions.Center);
             UICanvasUtil.SetRect(eyebrow.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, 18f), new Vector2(0f, -42f));
 
             var title = UICanvasUtil.NewHeading("Title", card, Localization.Get("ui.pause.title"), 52f, HollowfenPalette.InkDeep, FontStyles.Normal, TextAlignmentOptions.Center);
@@ -181,7 +192,7 @@ namespace Hollowfen.UI
 
             // Hint
             var hint = UICanvasUtil.NewBody("Hint", card, Localization.Get("ui.pause.hint"), 15f,
-                new Color(HollowfenPalette.Moss.r, HollowfenPalette.Moss.g, HollowfenPalette.Moss.b, 0.95f),
+                HollowfenPalette.PaperMutedInk,
                 FontStyles.Italic, TextAlignmentOptions.Center);
             UICanvasUtil.SetRect(hint.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 20f), new Vector2(0f, 22f));
 

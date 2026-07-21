@@ -37,7 +37,8 @@ MonoBehaviour:
     are dose-dependent. Easy to confuse with deadly Galerina species when not bruised
     \u2014 never collect by appearance alone."
   _photo: {fileID: 21300000, guid: 2ee3be24c4dae4c2180158e9f017bd0d, type: 3}
-  _photoCredit: Wikimedia Commons
+  _photoCredit: Generated with OpenAI gpt-image
+  _journalPage: {fileID: 21300000, guid: 839373de6a1184f2da831f7a69ba13c7, type: 3}
   _worldPrefab: {fileID: 5082839435806348898, guid: 55758410b7d784e25a5b468cb7fc864b, type: 3}
   _journalPreviewPrefab: {fileID: 5316456425882353935, guid: 61cc8766f21a7428fad6af8b4cd87987, type: 3}
   _journalExposure: 0.41

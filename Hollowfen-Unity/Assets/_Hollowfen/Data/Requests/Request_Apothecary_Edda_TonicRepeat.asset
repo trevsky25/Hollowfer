@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95267338c201c4c76b2d6ee20a231830, type: 3}
+  m_Name: Request_Apothecary_Edda_TonicRepeat
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Requests.VillageRequestData
+  _id: apothecary_edda_tonic_repeat
+  _npcId: edda
+  _kind: 1
+  _titleId: request.apothecary.edda_tonic_repeat.title
+  _descriptionId: request.apothecary.edda_tonic_repeat.body
+  _requesterLineId: request.apothecary.edda_tonic_repeat.line
+  _heroImage: {fileID: 21300000, guid: eea468fe5a83d49e0b94c3999e71c7a3, type: 3}
+  _requiredSpecies: []
+  _requiredCounts: 
+  _requiredPreparations:
+  - {fileID: 11400000, guid: 05d02b2a37a3b4002a9a8e42d5701fd7, type: 2}
+  _requiredPreparationCounts: 01000000
+  _rewardCopper: 22
+  _wetWeatherBonusCopper: 0
+  _firstCompletionRelationshipDelta: 1
+  _firstCompletionKnowledgeDelta: 0
+  _requiredFlagIds:
+  - apothecary_tonic_delivered
+  _requiredCompletedQuestIds: []
+  _activeQuestId: 
+  _oneShot: 0
+  _completionFlagIds: []
+  _completeQuest: {fileID: 0}
+  _completionDialogue: {fileID: 0}

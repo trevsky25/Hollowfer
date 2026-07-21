@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d0fced8610445dd87f9c05997c7c4b4, type: 3}
+  m_Name: StoryMoment_16_HollinInheritance
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.StoryMomentData
+  _id: story.hollin_inheritance.illustrated
+  _presentation: 0
+  _trigger: 0
+  _storyCard: {fileID: 11400000, guid: 785afd320013a4285a1a02cc2f4f3b6d, type: 2}
+  _captionIds:
+  - story.hollin_inheritance.beat.0
+  - story.hollin_inheritance.beat.1
+  - story.hollin_inheritance.beat.2
+  _captionFallbacks:
+  - Hollin reveals she is the granddaughter of the last hedge-witch.
+  - She and Wren share the same severed lineage, from opposite directions.
+  - Sister Almy, hearing this, weeps for the first time in years.
+  _voiceClips:
+  - {fileID: 8300000, guid: c7e1f2159cd62404ab472b1ec757d345, type: 3}
+  - {fileID: 8300000, guid: 1507e8382d9cb4d5287cd65581747b48, type: 3}
+  - {fileID: 8300000, guid: 295b051039cfc45af8e88507352e3973, type: 3}
+  _images:
+  - {fileID: 21300000, guid: 4ed56b24dca2f411db078431909b38b8, type: 3}
+  - {fileID: 21300000, guid: f1021ef08b0774198bdd2308f4a85251, type: 3}
+  - {fileID: 21300000, guid: 1a68ecf7d548548ccb9931286c158253, type: 3}
+  _beatImages: 000000000100000002000000
+  _showStoryCardTitle: 0
+  _showCaptions: 1
+  _fadeIn: 1
+  _holdSeconds: 0
+  _pageTextId: 
+  _pageTextFallback: 
+  _pageTextImageIndex: -1
+  _pageTextStartBeat: 0
+  _pageTextParagraphRevealBeats: 
+  _pageTextRect:
+    serializedVersion: 2
+    x: 0.2
+    y: 0.2
+    width: 0.6
+    height: 0.6
+  _pageTextRotation: 0
+  _pageTextFontSize: 30
+  _pageTextColor: {r: 0.16, g: 0.1, b: 0.05, a: 0.86}
+  _focusContext: 0
+  _focusDistance: 0.4
+  _focusHeight: 0.05
+  _focusFov: 30
+  _focusPushSeconds: 1.2
+  _focusHoldSeconds: 1.6
+  _focusRestoreSeconds: 0.2

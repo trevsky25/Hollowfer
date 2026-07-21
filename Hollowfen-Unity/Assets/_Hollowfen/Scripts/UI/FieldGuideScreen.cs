@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Hollowfen.Cinematics;
 using Hollowfen.Data;
 using Hollowfen.Foraging;
 using TMPro;
@@ -16,7 +17,7 @@ namespace Hollowfen.UI
         private static readonly Color Card = HollowfenPalette.SurfaceBase;
         private static readonly Color Cream = new Color(0.961f, 0.925f, 0.855f, 1f);
         private static readonly Color Subtle = new Color(0.961f, 0.925f, 0.855f, 0.62f);
-        private static readonly Color Faint = new Color(0.961f, 0.925f, 0.855f, 0.44f);
+        private static readonly Color Faint = new Color(0.961f, 0.925f, 0.855f, 0.54f);
         private static readonly Color Gold = new Color(0.851f, 0.741f, 0.427f, 1f);
 
         private readonly List<(GameObject go, MushroomFieldGuideData entry)> _cells = new List<(GameObject, MushroomFieldGuideData)>();
@@ -27,10 +28,7 @@ namespace Hollowfen.UI
         private GameObject _firstDiscovered;
         private GameObject _lastSelected;
         private bool _built;
-        private bool _ownsGameplayPause;
-        private float _previousTimeScale = 1f;
-        private CursorLockMode _previousCursorLock;
-        private bool _previousCursorVisible;
+        private NarrativePresentationSession.Lease _presentationLease;
 
         public override GameObject DefaultSelected
         {
@@ -61,7 +59,9 @@ namespace Hollowfen.UI
         public override void OnOpen()
         {
             base.OnOpen();
-            AcquireGameplayPauseIfNeeded();
+            if (_presentationLease == null)
+                _presentationLease = NarrativePresentationSession.AcquireIfGameplay(
+                    this, NarrativePresentationSession.Modal);
             RefreshLockStates();
         }
 
@@ -69,7 +69,7 @@ namespace Hollowfen.UI
         {
             base.OnClose();
             ReleaseVisibleModels();
-            ReleaseGameplayPause();
+            ReleasePresentation();
         }
 
         private void LateUpdate()
@@ -77,35 +77,12 @@ namespace Hollowfen.UI
             if (_built && isActiveAndEnabled) RefreshVisibleModels();
         }
 
-        // The guide also lives in the main-menu journal and under Pause. Only a direct
-        // gameplay shortcut owns its pause/cursor state; existing menu contexts keep theirs.
-        private void AcquireGameplayPauseIfNeeded()
+        private void OnDestroy() => ReleasePresentation();
+
+        private void ReleasePresentation()
         {
-            if (_ownsGameplayPause || Time.timeScale <= 0f) return;
-            if (GameObject.FindGameObjectWithTag("Player") == null) return;
-
-            _ownsGameplayPause = true;
-            _previousTimeScale = Time.timeScale;
-            _previousCursorLock = Cursor.lockState;
-            _previousCursorVisible = Cursor.visible;
-
-            Time.timeScale = 0f;
-            PlayerInteractor.Suspended = true;
-            PlayerInteractor.SetPlayerInputEnabled(false);
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
-
-        private void ReleaseGameplayPause()
-        {
-            if (!_ownsGameplayPause) return;
-            _ownsGameplayPause = false;
-
-            Time.timeScale = _previousTimeScale;
-            PlayerInteractor.Suspended = false;
-            PlayerInteractor.SetPlayerInputEnabled(true);
-            Cursor.lockState = _previousCursorLock;
-            Cursor.visible = _previousCursorVisible;
+            _presentationLease?.Dispose();
+            _presentationLease = null;
         }
 
         private void BuildLayout()
@@ -118,7 +95,7 @@ namespace Hollowfen.UI
             page.anchorMin = new Vector2(0.5f, 0f);
             page.anchorMax = new Vector2(0.5f, 1f);
             page.pivot = new Vector2(0.5f, 0.5f);
-            page.sizeDelta = new Vector2(1500f, 0f);
+            page.sizeDelta = new Vector2(1560f, 0f);
             page.offsetMin = new Vector2(page.offsetMin.x, 52f);
             page.offsetMax = new Vector2(page.offsetMax.x, -46f);
 
@@ -158,10 +135,10 @@ namespace Hollowfen.UI
             scroll.content = _content;
             var grid = _content.gameObject.AddComponent<GridLayoutGroup>();
             grid.padding = new RectOffset(0, 0, 18, 90);
-            grid.spacing = new Vector2(16f, 18f);
-            grid.cellSize = new Vector2(489f, 520f);
+            grid.spacing = new Vector2(20f, 24f);
+            grid.cellSize = new Vector2(770f, 500f);
             grid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
-            grid.constraintCount = 3;
+            grid.constraintCount = 2;
             var fitter = _content.gameObject.AddComponent<ContentSizeFitter>();
             fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
         }
@@ -183,23 +160,26 @@ namespace Hollowfen.UI
             var button = root.AddComponent<Button>();
             button.transition = Selectable.Transition.None;
             button.targetGraphic = face;
+            JournalChrome.AddStructuralBorder(root.transform as RectTransform, 14, 0.08f);
 
             var art = JournalArtPresenter.Create("Thumb", root.transform, false, Card);
-            UICanvasUtil.SetRect(art.Frame, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(314f, 314f), new Vector2(0f, -18f));
-            art.SetSprite(entry.Photo, Card);
+            UICanvasUtil.SetRect(art.Frame, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f),
+                new Vector2(0.5f, 1f), new Vector2(734f, 413f), new Vector2(0f, -18f));
+            art.SetSprite(entry.JournalPage != null ? entry.JournalPage : entry.Photo, Card);
 
-            JournalChrome.AddSpecimenHalo(art.Frame, new Vector2(284f, 150f), new Vector2(0f, -58f));
+            JournalChrome.AddSpecimenHalo(art.Frame, new Vector2(620f, 240f), new Vector2(0f, -78f));
 
             var modelRt = UICanvasUtil.NewRect("ModelThumb", art.Frame);
             UICanvasUtil.Stretch(modelRt);
             var modelImage = modelRt.gameObject.AddComponent<RawImage>();
             modelImage.raycastTarget = false;
             var model = modelRt.gameObject.AddComponent<JournalMushroomModelPresenter>();
-            model.Configure(384, Color.clear, 14f);
+            model.Configure(512, Color.clear, 14f);
             modelRt.gameObject.SetActive(false);
 
             var modelBadge = UICanvasUtil.NewRect("ModelBadge", art.Frame);
-            UICanvasUtil.SetRect(modelBadge, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(122f, 30f), new Vector2(-8f, -8f));
+            UICanvasUtil.SetRect(modelBadge, new Vector2(1f, 1f), new Vector2(1f, 1f),
+                new Vector2(1f, 1f), new Vector2(146f, 30f), new Vector2(-10f, -10f));
             var modelBadgeLabel = UICanvasUtil.NewEyebrow("Label", modelBadge, Localization.Get("journal.field.model_badge"), 13f,
                 new Color(Gold.r, Gold.g, Gold.b, 0.78f), TextAlignmentOptions.Right);
             UICanvasUtil.Stretch(modelBadgeLabel.rectTransform);
@@ -209,23 +189,32 @@ namespace Hollowfen.UI
             UICanvasUtil.Stretch(mark.rectTransform);
 
             var body = UICanvasUtil.NewRect("Body", root.transform);
-            UICanvasUtil.SetRect(body, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0.5f, 1f), new Vector2(-52f, 166f), new Vector2(0f, -338f));
-            var name = UICanvasUtil.NewHeading("Name", body, JournalText.MushroomName(entry), 34f, Cream, FontStyles.Normal, TextAlignmentOptions.TopLeft);
-            UICanvasUtil.SetRect(name.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, 1f), new Vector2(0f, 44f), Vector2.zero);
+            UICanvasUtil.SetRect(body, new Vector2(0f, 1f), new Vector2(1f, 1f),
+                new Vector2(0.5f, 1f), new Vector2(-48f, 58f), new Vector2(0f, -432f));
+            var name = UICanvasUtil.NewHeading("Name", body, JournalText.MushroomName(entry), 30f,
+                Cream, FontStyles.Normal, TextAlignmentOptions.TopLeft);
+            UICanvasUtil.SetRect(name.rectTransform, new Vector2(0f, 1f), new Vector2(0.62f, 1f),
+                new Vector2(0f, 1f), new Vector2(0f, 36f), Vector2.zero);
             name.enableAutoSizing = true;
-            name.fontSizeMin = 24f;
-            name.fontSizeMax = 34f;
-            var latin = UICanvasUtil.NewBody("Latin", body, JournalText.MushroomLatin(entry), 17f, Faint, FontStyles.Italic);
-            UICanvasUtil.SetRect(latin.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, 1f), new Vector2(0f, 24f), new Vector2(0f, -52f));
+            name.fontSizeMin = 21f;
+            name.fontSizeMax = 30f;
+            var latin = UICanvasUtil.NewBody("Latin", body, JournalText.MushroomLatin(entry), 15.5f,
+                Faint, FontStyles.Italic);
+            UICanvasUtil.SetRect(latin.rectTransform, new Vector2(0f, 1f), new Vector2(0.62f, 1f),
+                new Vector2(0f, 1f), new Vector2(0f, 21f), new Vector2(0f, -35f));
 
             var dotRt = UICanvasUtil.NewRect("Dot", body);
-            UICanvasUtil.SetRect(dotRt, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(11f, 11f), new Vector2(0f, -96f));
+            UICanvasUtil.SetRect(dotRt, new Vector2(0.64f, 1f), new Vector2(0.64f, 1f),
+                new Vector2(0f, 1f), new Vector2(10f, 10f), new Vector2(0f, -17f));
             var dot = dotRt.gameObject.AddComponent<Image>();
             dot.sprite = UICanvasUtil.Circle();
             dot.color = HollowfenPalette.Edibility(entry.Edibility);
             dot.raycastTarget = false;
-            var edibility = UICanvasUtil.NewEyebrow("Edibility", body, JournalText.MushroomEdibility(entry), 13f, HollowfenPalette.Edibility(entry.Edibility));
-            UICanvasUtil.SetRect(edibility.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, 1f), new Vector2(-20f, 22f), new Vector2(20f, -91f));
+            var edibility = UICanvasUtil.NewEyebrow("Edibility", body,
+                JournalText.MushroomEdibility(entry), 12.5f,
+                HollowfenPalette.Edibility(entry.Edibility), TextAlignmentOptions.Right);
+            UICanvasUtil.SetRect(edibility.rectTransform, new Vector2(0.66f, 1f), new Vector2(1f, 1f),
+                new Vector2(1f, 1f), new Vector2(0f, 24f), new Vector2(0f, -10f));
 
             JournalChrome.AddSurfaceFocus(root, 14, 1.012f);
 
@@ -242,13 +231,15 @@ namespace Hollowfen.UI
             foreach (var pair in _cells)
             {
                 if (pair.go == null || pair.entry == null) continue;
-                bool discovered = IsAvailable(pair.entry);
+                bool available = IsAvailable(pair.entry);
+                bool verified = MushroomDiscovery.IsDiscovered(pair.entry.Id);
                 var button = pair.go.GetComponent<Button>();
-                button.interactable = discovered;
-                if (discovered && _firstDiscovered == null) _firstDiscovered = pair.go;
+                button.interactable = available;
+                if (available && _firstDiscovered == null) _firstDiscovered = pair.go;
 
                 var art = pair.go.transform.Find("Thumb/Art")?.GetComponent<JournalArtPresenter>();
-                bool hasModel = discovered && pair.entry.JournalPreviewPrefab != null;
+                bool hasPage = available && pair.entry.JournalPage != null;
+                bool hasModel = available && !hasPage && pair.entry.JournalPreviewPrefab != null;
                 var modelRoot = pair.go.transform.Find("Thumb/ModelThumb");
                 if (modelRoot != null)
                 {
@@ -263,15 +254,35 @@ namespace Hollowfen.UI
                 if (art != null)
                 {
                     art.Image.enabled = !hasModel;
-                    art.SetTint(discovered && pair.entry.Photo != null ? Color.white : new Color(0.10f, 0.09f, 0.08f, 1f));
+                    Sprite preview = pair.entry.JournalPage != null ? pair.entry.JournalPage : pair.entry.Photo;
+                    art.SetSprite(preview, Card);
+                    art.SetTint(available && preview != null ? Color.white : new Color(0.10f, 0.09f, 0.08f, 1f));
                 }
                 var mark = pair.go.transform.Find("Thumb/UnknownMark")?.GetComponent<TMP_Text>();
                 if (mark != null)
                 {
-                    mark.text = !discovered
-                        ? "?"
-                        : (!hasModel && pair.entry.Photo == null ? Localization.Get("journal.field.missing_photo") : "");
-                    mark.fontSize = !discovered ? 74f : 20f;
+                    bool reference = available && !verified;
+                    bool missing = available && verified && !hasModel &&
+                                   pair.entry.JournalPage == null && pair.entry.Photo == null;
+                    mark.text = !available ? "?" : reference
+                        ? Localization.Get("journal.field.reference_short")
+                        : missing ? Localization.Get("journal.field.missing_photo") : "";
+                    if (!available || missing)
+                    {
+                        UICanvasUtil.Stretch(mark.rectTransform);
+                        mark.alignment = TextAlignmentOptions.Center;
+                        mark.fontSize = !available ? 74f : 18f;
+                        mark.color = Faint;
+                    }
+                    else
+                    {
+                        UICanvasUtil.SetRect(mark.rectTransform, new Vector2(0f, 1f),
+                            new Vector2(0f, 1f), new Vector2(0f, 1f),
+                            new Vector2(170f, 30f), new Vector2(18f, -18f));
+                        mark.alignment = TextAlignmentOptions.Left;
+                        mark.fontSize = 13f;
+                        mark.color = new Color(Gold.r, Gold.g, Gold.b, 0.88f);
+                    }
                 }
 
                 var body = pair.go.transform.Find("Body");
@@ -280,13 +291,13 @@ namespace Hollowfen.UI
                 var latin = body.Find("Latin")?.GetComponent<TMP_Text>();
                 var dot = body.Find("Dot")?.GetComponent<Image>();
                 var edibility = body.Find("Edibility")?.GetComponent<TMP_Text>();
-                Color chip = discovered ? HollowfenPalette.Edibility(pair.entry.Edibility) : HollowfenPalette.EdUnknown;
-                if (name != null) name.text = discovered ? JournalText.MushroomName(pair.entry) : "?";
-                if (latin != null) latin.text = discovered ? JournalText.MushroomLatin(pair.entry) : Localization.Get("journal.field.unknown");
+                Color chip = available ? HollowfenPalette.Edibility(pair.entry.Edibility) : HollowfenPalette.EdUnknown;
+                if (name != null) name.text = available ? JournalText.MushroomName(pair.entry) : "?";
+                if (latin != null) latin.text = available ? JournalText.MushroomLatin(pair.entry) : Localization.Get("journal.field.unknown");
                 if (dot != null) dot.color = chip;
                 if (edibility != null)
                 {
-                    edibility.text = discovered ? JournalText.MushroomEdibility(pair.entry).ToUpperInvariant() : Localization.Get("journal.field.unknown_label").ToUpperInvariant();
+                    edibility.text = available ? JournalText.MushroomEdibility(pair.entry).ToUpperInvariant() : Localization.Get("journal.field.unknown_label").ToUpperInvariant();
                     edibility.color = chip;
                 }
             }
@@ -307,6 +318,7 @@ namespace Hollowfen.UI
                 var modelRoot = pair.go.transform.Find("Thumb/ModelThumb") as RectTransform;
                 if (modelRoot == null) continue;
                 bool visible = IsAvailable(pair.entry) &&
+                               pair.entry.JournalPage == null &&
                                pair.entry.JournalPreviewPrefab != null &&
                                IntersectsViewport(pair.go.transform as RectTransform);
                 modelRoot.gameObject.SetActive(visible);
@@ -353,13 +365,16 @@ namespace Hollowfen.UI
         private string BuildCounterCopy()
         {
             int total = _database != null ? _database.Count : 0;
-            int found = _database != null ? JournalNavigation.CountAvailable(_database.Entries, IsAvailable) : 0;
+            int found = _database != null
+                ? JournalNavigation.CountAvailable(_database.Entries,
+                    entry => entry != null && MushroomDiscovery.IsDiscovered(entry.Id))
+                : 0;
             return string.Format(Localization.Get("journal.field.counter"), found, total);
         }
 
         private static bool IsAvailable(MushroomFieldGuideData entry)
         {
-            return entry != null && Hollowfen.Foraging.MushroomDiscovery.IsDiscovered(entry.Id);
+            return entry != null && MushroomKnowledge.CanReadPage(entry);
         }
 
         private static bool IsSelectable(GameObject go)

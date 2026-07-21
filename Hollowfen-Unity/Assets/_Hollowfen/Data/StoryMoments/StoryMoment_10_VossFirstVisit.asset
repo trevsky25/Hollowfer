@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d0fced8610445dd87f9c05997c7c4b4, type: 3}
+  m_Name: StoryMoment_10_VossFirstVisit
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.StoryMomentData
+  _id: story.voss_first_visit.illustrated
+  _presentation: 0
+  _trigger: 0
+  _storyCard: {fileID: 11400000, guid: 540ea1dee1024469898a5b15d9cddce2, type: 2}
+  _captionIds:
+  - story.voss_first_visit.beat.0
+  - story.voss_first_visit.beat.1
+  - story.voss_first_visit.beat.2
+  _captionFallbacks:
+  - Voss arrives demanding twelve silver from a village that has none.
+  - Wren's foraging earnings save the Wenmar family's cottage.
+  - The village notices for the first time that Wren's arrival changed an outcome.
+  _voiceClips:
+  - {fileID: 8300000, guid: d926b96ebccf2433ba000f666f03ba20, type: 3}
+  - {fileID: 8300000, guid: 290680158259e4d4f831dbfcc900905b, type: 3}
+  - {fileID: 8300000, guid: c230d27b563114718a37305acc1d2c81, type: 3}
+  _images:
+  - {fileID: 21300000, guid: 94ed7a25ed629423988f379c1f5a5c1f, type: 3}
+  - {fileID: 21300000, guid: 7746057d63563422595544728c01ede7, type: 3}
+  - {fileID: 21300000, guid: 11a47efda114a43beb66b1f62267a96d, type: 3}
+  _beatImages: 000000000100000002000000
+  _showStoryCardTitle: 0
+  _showCaptions: 1
+  _fadeIn: 1
+  _holdSeconds: 0
+  _pageTextId: 
+  _pageTextFallback: 
+  _pageTextImageIndex: -1
+  _pageTextStartBeat: 0
+  _pageTextParagraphRevealBeats: 
+  _pageTextRect:
+    serializedVersion: 2
+    x: 0.2
+    y: 0.2
+    width: 0.6
+    height: 0.6
+  _pageTextRotation: 0
+  _pageTextFontSize: 30
+  _pageTextColor: {r: 0.16, g: 0.1, b: 0.05, a: 0.86}
+  _focusContext: 0
+  _focusDistance: 0.4
+  _focusHeight: 0.05
+  _focusFov: 30
+  _focusPushSeconds: 1.2
+  _focusHoldSeconds: 1.6
+  _focusRestoreSeconds: 0.2

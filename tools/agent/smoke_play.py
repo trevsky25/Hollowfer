@@ -11,10 +11,13 @@ Promoted from the Batch 11 verification script (2026-07-11).
 """
 
 import argparse
+import json
 import os
+import shutil
 import signal
 import subprocess
 import sys
+import tempfile
 import time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -119,6 +122,23 @@ def main():
     pre_errors, _ = pipe_counts(CONSOLE, "pre-play console")
     print(f"smoke: pre-play console errors={pre_errors}")
 
+    isolated_save = tempfile.mkdtemp(prefix="hollowfen-smoke-")
+    real_save = execute("return Hollowfen.Save.SaveManager.SaveDirectory;")
+    if isinstance(real_save, str) and os.path.isdir(real_save):
+        for name in os.listdir(real_save):
+            source = os.path.join(real_save, name)
+            if name.startswith("slot") and ".json" in name and os.path.isfile(source):
+                shutil.copy2(source, os.path.join(isolated_save, name))
+    csharp_path = json.dumps(isolated_save)
+    armed = execute(
+        "System.IO.Directory.CreateDirectory(" + csharp_path + ");"
+        "Hollowfen.Save.SaveManager.EditorArmSaveDirectoryOverrideForNextPlay(" + csharp_path + ");"
+        'return "armed";')
+    if armed != "armed":
+        print(f"smoke: FAIL — could not arm isolated journal before Play Mode: {armed!r}")
+        shutil.rmtree(isolated_save, ignore_errors=True)
+        return 3
+
     call("manage_editor", {"action": "play"})
     playing = False
     for i in range(args.max_polls):
@@ -150,11 +170,19 @@ def main():
     if not playing:
         print("smoke: FAIL — never reached stable play mode (is Unity visible/focused?)")
         call("manage_editor", {"action": "stop"})
+        time.sleep(2)
+        execute("Hollowfen.Save.SaveManager.EditorClearSaveDirectoryOverride(); return \"cleared\";")
+        shutil.rmtree(isolated_save, ignore_errors=True)
         return 2
 
     errors, _ = pipe_counts(CONSOLE, "in-play console")
     state = execute(GAMESTATE)
     call("manage_editor", {"action": "stop"})
+    # manage_editor acknowledges the stop before every OnApplicationQuit callback has
+    # necessarily completed. Keep the isolated journal alive through that tail.
+    time.sleep(2)
+    execute("Hollowfen.Save.SaveManager.EditorClearSaveDirectoryOverride(); return \"cleared\";")
+    shutil.rmtree(isolated_save, ignore_errors=True)
 
     print(f"smoke: in-play console errors={errors} (pre-play {pre_errors})")
     print(f"smoke: game state — {state}")

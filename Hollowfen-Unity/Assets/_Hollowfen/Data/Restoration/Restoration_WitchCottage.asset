@@ -1,0 +1,99 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b71ffd66f0a5441d5af5ee26c3fa2d26, type: 3}
+  m_Name: Restoration_WitchCottage
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Restoration.RestorationProjectData
+  _id: witch_cottage
+  _titleId: restoration.witch.title
+  _summaryId: restoration.witch.summary
+  _locationId: restoration.witch.location
+  _promptTargetId: restoration.witch.site
+  _benefitId: restoration.witch.benefit
+  _villageHopeReward: 4
+  _knowledgeReward: 8
+  _activeQuestId: 
+  _completedQuestId: 
+  _stageRules:
+  - _condition: 2
+    _valueId: wendlightFound
+    _stage: 1
+  - _condition: 3
+    _valueId: witch_cottage_supplies_ready
+    _stage: 2
+  - _condition: 3
+    _valueId: witch_cottage_work_started
+    _stage: 3
+  - _condition: 3
+    _valueId: witch_cottage_restored
+    _stage: 4
+  - _condition: 3
+    _valueId: witch_cottage_in_use
+    _stage: 5
+  _stageCopy:
+  - _stage: 1
+    _titleId: restoration.witch.stage.surveyed.title
+    _bodyId: restoration.witch.stage.surveyed.body
+    _shortId: restoration.witch.stage.surveyed.short
+  - _stage: 2
+    _titleId: restoration.witch.stage.supplies.title
+    _bodyId: restoration.witch.stage.supplies.body
+    _shortId: restoration.witch.stage.supplies.short
+  - _stage: 3
+    _titleId: restoration.witch.stage.work.title
+    _bodyId: restoration.witch.stage.work.body
+    _shortId: restoration.witch.stage.work.short
+  - _stage: 4
+    _titleId: restoration.witch.stage.restored.title
+    _bodyId: restoration.witch.stage.restored.body
+    _shortId: restoration.witch.stage.restored.short
+  - _stage: 5
+    _titleId: restoration.witch.stage.occupied.title
+    _bodyId: restoration.witch.stage.occupied.body
+    _shortId: restoration.witch.stage.occupied.short
+  _milestones:
+  - _labelId: restoration.witch.milestone.unlock
+    _detailId: restoration.witch.milestone.unlock.detail
+    _condition: 2
+    _valueId: wendlightFound
+    _requiredStage: 0
+  - _labelId: restoration.witch.milestone.first
+    _detailId: restoration.witch.milestone.first.detail
+    _condition: 3
+    _valueId: witch_cottage_first_funded
+    _requiredStage: 0
+  - _labelId: restoration.witch.milestone.second
+    _detailId: restoration.witch.milestone.second.detail
+    _condition: 3
+    _valueId: witch_cottage_second_funded
+    _requiredStage: 0
+  - _labelId: restoration.witch.milestone.work
+    _detailId: restoration.witch.milestone.work.detail
+    _condition: 3
+    _valueId: witch_cottage_work_started
+    _requiredStage: 0
+  - _labelId: restoration.witch.milestone.use
+    _detailId: restoration.witch.milestone.use.detail
+    _condition: 3
+    _valueId: witch_cottage_in_use
+    _requiredStage: 0
+  _contributions:
+  - _labelId: restoration.witch.contribution.first
+    _detailId: restoration.witch.contribution.first.detail
+    _fundedFlagId: witch_cottage_first_funded
+    _costCopper: 22
+    _availableFromStage: 1
+  - _labelId: restoration.witch.contribution.second
+    _detailId: restoration.witch.contribution.second.detail
+    _fundedFlagId: witch_cottage_second_funded
+    _costCopper: 16
+    _availableFromStage: 1
+  _contributionsCompleteFlagId: witch_cottage_supplies_ready

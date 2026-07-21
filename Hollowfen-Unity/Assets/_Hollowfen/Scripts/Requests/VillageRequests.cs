@@ -1,10 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Hollowfen.Apothecary;
 using Hollowfen.Foraging;
 using Hollowfen.GameTime;
 using Hollowfen.Items;
+using Hollowfen.Map;
 using Hollowfen.Quests;
+using Hollowfen.Restoration;
 using Hollowfen.Save;
+using Hollowfen.Weather;
 using UnityEngine;
 
 namespace Hollowfen.Requests
@@ -35,6 +40,20 @@ namespace Hollowfen.Requests
         {
             public string RequestId;
             public int Day;
+        }
+
+        private sealed class DeliveryRollbackState
+        {
+            internal InventorySnapshot Inventory;
+            internal ApothecarySnapshot Apothecary;
+            internal int Copper;
+            internal CoinLedgerSnapshot CoinLedger;
+            internal SaveSlotMeta Scores;
+            internal VillageRequestSnapshot Requests;
+            internal string[] CompletedQuestIds;
+            internal string[] StoryCardIds;
+            internal QuestData ActiveQuest;
+            internal LocationMarker Waypoint;
         }
 
         private static readonly HashSet<string> CompletedOneShots = new HashSet<string>(StringComparer.Ordinal);
@@ -120,16 +139,22 @@ namespace Hollowfen.Requests
             _trackedRequestId = request.Id;
             _trackedDay = day;
             Persist();
-            OnChanged?.Invoke();
+            PublishChanged();
         }
 
         public static bool CanDeliver(VillageRequestData request)
         {
-            if (request == null || request.RequirementCount <= 0) return false;
+            if (request == null || request.TotalRequirementCount <= 0) return false;
             for (int i = 0; i < request.RequirementCount; i++)
             {
                 var species = request.RequiredSpecies[i];
                 if (species == null || InventoryRuntime.GetCount(species) < request.RequiredCountAt(i)) return false;
+            }
+            for (int i = 0; i < request.PreparationRequirementCount; i++)
+            {
+                var recipe = request.RequiredPreparations[i];
+                if (recipe == null || ApothecaryRuntime.ProductCount(recipe.ResultId) <
+                    request.RequiredPreparationCountAt(i)) return false;
             }
             return true;
         }
@@ -143,9 +168,29 @@ namespace Hollowfen.Requests
                 var species = request.RequiredSpecies[i];
                 if (species == null) continue;
                 int need = request.RequiredCountAt(i);
-                parts.Add(species.CommonName + " " + Mathf.Min(InventoryRuntime.GetCount(species), need) + "/" + need);
+                parts.Add(Hollowfen.UI.JournalText.MushroomName(species) + " " +
+                    Mathf.Min(InventoryRuntime.GetCount(species), need) + "/" + need);
             }
-            return string.Join("  ·  ", parts);
+            for (int i = 0; i < request.PreparationRequirementCount; i++)
+            {
+                var recipe = request.RequiredPreparations[i];
+                if (recipe == null) continue;
+                int need = request.RequiredPreparationCountAt(i);
+                parts.Add(Localization.Get(recipe.ResultNameId) + " " +
+                    Mathf.Min(ApothecaryRuntime.ProductCount(recipe.ResultId), need) + "/" + need);
+            }
+            return string.Join(Localization.Get("format.inline_separator"), parts);
+        }
+
+        public static int RewardFor(VillageRequestData request)
+        {
+            if (request == null) return 0;
+            int reward = request.RewardCopper;
+            if (request.OneShot) return reward;
+            reward += RestorationBenefits.DailyRequestBonusCopper;
+            if (request.WetWeatherBonusCopper > 0 && WeatherSystem.IsWetAtCurrentTime())
+                reward += request.WetWeatherBonusCopper;
+            return reward;
         }
 
         public static CompletionResult Complete(VillageRequestData request)
@@ -156,44 +201,97 @@ namespace Hollowfen.Requests
             if (current == null || current.Id != request.Id)
                 return new CompletionResult(false, 0, false, "That request is no longer active.");
             if (!CanDeliver(request))
-                return new CompletionResult(false, 0, false, "The basket is still missing ingredients.");
-            if (!InventoryRuntime.TryRemoveBatch(request.RequiredSpecies, request.RequiredCounts))
-                return new CompletionResult(false, 0, false, "The basket changed before delivery.");
+                return new CompletionResult(false, 0, false, "The delivery is still missing an item.");
 
-            int day = CurrentDay();
-            if (request.OneShot) CompletedOneShots.Add(request.Id);
-            // A story gathering also occupies that NPC's delivery rhythm for the day; Marra
-            // should not ask for another shopping list while the festival bowls are still out.
-            DailyByNpc[request.NpcId] = new DailyCompletion { RequestId = request.Id, Day = day };
+            var rollback = CaptureDeliveryState();
+            if (!SaveManager.TryBeginAtomicTransaction(out _))
+                return new CompletionResult(false, 0, false,
+                    "Delivery could not be saved. Nothing was consumed.");
 
-            bool first = !GameScores.HasFlag(FirstCompletionFlag(request.Id));
-            if (first)
+            bool first = false;
+            try
             {
-                GameScores.SetFlag(FirstCompletionFlag(request.Id));
-                if (request.FirstCompletionRelationshipDelta != 0)
-                    GameScores.AddRelationship(request.NpcId, request.FirstCompletionRelationshipDelta);
-                if (request.FirstCompletionKnowledgeDelta != 0)
-                    GameScores.AddKnowledge(request.FirstCompletionKnowledgeDelta);
+                // Batch removal publishes only to staged runtime state while the transaction is
+                // active. All targeted autosaves and outward events remain suppressed until the
+                // final full-slot snapshot is the verified higher-revision recovery winner.
+                if (request.RequirementCount > 0 &&
+                    !InventoryRuntime.TryRemoveBatch(request.RequiredSpecies, request.RequiredCounts,
+                        out var removalFailure))
+                {
+                    SaveManager.CancelAtomicTransaction();
+                    switch (removalFailure)
+                    {
+                        case InventoryRuntime.BatchRemovalFailure.InvalidBatch:
+                            return new CompletionResult(false, 0, false,
+                                "That request has invalid ingredient data.");
+                        case InventoryRuntime.BatchRemovalFailure.PersistenceUnavailable:
+                            return new CompletionResult(false, 0, false,
+                                "Delivery could not be saved. Nothing was consumed.");
+                        default:
+                            return new CompletionResult(false, 0, false,
+                                "The basket changed before delivery.");
+                    }
+                }
+
+                if (request.PreparationRequirementCount > 0 &&
+                    !ApothecaryRuntime.TryConsumeProductsForTransaction(
+                        RequiredProductIds(request), request.RequiredPreparationCounts))
+                {
+                    RestoreDeliveryStateAndCancel(rollback);
+                    return new CompletionResult(false, 0, false,
+                        "The workshop shelf changed before delivery.");
+                }
+
+                int day = CurrentDay();
+                if (request.OneShot) CompletedOneShots.Add(request.Id);
+                // A story gathering also occupies that NPC's delivery rhythm for the day; Marra
+                // should not ask for another shopping list while the festival bowls are still out.
+                DailyByNpc[request.NpcId] = new DailyCompletion { RequestId = request.Id, Day = day };
+
+                first = !GameScores.HasFlag(FirstCompletionFlag(request.Id));
+                if (first)
+                {
+                    GameScores.SetFlag(FirstCompletionFlag(request.Id));
+                    if (request.FirstCompletionRelationshipDelta != 0)
+                        GameScores.AddRelationship(request.NpcId, request.FirstCompletionRelationshipDelta);
+                    if (request.FirstCompletionKnowledgeDelta != 0)
+                        GameScores.AddKnowledge(request.FirstCompletionKnowledgeDelta);
+                }
+
+                int rewardCopper = RewardFor(request);
+                if (rewardCopper > 0)
+                    CoinPurse.Add(rewardCopper, "purse.transaction.delivery");
+                if (request.CompletionFlagIds != null)
+                    foreach (var flag in request.CompletionFlagIds)
+                        if (!string.IsNullOrWhiteSpace(flag)) GameScores.SetFlag(flag);
+
+                _trackedRequestId = null;
+                _trackedDay = 0;
+                Persist();
+
+                // Quest state and score deltas are staged before the disk commit. Quest/card/UI
+                // events and the Steam-style achievement fan-out remain queued until it succeeds.
+                if (request.CompleteQuest != null && QuestManager.IsActive(request.CompleteQuest.Id))
+                    QuestManager.CompleteQuest(request.CompleteQuest.Id);
+
+                SaveCoordinator.SaveAllWithPlayer();
+                if (!SaveManager.TryCommitAtomicTransaction(out _))
+                {
+                    RestoreDeliveryStateAndCancel(rollback);
+                    return new CompletionResult(false, 0, false,
+                        "Delivery could not be saved. Nothing was consumed.");
+                }
+
+                PublishChanged();
+                return new CompletionResult(true, rewardCopper, first, null);
             }
-
-            if (request.RewardCopper > 0)
-                CoinPurse.Add(request.RewardCopper, "purse.transaction.delivery");
-            if (request.CompletionFlagIds != null)
-                foreach (var flag in request.CompletionFlagIds)
-                    if (!string.IsNullOrWhiteSpace(flag)) GameScores.SetFlag(flag);
-
-            _trackedRequestId = null;
-            _trackedDay = 0;
-            Persist();
-
-            // Story completion is part of the delivery commit, not deferred to presentation.
-            // Quitting during the following dialogue therefore cannot strand the save mid-request.
-            if (request.CompleteQuest != null && QuestManager.IsActive(request.CompleteQuest.Id))
-                QuestManager.CompleteQuest(request.CompleteQuest.Id);
-
-            SaveCoordinator.SaveAllWithPlayer();
-            OnChanged?.Invoke();
-            return new CompletionResult(true, request.RewardCopper, first, null);
+            catch (Exception exception)
+            {
+                if (SaveManager.IsAtomicTransactionActive) RestoreDeliveryStateAndCancel(rollback);
+                Debug.LogWarning("[VillageRequests] Delivery transaction failed: " + exception.Message);
+                return new CompletionResult(false, 0, false,
+                    "Delivery could not be saved. Nothing was consumed.");
+            }
         }
 
         public static VillageRequestData Resolve(string id)
@@ -236,7 +334,7 @@ namespace Hollowfen.Requests
             }
             _hydrated = true;
             EnsureDaySubscription();
-            OnChanged?.Invoke();
+            PublishChanged();
         }
 
         public static VillageRequestSnapshot ToSnapshot()
@@ -293,12 +391,13 @@ namespace Hollowfen.Requests
                 _trackedDay = 0;
                 Persist();
             }
-            OnChanged?.Invoke();
+            PublishChanged();
         }
 
         private static bool IsEligible(VillageRequestData request)
         {
-            if (request == null || request.RequirementCount <= 0) return false;
+            if (request == null || request.TotalRequirementCount <= 0 ||
+                request.TotalRequirementCount > 4) return false;
             if (!string.IsNullOrWhiteSpace(request.ActiveQuestId) && !QuestManager.IsActive(request.ActiveQuestId))
                 return false;
             if (request.RequiredFlagIds != null)
@@ -343,5 +442,77 @@ namespace Hollowfen.Requests
 
         private static int PositiveModulo(int value, int divisor) => (value % divisor + divisor) % divisor;
         private static string FirstCompletionFlag(string requestId) => "village_request_first_" + requestId;
+
+        private static DeliveryRollbackState CaptureDeliveryState()
+        {
+            // Force lazy quest hydration before copying its collections.
+            QuestManager.IsCompleted("__village_delivery_snapshot__");
+            var scores = new SaveSlotMeta();
+            GameScores.WriteTo(scores);
+            return new DeliveryRollbackState
+            {
+                Inventory = InventoryRuntime.ToSnapshot(),
+                Apothecary = ApothecaryRuntime.ToSnapshot(),
+                Copper = CoinPurse.TotalCopper,
+                CoinLedger = CoinPurse.ToLedgerSnapshot(),
+                Scores = scores,
+                Requests = ToSnapshot(),
+                CompletedQuestIds = QuestManager.CompletedQuestIds.ToArray(),
+                StoryCardIds = QuestManager.UnlockedStoryCardIds.ToArray(),
+                ActiveQuest = QuestManager.ActiveQuest,
+                Waypoint = LocationRegistry.ActiveWaypoint,
+            };
+        }
+
+        private static void RestoreDeliveryStateAndCancel(DeliveryRollbackState state)
+        {
+            try
+            {
+                InventoryRuntime.HydrateFrom(state?.Inventory);
+                ApothecaryRuntime.HydrateFrom(state?.Apothecary);
+                CoinPurse.HydrateFrom(state?.Copper ?? 0, state?.CoinLedger);
+                GameScores.HydrateFrom(state?.Scores);
+                HydrateFrom(state?.Requests);
+
+                QuestManager.ResetForSlotSwitch();
+                QuestManager.HydrateFrom(state?.CompletedQuestIds, state?.StoryCardIds);
+                if (state?.ActiveQuest != null) QuestManager.StartQuest(state.ActiveQuest);
+
+                if (state?.Waypoint != null) LocationRegistry.SetWaypoint(state.Waypoint);
+                else LocationRegistry.ClearWaypoint();
+            }
+            catch (Exception exception)
+            {
+                Debug.LogException(exception);
+            }
+            finally
+            {
+                // Rollback notifications were queued under the still-active transaction; discard
+                // both those and the original completion publications together.
+                SaveManager.CancelAtomicTransaction();
+            }
+        }
+
+        private static void PublishChanged()
+        {
+            var handlers = OnChanged;
+            if (handlers == null) return;
+            foreach (Action handler in handlers.GetInvocationList())
+            {
+                var callback = handler;
+                SaveManager.PublishAfterAtomicCommit(callback);
+            }
+        }
+
+        private static string[] RequiredProductIds(VillageRequestData request)
+        {
+            int count = request?.PreparationRequirementCount ?? 0;
+            var ids = new string[count];
+            for (int i = 0; i < count; i++)
+                ids[i] = request.RequiredPreparations[i] != null
+                    ? request.RequiredPreparations[i].ResultId
+                    : null;
+            return ids;
+        }
     }
 }

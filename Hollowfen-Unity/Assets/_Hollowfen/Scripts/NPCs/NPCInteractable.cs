@@ -60,8 +60,10 @@ namespace Hollowfen.NPCs
             fallback = null;
             if (_data == null) return;
 
+            NPCSchedule schedule = NPCSchedule.ForActor(gameObject);
+            string scheduleSlot = schedule != null ? schedule.CurrentSlotLabel : null;
             request = VillageRequests.CurrentForNpc(_data.Id);
-            var activeStory = _data.PickActiveQuestDialog();
+            var activeStory = _data.PickActiveQuestDialog(scheduleSlot);
             bool requestOwnsActiveQuest = request != null &&
                 !string.IsNullOrWhiteSpace(request.ActiveQuestId) &&
                 QuestManager.IsActive(request.ActiveQuestId);
@@ -77,11 +79,11 @@ namespace Hollowfen.NPCs
             {
                 // Story deliveries deliberately keep the player inside their objective. Ordinary
                 // orders always offer the NPC's normal conversation/trade as a second button.
-                fallback = requestOwnsActiveQuest ? null : _data.PickDialog();
+                fallback = requestOwnsActiveQuest ? null : _data.PickDialog(scheduleSlot);
                 return;
             }
 
-            dialog = _data.PickDialog();
+            dialog = _data.PickDialog(scheduleSlot);
         }
 
         private void OnDrawGizmos()

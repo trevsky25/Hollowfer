@@ -1,9 +1,10 @@
+#if UNITY_EDITOR
 using System.Collections;
 using UnityEngine;
 
 namespace Hollowfen.UI.Tests
 {
-    // Auto-runs a UIManager smoke test on Play. Delete after verification.
+    // Auto-runs a UIManager smoke test on Play in the editor; excluded from player builds.
     public class UITestDriver : MonoBehaviour
     {
         [SerializeField] private float _stepDelay = 0.8f;
@@ -55,3 +56,4 @@ namespace Hollowfen.UI.Tests
         }
     }
 }
+#endif

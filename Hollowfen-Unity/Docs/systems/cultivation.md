@@ -3,8 +3,8 @@ Grow beds (Almy's garden, Act II): choose an eligible known species from the bas
 Key scripts: `Assets/_Hollowfen/Scripts/Cultivation/` — GrowBed, GrowBeds, CultivationScreen. Shared policy: `Foraging/MushroomRules.cs`; recipe data: `MushroomFieldGuideData`.
 Unlock gating: Almy's lesson completed (or its active Act-II teaching window), species discovered, optional species unlock flag satisfied, bed empty, and at least one specimen in inventory.
 Recipes live on species data: `Cultivable`, `CultivationHours`, `CultivationYield`, `CultivationUnlockFlagId`, and `WorldPrefab`. Current foundation recipes: Wood Ear, Lacewig, Brightspore, and Oyster.
-Biggest gotchas: no `TimeManager` means instantly mature; scene fields `_species/_mushroomPrefab/_matureGameHours/_yield` remain legacy fallbacks for old saves/components, not the primary recipe source; scaled spawn anchors compound specimen scale.
-Status: generalized four-recipe picker, planting, clock growth, partial-flush persistence, and collider safety play-mode verified 2026-07-16.
+Biggest gotchas: no `TimeManager` means instantly mature; scene fields `_species/_mushroomPrefab/_matureGameHours/_yield` remain legacy fallbacks for old saves/components, not the primary recipe source; scaled spawn anchors compound specimen scale; restoration benefits are projections from Occupied project stages and must not be copied into bed saves.
+Status: generalized four-recipe picker, planting, clock growth, partial-flush persistence, collider safety, three restored beds, 25% faster chapel growth, and +1 mill-workshop yield play-mode verified 2026-07-18.
 
 > Self-healing doc: if you change this system, update this doc (including the 7-line header) in the same batch, and note the change in the batch worksheet.
 
@@ -15,7 +15,7 @@ Status: generalized four-recipe picker, planting, clock growth, partial-flush pe
 **Empty** (`GrowBeds.Get(_bedId) == null`) → **Recipe picker** → **Growing** (`GrowthFactor < 1`, visible but not interactive) → **Mature** (authored interaction colliders restored) → **Empty** when the last node is harvested.
 
 - `GrowBed.Interact` opens the shared `CultivationScreen`; every bed reads the same eligible recipe list.
-- `GrowBed.Plant(species)` validates `MushroomRules.CanCultivate`, consumes one inventory item, persists species/day/hour/yield, and spawns the selected species' world prefab.
+- `GrowBed.Plant(species)` validates `MushroomRules.CanCultivate`, consumes one inventory item, persists species/day/hour/yield, and spawns the selected species' world prefab. The Chapel Garden's Occupied benefit multiplies maturity hours by 0.75; Tobin's Workshop adds one to the collected yield. Both derive at runtime through `RestorationBenefits`.
 - First planting still completes `almyTeach` when that quest is active.
 - `GrowthFactor = Clamp01(((Day - PlantedDay) * 24 + Hour - PlantedHour) / species.CultivationHours)`.
 - Mature child `MushroomNode`s are configured as cultivated: they do not enter the wild-node respawn store. Their authored collider defaults are cached; growing disables interaction without enabling dormant physics/helper colliders at maturity.

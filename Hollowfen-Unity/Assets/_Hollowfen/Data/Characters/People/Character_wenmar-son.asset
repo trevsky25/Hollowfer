@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b4e19f76957446acb794b6622b288e2, type: 3}
+  m_Name: Character_wenmar-son
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.CharacterProfileData
+  _id: wenmar-son
+  _characterName: Wenmar Son
+  _role: Teenage son / tax stakes
+  _age: Teenager
+  _home: Wenmar cottage
+  _work: Rural village household
+  _keepsake: Family cottage key
+  _tagline: The teenager who watches his boots while adults count the price of home.
+  _leadParagraph: The Wenmar son is the teenage member of the family seated nearest
+    the cold hearth during Voss's tax demand.
+  _backgroundParagraph: 'He belongs to the same two authored states as his parents:
+    the tense inn bench before payment and the occupied cottage after the household
+    is secured.'
+  _perspectiveParagraph: 'His visual direction is deliberately quiet: a guarded posture
+    and eyes lowered to boots he studies as if they, too, might be taken.'
+  _kitItems: []
+  _heroPortrait: {fileID: 0}
+  _pullquote: 
+  _displayNameId: character.wenmar_son.name
+  _descriptionId: character.wenmar_son.lead
+  _sortOrder: 15
+  _category: 1
+  _edition: 16 / WENMAR SON
+  _previewScale: 0.78
+  _tPosePlate: {fileID: 0}
+  _characterSheet: {fileID: 0}
+  _missions:
+  - Act: 2
+    QuestId: firstTax
+    Title: Twelve Silver by Yule
+    Summary: Wait with the family while Wren tries to prevent seizure of the cottage.
+  - Act: 2
+    QuestId: cottagesReopen
+    Title: Two Boards Come Down
+    Summary: Share the Wenmar household's repaired-shutter world state.
+  _quotes: []
+  _heroPortraitResourcePath: People/Art/wenmar-son_hero
+  _tPosePlateResourcePath: People/Art/wenmar-son_tpose
+  _characterSheetResourcePath: People/Art/wenmar-son_hero
+  _journalModelResourcePath: People/Models/wenmar-son
+  _journalTriangleBudget: 90000
+  _journalTextureSize: 2048
+  _journalModelPrefab: {fileID: 0}
+  _journalIdleClip: {fileID: 0}
+  _journalExposure: 0.15
+  _studySheet: {fileID: 0}
+  _figureFront: {fileID: 0}
+  _figureBack: {fileID: 0}
+  _figureThreeQuarter: {fileID: 0}
+  _knifePlate: {fileID: 0}

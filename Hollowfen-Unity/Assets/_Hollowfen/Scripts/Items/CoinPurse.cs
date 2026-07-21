@@ -57,8 +57,10 @@ namespace Hollowfen.Items
             get { EnsureHydrated(); return _transactions; }
         }
 
-        public static string Format(int totalCopper) =>
-            (totalCopper / CopperPerSilver) + "s " + (totalCopper % CopperPerSilver) + "c";
+        public static string Format(int totalCopper) => string.Format(
+            Localization.Get("purse.currency.format"),
+            totalCopper / CopperPerSilver,
+            totalCopper % CopperPerSilver);
 
         public static void Add(int copper, string reasonId = "purse.transaction.earned")
         {
@@ -67,7 +69,7 @@ namespace Hollowfen.Items
             _totalCopper += copper;
             Record(copper, reasonId);
             Persist();
-            OnChanged?.Invoke(_totalCopper);
+            PublishChanged(_totalCopper);
         }
 
         public static bool TrySpend(int copper, string reasonId = "purse.transaction.spent")
@@ -78,7 +80,7 @@ namespace Hollowfen.Items
             _totalCopper -= copper;
             Record(-copper, reasonId);
             Persist();
-            OnChanged?.Invoke(_totalCopper);
+            PublishChanged(_totalCopper);
             return true;
         }
 
@@ -101,7 +103,7 @@ namespace Hollowfen.Items
                 }
             }
             _hydrated = true;
-            OnChanged?.Invoke(_totalCopper);
+            PublishChanged(_totalCopper);
         }
 
         public static CoinLedgerSnapshot ToLedgerSnapshot()
@@ -159,6 +161,17 @@ namespace Hollowfen.Items
             _transactions.Insert(0, new Transaction(amountCopper, _totalCopper, reasonId));
             if (_transactions.Count > MaxLedgerEntries)
                 _transactions.RemoveRange(MaxLedgerEntries, _transactions.Count - MaxLedgerEntries);
+        }
+
+        private static void PublishChanged(int totalCopper)
+        {
+            var handlers = OnChanged;
+            if (handlers == null) return;
+            foreach (Action<int> handler in handlers.GetInvocationList())
+            {
+                var callback = handler;
+                SaveManager.PublishAfterAtomicCommit(() => callback(totalCopper));
+            }
         }
     }
 }

@@ -76,7 +76,7 @@ namespace Hollowfen.EditorTools
 
         private static void ConfigureMusic()
         {
-            var music = UnityEngine.Object.FindFirstObjectByType<MusicManager>(FindObjectsInactive.Include);
+            var music = UnityEngine.Object.FindAnyObjectByType<MusicManager>(FindObjectsInactive.Include);
             if (music == null) throw new InvalidOperationException("Gameplay _Music/MusicManager is missing.");
             var serialized = new SerializedObject(music);
             serialized.FindProperty("_stateCrossfadeSeconds").floatValue = 5f;
@@ -104,8 +104,7 @@ namespace Hollowfen.EditorTools
 
         private static void ConfigureExistingRegion(string objectName, string id, int priority)
         {
-            var trigger = UnityEngine.Object.FindObjectsByType<RegionTrigger>(FindObjectsInactive.Include,
-                    FindObjectsSortMode.None)
+            var trigger = UnityEngine.Object.FindObjectsByType<RegionTrigger>(FindObjectsInactive.Include)
                 .FirstOrDefault(candidate => candidate.name == objectName);
             if (trigger == null) throw new InvalidOperationException(objectName + " is missing.");
             ConfigureTrigger(trigger, id, priority);
@@ -151,8 +150,7 @@ namespace Hollowfen.EditorTools
 
         private static GameObject GetOrCreateRoot(string name)
         {
-            var existing = UnityEngine.Object.FindObjectsByType<Transform>(FindObjectsInactive.Include,
-                    FindObjectsSortMode.None)
+            var existing = UnityEngine.Object.FindObjectsByType<Transform>(FindObjectsInactive.Include)
                 .FirstOrDefault(candidate => candidate.parent == null && candidate.name == name);
             return existing != null ? existing.gameObject : new GameObject(name);
         }

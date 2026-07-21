@@ -39,7 +39,8 @@ MonoBehaviour:
     already done. The volva at the base is the single most important identifier \u2014
     always dig down through the leaf litter to check."
   _photo: {fileID: 21300000, guid: ee5656c6536494ed185db05eb17c5016, type: 3}
-  _photoCredit: Wikimedia Commons
+  _photoCredit: Generated with OpenAI gpt-image
+  _journalPage: {fileID: 21300000, guid: 8c39a3ba087d34e45979a849f37827cc, type: 3}
   _worldPrefab: {fileID: 3163966823736410594, guid: 649c637eb9c5046e0aba4704444fb48c, type: 3}
   _journalPreviewPrefab: {fileID: 3760525535065472838, guid: 2009eee86a60f490db8e371ec95ea35b, type: 3}
   _journalExposure: 0.27

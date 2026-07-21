@@ -1,14 +1,16 @@
 using System;
 using System.Collections;
+using Hollowfen.Cinematics;
 using Hollowfen.Items;
+using Hollowfen.UI;
 using UnityEngine;
 
 namespace Hollowfen.Quests
 {
     // Cinematic mill-key handoff (batch-52). When item.mill_key is granted (the end of Bram's key
     // dialogue at the well), present it as a hero item-get: a focus push-in on the slowly-rotating,
-    // gently-bobbing key floating in front of Wren, with the KeyItemToast sliding in. Waits for the
-    // dialogue camera to finish its restore first so the two takeovers never fight.
+    // gently-bobbing key floating in front of Wren, with the KeyItemToast sliding in. It waits for
+    // Bram's dialogue and painted transition to finish so the live handoff remains the final beat.
     public class MillKeyHandoff : MonoBehaviour
     {
         [SerializeField] private GameObject _keyPrefab;
@@ -33,6 +35,7 @@ namespace Hollowfen.Quests
         private float _arcRise = 0.14f;
 
         private bool _played;
+        private NarrativePresentationSession.Lease _handoffLease;
 
         private void OnEnable() { KeyItems.OnGranted += HandleGranted; }
         private void OnDisable() { KeyItems.OnGranted -= HandleGranted; }
@@ -41,27 +44,24 @@ namespace Hollowfen.Quests
         {
             if (_played || id != _keyItemId) return;
             _played = true;
+            _handoffLease = NarrativePresentationSession.Acquire(
+                this, NarrativePresentationSession.InputOnly);
             StartCoroutine(PlayRoutine());
         }
 
         private IEnumerator PlayRoutine()
         {
-            // Hold the player still through the brief hand-off (input was just re-enabled as the dialogue closed).
-            Foraging.PlayerInteractor.Suspended = true;
-            Foraging.PlayerInteractor.SetPlayerInputEnabled(false);
-
-            // Let the dialogue camera hand back first, so we don't fight its restore glide.
-            float w = 0f;
-            while (w < 2.5f && Dialogue.DialogueCinematics.Instance != null && Dialogue.DialogueCinematics.Instance.IsActive)
-            { w += Time.unscaledDeltaTime; yield return null; }
+            // The item is granted before DialogueScreen presents its authored transition moment.
+            // Wait for that entire conversation/painting stack to close so this live prop reveal is
+            // the final visual beat instead of playing invisibly behind the narration overlay.
+            while (PresentationStillOwnsTheScreen()) yield return null;
             yield return new WaitForSecondsRealtime(0.25f);
 
             var player = GameObject.FindGameObjectWithTag("Player");
             var cam = Camera.main;
             if (player == null || cam == null || _keyPrefab == null)
             {
-                Foraging.PlayerInteractor.Suspended = false;
-                Foraging.PlayerInteractor.SetPlayerInputEnabled(true);
+                ReleaseHandoff();
                 yield break;
             }
 
@@ -87,6 +87,30 @@ namespace Hollowfen.Quests
             while (!done) yield return null;
             spinning = false;
             if (key != null) Destroy(key);
+            ReleaseHandoff();
+        }
+
+        private static bool PresentationStillOwnsTheScreen()
+        {
+            if (Dialogue.DialogueScreen.Instance != null && Dialogue.DialogueScreen.Instance.IsOpen)
+                return true;
+            if (Dialogue.DialogueCinematics.Instance != null && Dialogue.DialogueCinematics.Instance.IsActive)
+                return true;
+            if (StoryMomentDirector.Instance != null && StoryMomentDirector.Instance.IsPresenting)
+                return true;
+            if (NarrationOverlay.Instance != null && NarrationOverlay.Instance.IsShowing)
+                return true;
+
+            var focus = PropFocusCinematic.Instance;
+            return focus != null && (focus.IsPlaying || focus.IsHeld);
+        }
+
+        private void OnDestroy() => ReleaseHandoff();
+
+        private void ReleaseHandoff()
+        {
+            _handoffLease?.Dispose();
+            _handoffLease = null;
         }
 
         // Gentle face-on rock (not a full spin) so the key stays presented to the camera while turning

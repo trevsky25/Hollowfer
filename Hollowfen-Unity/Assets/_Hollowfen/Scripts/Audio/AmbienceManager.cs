@@ -35,6 +35,7 @@ namespace Hollowfen.Audio
         public int SynthesizedProfileCount => _clipCache.Count;
         public int LiveSourceCount => _started ? 4 : 0;
         public AudioMixerGroup Output => _output;
+        public float UserVolume => _userVolume;
         public AudioClip ActiveDayClip => _sources[_activeBank, Day] != null
             ? _sources[_activeBank, Day].clip : null;
         public AudioClip ActiveNightClip => _sources[_activeBank, Night] != null
@@ -110,7 +111,7 @@ namespace Hollowfen.Audio
 
         private void Start()
         {
-            _userVolume = PlayerPrefs.GetFloat(PrefAmbience, DefaultUserVolume);
+            _userVolume = Mathf.Clamp01(PlayerPrefs.GetFloat(PrefAmbience, DefaultUserVolume));
             if (TimeManager.Instance != null)
                 _lighting = TimeManager.Instance.GetComponent<DayNightLighting>();
 

@@ -36,24 +36,24 @@ namespace Hollowfen.UI
             // Phase 3 functionality survives independent of the legacy cardinal-mark wiring.
             if (_markPrefab == null) { BuildWaypointPip(); return; }
 
-            var defs = new (string label, float angle, bool cardinal)[]
+            var defs = new (string id, string key, float angle, bool cardinal)[]
             {
-                ("N",  0f,   true),
-                ("NE", 45f,  false),
-                ("E",  90f,  true),
-                ("SE", 135f, false),
-                ("S",  180f, true),
-                ("SW", 225f, false),
-                ("W",  270f, true),
-                ("NW", 315f, false),
+                ("N",  "map.cardinal.n",  0f,   true),
+                ("NE", "map.cardinal.ne", 45f,  false),
+                ("E",  "map.cardinal.e",  90f,  true),
+                ("SE", "map.cardinal.se", 135f, false),
+                ("S",  "map.cardinal.s",  180f, true),
+                ("SW", "map.cardinal.sw", 225f, false),
+                ("W",  "map.cardinal.w",  270f, true),
+                ("NW", "map.cardinal.nw", 315f, false),
             };
 
             _marks = new DirMark[defs.Length];
             for (int i = 0; i < defs.Length; i++)
             {
                 var inst = Instantiate(_markPrefab, _container);
-                inst.gameObject.name = "Mark_" + defs[i].label;
-                inst.text = defs[i].label;
+                inst.gameObject.name = "Mark_" + defs[i].id;
+                inst.text = Localization.Get(defs[i].key);
                 inst.color = defs[i].cardinal ? _cardinalColor : _intercardinalColor;
                 inst.fontStyle = defs[i].cardinal ? FontStyle.Bold : FontStyle.Normal;
                 inst.gameObject.SetActive(true);
@@ -91,7 +91,7 @@ namespace Hollowfen.UI
             var lblGO = new GameObject("WaypointLabel", typeof(RectTransform));
             lblGO.transform.SetParent(_container.parent, false); // sibling of strip so labels sit under the strip without being clipped
             _waypointLabel = lblGO.AddComponent<TextMeshProUGUI>();
-            _waypointLabel.fontSize = 15.5f;
+            _waypointLabel.fontSize = 18f;
             _waypointLabel.color = _waypointColor;
             _waypointLabel.alignment = TextAlignmentOptions.Center;
             _waypointLabel.fontStyle = FontStyles.Italic;
@@ -173,7 +173,7 @@ namespace Hollowfen.UI
             _waypointPipImage.color = c;
 
             string name = Hollowfen.Localization.Get(wp.Data.DisplayNameId);
-            _waypointLabel.text = string.Format("{0}  ·  {1:0}m", name, horiz);
+            _waypointLabel.text = string.Format(Localization.Get("hud.waypoint.format"), name, horiz);
         }
     }
 }

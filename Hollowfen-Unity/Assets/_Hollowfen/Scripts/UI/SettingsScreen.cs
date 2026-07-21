@@ -20,8 +20,8 @@ namespace Hollowfen.UI
     // focus, ScreenId "settings" (the in-game pause menu opens this same instance).
     public class SettingsScreen : UIScreen
     {
-        public enum Tab { Audio = 0, Graphics = 1, Controls = 2, Credits = 3 }
-        private const int TabCount = 4;
+        public enum Tab { Audio = 0, Graphics = 1, Controls = 2, Accessibility = 3, Credits = 4 }
+        private const int TabCount = 5;
 
         // The main menu's Credits entry opens settings pre-switched to a tab (consumed in OnOpen).
         public static Tab? NextOpenTab;
@@ -63,12 +63,13 @@ namespace Hollowfen.UI
         private readonly GameObject[] _tabUnderlines = new GameObject[TabCount];
         private readonly GameObject[] _panels = new GameObject[TabCount];
 
-        private Slider _masterSlider, _musicSlider, _sfxSlider, _ambienceSlider, _sensSlider;
-        private TMP_Text _masterValue, _musicValue, _sfxValue, _ambienceValue, _sensValue;
+        private Slider _masterSlider, _musicSlider, _voiceSlider, _sfxSlider, _ambienceSlider, _sensSlider;
+        private TMP_Text _masterValue, _musicValue, _voiceValue, _sfxValue, _ambienceValue, _sensValue;
         private Button _closeButton;
 
         private readonly List<Cycler> _cyclers = new List<Cycler>();
         private Cycler _fullscreenCyc, _resolutionCyc, _qualityCyc;
+        private Cycler _interfaceScaleCyc, _reducedMotionCyc, _captionBackingCyc;
         private List<Vector2Int> _resolutionSizes;   // deduped w×h, ascending
         private string[] _qualityNames;
 
@@ -112,6 +113,7 @@ namespace Hollowfen.UI
                 {
                     case Tab.Graphics: return _fullscreenCyc != null ? _fullscreenCyc.Row.gameObject : base.DefaultSelected;
                     case Tab.Controls: return _sensSlider != null ? _sensSlider.gameObject : base.DefaultSelected;
+                    case Tab.Accessibility: return _interfaceScaleCyc != null ? _interfaceScaleCyc.Row.gameObject : base.DefaultSelected;
                     case Tab.Credits:  return _tabButtons[(int)Tab.Credits] != null ? _tabButtons[(int)Tab.Credits].gameObject : base.DefaultSelected;
                     default:           return _masterSlider != null ? _masterSlider.gameObject : base.DefaultSelected;
                 }
@@ -243,6 +245,7 @@ namespace Hollowfen.UI
             BuildAudioPanel(_panels[(int)Tab.Audio].transform);
             BuildGraphicsPanel(_panels[(int)Tab.Graphics].transform);
             BuildControlsPanel(_panels[(int)Tab.Controls].transform);
+            BuildAccessibilityPanel(_panels[(int)Tab.Accessibility].transform);
             BuildCreditsPanel(_panels[(int)Tab.Credits].transform);
 
             var hint = UICanvasUtil.NewBody("Hint", transform, Localization.Get("settings.hint"), 15f,
@@ -253,7 +256,11 @@ namespace Hollowfen.UI
 
         private void BuildTabRow()
         {
-            string[] keys = { "settings.tab.audio", "settings.tab.graphics", "settings.tab.controls", "settings.tab.credits" };
+            string[] keys =
+            {
+                "settings.tab.audio", "settings.tab.graphics", "settings.tab.controls",
+                "settings.tab.accessibility", "settings.tab.credits",
+            };
             float x = ColX;
             for (int i = 0; i < TabCount; i++)
             {
@@ -316,26 +323,31 @@ namespace Hollowfen.UI
             float y = 0f;
             _masterSlider   = BuildSliderRow(parent, ref y, "settings.audio.master",   0f, 1f, false, out _masterValue);
             _musicSlider    = BuildSliderRow(parent, ref y, "settings.audio.music",    0f, 1f, false, out _musicValue);
+            _voiceSlider    = BuildSliderRow(parent, ref y, "settings.audio.voice",    0f, 1f, false, out _voiceValue);
             _sfxSlider      = BuildSliderRow(parent, ref y, "settings.audio.sfx",      0f, 1f, false, out _sfxValue);
             _ambienceSlider = BuildSliderRow(parent, ref y, "settings.audio.ambience", 0f, 1f, false, out _ambienceValue);
 
-            float master   = PlayerPrefs.GetFloat(PrefMaster,   DefaultVolume);
-            float music    = PlayerPrefs.GetFloat(PrefMusic,    DefaultVolume);
-            float sfx      = PlayerPrefs.GetFloat(PrefSFX,      DefaultVolume);
-            float ambience = PlayerPrefs.GetFloat(PrefAmbience, DefaultVolume);
+            float master   = Mathf.Clamp01(PlayerPrefs.GetFloat(PrefMaster,   DefaultVolume));
+            float music    = Mathf.Clamp01(PlayerPrefs.GetFloat(PrefMusic,    DefaultVolume));
+            float voice    = Hollowfen.Audio.VoiceAudio.UserVolume;
+            float sfx      = Mathf.Clamp01(PlayerPrefs.GetFloat(PrefSFX,      DefaultVolume));
+            float ambience = Mathf.Clamp01(PlayerPrefs.GetFloat(PrefAmbience, DefaultVolume));
 
             _masterSlider.SetValueWithoutNotify(master);
             _musicSlider.SetValueWithoutNotify(music);
+            _voiceSlider.SetValueWithoutNotify(voice);
             _sfxSlider.SetValueWithoutNotify(sfx);
             _ambienceSlider.SetValueWithoutNotify(ambience);
 
             _masterSlider.onValueChanged.AddListener(OnMasterChanged);
             _musicSlider.onValueChanged.AddListener(OnMusicChanged);
+            _voiceSlider.onValueChanged.AddListener(OnVoiceChanged);
             _sfxSlider.onValueChanged.AddListener(OnSFXChanged);
             _ambienceSlider.onValueChanged.AddListener(OnAmbienceChanged);
 
             UpdateVolumeLabel(_masterValue, master);
             UpdateVolumeLabel(_musicValue, music);
+            UpdateVolumeLabel(_voiceValue, voice);
             UpdateVolumeLabel(_sfxValue, sfx);
             UpdateVolumeLabel(_ambienceValue, ambience);
 
@@ -345,7 +357,7 @@ namespace Hollowfen.UI
             if (Hollowfen.Audio.AmbienceManager.Instance != null)
                 Hollowfen.Audio.AmbienceManager.Instance.SetUserVolume(ambience);
 
-            WireVertical(new Selectable[] { _masterSlider, _musicSlider, _sfxSlider, _ambienceSlider });
+            WireVertical(new Selectable[] { _masterSlider, _musicSlider, _voiceSlider, _sfxSlider, _ambienceSlider });
         }
 
         private void BuildGraphicsPanel(Transform parent)
@@ -376,8 +388,8 @@ namespace Hollowfen.UI
             _resolutionCyc.Display = i => _resolutionSizes[i].x + " × " + _resolutionSizes[i].y;
             _resolutionCyc.Apply = i =>
             {
-                PlayerPrefs.SetInt(PrefResolution, i);
                 var s = _resolutionSizes[i];
+                DisplaySettings.RecordResolution(i, s.x, s.y);
                 Screen.SetResolution(s.x, s.y, Screen.fullScreenMode);
                 ProductionPerformancePolicy.RequestDisplayRefresh();
             };
@@ -491,6 +503,49 @@ namespace Hollowfen.UI
             }, colAction, colPad, colKb);
         }
 
+        private void BuildAccessibilityPanel(Transform parent)
+        {
+            float y = 0f;
+
+            _interfaceScaleCyc = BuildCyclerRow(parent, ref y,
+                "settings.accessibility.interface_scale");
+            _interfaceScaleCyc.Count = () => GameSettings.InterfaceScaleOptionCount;
+            _interfaceScaleCyc.Display = i => Localization.Get(
+                i == 2 ? "settings.accessibility.scale.largest" :
+                i == 1 ? "settings.accessibility.scale.large" :
+                    "settings.accessibility.scale.standard");
+            _interfaceScaleCyc.Apply = i => GameSettings.InterfaceScaleIndex = i;
+            _interfaceScaleCyc.Set(GameSettings.InterfaceScaleIndex, false);
+
+            _reducedMotionCyc = BuildCyclerRow(parent, ref y,
+                "settings.accessibility.reduced_motion");
+            _reducedMotionCyc.Count = () => 2;
+            _reducedMotionCyc.Display = i => Localization.Get(
+                i == 1 ? "settings.value.on" : "settings.value.off");
+            _reducedMotionCyc.Apply = i => GameSettings.ReducedMotion = i == 1;
+            _reducedMotionCyc.Set(GameSettings.ReducedMotion ? 1 : 0, false);
+
+            _captionBackingCyc = BuildCyclerRow(parent, ref y,
+                "settings.accessibility.caption_backing");
+            _captionBackingCyc.Count = () => 2;
+            _captionBackingCyc.Display = i => Localization.Get(
+                i == 1 ? "settings.value.on" : "settings.value.off");
+            _captionBackingCyc.Apply = i => GameSettings.CaptionBacking = i == 1;
+            _captionBackingCyc.Set(GameSettings.CaptionBacking ? 1 : 0, false);
+
+            WireVertical(new Selectable[]
+            {
+                _interfaceScaleCyc.Row, _reducedMotionCyc.Row, _captionBackingCyc.Row,
+            });
+
+            var note = UICanvasUtil.NewBody("AccessibilityNote", parent,
+                Localization.Get("settings.accessibility.note"), 17f,
+                HollowfenPalette.Moss, FontStyles.Italic, TextAlignmentOptions.TopLeft);
+            note.textWrappingMode = TextWrappingModes.Normal;
+            UICanvasUtil.SetRect(note.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f),
+                new Vector2(0f, 1f), new Vector2(ColW, 92f), new Vector2(0f, y - 10f));
+        }
+
         private float AddBindSection(Transform parent, float y, string headerKey, string[][] rows, float colAction, float colPad, float colKb)
         {
             var head = UICanvasUtil.NewHeading("Section", parent, Localization.Get(headerKey), 21f, HollowfenPalette.Gold, FontStyles.Normal, TextAlignmentOptions.TopLeft);
@@ -519,7 +574,7 @@ namespace Hollowfen.UI
             else
             {
                 var t = UICanvasUtil.NewBody("C", parent, Localization.Get(key), 16.5f, color ?? HollowfenPalette.Parchment, FontStyles.Normal, TextAlignmentOptions.TopLeft);
-                t.enableWordWrapping = false;
+                t.textWrappingMode = TextWrappingModes.NoWrap;
                 UICanvasUtil.SetRect(t.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(w, 20f), new Vector2(x, y));
             }
         }
@@ -652,7 +707,7 @@ namespace Hollowfen.UI
 
             // ‹ value › cluster, right-aligned.
             var valueText = UICanvasUtil.NewBody("Value", row, "", 19f, HollowfenPalette.Gold, FontStyles.Normal, TextAlignmentOptions.Center);
-            valueText.enableWordWrapping = false;
+            valueText.textWrappingMode = TextWrappingModes.NoWrap;
             UICanvasUtil.SetRect(valueText.rectTransform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(230f, 26f), new Vector2(-44f, 0f));
 
             var cyc = new Cycler { Row = btn, Value = valueText };
@@ -772,6 +827,7 @@ namespace Hollowfen.UI
                 case Tab.Audio:    firstControl = _masterSlider; break;
                 case Tab.Graphics: firstControl = _fullscreenCyc != null ? _fullscreenCyc.Row : null; break;
                 case Tab.Controls: firstControl = _sensSlider; break;
+                case Tab.Accessibility: firstControl = _interfaceScaleCyc != null ? _interfaceScaleCyc.Row : null; break;
             }
             for (int i = 0; i < TabCount; i++)
             {
@@ -804,6 +860,7 @@ namespace Hollowfen.UI
 
         private void OnMasterChanged(float v) { PlayerPrefs.SetFloat(PrefMaster, v); ApplyVolume("MasterVolume", v); UpdateVolumeLabel(_masterValue, v); }
         private void OnMusicChanged(float v)  { PlayerPrefs.SetFloat(PrefMusic,  v); ApplyVolume("MusicVolume",  v); UpdateVolumeLabel(_musicValue, v); }
+        private void OnVoiceChanged(float v)  { Hollowfen.Audio.VoiceAudio.SetUserVolume(v); UpdateVolumeLabel(_voiceValue, v); }
         private void OnSFXChanged(float v)    { PlayerPrefs.SetFloat(PrefSFX,    v); ApplyVolume("SFXVolume",    v); UpdateVolumeLabel(_sfxValue, v); }
         private void OnAmbienceChanged(float v)
         {

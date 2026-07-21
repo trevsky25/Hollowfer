@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Hollowfen.Audio;
+using Hollowfen.Cinematics;
 using Hollowfen.Data;
 using Hollowfen.Foraging;
 using Hollowfen.Items;
@@ -23,8 +24,8 @@ namespace Hollowfen.UI
 
         private const int VisibleLedgerRows = 6;
         private static readonly Color Ink = new Color(0.16f, 0.135f, 0.105f, 1f);
-        private static readonly Color InkMuted = new Color(0.24f, 0.215f, 0.17f, 0.72f);
-        private static readonly Color GreenInk = new Color(0.25f, 0.42f, 0.25f, 1f);
+        private static readonly Color InkMuted = new Color(0.24f, 0.215f, 0.17f, 0.82f);
+        private static readonly Color GreenInk = new Color(0.18f, 0.32f, 0.18f, 1f);
         private static readonly Color RedInk = new Color(0.55f, 0.25f, 0.20f, 1f);
 
         private static PurseScreen _instance;
@@ -44,10 +45,7 @@ namespace Hollowfen.UI
         private readonly List<LedgerRow> _ledgerRows = new List<LedgerRow>();
         private TMP_Text _emptyLedger;
         private bool _built;
-        private bool _ownsGameplayPause;
-        private float _previousTimeScale = 1f;
-        private CursorLockMode _previousCursorLock;
-        private bool _previousCursorVisible;
+        private NarrativePresentationSession.Lease _presentationLease;
         private MushroomBuyer _nearbyBuyer;
         private string _nearbyBuyerName;
         private string _saleNotice;
@@ -78,7 +76,7 @@ namespace Hollowfen.UI
             if (_instance != null) return _instance;
             if (UIManager.Instance == null) return null;
 
-            _instance = FindFirstObjectByType<PurseScreen>(FindObjectsInactive.Include);
+            _instance = FindAnyObjectByType<PurseScreen>(FindObjectsInactive.Include);
             if (_instance != null)
             {
                 // Domain reloads can preserve the inactive runtime object while rebuilding
@@ -107,7 +105,7 @@ namespace Hollowfen.UI
                 manager.Back();
                 return;
             }
-            if (manager.HasOpenScreen || Time.timeScale <= 0f || PlayerInteractor.Suspended) return;
+            if (!UIManager.GameplayShortcutAllowed || Time.timeScale <= 0f || PlayerInteractor.Suspended) return;
             if (InventoryScreen.Instance != null && InventoryScreen.Instance.IsOpen) return;
             if (InspectScreen.Instance != null && InspectScreen.Instance.IsOpen) return;
 
@@ -158,6 +156,7 @@ namespace Hollowfen.UI
 
         private void OnDestroy()
         {
+            ReleasePresentation();
             CoinPurse.OnChanged -= OnCoinsChanged;
             InventoryRuntime.OnChanged -= OnInventoryChanged;
             if (_instance == this) _instance = null;
@@ -167,7 +166,9 @@ namespace Hollowfen.UI
         {
             base.OnOpen();
             _saleNotice = null;
-            AcquireGameplayPauseIfNeeded();
+            if (_presentationLease == null)
+                _presentationLease = NarrativePresentationSession.AcquireIfGameplay(
+                    this, NarrativePresentationSession.Modal);
             CoinPurse.OnChanged += OnCoinsChanged;
             InventoryRuntime.OnChanged += OnInventoryChanged;
             Refresh();
@@ -177,36 +178,15 @@ namespace Hollowfen.UI
         {
             CoinPurse.OnChanged -= OnCoinsChanged;
             InventoryRuntime.OnChanged -= OnInventoryChanged;
-            ReleaseGameplayPause();
+            ReleasePresentation();
             ClearNearbyBuyer();
             base.OnClose();
         }
 
-        private void AcquireGameplayPauseIfNeeded()
+        private void ReleasePresentation()
         {
-            if (_ownsGameplayPause || Time.timeScale <= 0f) return;
-            if (GameObject.FindGameObjectWithTag("Player") == null) return;
-
-            _ownsGameplayPause = true;
-            _previousTimeScale = Time.timeScale;
-            _previousCursorLock = Cursor.lockState;
-            _previousCursorVisible = Cursor.visible;
-            Time.timeScale = 0f;
-            PlayerInteractor.Suspended = true;
-            PlayerInteractor.SetPlayerInputEnabled(false);
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
-
-        private void ReleaseGameplayPause()
-        {
-            if (!_ownsGameplayPause) return;
-            _ownsGameplayPause = false;
-            Time.timeScale = _previousTimeScale;
-            PlayerInteractor.Suspended = false;
-            PlayerInteractor.SetPlayerInputEnabled(true);
-            Cursor.lockState = _previousCursorLock;
-            Cursor.visible = _previousCursorVisible;
+            _presentationLease?.Dispose();
+            _presentationLease = null;
         }
 
         private void CaptureNearbyBuyer()
@@ -359,7 +339,7 @@ namespace Hollowfen.UI
             innerRt.offsetMax = new Vector2(-14f, -14f);
 
             var eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", panel, Localization.Get("purse.eyebrow"),
-                14f, HollowfenPalette.Gold, TextAlignmentOptions.Left);
+                14f, HollowfenPalette.PaperAccentInk, TextAlignmentOptions.Left);
             UICanvasUtil.SetRect(eyebrow.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f),
                 new Vector2(0f, 1f), new Vector2(680f, 20f), new Vector2(62f, -42f));
 
@@ -437,7 +417,7 @@ namespace Hollowfen.UI
             UICanvasUtil.MakeRoundedPanel(card, new Color(1f, 1f, 1f, 0.17f), 20, 0.20f);
 
             var heading = UICanvasUtil.NewEyebrow("ActivityHeading", card, Localization.Get("purse.activity"),
-                13f, HollowfenPalette.Gold, TextAlignmentOptions.Left);
+                13f, HollowfenPalette.PaperAccentInk, TextAlignmentOptions.Left);
             UICanvasUtil.SetRect(heading.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f),
                 new Vector2(0.5f, 1f), new Vector2(-52f, 20f), new Vector2(0f, -28f));
 
@@ -483,7 +463,7 @@ namespace Hollowfen.UI
             UICanvasUtil.MakeRoundedPanel(card, new Color(1f, 1f, 1f, 0.14f), 20, 0.20f);
 
             var heading = UICanvasUtil.NewEyebrow("PouchHeading", card, Localization.Get("purse.pouch"),
-                13f, HollowfenPalette.Gold, TextAlignmentOptions.Left);
+                13f, HollowfenPalette.PaperAccentInk, TextAlignmentOptions.Left);
             UICanvasUtil.SetRect(heading.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f),
                 new Vector2(0f, 1f), new Vector2(300f, 20f), new Vector2(30f, -25f));
             _pouchCount = UICanvasUtil.NewHeading("PouchCount", card, "", 28f, Ink,
@@ -509,7 +489,7 @@ namespace Hollowfen.UI
             UICanvasUtil.SetRect(_tradeStatus.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f),
                 new Vector2(0f, 1f), new Vector2(660f, 74f), new Vector2(602f, -34f));
 
-            _sellButton = BuildButton("Sell", card, "Sell", new Vector2(602f, -132f),
+            _sellButton = BuildButton("Sell", card, Localization.Get("purse.sell"), new Vector2(602f, -132f),
                 new Vector2(660f, 64f), true, SellToNearbyBuyer, out _sellLabel);
         }
 

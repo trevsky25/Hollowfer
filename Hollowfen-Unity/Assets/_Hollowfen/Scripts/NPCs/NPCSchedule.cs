@@ -1,9 +1,11 @@
 using System;
+using Hollowfen.Apothecary;
 using Hollowfen.Dialogue;
 using Hollowfen.Foraging;
 using Hollowfen.GameTime;
 using Hollowfen.Quests;
 using Hollowfen.Requests;
+using Hollowfen.Weather;
 using UnityEngine;
 
 namespace Hollowfen.NPCs
@@ -24,6 +26,15 @@ namespace Hollowfen.NPCs
         public QuestData requiresQuestCompleted;
         public string requiresFlagId;
         public string blockedByFlagId;
+        [Tooltip("Optional case-ledger appointment gate. The NPC appears only while this case is at the selected stage.")]
+        public string requiresApothecaryCaseId;
+        public ApothecaryCaseStage requiresApothecaryCaseStage;
+        [Tooltip("For an awaiting-follow-up slot, wait until the recorded return day has arrived.")]
+        public bool requiresApothecaryFollowUpDue;
+        [Tooltip("Optional living-village beat: this slot is available only during wet weather.")]
+        public bool requiresWetWeather;
+        [Tooltip("Quest-critical staging may bypass near-player pop deferral so a required NPC is never absent after loading or starting the objective.")]
+        public bool forcePlacement;
 
         public bool Matches(float hour)
         {
@@ -32,6 +43,17 @@ namespace Hollowfen.NPCs
             if (requiresQuestCompleted != null && !QuestManager.IsCompleted(requiresQuestCompleted.Id)) return false;
             if (!string.IsNullOrEmpty(requiresFlagId) && !GameScores.HasFlag(requiresFlagId)) return false;
             if (!string.IsNullOrEmpty(blockedByFlagId) && GameScores.HasFlag(blockedByFlagId)) return false;
+            if (requiresWetWeather && !WeatherSystem.IsWetAtCurrentTime()) return false;
+            if (!string.IsNullOrEmpty(requiresApothecaryCaseId))
+            {
+                ApothecaryCaseData data = ApothecaryCaseDatabase.Load()?.Find(requiresApothecaryCaseId);
+                if (data == null) return false;
+                ApothecaryCases.CaseRecord record = ApothecaryCases.Get(data);
+                if (record.Stage != requiresApothecaryCaseStage) return false;
+                if (requiresApothecaryFollowUpDue &&
+                    (TimeManager.Instance == null || TimeManager.Instance.Day < record.FollowUpDay))
+                    return false;
+            }
             if (allDay) return true;
 
             hour = Mathf.Repeat(hour, 24f);
@@ -73,8 +95,39 @@ namespace Hollowfen.NPCs
         private float _nextPoll;
         private Transform _player;
 
+        private static readonly System.Collections.Generic.Dictionary<GameObject, NPCSchedule> ByActor =
+            new System.Collections.Generic.Dictionary<GameObject, NPCSchedule>();
+
+#if UNITY_2019_3_OR_NEWER
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+#else
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+#endif
+        private static void ResetRegistry() => ByActor.Clear();
+
+        public static NPCSchedule ForActor(GameObject actor)
+        {
+            if (actor == null) return null;
+            return ByActor.TryGetValue(actor, out var schedule) ? schedule : null;
+        }
+
+        public static NPCSchedule ForNpcId(string npcId)
+        {
+            if (string.IsNullOrWhiteSpace(npcId)) return null;
+            foreach (NPCSchedule schedule in ByActor.Values)
+            {
+                if (schedule == null || schedule._actor == null) continue;
+                NPCInteractable interactable = schedule._actor.GetComponent<NPCInteractable>();
+                if (interactable != null && interactable.Data != null &&
+                    string.Equals(interactable.Data.Id, npcId, StringComparison.Ordinal))
+                    return schedule;
+            }
+            return null;
+        }
+
         private void OnEnable()
         {
+            if (_actor != null) ByActor[_actor] = this;
             GameScores.OnChanged += OnStateChanged;
             QuestManager.QuestStarted += OnQuestChanged;
             QuestManager.QuestCompleted += OnQuestChanged;
@@ -85,6 +138,9 @@ namespace Hollowfen.NPCs
 
         private void OnDisable()
         {
+            if (_actor != null && ByActor.TryGetValue(_actor, out var registered) &&
+                registered == this)
+                ByActor.Remove(_actor);
             GameScores.OnChanged -= OnStateChanged;
             QuestManager.QuestStarted -= OnQuestChanged;
             QuestManager.QuestCompleted -= OnQuestChanged;
@@ -120,7 +176,8 @@ namespace Hollowfen.NPCs
                 return false;
             }
 
-            if (!force && !CanRelocate(desired))
+            bool questCriticalPlacement = desired >= 0 && _slots[desired].forcePlacement;
+            if (!force && !questCriticalPlacement && !CanRelocate(desired))
             {
                 _pendingSlotIndex = desired;
                 return false;

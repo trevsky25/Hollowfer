@@ -15,6 +15,9 @@ namespace Hollowfen.UI
     //   Back    — closing/retreating: a gentle downward glide.
     //   Confirm — a decisive affirmative (modal confirm): two soft rising notes.
     //   Error   — an invalid action: a muted low double-tone, never harsh.
+    //   PageTurn — filtered paper rustle for illustrated-book navigation.
+    //   Pencil  — a restrained graphite scratch under Wren's live annotation.
+    //   InkStamp — a soft paper slap and low wooden thump for field verification.
     // Click() is kept as a Select alias for older call sites.
     public static class UISfx
     {
@@ -22,6 +25,7 @@ namespace Hollowfen.UI
         private static AudioMixerGroup _output;
 
         private static AudioClip _move, _select, _back, _confirm, _error;
+        private static AudioClip _pageTurn, _pencil, _inkStamp;
 
         public static void SetOutput(AudioMixerGroup group) => _output = group;
 
@@ -30,6 +34,9 @@ namespace Hollowfen.UI
         public static void Back(float volume = 0.50f)    { Play(ref _back,    BuildBack,    volume); }
         public static void Confirm(float volume = 0.55f) { Play(ref _confirm, BuildConfirm, volume); }
         public static void Error(float volume = 0.55f)   { Play(ref _error,   BuildError,   volume); }
+        public static void PageTurn(float volume = 0.34f) { Play(ref _pageTurn, BuildPageTurn, volume); }
+        public static void Pencil(float volume = 0.22f)   { Play(ref _pencil, BuildPencil, volume); }
+        public static void InkStamp(float volume = 0.52f) { Play(ref _inkStamp, BuildInkStamp, volume); }
 
         // Back-compat: the batch-44 page-turn tick.
         public static void Click(float volume = 0.55f) => Select(volume);
@@ -142,6 +149,63 @@ namespace Hollowfen.UI
                 d[i] = (a + b) * 0.5f * env * 0.5f;
             }
             return Make("UIError", d);
+        }
+
+        private static AudioClip BuildPageTurn()
+        {
+            const float seconds = 0.30f;
+            int n = (int)(Rate * seconds);
+            var d = new float[n];
+            var random = new System.Random(1708);
+            float paper = 0f;
+            for (int i = 0; i < n; i++)
+            {
+                float t = i / (float)Rate;
+                float u = t / seconds;
+                float raw = (float)(random.NextDouble() * 2.0 - 1.0);
+                paper = paper * 0.72f + raw * 0.28f;
+                float fold = Mathf.Sin(Mathf.PI * Mathf.Clamp01(u));
+                float flick = Mathf.Exp(-Mathf.Pow((u - 0.56f) * 15f, 2f));
+                d[i] = paper * (fold * 0.52f + flick * 0.34f) * Attack(t, 0.012f);
+            }
+            return Make("UIPageTurn", d);
+        }
+
+        private static AudioClip BuildPencil()
+        {
+            const float seconds = 0.62f;
+            int n = (int)(Rate * seconds);
+            var d = new float[n];
+            var random = new System.Random(108);
+            float graphite = 0f;
+            for (int i = 0; i < n; i++)
+            {
+                float t = i / (float)Rate;
+                float u = t / seconds;
+                float raw = (float)(random.NextDouble() * 2.0 - 1.0);
+                graphite = graphite * 0.46f + raw * 0.54f;
+                float strokes = 0.40f + 0.60f * Mathf.Abs(Mathf.Sin(2f * Mathf.PI * 8.5f * t));
+                float env = Mathf.Sin(Mathf.PI * Mathf.Clamp01(u));
+                d[i] = graphite * strokes * env * Attack(t, 0.015f) * 0.42f;
+            }
+            return Make("UIPencil", d);
+        }
+
+        private static AudioClip BuildInkStamp()
+        {
+            const float seconds = 0.22f;
+            int n = (int)(Rate * seconds);
+            var d = new float[n];
+            var random = new System.Random(810);
+            for (int i = 0; i < n; i++)
+            {
+                float t = i / (float)Rate;
+                float slap = (float)(random.NextDouble() * 2.0 - 1.0) * Mathf.Exp(-t * 82f);
+                float wood = Mathf.Sin(2f * Mathf.PI * 112f * t) * Mathf.Exp(-t * 24f);
+                float table = Mathf.Sin(2f * Mathf.PI * 58f * t) * Mathf.Exp(-t * 18f);
+                d[i] = (slap * 0.32f + wood * 0.62f + table * 0.22f) * Attack(t, 0.003f);
+            }
+            return Make("UIInkStamp", d);
         }
     }
 }

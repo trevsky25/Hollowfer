@@ -7947,8 +7947,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2039007562}
   - component: {fileID: 2039007561}
+  - component: {fileID: 2039007563}
   m_Layer: 0
-  m_Name: _Ambience
+  m_Name: _MenuAudio
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7968,7 +7969,40 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Audio.AmbienceManager
   _output: {fileID: 24300002, guid: a9e21221dfb3941e1916c2e907205b1a, type: 2}
   _fadeInSeconds: 3.5
-  _ceiling: 0.45
+  _regionCrossfadeSeconds: 4
+  _ceiling: 0.16
+  _defaultGameplayRegion: village
+  _menuRegion: old_wood
+--- !u!114 &2039007563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2039007560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0c6637343ec24ac2a9b5876e9da9698, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Audio.MusicManager
+  _track: {fileID: 8300000, guid: 1c2c2dcd91ba04764ae287dc615918d9, type: 3}
+  _playlist:
+  - {fileID: 8300000, guid: 02eb0c3f498d347b3a7301ebd84e0479, type: 3}
+  - {fileID: 8300000, guid: 1aa1ee23b42194d77aa67072bced4172, type: 3}
+  - {fileID: 8300000, guid: 7612a0cbf4e904896ad8a657d93e2125, type: 3}
+  - {fileID: 8300000, guid: f37d3c4bae8ab408597e8e9e89801496, type: 3}
+  - {fileID: 8300000, guid: a595a61df5e314b5e96ffd3672cabf55, type: 3}
+  - {fileID: 8300000, guid: 14d098f8084194444a1b760e5c6f76db, type: 3}
+  - {fileID: 8300000, guid: ad4e48528508e4b2e8883dff24735dd5, type: 3}
+  - {fileID: 8300000, guid: bfbeddf4b322a42a9b866b25d57abd4b, type: 3}
+  _silenceRangeSeconds: {x: 20, y: 50}
+  _playReferenceTrackFirst: 1
+  _output: {fileID: -1992354942986589691, guid: a9e21221dfb3941e1916c2e907205b1a, type: 2}
+  _fadeInSeconds: 3.5
+  _stateCrossfadeSeconds: 4
+  _targetVolume: 0.42
+  _nightVolumeScale: 1
+  _regionStates: []
 --- !u!4 &2039007562
 Transform:
   m_ObjectHideFlags: 0

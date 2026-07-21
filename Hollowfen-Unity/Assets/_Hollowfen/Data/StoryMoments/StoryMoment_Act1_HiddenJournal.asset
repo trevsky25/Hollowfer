@@ -29,20 +29,43 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e38399292414b4d829fe207df2d77772, type: 3}
   _images:
   - {fileID: 21300000, guid: 6f78c64cab6bf47949d88459fea0392c, type: 3}
+  - {fileID: 21300000, guid: 9ff2d970c30804cce804f7c76990d4d7, type: 3}
+  - {fileID: 21300000, guid: 67bc51f67410e469597c8f2eafbb9816, type: 3}
+  - {fileID: 21300000, guid: d0fc8de859ddb4804a668c7bbb88f2a4, type: 3}
   - {fileID: 21300000, guid: 6f410db14312e4f16ba95363bda38779, type: 3}
   - {fileID: 21300000, guid: f3a03c2d3afa94b49a35dec900df412e, type: 3}
   _beatImages:
   - 0
-  - 0
   - 1
   - 2
-  - 2
-  - 2
-  - 2
+  - 3
+  - 4
+  - 5
+  - 5
   _showStoryCardTitle: 0
   _showCaptions: 1
   _fadeIn: 1
   _holdSeconds: 0
+  _preserveFullFrameImages: 1
+  _pageTextId: act1.hidden_journal.page_note
+  _pageTextFallback:
+  _pageTextImageIndex: 5
+  _pageTextStartBeat: 5
+  _pageTextParagraphRevealBeats:
+  - 5
+  - 5
+  - 5
+  - 6
+  _pageTextRect:
+    serializedVersion: 2
+    x: 0.19
+    y: 0.235
+    width: 0.56
+    height: 0.59
+  _pageTextRotation: 1.25
+  _pageTextFontSize: 36
+  _pageTextColor: {r: 0.16, g: 0.095, b: 0.045, a: 0.84}
+  _useCursivePageText: 1
   _focusContext: 1
   _focusDistance: 0.4
   _focusHeight: 0.05

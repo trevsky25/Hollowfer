@@ -66,6 +66,11 @@ MonoBehaviour:
     text: The room went very quiet around us.
     isCloseup: 1
     voiceClip: {fileID: 8300000, guid: d924c72a5971246cab8a1d461ce1b3dd, type: 3}
+  _mushroomHandoff:
+    beforeLineIndex: 0
+    recipientSpeaker: 
+    mushroom: {fileID: 0}
+    presentationHeight: 0
   _unlockStoryCard: {fileID: 0}
   _completeQuest: {fileID: 11400000, guid: be1d1f6805f5410da490e633a51a491f, type: 2}
   _giveItemId: 
@@ -83,7 +88,11 @@ MonoBehaviour:
   _knowledgeDelta: 0
   _relationshipNpcIds: []
   _relationshipDeltas: 
-  _transitionMoment: {fileID: 0}
+  _memoryOutcomes: []
+  _bondOutcomes: []
+  _favorOutcomes: []
+  _advanceMinutes: 0
+  _transitionMoment: {fileID: 11400000, guid: 13abe99247de34c10b0249ec0571bf78, type: 2}
   _nextDialog: {fileID: 0}
   _choices:
   - text: Refuse the monopoly

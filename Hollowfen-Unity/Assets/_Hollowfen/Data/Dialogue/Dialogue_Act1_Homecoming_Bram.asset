@@ -14,29 +14,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Dialogue.DialogueData
   _id: act1.homecoming.bram.recognition
   _lines:
-  - speaker: Bram
-    text: Wren?
-    isCloseup: 0
-    voiceClip: {fileID: 8300000, guid: 865d20de8b8c44bb7a2d9674eeff9e62, type: 3}
   - speaker: Wren
-    text: Evening, Bram.
-    isCloseup: 0
-    voiceClip: {fileID: 8300000, guid: 299772abe93e94934836a12d5b5febf0, type: 3}
-  - speaker: Bram
-    text: Lord help me. You've got your father's height.
-    isCloseup: 0
-    voiceClip: {fileID: 8300000, guid: 06ecf5c63fd604643951c19b2790e554, type: 3}
-  - speaker: Wren
-    text: I came as soon as I could.
+    text: Old Bram! How I've missed you. It's been so long. I thought of the Pintle
+      every winter in Veyrwick - your fire, Marra's oatcakes, Dad pretending not
+      to notice when I stayed past supper.
     isCloseup: 1
-    voiceClip: {fileID: 8300000, guid: 0730fc564d858419cb8f243981abcbd0, type: 3}
+    voiceClip: {fileID: 8300000, guid: b1d2d14d3b9db4efab277442bdc54fb5, type: 3}
   - speaker: Bram
-    text: 'Aye. I know.
-
-
-      I''ve got the key inside.'
-    isCloseup: 0
-    voiceClip: {fileID: 8300000, guid: 42952d01c9d0b4b48890718f22f74fcd, type: 3}
+    text: Wren? Lord help me, it is you. Come here and let an old innkeeper look
+      at you. Three winters, and you've come home with your father's height and your
+      mother's eyes. I only wish the village had kept more of itself to welcome you.
+    isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: e1abffcbc8fe04309821ea4ae840e343, type: 3}
+  _mushroomHandoff:
+    beforeLineIndex: 0
+    recipientSpeaker: 
+    mushroom: {fileID: 0}
+    presentationHeight: 0
   _unlockStoryCard: {fileID: 0}
   _completeQuest: {fileID: 0}
   _giveItemId: 
@@ -54,6 +48,10 @@ MonoBehaviour:
   _knowledgeDelta: 0
   _relationshipNpcIds: []
   _relationshipDeltas: 
-  _transitionMoment: {fileID: 0}
+  _memoryOutcomes: []
+  _bondOutcomes: []
+  _favorOutcomes: []
+  _advanceMinutes: 0
+  _transitionMoment: {fileID: 11400000, guid: d4faca9db5714448688c55c419696f84, type: 2}
   _nextDialog: {fileID: 11400000, guid: 43cd89d9348548e59b405b515bf1df9a, type: 2}
   _choices: []

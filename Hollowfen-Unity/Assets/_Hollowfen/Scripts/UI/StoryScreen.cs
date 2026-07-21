@@ -15,7 +15,7 @@ namespace Hollowfen.UI
         private static readonly Color Card = HollowfenPalette.SurfaceBase;
         private static readonly Color Cream = new Color(0.961f, 0.925f, 0.855f, 1f);
         private static readonly Color Subtle = new Color(0.961f, 0.925f, 0.855f, 0.64f);
-        private static readonly Color Faint = new Color(0.961f, 0.925f, 0.855f, 0.42f);
+        private static readonly Color Faint = new Color(0.961f, 0.925f, 0.855f, 0.54f);
         private static readonly Color Gold = new Color(0.851f, 0.741f, 0.427f, 1f);
 
         private readonly List<(GameObject go, StoryCardData card)> _cells = new List<(GameObject, StoryCardData)>();

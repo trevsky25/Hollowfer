@@ -60,7 +60,7 @@ MonoBehaviour:
   Lens:
     FieldOfView: 40
     OrthographicSize: 10
-    NearClipPlane: 0.2
+    NearClipPlane: 0.1
     FarClipPlane: 500
     Dutch: 0
     ModeOverride: 0
@@ -100,7 +100,7 @@ MonoBehaviour:
       serializedVersion: 2
       m_Bits: 1
     IgnoreTag: Player
-    CameraRadius: 0.15
+    CameraRadius: 0.35
     DampingIntoCollision: 0
     DampingFromCollision: 0
 --- !u!114 &1515335649618757596
@@ -117,6 +117,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineBasicMultiChannelPerlin
   NoiseProfile: {fileID: 11400000, guid: 46965f9cbaf525742a6da4c2172a99cd, type: 2}
   PivotOffset: {x: 0, y: 0, z: 1}
-  AmplitudeGain: 0.5
+  AmplitudeGain: 0.08
   FrequencyGain: 0.3
   m_NoiseOffsets: {x: -451.37964, y: 684.7062, z: 648.0488}

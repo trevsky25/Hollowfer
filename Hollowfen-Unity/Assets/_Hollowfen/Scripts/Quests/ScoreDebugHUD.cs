@@ -16,6 +16,15 @@ namespace Hollowfen.Quests
         private bool _visible;
         private bool _built;
 
+        private void Awake()
+        {
+#if !UNITY_EDITOR && !DEVELOPMENT_BUILD
+            // The ending-meter readout exposes hidden score and flag state. Retain it for
+            // development builds without leaving an F3 diagnostic surface in release players.
+            enabled = false;
+#endif
+        }
+
         private void Update()
         {
             var kb = Keyboard.current;

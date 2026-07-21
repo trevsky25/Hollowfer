@@ -38,6 +38,11 @@ MonoBehaviour:
     text: Careful.
     isCloseup: 0
     voiceClip: {fileID: 8300000, guid: 48aa19651f17d410f889d3b0b227e3f5, type: 3}
+  _mushroomHandoff:
+    beforeLineIndex: 0
+    recipientSpeaker: 
+    mushroom: {fileID: 0}
+    presentationHeight: 0
   _unlockStoryCard: {fileID: 11400000, guid: cf19cd8806b76499fbcad7f7d47f272b, type: 2}
   _completeQuest: {fileID: 11400000, guid: 8af58c6703004c4392bc2c30a4a102c1, type: 2}
   _giveItemId: 
@@ -57,6 +62,10 @@ MonoBehaviour:
   - bram
   - marra
   _relationshipDeltas: 0a00000005000000
+  _memoryOutcomes: []
+  _bondOutcomes: []
+  _favorOutcomes: []
+  _advanceMinutes: 0
   _transitionMoment: {fileID: 0}
   _nextDialog: {fileID: 0}
   _choices: []

@@ -1,6 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
 using Hollowfen.Audio;
+using Hollowfen.Cinematics;
+using Hollowfen.Restoration;
 using Hollowfen.UI;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -24,8 +25,9 @@ namespace Hollowfen.Foraging
         public static bool IsActive => Active != null;
 
         public CuttingPhase Phase { get; private set; }
-        public float Progress => _strokeCount / (float)RequiredStrokes;
+        public float Progress => _strokeCount / (float)Mathf.Max(1, _requiredStrokes);
         public int StrokeCount => _strokeCount;
+        public int StrokeTarget => _requiredStrokes;
 
         private MushroomNode _node;
         private ForageCuttingHUD _hud;
@@ -41,7 +43,6 @@ namespace Hollowfen.Foraging
         private AnimatorUpdateMode _previousAnimatorMode;
         private bool _previousApplyRootMotion;
         private bool _animatorCaptured;
-        private float _restoreTimeScale = 1f;
         private Vector3 _cameraOffsetBefore;
         private float _cameraFovBefore;
         private bool _cameraCaptured;
@@ -52,6 +53,7 @@ namespace Hollowfen.Foraging
         private Vector3 _cutPoint;
         private Vector3 _macroOffset;
         private int _strokeCount;
+        private int _requiredStrokes = RequiredStrokes;
         private int _lastStrokeSide;
         private float _lastStrokeAt = -10f;
         private float _lastAngleWarningAt = -10f;
@@ -61,7 +63,7 @@ namespace Hollowfen.Foraging
         private float _hapticHigh;
         private Gamepad _rumblePad;
         private bool _restored;
-        private readonly List<HudCanvasState> _hiddenHud = new List<HudCanvasState>(2);
+        private NarrativePresentationSession.Lease _presentationLease;
 
         public static bool Play(MushroomNode node)
         {
@@ -69,21 +71,20 @@ namespace Hollowfen.Foraging
             var go = new GameObject("_ForageCuttingChallenge");
             var challenge = go.AddComponent<ForageCuttingChallenge>();
             challenge._node = node;
+            challenge._requiredStrokes = RestorationBenefits.CuttingStrokes;
             Active = challenge;
+            challenge._presentationLease = NarrativePresentationSession.Acquire(
+                challenge,
+                NarrativePresentationSession.SlowMotion(0.12f)
+                    .With(NarrativePresentationSession.Claim.HideGameplayHud));
             challenge.StartCoroutine(challenge.Run());
             return true;
         }
 
         private IEnumerator Run()
         {
-            _restoreTimeScale = Time.timeScale <= 0.001f ? 1f : Time.timeScale;
-            PlayerInteractor.Suspended = true;
-            PlayerInteractor.SetPlayerInputEnabled(false);
-            Time.timeScale = 0.12f;
-
             FindAndPreparePlayer();
             PrepareCamera();
-            HideGameplayHud();
             BuildHud();
 
             yield return PlayKneelingShot();
@@ -148,7 +149,7 @@ namespace Hollowfen.Foraging
         {
             var go = new GameObject("ForageCuttingHUD", typeof(RectTransform));
             _hud = go.AddComponent<ForageCuttingHUD>();
-            _hud.Build(_node.Data.CommonName, Gamepad.current != null);
+            _hud.Build(JournalText.MushroomName(_node.Data), ControllerGlyphs.IsGamepadActive);
         }
 
         private IEnumerator PlayKneelingShot()
@@ -263,7 +264,7 @@ namespace Hollowfen.Foraging
             _lastStrokeSide = 0;
             _displayProgress = 0f;
 
-            while (_strokeCount < RequiredStrokes)
+            while (_strokeCount < _requiredStrokes)
             {
                 InputSample sample = ReadInput();
                 if (sample.Cancel)
@@ -305,7 +306,7 @@ namespace Hollowfen.Foraging
 
                 _displayProgress = Mathf.MoveTowards(_displayProgress, Progress,
                     Time.unscaledDeltaTime * 2.8f);
-                if (_hud != null) _hud.SetProgress(_displayProgress, _strokeCount, RequiredStrokes);
+                if (_hud != null) _hud.SetProgress(_displayProgress, _strokeCount, _requiredStrokes);
                 yield return null;
             }
 
@@ -346,8 +347,8 @@ namespace Hollowfen.Foraging
             PulseHaptics(0.62f, 1f, 0.22f);
             if (_hud != null)
             {
-                _hud.SetProgress(1f, RequiredStrokes, RequiredStrokes);
-                _hud.ShowSuccess(_node.Data.CommonName);
+                _hud.SetProgress(1f, _requiredStrokes, _requiredStrokes);
+                _hud.ShowSuccess(JournalText.MushroomName(_node.Data));
             }
             if (_cutGuide != null)
             {
@@ -457,44 +458,8 @@ namespace Hollowfen.Foraging
             RestorePlayerRenderers();
             if (_brainCaptured && _brain != null)
                 _brain.IgnoreTimeScale = _previousBrainIgnoreTimeScale;
-            RestoreGameplayHud();
-            Time.timeScale = _restoreTimeScale;
-            PlayerInteractor.Suspended = false;
-            PlayerInteractor.SetPlayerInputEnabled(true);
-        }
-
-        private void HideGameplayHud()
-        {
-            _hiddenHud.Clear();
-            foreach (string rootName in new[] { "_HUDCanvas", "_MiniMapCanvas" })
-            {
-                GameObject root = GameObject.Find(rootName);
-                if (root == null) continue;
-                CanvasGroup group = root.GetComponent<CanvasGroup>();
-                if (group == null) group = root.AddComponent<CanvasGroup>();
-                _hiddenHud.Add(new HudCanvasState
-                {
-                    Group = group,
-                    Alpha = group.alpha,
-                    Interactable = group.interactable,
-                    BlocksRaycasts = group.blocksRaycasts
-                });
-                group.alpha = 0f;
-                group.interactable = false;
-                group.blocksRaycasts = false;
-            }
-        }
-
-        private void RestoreGameplayHud()
-        {
-            foreach (HudCanvasState state in _hiddenHud)
-            {
-                if (state.Group == null) continue;
-                state.Group.alpha = state.Alpha;
-                state.Group.interactable = state.Interactable;
-                state.Group.blocksRaycasts = state.BlocksRaycasts;
-            }
-            _hiddenHud.Clear();
+            _presentationLease?.Dispose();
+            _presentationLease = null;
         }
 
         private void CleanupPresentation()
@@ -646,7 +611,7 @@ namespace Hollowfen.Foraging
         private InputSample ReadInput()
         {
             var pad = Gamepad.current;
-            if (pad != null)
+            if (pad != null && ControllerGlyphs.IsGamepadActive)
             {
                 Vector2 brace = pad.leftStick.ReadValue();
                 Vector2 saw = pad.rightStick.ReadValue();
@@ -797,12 +762,5 @@ namespace Hollowfen.Foraging
             public bool Cancel;
         }
 
-        private struct HudCanvasState
-        {
-            public CanvasGroup Group;
-            public float Alpha;
-            public bool Interactable;
-            public bool BlocksRaycasts;
-        }
     }
 }

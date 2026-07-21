@@ -38,6 +38,11 @@ MonoBehaviour:
     text: Yes. And if I stop, come be angry at me.
     isCloseup: 1
     voiceClip: {fileID: 8300000, guid: acbd40837cf634610b7b668a284586f3, type: 3}
+  _mushroomHandoff:
+    beforeLineIndex: 0
+    recipientSpeaker: 
+    mushroom: {fileID: 0}
+    presentationHeight: 0
   _unlockStoryCard: {fileID: 0}
   _completeQuest: {fileID: 0}
   _giveItemId: 
@@ -55,6 +60,10 @@ MonoBehaviour:
   _knowledgeDelta: 0
   _relationshipNpcIds: []
   _relationshipDeltas: 
-  _transitionMoment: {fileID: 0}
+  _memoryOutcomes: []
+  _bondOutcomes: []
+  _favorOutcomes: []
+  _advanceMinutes: 0
+  _transitionMoment: {fileID: 11400000, guid: b5dbf48feb7c643f98a69eb80d68504f, type: 2}
   _nextDialog: {fileID: 0}
   _choices: []

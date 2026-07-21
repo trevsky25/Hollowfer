@@ -2,6 +2,7 @@ using System;
 using Hollowfen.Audio;
 using Hollowfen.Data;
 using Hollowfen.GameTime;
+using Hollowfen.Restoration;
 using UnityEngine;
 
 namespace Hollowfen.Foraging
@@ -33,7 +34,11 @@ namespace Hollowfen.Foraging
         public bool IsHarvested => _harvested;
 
         public string PromptVerb => "prompt.inspect.verb";
-        public string PromptTarget => _data != null ? _data.CommonName : "Mushroom";
+        public string PromptTarget => _data == null
+            ? Localization.Get("mushroom.generic", "Mushroom")
+            : (MushroomKnowledge.IsFieldIdentified(_data)
+                ? Hollowfen.UI.JournalText.MushroomName(_data)
+                : Localization.Get("inspect.unknown.prompt", "Unknown mushroom"));
 
         public bool CanInteract(GameObject actor) =>
             _data != null && !_harvested && gameObject.activeInHierarchy;
@@ -41,8 +46,18 @@ namespace Hollowfen.Foraging
         private void Awake()
         {
             CacheVisualState();
+        }
+
+        private void OnEnable()
+        {
             ForageNodeStates.OnChanged += HandleNodeStateChanged;
             TimeManager.OnDayChanged += HandleDayChanged;
+        }
+
+        private void OnDisable()
+        {
+            ForageNodeStates.OnChanged -= HandleNodeStateChanged;
+            TimeManager.OnDayChanged -= HandleDayChanged;
         }
 
         private void Start()
@@ -60,12 +75,6 @@ namespace Hollowfen.Foraging
             RefreshWildState();
         }
 
-        private void OnDestroy()
-        {
-            ForageNodeStates.OnChanged -= HandleNodeStateChanged;
-            TimeManager.OnDayChanged -= HandleDayChanged;
-        }
-
         public void ConfigureCultivated(MushroomFieldGuideData species)
         {
             _cultivated = true;
@@ -73,6 +82,18 @@ namespace Hollowfen.Foraging
             _nodeId = null;
             _harvested = false;
             SetVisualHarvested(false);
+        }
+
+        // Runtime ecology uses stable deterministic ids, so generated nodes participate in the
+        // same per-save respawn system as authored scene specimens.
+        public void ConfigureGenerated(MushroomFieldGuideData species, string stableNodeId)
+        {
+            _cultivated = false;
+            _data = species;
+            _nodeId = stableNodeId;
+            _harvested = false;
+            CacheVisualState();
+            RefreshWildState();
         }
 
         // Grow beds keep the specimen visible while it matures, but its authored interaction
@@ -103,13 +124,13 @@ namespace Hollowfen.Foraging
             SetVisualHarvested(true);
         }
 
-        // Starts the two-handed cutting challenge. InspectScreen has already hidden without
-        // releasing input/time state; ForageCuttingChallenge owns that lifecycle until success/cancel.
-        public void BeginHarvest()
+        // Starts the two-handed cutting challenge. The challenge acquires its presentation lease
+        // synchronously so InspectScreen can release its lease without a control-state gap.
+        public bool BeginHarvest()
         {
-            if (_data == null || _harvested || !gameObject.activeInHierarchy) return;
-            if (!MushroomRules.CanHarvest(_data)) return;
-            ForageCuttingChallenge.Play(this);
+            if (_data == null || _harvested || !gameObject.activeInHierarchy) return false;
+            if (!MushroomRules.CanHarvest(_data)) return false;
+            return ForageCuttingChallenge.Play(this);
         }
 
         // Same as Harvest() above but without the SetActive(false) — the coroutine owns deactivation
@@ -122,7 +143,6 @@ namespace Hollowfen.Foraging
             Debug.Log($"[Forage] {_data.CommonName} +1");
             GameplaySfx.ForageCollected();
             OnAnyHarvested?.Invoke(_data);
-            MushroomDiscovery.MarkDiscovered(_data.Id);
             InventoryRuntime.Add(_data, 1);
             if (!_cultivated)
             {
@@ -170,6 +190,7 @@ namespace Hollowfen.Foraging
             int respawnDays = _respawnGameDaysOverride > 0
                 ? _respawnGameDaysOverride
                 : (_data != null ? _data.WildRespawnDays : 2);
+            respawnDays = RestorationBenefits.WildRespawnDays(respawnDays);
             bool available = ForageNodeStates.IsAvailable(_nodeId, day, respawnDays);
             _harvested = !available;
             SetVisualHarvested(!available);

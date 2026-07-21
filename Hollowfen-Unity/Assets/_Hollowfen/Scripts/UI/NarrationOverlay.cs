@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
+using Hollowfen.Audio;
 using Hollowfen.Cinematics;
 using Hollowfen.Data;
 using Hollowfen.Foraging;
+using Hollowfen.Settings;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -30,7 +32,7 @@ namespace Hollowfen.UI
         [SerializeField, Tooltip("Captions auto-advance after this long without input.")]
         private float _autoAdvanceSeconds = 6.0f;
 
-        [SerializeField, Tooltip("Mixer group for caption voice-over (SFX for the batch-29 test). Null = unrouted.")]
+        [SerializeField, Tooltip("Mixer reference used to resolve the Master route for independently adjustable voice-over. Null = unrouted.")]
         private UnityEngine.Audio.AudioMixerGroup _voiceOutput;
 
         [Header("Cinematic mode")]
@@ -57,6 +59,16 @@ namespace Hollowfen.UI
             new KbMove(1.18f, new Vector2(-130f, 12f), 1.05f, new Vector2(150f, -4f)),  // 3 square:  push in → Bram's lantern-lit door
         };
 
+        // Book spreads already have a cinematic 16:9 composition and readable marginalia. Give
+        // them only a breath of movement so their edges and identification notes remain visible.
+        private static readonly KbMove[] FullFrameMoves =
+        {
+            new KbMove(1.035f, new Vector2(-10f, 4f), 1.008f, new Vector2(8f, -3f)),
+            new KbMove(1.030f, new Vector2(8f, -3f), 1.006f, new Vector2(-7f, 3f)),
+            new KbMove(1.032f, new Vector2(-6f, -2f), 1.007f, new Vector2(7f, 2f)),
+            new KbMove(1.030f, new Vector2(7f, 3f), 1.005f, new Vector2(-6f, -2f)),
+        };
+
         private Canvas _canvas;
         private CanvasGroup _group;
         private Image _black;
@@ -65,12 +77,14 @@ namespace Hollowfen.UI
         private Image _scrim;
         private RectTransform _letterTop;
         private RectTransform _letterBot;
+        private Image _captionBacking;
         private TMP_Text _caption;
         private TMP_Text _hint;
         private RectTransform _momentTitleRoot;
         private TMP_Text _momentEyebrow;
         private TMP_Text _momentTitle;
         private TMP_Text _momentSubtitle;
+        private TMP_Text _pageText;
         private bool _built;
         private Coroutine _running;
         private Coroutine _kbCoA;
@@ -78,6 +92,8 @@ namespace Hollowfen.UI
         private AudioSource _voiceSource;
         private Action _pendingOnDone;
         private NarrativePresentationSession.Lease _inputLease;
+        private Hollowfen.Input.InputActions _input;
+        private int _shownFrame;
 
         private Image _activeHero;
         private bool _cinematic;
@@ -96,12 +112,29 @@ namespace Hollowfen.UI
         {
             if (Instance != null && Instance != this) { Destroy(gameObject); return; }
             Instance = this;
+            _input = new Hollowfen.Input.InputActions();
         }
 
         private void OnDestroy()
         {
+            VoiceAudio.Unregister(_voiceSource);
+            if (_input != null)
+            {
+                _input.Dialogue.Disable();
+                _input.Dispose();
+                _input = null;
+            }
             ReleaseInputLease();
             if (Instance == this) Instance = null;
+        }
+
+        private void Update()
+        {
+            if (_running == null) return;
+            RefreshInputHint();
+            // Do not let the button that opened a presentation dismiss it in the same frame.
+            if (Time.frameCount <= _shownFrame) return;
+            if (SkipPressed()) SkipAll();
         }
 
         public void Show(string[] captions, Action onDone = null) => ShowInternal(captions, null, null, null, onDone);
@@ -149,6 +182,10 @@ namespace Hollowfen.UI
         {
             if (captions == null || captions.Length == 0) { onDone?.Invoke(); return; }
             BuildIfNeeded();
+            // Resolve the last-used device before the canvas becomes visible. Update keeps this
+            // current afterward, but waiting for that first Update can flash the keyboard hint on
+            // a controller-started new game.
+            RefreshInputHint();
             if (_running != null)
             {
                 StopCoroutine(_running);
@@ -162,6 +199,8 @@ namespace Hollowfen.UI
             _pendingFadeIn = fadeIn;
             _pendingMoment = moment;
             _pendingOnDone = onDone;
+            _shownFrame = Time.frameCount;
+            _input?.Dialogue.Enable();
             _running = StartCoroutine(Run(captions, clips, onDone));
         }
 
@@ -174,6 +213,7 @@ namespace Hollowfen.UI
             _running = null;
             if (_voiceSource != null) _voiceSource.Stop();
             if (_canvas != null) _canvas.gameObject.SetActive(false);
+            _input?.Dialogue.Disable();
             ConfigureStoryMoment(null);
             _pendingMoment = null;
             ReleaseInputLease();
@@ -190,8 +230,8 @@ namespace Hollowfen.UI
                 _voiceSource.playOnAwake = false;
                 _voiceSource.spatialBlend = 0f;
                 _voiceSource.priority = 0;
-                _voiceSource.outputAudioMixerGroup = _voiceOutput;
             }
+            VoiceAudio.Configure(_voiceSource, _voiceOutput);
             _voiceSource.Stop();
             if (clip == null) return;
             _voiceSource.clip = clip;
@@ -205,11 +245,11 @@ namespace Hollowfen.UI
             return Mathf.Clamp(idx, 0, _pendingHeroes.Length - 1);
         }
 
-        private static KbMove MoveFor(int imageIndex)
+        private static KbMove MoveFor(int imageIndex, bool preserveFullFrame)
         {
             if (imageIndex < 0) imageIndex = 0;
-            if (imageIndex >= DefaultMoves.Length) imageIndex = DefaultMoves.Length - 1;
-            return DefaultMoves[imageIndex];
+            KbMove[] moves = preserveFullFrame ? FullFrameMoves : DefaultMoves;
+            return moves[imageIndex % moves.Length];
         }
 
         private IEnumerator Run(string[] captions, AudioClip[] clips, Action onDone)
@@ -217,7 +257,8 @@ namespace Hollowfen.UI
             _cinematic = _pendingHeroes != null;
             var activeMoment = _pendingMoment;
 
-            _inputLease = NarrativePresentationSession.Acquire(this);
+            _inputLease = NarrativePresentationSession.Acquire(
+                this, NarrativePresentationSession.InputOnly);
 
             ConfigureMode(_cinematic);
             ConfigureStoryMoment(activeMoment);
@@ -238,6 +279,7 @@ namespace Hollowfen.UI
                 _heroA.gameObject.SetActive(true);
                 _heroB.gameObject.SetActive(false);
                 StartKb(true, curImg);
+                ConfigurePageText(activeMoment, 0, curImg, _heroA.rectTransform, 1f);
                 if (_pendingFadeIn)
                 {
                     // Dissolve the whole cinematic in over whatever's behind (a held prop-focus close-up):
@@ -273,16 +315,18 @@ namespace Hollowfen.UI
                 if (_cinematic)
                 {
                     int want = BeatImage(i);
-                    if (want != curImg) { curImg = want; StartCoroutine(CrossfadeTo(want)); }
+                    if (want != curImg) { curImg = want; StartCoroutine(CrossfadeTo(want, i)); }
+                    else ConfigurePageText(activeMoment, i, want, _activeHero.rectTransform, 1f);
                 }
 
                 _caption.text = line;
                 _caption.alpha = 0f;
                 PlayVoice(clip);
                 float t0 = Time.unscaledTime;
-                while (Time.unscaledTime - t0 < 0.6f)
+                float captionIn = GameSettings.ReducedMotion ? .10f : .6f;
+                while (Time.unscaledTime - t0 < captionIn)
                 {
-                    _caption.alpha = Mathf.Clamp01((Time.unscaledTime - t0) / 0.6f);
+                    _caption.alpha = Mathf.Clamp01((Time.unscaledTime - t0) / captionIn);
                     yield return null;
                 }
                 _caption.alpha = 1f;
@@ -305,9 +349,10 @@ namespace Hollowfen.UI
                 if (_voiceSource != null) _voiceSource.Stop();
 
                 float f0 = Time.unscaledTime;
-                while (Time.unscaledTime - f0 < 0.35f)
+                float captionOut = GameSettings.ReducedMotion ? .10f : .35f;
+                while (Time.unscaledTime - f0 < captionOut)
                 {
-                    _caption.alpha = 1f - Mathf.Clamp01((Time.unscaledTime - f0) / 0.35f);
+                    _caption.alpha = 1f - Mathf.Clamp01((Time.unscaledTime - f0) / captionOut);
                     yield return null;
                 }
             }
@@ -319,6 +364,7 @@ namespace Hollowfen.UI
             ConfigureStoryMoment(null);
             _pendingMoment = null;
             ReleaseInputLease();
+            _input?.Dialogue.Disable();
             _running = null;
             _pendingOnDone = null;
             onDone?.Invoke();
@@ -333,6 +379,7 @@ namespace Hollowfen.UI
         private void ConfigureStoryMoment(StoryMomentData moment)
         {
             if (_momentTitleRoot == null) return;
+            if (moment == null && _pageText != null) _pageText.gameObject.SetActive(false);
 
             // Dialogue interstitials can use the canonical StoryCard painting as a clean,
             // image-only beat. The hidden caption still drives VO/read-time pacing, but no
@@ -340,15 +387,22 @@ namespace Hollowfen.UI
             bool showCopy = moment == null || moment.ShowCaptions;
             _caption.gameObject.SetActive(showCopy);
             _hint.gameObject.SetActive(showCopy);
+            if (_captionBacking != null)
+                _captionBacking.gameObject.SetActive(showCopy && _cinematic &&
+                    GameSettings.CaptionBacking);
 
             bool show = moment != null && moment.ShowStoryCardTitle && moment.StoryCard != null;
             _momentTitleRoot.gameObject.SetActive(show);
             if (!show) return;
 
             var card = moment.StoryCard;
-            string brow = card.Act ?? "";
-            if (!string.IsNullOrEmpty(card.Scene))
-                brow = string.IsNullOrEmpty(brow) ? card.Scene : brow + "  ·  " + card.Scene;
+            string act = JournalText.StoryAct(card);
+            string scene = JournalText.StoryScene(card);
+            string brow = act;
+            if (!string.IsNullOrEmpty(scene))
+                brow = string.IsNullOrEmpty(brow)
+                    ? scene
+                    : string.Format(Localization.Get("format.pair"), brow, scene);
             _momentEyebrow.text = brow.ToUpperInvariant();
             _momentTitle.text = JournalText.StoryTitle(card);
             _momentSubtitle.text = JournalText.StorySubtitle(card);
@@ -357,7 +411,7 @@ namespace Hollowfen.UI
         // Dissolve the active painting into heroes[imageIndex]. The incoming layer is forced to the
         // upper of the two hero slots (still under the scrim/letterbox/caption) and faded 0→1 over the
         // opaque outgoing layer, so the reveal is correct regardless of which layer (A/B) is incoming.
-        private IEnumerator CrossfadeTo(int imageIndex)
+        private IEnumerator CrossfadeTo(int imageIndex, int beatIndex)
         {
             Image incoming = _activeHero == _heroA ? _heroB : _heroA;
             Image outgoing = _activeHero;
@@ -372,8 +426,9 @@ namespace Hollowfen.UI
             incoming.gameObject.SetActive(true);
             StartKb(incomingIsA, imageIndex);
             _activeHero = incoming;
+            ConfigurePageText(_pendingMoment, beatIndex, imageIndex, incoming.rectTransform, 0f);
 
-            float dur = Mathf.Max(0.2f, _crossfadeSeconds);
+            float dur = GameSettings.ReducedMotion ? .12f : Mathf.Max(0.2f, _crossfadeSeconds);
             float t = 0f;
             while (t < dur)
             {
@@ -381,18 +436,58 @@ namespace Hollowfen.UI
                 float u = Mathf.Clamp01(t / dur);
                 float e = u * u * (3f - 2f * u); // smoothstep dissolve
                 incoming.color = new Color(1f, 1f, 1f, e);
+                SetPageTextAlpha(e);
                 yield return null;
             }
             incoming.color = Color.white;
+            SetPageTextAlpha(1f);
             outgoing.gameObject.SetActive(false);
             StopKb(outgoing == _heroA);
+        }
+
+        private void ConfigurePageText(StoryMomentData moment, int beatIndex, int imageIndex,
+            RectTransform hero, float alpha)
+        {
+            if (_pageText == null) return;
+            bool show = moment != null && moment.HasPageText &&
+                        imageIndex == moment.PageTextImageIndex &&
+                        beatIndex >= moment.PageTextStartBeat;
+            _pageText.gameObject.SetActive(show);
+            if (!show || hero == null) return;
+
+            _pageText.transform.SetParent(hero, false);
+            // Reveal authored paragraphs on the same beats as their matching caption/VO instead
+            // of showing the entire letter before the narration reaches its signature.
+            _pageText.text = moment.PageTextForBeat(beatIndex);
+            _pageText.font = moment.UseCursivePageText ? UICanvasUtil.CursiveFont : UICanvasUtil.BodyFont;
+            _pageText.fontStyle = moment.UseCursivePageText ? FontStyles.Normal : FontStyles.Italic;
+            _pageText.characterSpacing = moment.UseCursivePageText ? 1.5f : 0f;
+            _pageText.fontSize = moment.PageTextFontSize;
+            _pageText.color = moment.PageTextColor;
+            _pageText.alpha = Mathf.Clamp01(alpha) * moment.PageTextColor.a;
+            _pageText.rectTransform.localEulerAngles = new Vector3(0f, 0f, moment.PageTextRotation);
+            Rect rect = moment.PageTextRect;
+            var rt = _pageText.rectTransform;
+            rt.anchorMin = new Vector2(rect.xMin, rect.yMin);
+            rt.anchorMax = new Vector2(rect.xMax, rect.yMax);
+            rt.pivot = new Vector2(0.5f, 0.5f);
+            rt.offsetMin = Vector2.zero;
+            rt.offsetMax = Vector2.zero;
+            rt.anchoredPosition = Vector2.zero;
+        }
+
+        private void SetPageTextAlpha(float alpha)
+        {
+            if (_pageText == null || !_pageText.gameObject.activeSelf || _pendingMoment == null) return;
+            _pageText.alpha = Mathf.Clamp01(alpha) * _pendingMoment.PageTextColor.a;
         }
 
         private void StartKb(bool layerA, int imageIndex)
         {
             StopKb(layerA);
             var rt = (layerA ? _heroA : _heroB).rectTransform;
-            var co = StartCoroutine(KenBurns(rt, MoveFor(imageIndex)));
+            bool preserve = _pendingMoment != null && _pendingMoment.PreserveFullFrameImages;
+            var co = StartCoroutine(KenBurns(rt, MoveFor(imageIndex, preserve)));
             if (layerA) _kbCoA = co; else _kbCoB = co;
         }
 
@@ -431,6 +526,12 @@ namespace Hollowfen.UI
                 cRT.anchoredPosition = new Vector2(0f, _letterboxHeight + 40f);
                 _caption.fontSize = 40f;
                 _caption.alignment = TextAlignmentOptions.Bottom;
+                var backingRT = _captionBacking.rectTransform;
+                backingRT.anchorMin = new Vector2(.5f, 0f);
+                backingRT.anchorMax = new Vector2(.5f, 0f);
+                backingRT.pivot = new Vector2(.5f, 0f);
+                backingRT.sizeDelta = new Vector2(1500f, 214f);
+                backingRT.anchoredPosition = new Vector2(0f, _letterboxHeight + 34f);
                 var hRT = _hint.rectTransform;
                 hRT.anchoredPosition = new Vector2(0f, _letterboxHeight * 0.5f);
             }
@@ -444,12 +545,20 @@ namespace Hollowfen.UI
                 _caption.alignment = TextAlignmentOptions.Center;
                 _hint.rectTransform.anchoredPosition = new Vector2(0f, 48f);
             }
+            _captionBacking.gameObject.SetActive(cinematic && GameSettings.CaptionBacking &&
+                _caption.gameObject.activeSelf);
         }
 
         // Slow motivated camera per painting: push/drift eased across _kenBurnsSeconds, restarted on
         // each image so every painting gets its own move (ridge push-out, river drift, lane creep, door push-in).
         private IEnumerator KenBurns(RectTransform rt, KbMove m)
         {
+            if (GameSettings.ReducedMotion)
+            {
+                rt.localScale = Vector3.one * m.ScaleB;
+                rt.anchoredPosition = m.PosB;
+                yield break;
+            }
             rt.localScale = Vector3.one * m.ScaleA;
             rt.anchoredPosition = m.PosA;
             float dur = Mathf.Max(1f, _kenBurnsSeconds);
@@ -470,9 +579,10 @@ namespace Hollowfen.UI
             // letterbox bars grow with the fade in cinematic mode
             bool cinematic = _cinematic;
             float t0 = Time.unscaledTime;
-            while (Time.unscaledTime - t0 < _fadeSeconds)
+            float duration = GameSettings.ReducedMotion ? .12f : _fadeSeconds;
+            while (Time.unscaledTime - t0 < duration)
             {
-                float u = (Time.unscaledTime - t0) / _fadeSeconds;
+                float u = duration <= 0f ? 1f : (Time.unscaledTime - t0) / duration;
                 _group.alpha = Mathf.Lerp(from, to, u);
                 if (cinematic)
                 {
@@ -491,8 +601,9 @@ namespace Hollowfen.UI
             }
         }
 
-        private static bool AdvancePressed()
+        private bool AdvancePressed()
         {
+            if (_input != null && _input.Dialogue.Advance.WasPressedThisFrame()) return true;
             var kb = Keyboard.current;
             if (kb != null && (kb.spaceKey.wasPressedThisFrame || kb.enterKey.wasPressedThisFrame || kb.eKey.wasPressedThisFrame)) return true;
             var pad = Gamepad.current;
@@ -500,6 +611,26 @@ namespace Hollowfen.UI
             var mouse = Mouse.current;
             if (mouse != null && mouse.leftButton.wasPressedThisFrame) return true;
             return false;
+        }
+
+        private bool SkipPressed()
+        {
+            if (_input != null && _input.Dialogue.Skip.WasPressedThisFrame()) return true;
+            var kb = Keyboard.current;
+            if (kb != null && kb.escapeKey.wasPressedThisFrame) return true;
+            var pad = Gamepad.current;
+            return pad != null && pad.buttonEast.wasPressedThisFrame;
+        }
+
+        private void RefreshInputHint()
+        {
+            if (_hint == null) return;
+            string text = ControllerGlyphs.IsGamepadActive
+                ? string.Format(Localization.Get("narration.hint.gamepad"),
+                    ControllerGlyphs.For(ControllerGlyphs.Face.South),
+                    ControllerGlyphs.For(ControllerGlyphs.Face.East))
+                : Localization.Get("narration.hint.keyboard");
+            if (_hint.text != text) _hint.text = text;
         }
 
         private void BuildIfNeeded()
@@ -513,8 +644,7 @@ namespace Hollowfen.UI
             _canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             _canvas.sortingOrder = 70;
             var scaler = canvasGo.AddComponent<CanvasScaler>();
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1920f, 1080f);
+            scaler.Init1080();
 
             _group = canvasGo.AddComponent<CanvasGroup>();
             _group.blocksRaycasts = false;
@@ -528,6 +658,16 @@ namespace Hollowfen.UI
             // letterbox and caption always render above them.
             _heroA = BuildHeroLayer("HeroA", canvasGo.transform);
             _heroB = BuildHeroLayer("HeroB", canvasGo.transform);
+
+            // Optional localized writing that belongs to a painted page. It is reparented to the
+            // active hero layer so it follows that image's Ken Burns scale and drift.
+            _pageText = UICanvasUtil.NewBody("LivePageText", _heroA.transform, "", 30f,
+                new Color(0.16f, 0.1f, 0.05f, 0.86f), FontStyles.Italic,
+                TextAlignmentOptions.TopLeft);
+            _pageText.textWrappingMode = TextWrappingModes.Normal;
+            _pageText.lineSpacing = 7f;
+            _pageText.raycastTarget = false;
+            _pageText.gameObject.SetActive(false);
 
             // Full-screen vignette gradient (dark bottom for captions + dark top for the letterbox
             // blend, clear middle). Full-screen → no mid-screen rect edge / cut-off band.
@@ -586,6 +726,12 @@ namespace Hollowfen.UI
             msRT.anchoredPosition = new Vector2(28f, -122f);
             _momentTitleRoot.gameObject.SetActive(false);
 
+            _captionBacking = UICanvasUtil.NewImage("CaptionBacking", canvasGo.transform,
+                new Color(.025f, .022f, .018f, .88f), false).GetComponent<Image>();
+            _captionBacking.sprite = UICanvasUtil.RoundedRect(22);
+            _captionBacking.type = Image.Type.Sliced;
+            _captionBacking.gameObject.SetActive(false);
+
             _caption = UICanvasUtil.NewHeading("Caption", canvasGo.transform, "", 38f,
                 new Color(0.95f, 0.92f, 0.84f, 1f), FontStyles.Italic, TextAlignmentOptions.Center);
             _caption.textWrappingMode = TextWrappingModes.Normal;
@@ -596,12 +742,13 @@ namespace Hollowfen.UI
             cRT.sizeDelta = new Vector2(1180f, 460f);
             cRT.anchoredPosition = Vector2.zero;
 
-            _hint = UICanvasUtil.NewBody("Hint", canvasGo.transform, "Press Space to continue", 14f,
-                new Color(0.93f, 0.90f, 0.82f, 0.35f), FontStyles.Italic, TextAlignmentOptions.Center);
+            _hint = UICanvasUtil.NewBody("Hint", canvasGo.transform,
+                Localization.Get("narration.hint.keyboard"), 22f,
+                new Color(0.93f, 0.90f, 0.82f, 0.60f), FontStyles.Italic, TextAlignmentOptions.Center);
             var hRT = _hint.rectTransform;
             hRT.anchorMin = new Vector2(0.5f, 0f); hRT.anchorMax = new Vector2(0.5f, 0f);
             hRT.pivot = new Vector2(0.5f, 0f);
-            hRT.sizeDelta = new Vector2(600f, 24f);
+            hRT.sizeDelta = new Vector2(680f, 28f);
             hRT.anchoredPosition = new Vector2(0f, 48f);
 
             _canvas.gameObject.SetActive(false);

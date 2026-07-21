@@ -18,11 +18,11 @@ MonoBehaviour:
   _act: 2
   _order: 11
   _unlockStoryCardOnComplete: {fileID: 11400000, guid: 36685f26c676f4f0baa783f21600b574, type: 2}
+  _storyMoment: {fileID: 11400000, guid: 32a464ff705354cc6896361250cfa024, type: 2}
   _nextQuest: {fileID: 11400000, guid: bd86d1b8a0dd4755902c72775da664d8, type: 2}
   _waypointLocation: {fileID: 11400000, guid: 0b9a86fea406435ea39f4c38a1b9399b, type: 2}
   _villageHopeDelta: 0
   _knowledgeDelta: 0
   _relationshipNpcIds:
   - theo
-  _relationshipDeltas:
-  - 8
+  _relationshipDeltas: 08000000

@@ -1,6 +1,8 @@
 using System;
+using Hollowfen.Cinematics;
 using Hollowfen.Data;
 using Hollowfen.Foraging;
+using Hollowfen.Quests;
 using Hollowfen.Save;
 using TMPro;
 using UnityEngine;
@@ -19,7 +21,7 @@ namespace Hollowfen.UI
 
         private EndingData _ending;
         private Action _onDismissed;
-        private float _previousTimeScale = 1f;
+        private NarrativePresentationSession.Lease _presentationLease;
         private Canvas _canvas;
         private Image _art;
         private AspectRatioFitter _artFitter;
@@ -28,6 +30,7 @@ namespace Hollowfen.UI
         private TMP_Text _note;
         private Button _returnButton;
         private Button _remainButton;
+        private bool _dismissalCommitted;
 
         public override GameObject DefaultSelected => _returnButton != null ? _returnButton.gameObject : base.DefaultSelected;
 
@@ -57,6 +60,7 @@ namespace Hollowfen.UI
         {
             _ending = ending;
             _onDismissed = onDismissed;
+            _dismissalCommitted = false;
             var card = ending.StoryCard;
             if (_art != null)
             {
@@ -65,34 +69,38 @@ namespace Hollowfen.UI
                 if (_art.sprite != null && _artFitter != null)
                     _artFitter.aspectRatio = Mathf.Max(0.01f, _art.sprite.rect.width / _art.sprite.rect.height);
             }
-            if (_title != null) _title.text = card != null ? card.Title : ending.Id;
-            if (_subtitle != null) _subtitle.text = card != null ? card.Subtitle : ending.ChoiceContext;
-            if (_note != null) _note.text = card != null && !string.IsNullOrWhiteSpace(card.WrenNote)
-                ? "“" + card.WrenNote + "”"
-                : ending.ChoiceContext;
+            if (_title != null) _title.text = card != null ? JournalText.StoryTitle(card) : JournalText.EndingChoice(ending);
+            if (_subtitle != null) _subtitle.text = card != null ? JournalText.StorySubtitle(card) : JournalText.EndingContext(ending);
+            string note = card != null ? JournalText.StoryNote(card) : "";
+            if (_note != null) _note.text = !string.IsNullOrWhiteSpace(note)
+                ? string.Format(Localization.Get("format.quote"), note)
+                : JournalText.EndingContext(ending);
         }
 
         public override void OnOpen()
         {
-            _previousTimeScale = Time.timeScale;
-            Time.timeScale = 0f;
-            PlayerInteractor.Suspended = true;
-            PlayerInteractor.SetPlayerInputEnabled(false);
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
+            if (_presentationLease == null)
+                _presentationLease = NarrativePresentationSession.AcquireIfGameplay(
+                    this, NarrativePresentationSession.Modal);
             if (_canvas != null) _canvas.sortingOrder = 9000;
         }
 
         public override void OnClose()
         {
-            Time.timeScale = _previousTimeScale;
-            PlayerInteractor.Suspended = false;
-            PlayerInteractor.SetPlayerInputEnabled(true);
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
-            var done = _onDismissed;
-            _onDismissed = null;
-            done?.Invoke();
+            ReleasePresentation();
+            NotifyDismissed();
+        }
+
+        private void OnDestroy()
+        {
+            ReleasePresentation();
+            if (_instance == this) _instance = null;
+        }
+
+        private void ReleasePresentation()
+        {
+            _presentationLease?.Dispose();
+            _presentationLease = null;
         }
 
         public override void OnBack() => RemainInHollowfen();
@@ -100,15 +108,31 @@ namespace Hollowfen.UI
         private void ReturnToMenu()
         {
             UISfx.Confirm();
-            SaveCoordinator.SaveAllWithPlayer();
-            Time.timeScale = 1f;
+            CommitDismissal();
+            NotifyDismissed();
             UIManager.Instance?.LoadSceneAndOpen("Scene_MainMenu", "main-menu");
         }
 
         private void RemainInHollowfen()
         {
+            CommitDismissal();
             if (UIManager.Instance != null && UIManager.Instance.TopScreen == this)
                 UIManager.Instance.Back();
+        }
+
+        private void CommitDismissal()
+        {
+            if (_dismissalCommitted) return;
+            _dismissalCommitted = EndingResolver.MarkPresentationSeen();
+            if (!_dismissalCommitted)
+                Debug.LogError("[Ending] Could not persist finale acknowledgement.");
+        }
+
+        private void NotifyDismissed()
+        {
+            var done = _onDismissed;
+            _onDismissed = null;
+            done?.Invoke();
         }
 
         private void Build()

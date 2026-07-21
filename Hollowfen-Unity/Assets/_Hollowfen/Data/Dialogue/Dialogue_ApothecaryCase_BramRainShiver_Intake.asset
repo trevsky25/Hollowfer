@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00c9c9bb92b3b44fb84ca335c48467d8, type: 3}
+  m_Name: Dialogue_ApothecaryCase_BramRainShiver_Intake
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Dialogue.DialogueData
+  _id: apothecary_case_bram_rain_shiver_intake
+  _lines:
+  - speaker: Bram
+    text: It is a rain-shiver, nothing more. The sort a dry chair usually argues
+      out of a man.
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 1f35be353116a400d8dd0034d633e962, type: 3}
+  - speaker: Wren
+    text: Then we will listen before we argue with it.
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 013192e4459764a2f9057076ab64aee2, type: 3}
+  - speaker: Edda
+    text: Good. Begin with what the weather changed, not what you expect to find.
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: b99294ec3af0147489623f1597c6cb52, type: 3}
+  _mushroomHandoff:
+    beforeLineIndex: 0
+    recipientSpeaker: 
+    mushroom: {fileID: 0}
+    presentationHeight: 0
+  _unlockStoryCard: {fileID: 0}
+  _completeQuest: {fileID: 0}
+  _giveItemId: 
+  _grantCoinsCopper: 0
+  _spendsCoinsCopper: 0
+  _sellsForageBasket: 0
+  _basketCopperPerItem: 0
+  _basketBuyer: 0
+  _grantForage: {fileID: 0}
+  _grantForageCount: 0
+  _consumeForage: {fileID: 0}
+  _consumeForageCount: 0
+  _setFlagIds:
+  - apothecary_case_intake_bram_rain_shiver
+  _villageHopeDelta: 0
+  _knowledgeDelta: 0
+  _relationshipNpcIds: []
+  _relationshipDeltas: 
+  _memoryOutcomes: []
+  _bondOutcomes: []
+  _favorOutcomes: []
+  _advanceMinutes: 0
+  _transitionMoment: {fileID: 0}
+  _nextDialog: {fileID: 0}
+  _choices: []

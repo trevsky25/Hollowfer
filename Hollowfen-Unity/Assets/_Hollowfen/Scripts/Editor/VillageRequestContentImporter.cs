@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Hollowfen.Apothecary;
 using Hollowfen.Data;
 using Hollowfen.Dialogue;
 using Hollowfen.Foraging;
@@ -23,6 +24,9 @@ namespace Hollowfen.EditorTools
         private const string RequestRoot = "Assets/_Hollowfen/Data/Requests";
         private const string DatabasePath = "Assets/_Hollowfen/Resources/VillageRequestDatabase.asset";
         private const string DialogueRoot = "Assets/_Hollowfen/Data/Dialogue";
+        // Dialogue VO tooling keys folders by asset filename and expects all authored dialogue
+        // assets directly under the canonical root.
+        private const string ApothecaryDialogueRoot = DialogueRoot;
         private const string GameplayScene = "Assets/_Hollowfen/Scenes/Scene_Hollowfen.unity";
 
         private sealed class Definition
@@ -35,7 +39,10 @@ namespace Hollowfen.EditorTools
             public string StoryCardId;
             public string[] SpeciesIds;
             public int[] Counts;
+            public string[] PreparationIds = Array.Empty<string>();
+            public int[] PreparationCounts = Array.Empty<int>();
             public int RewardCopper;
+            public int WetWeatherBonusCopper;
             public int Relationship;
             public int Knowledge;
             public string[] RequiredFlags = Array.Empty<string>();
@@ -53,6 +60,7 @@ namespace Hollowfen.EditorTools
         public static string BuildAll()
         {
             EnsureFolder(RequestRoot);
+            EnsureFolder(ApothecaryDialogueRoot);
 
             var festivalQuest = Quest("festivalHosted");
             var festivalKickoff = UpsertDialogue(
@@ -65,20 +73,24 @@ namespace Hollowfen.EditorTools
                     Line("Pell", "This year's page may need more ink."),
                 },
                 new[] { "festival_gathering_active" });
-            var festivalFinale = RewriteFestivalFinale();
+            var festivalFinale = RewriteFestivalFinale(festivalQuest);
             WireFestivalKickoff(festivalQuest, festivalKickoff);
 
-            var definitions = Definitions(festivalQuest, festivalFinale);
+            var apothecaryDialogues = BuildApothecaryDialogues();
+            WireApothecaryStory(apothecaryDialogues);
+
+            var definitions = Definitions(festivalQuest, festivalFinale, apothecaryDialogues);
             var authored = definitions.Select(UpsertRequest).OrderBy(request => request.Id).ToArray();
             UpsertDatabase(authored);
             EnsureFestivalLacewigNode();
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            return $"VILLAGE REQUEST CONTENT — BUILT: {authored.Length} requests (9 rotating + 1 story gathering), festival split into kickoff/delivery/finale, and Lacewig world source verified";
+            return $"VILLAGE REQUEST CONTENT — BUILT: {authored.Length} requests (12 rotating + 4 story deliveries), festival split into kickoff/delivery/finale, eight apothecary conversations, and Lacewig world source verified";
         }
 
-        private static Definition[] Definitions(QuestData festivalQuest, DialogueData festivalFinale) => new[]
+        private static Definition[] Definitions(QuestData festivalQuest, DialogueData festivalFinale,
+            IReadOnlyDictionary<string, DialogueData> apothecaryDialogues) => new[]
         {
             D("Request_Marra_FieldBasket", "marra_field_basket", "marra", VillageRequestKind.Kitchen,
                 "request.marra.field_basket", "marra_kitchen", 18, 1, 0,
@@ -96,7 +108,7 @@ namespace Hollowfen.EditorTools
                 new[] { "brightspore", "woodEar" }, new[] { 1, 1 },
                 flags: new[] { "apprentice_system_unlocked" }),
             D("Request_Edda_WoodEarPoultice", "edda_wood_ear_poultice", "edda", VillageRequestKind.Medicine,
-                "request.edda.wood_ear_poultice", "edda_grandfather", 18, 1, 1,
+                "request.edda.wood_ear_poultice", "edda_grandfather", 24, 1, 1,
                 new[] { "woodEar", "pinecrest" }, new[] { 2, 1 },
                 flags: new[] { "apprentice_system_unlocked" }),
             D("Request_Edda_ShelfTonic", "edda_shelf_tonic", "edda", VillageRequestKind.Medicine,
@@ -113,7 +125,8 @@ namespace Hollowfen.EditorTools
                 flags: new[] { "theo_met", "foraging_knife_unlocked" }),
             D("Request_Theo_RainMarketCrate", "theo_rain_market_crate", "theo", VillageRequestKind.Market,
                 "request.theo.rain_market_crate", "theo_trade", 24, 1, 0,
-                new[] { "fieldCap", "woodEar" }, new[] { 2, 1 }, flags: new[] { "theo_met" }),
+                new[] { "fieldCap", "woodEar" }, new[] { 2, 1 }, flags: new[] { "theo_met" },
+                wetBonus: 4),
 
             new Definition
             {
@@ -132,11 +145,52 @@ namespace Hollowfen.EditorTools
                 CompleteQuest = festivalQuest,
                 CompletionDialogue = festivalFinale,
             },
+
+            PD("Request_Apothecary_Theo_FieldInkStory", "apothecary_theo_field_ink_story",
+                "theo", VillageRequestKind.Market, "request.apothecary.theo_ink", "theo_trade",
+                22, 2, 1, "field_ink", flags: new[]
+                {
+                    "theo_met", "apothecary_prepared_field_ink",
+                }, oneShot: true, completionFlags: new[]
+                {
+                    "apothecary_field_ink_delivered",
+                }, completionDialogue: apothecaryDialogues["theo_delivery"]),
+            PD("Request_Apothecary_Marra_GoldfootStory", "apothecary_marra_goldfoot_story",
+                "marra", VillageRequestKind.Kitchen, "request.apothecary.marra_broth", "marra_kitchen",
+                24, 2, 1, "goldfoot_broth", flags: new[]
+                {
+                    "apothecary_field_ink_delivered", "apothecary_prepared_goldfoot_broth",
+                }, oneShot: true, completionFlags: new[]
+                {
+                    "apothecary_goldfoot_delivered",
+                }, completionDialogue: apothecaryDialogues["marra_delivery"]),
+            PD("Request_Apothecary_Edda_TonicStory", "apothecary_edda_tonic_story",
+                "edda", VillageRequestKind.Medicine, "request.apothecary.edda_tonic", "edda_grandfather",
+                26, 3, 2, "brightspore_tonic", flags: new[]
+                {
+                    "apothecary_goldfoot_delivered", "apothecary_prepared_brightspore_tonic",
+                    "apprentice_system_unlocked",
+                }, oneShot: true, completionFlags: new[]
+                {
+                    "apothecary_tonic_delivered", "apothecary_story_complete",
+                }, completionDialogue: apothecaryDialogues["edda_delivery"]),
+
+            PD("Request_Apothecary_Theo_FieldInkRepeat", "apothecary_theo_field_ink_repeat",
+                "theo", VillageRequestKind.Market, "request.apothecary.theo_ink_repeat", "theo_trade",
+                18, 1, 0, "field_ink", flags: new[] { "apothecary_field_ink_delivered" },
+                wetBonus: 4),
+            PD("Request_Apothecary_Marra_BrothRepeat", "apothecary_marra_broth_repeat",
+                "marra", VillageRequestKind.Kitchen, "request.apothecary.marra_broth_repeat", "marra_kitchen",
+                20, 1, 0, "goldfoot_broth", flags: new[] { "apothecary_goldfoot_delivered" }),
+            PD("Request_Apothecary_Edda_TonicRepeat", "apothecary_edda_tonic_repeat",
+                "edda", VillageRequestKind.Medicine, "request.apothecary.edda_tonic_repeat", "edda_grandfather",
+                22, 1, 0, "brightspore_tonic", flags: new[] { "apothecary_tonic_delivered" }),
         };
 
         private static Definition D(string file, string id, string npc, VillageRequestKind kind,
             string copyRoot, string card, int copper, int relationship, int knowledge,
-            string[] species, int[] counts, string[] flags = null, string[] quests = null) =>
+            string[] species, int[] counts, string[] flags = null, string[] quests = null,
+            int wetBonus = 0) =>
             new Definition
             {
                 FileName = file,
@@ -152,6 +206,34 @@ namespace Hollowfen.EditorTools
                 Knowledge = knowledge,
                 RequiredFlags = flags ?? Array.Empty<string>(),
                 RequiredQuests = quests ?? Array.Empty<string>(),
+                WetWeatherBonusCopper = wetBonus,
+            };
+
+        private static Definition PD(string file, string id, string npc, VillageRequestKind kind,
+            string copyRoot, string card, int copper, int relationship, int knowledge,
+            string preparationId, string[] flags = null, bool oneShot = false,
+            string[] completionFlags = null, DialogueData completionDialogue = null,
+            int wetBonus = 0) =>
+            new Definition
+            {
+                FileName = file,
+                Id = id,
+                NpcId = npc,
+                Kind = kind,
+                CopyRoot = copyRoot,
+                StoryCardId = card,
+                SpeciesIds = Array.Empty<string>(),
+                Counts = Array.Empty<int>(),
+                PreparationIds = new[] { preparationId },
+                PreparationCounts = new[] { 1 },
+                RewardCopper = copper,
+                Relationship = relationship,
+                Knowledge = knowledge,
+                RequiredFlags = flags ?? Array.Empty<string>(),
+                OneShot = oneShot,
+                CompletionFlags = completionFlags ?? Array.Empty<string>(),
+                CompletionDialogue = completionDialogue,
+                WetWeatherBonusCopper = wetBonus,
             };
 
         private static VillageRequestData UpsertRequest(Definition definition)
@@ -170,9 +252,15 @@ namespace Hollowfen.EditorTools
             Set(request, "_descriptionId", definition.CopyRoot + ".body");
             Set(request, "_requesterLineId", definition.CopyRoot + ".line");
             Set(request, "_heroImage", StoryCard(definition.StoryCardId).Image);
-            Set(request, "_requiredSpecies", definition.SpeciesIds.Select(Mushroom).ToArray());
-            Set(request, "_requiredCounts", definition.Counts);
+            Set(request, "_requiredSpecies", (definition.SpeciesIds ?? Array.Empty<string>()).
+                Select(Mushroom).ToArray());
+            Set(request, "_requiredCounts", definition.Counts ?? Array.Empty<int>());
+            Set(request, "_requiredPreparations", (definition.PreparationIds ?? Array.Empty<string>()).
+                Select(Preparation).ToArray());
+            Set(request, "_requiredPreparationCounts",
+                definition.PreparationCounts ?? Array.Empty<int>());
             Set(request, "_rewardCopper", definition.RewardCopper);
+            Set(request, "_wetWeatherBonusCopper", definition.WetWeatherBonusCopper);
             Set(request, "_firstCompletionRelationshipDelta", definition.Relationship);
             Set(request, "_firstCompletionKnowledgeDelta", definition.Knowledge);
             Set(request, "_requiredFlagIds", definition.RequiredFlags);
@@ -184,6 +272,152 @@ namespace Hollowfen.EditorTools
             Set(request, "_completionDialogue", definition.CompletionDialogue);
             EditorUtility.SetDirty(request);
             return request;
+        }
+
+        private static IReadOnlyDictionary<string, DialogueData> BuildApothecaryDialogues()
+        {
+            var result = new Dictionary<string, DialogueData>(StringComparer.Ordinal)
+            {
+                ["almy_lesson"] = UpsertDialogue(
+                    ApothecaryDialogueRoot + "/Dialogue_Apothecary_Almy_FirstLesson.asset",
+                    "apothecary.almy.first_lesson",
+                    new[]
+                    {
+                        Line("Almy", "Your father's journal was never only a field book. Those small marks beside the margins are bench marks."),
+                        Line("Wren", "He had a room for this above the mill, and still wrote as if no one would ever stand there."),
+                        Line("Almy", "Grief made him private. Do not mistake privacy for wisdom. Name every specimen, measure twice, and write what leaves the shelf.", true),
+                        Line("Wren", "Then the first thing I prepare will be a record."),
+                    }, new[] { "apothecary_almy_lesson_seen" }),
+                ["bram_memory"] = UpsertDialogue(
+                    ApothecaryDialogueRoot + "/Dialogue_Apothecary_Bram_TobinMemory.asset",
+                    "apothecary.bram.tobin_memory",
+                    new[]
+                    {
+                        Line("Bram", "Tobin used to come down after midnight with ink on both cuffs and ask whether the rain had changed its mind."),
+                        Line("Wren", "Did it?"),
+                        Line("Bram", "Never. But he kept better notes than the weather did."),
+                    }, new[] { "apothecary_bram_memory_seen" }),
+                ["joren_work"] = UpsertDialogue(
+                    ApothecaryDialogueRoot + "/Dialogue_Apothecary_Joren_Worksite.asset",
+                    "apothecary.joren.worksite",
+                    new[]
+                    {
+                        Line("Joren", "The stone is sound. It is the hinges, flue, and table feet that have forgotten their work."),
+                        Line("Wren", "Can they remember?"),
+                        Line("Joren", "Wood remembers pressure. Iron remembers heat. People are the troublesome material."),
+                    }, Array.Empty<string>()),
+                ["pell_ledger"] = UpsertDialogue(
+                    ApothecaryDialogueRoot + "/Dialogue_Apothecary_Pell_Ledger.asset",
+                    "apothecary.pell.ledger",
+                    new[]
+                    {
+                        Line("Pell", "A workshop reopening counts as trade, care, inheritance, and fire inspection. I have given it four lines."),
+                        Line("Wren", "Only four?"),
+                        Line("Pell", "Ink is not free. Apparently that is now your concern."),
+                    }, Array.Empty<string>()),
+                ["hollin_reflection"] = UpsertDialogue(
+                    ApothecaryDialogueRoot + "/Dialogue_Apothecary_Hollin_Reflection.asset",
+                    "apothecary.hollin.reflection",
+                    new[]
+                    {
+                        Line("Hollin", "Sable kept her knowledge behind a door. Your father kept his inside a book."),
+                        Line("Wren", "And I put mine on labels."),
+                        Line("Hollin", "Yes. A village can argue with a label. A secret only waits to be lost.", true),
+                    }, new[] { "apothecary_hollin_reflection_seen" }),
+                ["theo_delivery"] = UpsertDialogue(
+                    ApothecaryDialogueRoot + "/Dialogue_Apothecary_Theo_FieldInkDelivery.asset",
+                    "apothecary.theo.field_ink_delivery",
+                    new[]
+                    {
+                        Line("Wren", "One stoppered inkwell. It dried dark enough to survive my thumb."),
+                        Line("Theo", "And the road, I hope. Your father sold me notes once. The rain bought most of them before I reached the ridge."),
+                        Line("Theo", "This is better work, Wren. Not because it is grand. Because it arrives readable.", true),
+                    }, Array.Empty<string>()),
+                ["marra_delivery"] = UpsertDialogue(
+                    ApothecaryDialogueRoot + "/Dialogue_Apothecary_Marra_BrothDelivery.asset",
+                    "apothecary.marra.broth_delivery",
+                    new[]
+                    {
+                        Line("Wren", "The first covered jar from the restored bench."),
+                        Line("Marra", "Label straight. Lid sound. Smells like Goldfoot without shouting about it."),
+                        Line("Marra", "Tobin kept secrets. You are keeping stock. That may be the more useful inheritance.", true),
+                    }, Array.Empty<string>()),
+                ["edda_delivery"] = UpsertDialogue(
+                    ApothecaryDialogueRoot + "/Dialogue_Apothecary_Edda_TonicDelivery.asset",
+                    "apothecary.edda.tonic_delivery",
+                    new[]
+                    {
+                        Line("Wren", "Sealed, dated, and entered twice. Once in the workshop ledger, once in mine."),
+                        Line("Edda", "Good. A frightened person reads badly. The label must do the remembering for them."),
+                        Line("Edda", "This belongs to Hollowfen's shelf, not to rumor. That is how we keep care from becoming harm.", true),
+                        Line("Wren", "Then the room is open."),
+                    }, Array.Empty<string>()),
+            };
+
+            ConfigureDialogueScores(result["almy_lesson"], 1, "almy", 2);
+            ConfigureDialogueScores(result["bram_memory"], 0, "bram", 1);
+            ConfigureDialogueScores(result["hollin_reflection"], 2, "hollin", 1);
+            ConfigureDialogueMemory(result["almy_lesson"], "almy", "almy.apothecary_first_lesson");
+            ConfigureDialogueMemory(result["bram_memory"], "bram", "bram.shared_tobin_weather_story");
+            ConfigureDialogueMemory(result["marra_delivery"], "marra", "marra.received_first_apothecary_broth");
+            ConfigureDialogueMemory(result["edda_delivery"], "edda", "edda.opened_village_care_shelf");
+            return result;
+        }
+
+        private static void ConfigureDialogueMemory(DialogueData dialogue, string npcId, string memoryId)
+        {
+            Set(dialogue, "_memoryOutcomes", new[]
+            {
+                new DialogueMemoryOutcome { npcId = npcId, memoryId = memoryId },
+            });
+            EditorUtility.SetDirty(dialogue);
+        }
+
+        private static void ConfigureDialogueScores(DialogueData dialogue, int knowledge,
+            string npcId, int relationship)
+        {
+            Set(dialogue, "_knowledgeDelta", knowledge);
+            Set(dialogue, "_relationshipNpcIds",
+                string.IsNullOrWhiteSpace(npcId) ? Array.Empty<string>() : new[] { npcId });
+            Set(dialogue, "_relationshipDeltas",
+                string.IsNullOrWhiteSpace(npcId) ? Array.Empty<int>() : new[] { relationship });
+            EditorUtility.SetDirty(dialogue);
+        }
+
+        private static void WireApothecaryStory(IReadOnlyDictionary<string, DialogueData> dialogues)
+        {
+            PrependNpcDialogue("almy", Entry("tobin_workshop_in_use",
+                "apothecary_almy_lesson_seen", dialogues["almy_lesson"]));
+            PrependNpcDialogue("bram", Entry("tobin_workshop_in_use",
+                "apothecary_bram_memory_seen", dialogues["bram_memory"]));
+            PrependNpcDialogue("joren", Entry("tobin_workshop_work_started",
+                "tobin_workshop_restored", dialogues["joren_work"]));
+            PrependNpcDialogue("pell", Entry("tobin_workshop_work_started",
+                "tobin_workshop_restored", dialogues["pell_ledger"]));
+            PrependNpcDialogue("hollin", Entry("apothecary_story_complete",
+                "apothecary_hollin_reflection_seen", dialogues["hollin_reflection"]));
+        }
+
+        private static NPCDialogueEntry Entry(string requiredFlag, string blockedFlag,
+            DialogueData dialogue) => new NPCDialogueEntry
+            {
+                requiresFlagId = requiredFlag,
+                blockedByFlagId = blockedFlag,
+                dialog = dialogue,
+            };
+
+        private static void PrependNpcDialogue(string npcId, NPCDialogueEntry entry)
+        {
+            var npc = Npc(npcId);
+            var field = typeof(NPCData).GetField("_dialogueEntries",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            var entries = field?.GetValue(npc) as NPCDialogueEntry[] ?? Array.Empty<NPCDialogueEntry>();
+            string dialogueId = entry.dialog != null ? entry.dialog.Id : string.Empty;
+            var authored = new List<NPCDialogueEntry> { entry };
+            authored.AddRange(entries.Where(existing => existing.dialog == null ||
+                existing.dialog.Id != dialogueId));
+            field?.SetValue(npc, authored.ToArray());
+            EditorUtility.SetDirty(npc);
         }
 
         private static void UpsertDatabase(VillageRequestData[] requests)
@@ -214,7 +448,7 @@ namespace Hollowfen.EditorTools
             return dialogue;
         }
 
-        private static DialogueData RewriteFestivalFinale()
+        private static DialogueData RewriteFestivalFinale(QuestData festivalQuest)
         {
             var finale = Dialogue("act3.festival");
             Set(finale, "_lines", new[]
@@ -226,6 +460,7 @@ namespace Hollowfen.EditorTools
                 Line("Wren", "It was the first festival in three years. I let her be right about the bowls.", true),
             });
             ResetDialogueOutcomes(finale);
+            Set(finale, "_transitionMoment", festivalQuest != null ? festivalQuest.StoryMoment : null);
             EditorUtility.SetDirty(finale);
             return finale;
         }
@@ -249,6 +484,10 @@ namespace Hollowfen.EditorTools
             Set(dialogue, "_knowledgeDelta", 0);
             Set(dialogue, "_relationshipNpcIds", Array.Empty<string>());
             Set(dialogue, "_relationshipDeltas", Array.Empty<int>());
+            Set(dialogue, "_memoryOutcomes", Array.Empty<DialogueMemoryOutcome>());
+            Set(dialogue, "_bondOutcomes", Array.Empty<DialogueBondOutcome>());
+            Set(dialogue, "_favorOutcomes", Array.Empty<DialogueFavorOutcome>());
+            Set(dialogue, "_advanceMinutes", 0);
             Set(dialogue, "_transitionMoment", null);
             Set(dialogue, "_nextDialog", null);
             Set(dialogue, "_choices", Array.Empty<DialogueChoice>());
@@ -313,6 +552,9 @@ namespace Hollowfen.EditorTools
 
         private static MushroomFieldGuideData Mushroom(string id) =>
             FindById<MushroomFieldGuideData>(id, asset => asset.Id, "Assets/_Hollowfen/Data/Mushrooms");
+
+        private static PreparationRecipeData Preparation(string id) =>
+            FindById<PreparationRecipeData>(id, asset => asset.Id, "Assets/_Hollowfen/Data/Apothecary");
 
         private static StoryCardData StoryCard(string id) =>
             FindById<StoryCardData>(id, asset => asset.Id, "Assets/_Hollowfen/Data/StoryCards");

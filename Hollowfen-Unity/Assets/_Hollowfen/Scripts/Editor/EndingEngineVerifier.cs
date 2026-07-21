@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Hollowfen.Data;
+using Hollowfen.NPCs;
 using Hollowfen.Quests;
 using Hollowfen.Save;
 using UnityEditor;
+using UnityEngine;
 
 namespace Hollowfen.EditorTools
 {
@@ -21,12 +23,15 @@ namespace Hollowfen.EditorTools
                 .OrderBy(ending => ending.Id)
                 .ToArray();
             Require(endings.Length == 4, "expected four ending assets");
+            VerifySceneBootstrap(endings);
 
             int originalSlot = SaveManager.ActiveSlot;
             SaveManager.SetActiveSlot(3);
             try
             {
                 VerifyGates(endings);
+                VerifyRecoverableDecision();
+                VerifyQuestCheckpointOrdering();
                 foreach (var ending in endings) VerifyResolution(endings, ending);
                 VerifyAtomicRecovery();
             }
@@ -35,7 +40,119 @@ namespace Hollowfen.EditorTools
                 SaveManager.SetActiveSlot(originalSlot);
             }
 
-            return "ENDING ENGINE — PASS: fallback + threshold gates, all 4 exclusive commits, achievements, card isolation, disk round-trip, second-choice refusal, atomic backup recovery";
+            return "ENDING ENGINE — PASS: four scene-wired endings, fallback + threshold gates, settled quest checkpoints, post-quest fork recovery, resumable presentation for all 4 endings, achievements, card isolation, disk round-trip, acknowledgement, second-choice refusal, atomic backup recovery";
+        }
+
+        private static void VerifySceneBootstrap(EndingData[] endings)
+        {
+            var bootstrap = UnityEngine.Object.FindAnyObjectByType<QuestBootstrap>(FindObjectsInactive.Include);
+            Require(bootstrap != null, "loaded gameplay scene has no QuestBootstrap");
+
+            var serialized = new SerializedObject(bootstrap);
+            var references = serialized.FindProperty("_endings");
+            Require(references != null && references.arraySize == endings.Length,
+                "QuestBootstrap is not wired to all four endings");
+
+            var expected = new HashSet<EndingData>(endings);
+            for (int i = 0; i < references.arraySize; i++)
+            {
+                var ending = references.GetArrayElementAtIndex(i).objectReferenceValue as EndingData;
+                Require(ending != null && expected.Remove(ending),
+                    "QuestBootstrap contains a null or duplicate ending reference");
+            }
+            Require(expected.Count == 0, "QuestBootstrap is missing a canonical ending reference");
+        }
+
+        private static void VerifyQuestCheckpointOrdering()
+        {
+            var act1Final = AssetDatabase.LoadAssetAtPath<QuestData>(
+                "Assets/_Hollowfen/Data/Quests/Quest_Act1_07_MeetAlmy.asset");
+            var act2First = AssetDatabase.LoadAssetAtPath<QuestData>(
+                "Assets/_Hollowfen/Data/Quests/Quest_Act2_08_AlmyTeach.asset");
+            var terminal = AssetDatabase.LoadAssetAtPath<QuestData>(
+                "Assets/_Hollowfen/Data/Quests/Quest_Act4_26_MeetAldric.asset");
+            Require(act1Final != null && act2First != null && terminal != null,
+                "checkpoint quest assets are missing");
+
+            SaveManager.WriteSlot(3, new SaveSlotMeta());
+            GameScores.HydrateFrom(new SaveSlotMeta());
+            QuestManager.ResetForSlotSwitch();
+            QuestManager.HydrateFrom(Array.Empty<string>(), Array.Empty<string>());
+
+            QuestData observedActive = null;
+            Action<QuestData> checkpoint = _ =>
+            {
+                observedActive = QuestManager.ActiveQuest;
+                SaveCoordinator.SaveAll();
+            };
+            QuestManager.QuestCompleted += checkpoint;
+            try
+            {
+                QuestManager.StartQuest(act1Final);
+                QuestManager.CompleteQuest(act1Final.Id);
+                Require(observedActive == act2First,
+                    "QuestCompleted listeners still observe the completed Act-I quest");
+                var boundaryDisk = SaveManager.GetSlotMeta(3);
+                Require(boundaryDisk != null && boundaryDisk.CurrentQuestId == act2First.Id &&
+                        boundaryDisk.CurrentAct == 2,
+                    "Act-I to Act-II checkpoint did not persist the next quest identity");
+            }
+            finally
+            {
+                QuestManager.QuestCompleted -= checkpoint;
+            }
+
+            SaveManager.WriteSlot(3, new SaveSlotMeta());
+            GameScores.HydrateFrom(new SaveSlotMeta());
+            QuestManager.ResetForSlotSwitch();
+            QuestManager.HydrateFrom(Array.Empty<string>(), Array.Empty<string>());
+            checkpoint = _ => SaveCoordinator.SaveAll();
+            QuestManager.QuestCompleted += checkpoint;
+            try
+            {
+                QuestManager.StartQuest(terminal);
+                QuestManager.CompleteQuest(terminal.Id);
+                var terminalDisk = SaveManager.GetSlotMeta(3);
+                Require(terminalDisk != null && terminalDisk.CurrentQuestId == "final_choice_available" &&
+                        terminalDisk.CurrentAct == 4,
+                    "terminal checkpoint is not labelled as the pending final decision");
+            }
+            finally
+            {
+                QuestManager.QuestCompleted -= checkpoint;
+            }
+        }
+
+        private static void VerifyRecoverableDecision()
+        {
+            var aldric = AssetDatabase.LoadAssetAtPath<NPCData>(
+                "Assets/_Hollowfen/Data/NPCs/NPC_Aldric.asset");
+            var meeting = AssetDatabase.LoadAssetAtPath<Dialogue.DialogueData>(
+                "Assets/_Hollowfen/Data/Dialogue/Dialogue_Act4_MeetAldric.asset");
+            Require(aldric != null && meeting != null, "Aldric recovery assets are missing");
+
+            var pending = new SaveSlotMeta
+            {
+                CurrentQuest = "Choose Hollowfen's future",
+                CurrentQuestId = "meetAldric",
+                CurrentAct = 4,
+                CompletedQuestIds = new[] { "meetAldric" },
+                UnlockedStoryCardIds = Array.Empty<string>(),
+                GameFlagIds = new[] { "aldric_meeting_started", "final_choice_available" },
+            };
+            SaveManager.WriteSlot(3, pending);
+            SaveCoordinator.LoadSlot(3);
+            Require(aldric.PickDialog() == meeting,
+                "reloaded post-quest state cannot reopen Aldric's ending fork");
+
+            pending.GameFlagIds = new[]
+            {
+                "aldric_meeting_started", "final_choice_available", "ending_lordly_patronage", "game_complete"
+            };
+            GameScores.HydrateFrom(pending);
+            QuestManager.HydrateFrom(pending.CompletedQuestIds, pending.UnlockedStoryCardIds);
+            Require(aldric.PickDialog() == null,
+                "Aldric recovery fork remains interactable after game completion");
         }
 
         private static void VerifyGates(EndingData[] endings)
@@ -119,6 +236,20 @@ namespace Hollowfen.EditorTools
                     chosen.Id + " failed hydration after save reload");
                 Require(QuestManager.IsStoryCardUnlocked(chosen.StoryCard.Id),
                     chosen.Id + " story card failed hydration after save reload");
+                Require(EndingResolver.TryGetPendingPresentation(endings, out var pending) && pending == chosen,
+                    chosen.Id + " cannot recover its interrupted presentation after reload");
+                Require(EndingResolver.ReconcileCommittedEnding(pending),
+                    chosen.Id + " could not reconcile its committed presentation");
+                Require(endingAchievementCount == 2,
+                    chosen.Id + " recovery did not idempotently re-request its achievement");
+                Require(EndingResolver.MarkPresentationSeen(),
+                    chosen.Id + " could not persist presentation acknowledgement");
+                Require(!EndingResolver.TryGetPendingPresentation(endings, out _),
+                    chosen.Id + " still replays after acknowledgement");
+                var acknowledged = SaveManager.GetSlotMeta(3);
+                Require(acknowledged != null && acknowledged.GameFlagIds != null &&
+                        acknowledged.GameFlagIds.Contains(EndingResolver.PresentationSeenFlag),
+                    chosen.Id + " presentation acknowledgement did not reach disk");
             }
             finally
             {

@@ -63,6 +63,22 @@ namespace Hollowfen.Save
         // Repeatable village work — persistent one-shots, today's claimed NPC orders, and
         // the optional request currently pinned beneath the story quest HUD.
         public VillageRequestSnapshot VillageRequests;
+
+        // Living restoration — one monotonic row per authored village project. Quest/flag
+        // rules can migrate legacy saves upward, but a project never regresses on reload.
+        public RestorationSnapshot RestorationProjects;
+
+        // Tobin's restored preparation bench — bottled/jarred results and recipes Wren has
+        // successfully worked through. Null in historical saves means an empty apothecary shelf.
+        public ApothecarySnapshot Apothecary;
+
+        // Tobin's appointment ledger — investigations, revealed evidence, chosen preparations,
+        // and delayed follow-ups. Null in historical saves means no cases have been opened.
+        public ApothecaryCaseSnapshot ApothecaryCases;
+
+        // Personal history — durable recollections, NPC-to-NPC bonds, and each villager's
+        // optional favor chain. Null in historical saves means no personal moments recorded.
+        public VillagerRelationshipSnapshot VillagerRelationships;
     }
 
     // Parallel arrays, JsonUtility-friendly (same recipe as InventorySnapshot).
@@ -111,5 +127,49 @@ namespace Hollowfen.Save
         public int[] DailyDays;
         public string TrackedRequestId;
         public int TrackedDay;
+    }
+
+    [Serializable]
+    public class RestorationSnapshot
+    {
+        public string[] ProjectIds;
+        public int[] Stages;
+        public int[] StartedDays;
+        public int[] ChangedDays;
+    }
+
+    [Serializable]
+    public class ApothecarySnapshot
+    {
+        public string[] ProductIds;
+        public int[] ProductCounts;
+        public string[] CraftedRecipeIds;
+        public bool InteriorLightsOn;
+    }
+
+    [Serializable]
+    public class ApothecaryCaseSnapshot
+    {
+        public string[] Ids;
+        public int[] Stages;
+        public int[] StartedDays;
+        public int[] EvidenceMasks;
+        public int[] InterviewMasks;
+        public string[] DecisionIds;
+        public int[] FollowUpDays;
+        public int[] ResolvedDays;
+    }
+
+    [Serializable]
+    public class VillagerRelationshipSnapshot
+    {
+        public string[] MemoryNpcIds;
+        public string[] MemoryIds;
+        public int[] MemoryDays;
+        public string[] BondNpcAIds;
+        public string[] BondNpcBIds;
+        public int[] BondValues;
+        public string[] FavorIds;
+        public int[] FavorStages;
     }
 }

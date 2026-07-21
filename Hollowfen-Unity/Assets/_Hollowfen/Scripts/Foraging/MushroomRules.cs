@@ -12,6 +12,7 @@ namespace Hollowfen.Foraging
         public static bool CanHarvest(MushroomFieldGuideData species)
         {
             if (species == null) return false;
+            if (!MushroomKnowledge.IsFieldIdentified(species)) return false;
             return string.IsNullOrEmpty(species.RequiredForageFlagId) ||
                    GameScores.HasFlag(species.RequiredForageFlagId);
         }

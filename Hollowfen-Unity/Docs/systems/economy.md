@@ -4,7 +4,7 @@ Key scripts: `Items/CoinPurse.cs`, `UI/PurseScreen.cs`, `UI/CoinHUD.cs`, `Foragi
 Entry points: `P` / gamepad L3 toggles the purse from unobstructed gameplay; Pause exposes a clickable `Wren's Purse · balance` row; the bottom-left coin pill advertises the shortcut after Wren earns her first coin.
 Persistence: `SaveSlotMeta.CoinsCopper` stores the balance and `CoinLedgerSnapshot` stores the eight newest signed entries, running balances, and localization reason IDs.
 Biggest gotcha: selling is available only when the gameplay shortcut captures Marra or Theo as `PlayerInteractor.Current`; the Pause entry is informational because opening Pause clears live world focus.
-Status: balance, ledger persistence, non-mutating quotes, accepted-only sales, refused-item retention, direct-gameplay pause restoration, Pause-stack return, and production UI lint verified 2026-07-16.
+Status: balance, ledger persistence, non-mutating quotes, accepted-only sales, refused-item retention, direct-gameplay pause restoration, Pause-stack return, production UI lint, recurring-work opportunity cost, first-tax attainability, and restoration pacing verified through 2026-07-19.
 
 > Self-healing doc: if you change currency, buyer policy, purse entry points, or transaction persistence, update this doc and the batch worksheet in the same change.
 
@@ -49,6 +49,9 @@ Reason IDs are save data. Do not rename one without a fallback/migration, becaus
 
 ## Verification
 
+- `ProductionBalanceVerifier`: all 21 species preserve Theo's premium where both merchants buy; every recurring request's base plus eligible wet-weather premium meets or beats the basket's best direct-sale value; first-payment cash plus the common wild population can fund the 144c tax after Joren's commission; seven restoration projects total 202c, within two common-forage cycles.
+- Edda's Wood Ear poultice now pays 24c instead of 18c, covering the same ingredients' 22c best direct-sale value rather than punishing the player for accepting village work.
+
 - Sale fixture: 5 carried → Theo quote accepted 1/refused 4 for 14c; commit produced 4 carried, +14c, and no remaining Theo-eligible stock.
 - Disk round-trip: `CoinsCopper=82` and the newest ledger row stored `+14`, balance `82`, `purse.transaction.theo_sale` immediately after the test sale.
 - Entry paths: Pause rendered `Wren's Purse · 5s 8c`; clicking pushed `purse`, Back resumed Pause at time scale 0, a second Back restored gameplay at time scale 1 with cursor locked.
@@ -56,4 +59,3 @@ Reason IDs are save data. Do not rename one without a fallback/migration, becaus
 - Merchant capture: a live Marra `NPCInteractable` mapped to `MushroomBuyer.Marra`; with no eligible stock the screen showed the refusal explanation and no misleading disabled sale button.
 - `ProductionUIVerifier`: `PASS · 0 critical · 0 advisory` on the settled purse.
 - The tester's save directory was restored byte-for-byte from its pre-test backup.
-

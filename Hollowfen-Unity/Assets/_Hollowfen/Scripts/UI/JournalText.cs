@@ -33,6 +33,30 @@ namespace Hollowfen.UI
             return Field("character", profile != null ? profile.Id : null, "kit." + index + "." + field, fallback);
         }
 
+        public static string EndingChoice(EndingData ending) => EndingField(ending, "choice", ending != null ? ending.ChoiceText : "");
+        public static string EndingContext(EndingData ending) => EndingField(ending, "context", ending != null ? ending.ChoiceContext : "");
+        public static string EndingLockedHint(EndingData ending) => EndingField(ending, "locked_hint", ending != null ? ending.LockedHint : "");
+        public static string EndingEpilogue(EndingData ending, int index)
+        {
+            string fallback = ending != null && ending.EpilogueCaptions != null && index >= 0 && index < ending.EpilogueCaptions.Length
+                ? ending.EpilogueCaptions[index]
+                : "";
+            return EndingField(ending, "epilogue." + index, fallback);
+        }
+
+        public static string[] EndingEpilogue(EndingData ending)
+        {
+            if (ending == null || ending.EpilogueCaptions == null) return System.Array.Empty<string>();
+            var resolved = new string[ending.EpilogueCaptions.Length];
+            for (int i = 0; i < resolved.Length; i++) resolved[i] = EndingEpilogue(ending, i);
+            return resolved;
+        }
+
+        private static string EndingField(EndingData ending, string field, string fallback)
+        {
+            return Field("ending", ending != null ? ending.Id : null, field, fallback);
+        }
+
         private static string Field(string domain, string id, string field, string fallback)
         {
             if (string.IsNullOrEmpty(id)) return fallback ?? "";

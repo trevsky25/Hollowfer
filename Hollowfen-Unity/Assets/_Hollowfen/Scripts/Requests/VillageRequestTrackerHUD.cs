@@ -1,4 +1,5 @@
 using Hollowfen.Foraging;
+using Hollowfen.Apothecary;
 using Hollowfen.GameTime;
 using Hollowfen.UI;
 using TMPro;
@@ -44,6 +45,7 @@ namespace Hollowfen.Requests
         {
             VillageRequests.OnChanged += Refresh;
             InventoryRuntime.OnChanged += HandleInventory;
+            ApothecaryRuntime.OnChanged += Refresh;
             TimeManager.OnDayChanged += HandleDay;
             Refresh();
         }
@@ -52,6 +54,7 @@ namespace Hollowfen.Requests
         {
             VillageRequests.OnChanged -= Refresh;
             InventoryRuntime.OnChanged -= HandleInventory;
+            ApothecaryRuntime.OnChanged -= Refresh;
             TimeManager.OnDayChanged -= HandleDay;
         }
 
@@ -110,7 +113,7 @@ namespace Hollowfen.Requests
             UICanvasUtil.SetRect((RectTransform)bar.transform, new Vector2(0f, 0.1f), new Vector2(0f, 0.9f),
                 new Vector2(0f, 0.5f), new Vector2(4f, 0f), new Vector2(6f, 0f));
 
-            _eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", rt, "", 10f,
+            _eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", rt, "", 12.5f,
                 new Color(0.70f, 0.83f, 0.56f, 1f), TextAlignmentOptions.TopLeft);
             SetTextRect(_eyebrow.rectTransform, -8f, 15f);
             _title = UICanvasUtil.NewHeading("Title", rt, "", 17f,

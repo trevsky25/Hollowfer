@@ -18,6 +18,7 @@ MonoBehaviour:
   _act: 3
   _order: 19
   _unlockStoryCardOnComplete: {fileID: 11400000, guid: 7e91f1f32538b4186bdc0e9f63a09da2, type: 2}
+  _storyMoment: {fileID: 11400000, guid: 5ac98b150e92647b3b71bef66c684888, type: 2}
   _nextQuest: {fileID: 11400000, guid: d650824881984f5aa9e48285054bb846, type: 2}
   _waypointLocation: {fileID: 11400000, guid: 5789ffaf8c78f446ea3813793a9c0007, type: 2}
   _villageHopeDelta: 0
@@ -25,6 +26,4 @@ MonoBehaviour:
   _relationshipNpcIds:
   - calden
   - almy
-  _relationshipDeltas:
-  - 15
-  - 5
+  _relationshipDeltas: 0f00000005000000

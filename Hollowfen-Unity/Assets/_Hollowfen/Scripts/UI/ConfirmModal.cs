@@ -1,4 +1,5 @@
 using System;
+using Hollowfen.Cinematics;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,7 +16,7 @@ namespace Hollowfen.UI
     // Batch-44: rebuilt programmatically in the journal-paper register (the batch-28
     // SettingsScreen template for legacy menu chrome) — the legacy scene-authored gray
     // panel is wiped at initialize and replaced with the parchment card: ink scrim,
-    // soft shadow, paper grain + sheen, inset gold hairline frame, IM Fell serif title
+    // clean rounded paper surface, inset gold hairline frame, IM Fell serif title
     // over a ledger double-rule, and Cancel (ink ghost) / Confirm (gold accent) buttons
     // with FocusHighlight. API unchanged.
     public class ConfirmModal : UIScreen
@@ -40,6 +41,7 @@ namespace Hollowfen.UI
 
         private Action _onConfirm;
         private Action _onCancel;
+        private NarrativePresentationSession.Lease _presentationLease;
 
         public override GameObject DefaultSelected => _defaultFocus;
 
@@ -75,7 +77,28 @@ namespace Hollowfen.UI
 
         private void OnDestroy()
         {
+            ReleasePresentation();
             if (Instance == this) Instance = null;
+        }
+
+        public override void OnOpen()
+        {
+            base.OnOpen();
+            if (_presentationLease == null)
+                _presentationLease = NarrativePresentationSession.AcquireIfGameplay(
+                    this, NarrativePresentationSession.Modal);
+        }
+
+        public override void OnClose()
+        {
+            ReleasePresentation();
+            base.OnClose();
+        }
+
+        private void ReleasePresentation()
+        {
+            _presentationLease?.Dispose();
+            _presentationLease = null;
         }
 
         public static bool Show(string title, string message, Action onConfirm, Action onCancel = null)
@@ -164,24 +187,11 @@ namespace Hollowfen.UI
             card.pivot = new Vector2(0.5f, 0.5f);
             card.sizeDelta = new Vector2(CardW, CardH);
             card.anchoredPosition = Vector2.zero;
-            UICanvasUtil.AddShadow(card, 24, 34, 0.5f, -12f);
+            // Keep modal cards shadow-free and let the rounded fill own the entire silhouette.
+            // A generated sibling shadow exposed a rectangular block against the pause card, while
+            // the full-card grain/sheen images painted back into the fill's transparent corners.
+            // The scrim, paper contrast, and inset rule already provide sufficient separation.
             UICanvasUtil.MakeRoundedPanel(card, Paper, 24, 0.55f);
-
-            // Paper materiality: grain speckle + a faint top-light gradient.
-            var grain = UICanvasUtil.NewImage("Grain", card, new Color(Ink.r, Ink.g, Ink.b, 1f), false);
-            var grainImg = grain.GetComponent<Image>();
-            grainImg.sprite = UICanvasUtil.PaperGrain();
-            grainImg.type = Image.Type.Simple;
-            UICanvasUtil.Stretch((RectTransform)grain.transform);
-            var sheen = UICanvasUtil.NewImage("Sheen", card, Color.white, false);
-            var sheenImg = sheen.GetComponent<Image>();
-            sheenImg.sprite = UICanvasUtil.MakeVerticalGradient(new[]
-            {
-                new UICanvasUtil.GradientStop(0f, new Color(0.16f, 0.13f, 0.095f, 0.05f)),
-                new UICanvasUtil.GradientStop(0.4f, new Color(1f, 1f, 1f, 0f)),
-                new UICanvasUtil.GradientStop(1f, new Color(1f, 1f, 1f, 0.16f)),
-            });
-            UICanvasUtil.Stretch((RectTransform)sheen.transform);
 
             // Inset gold frame — a hairline sitting just inside the page edge.
             var frame = UICanvasUtil.NewImage("InnerFrame", card, new Color(Bronze.r, Bronze.g, Bronze.b, 0.4f), false);

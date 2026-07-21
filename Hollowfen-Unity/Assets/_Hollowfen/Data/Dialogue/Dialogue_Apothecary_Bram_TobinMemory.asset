@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00c9c9bb92b3b44fb84ca335c48467d8, type: 3}
+  m_Name: Dialogue_Apothecary_Bram_TobinMemory
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Dialogue.DialogueData
+  _id: apothecary.bram.tobin_memory
+  _lines:
+  - speaker: Bram
+    text: Tobin used to come down after midnight with ink on both cuffs and ask whether
+      the rain had changed its mind.
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 972d78ea676894c78b8f184dbf59ead5, type: 3}
+  - speaker: Wren
+    text: Did it?
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 137b794e1c1f5424cb83a1dee750e12e, type: 3}
+  - speaker: Bram
+    text: Never. But he kept better notes than the weather did.
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: ecf2b46702b20445c8c5e8b876830898, type: 3}
+  _mushroomHandoff:
+    beforeLineIndex: 0
+    recipientSpeaker: 
+    mushroom: {fileID: 0}
+    presentationHeight: 0
+  _unlockStoryCard: {fileID: 0}
+  _completeQuest: {fileID: 0}
+  _giveItemId: 
+  _grantCoinsCopper: 0
+  _spendsCoinsCopper: 0
+  _sellsForageBasket: 0
+  _basketCopperPerItem: 0
+  _basketBuyer: 0
+  _grantForage: {fileID: 0}
+  _grantForageCount: 1
+  _consumeForage: {fileID: 0}
+  _consumeForageCount: 1
+  _setFlagIds:
+  - apothecary_bram_memory_seen
+  _villageHopeDelta: 0
+  _knowledgeDelta: 0
+  _relationshipNpcIds:
+  - bram
+  _relationshipDeltas: 01000000
+  _memoryOutcomes:
+  - npcId: bram
+    memoryId: bram.shared_tobin_weather_story
+  _bondOutcomes: []
+  _favorOutcomes: []
+  _advanceMinutes: 0
+  _transitionMoment: {fileID: 0}
+  _nextDialog: {fileID: 0}
+  _choices: []

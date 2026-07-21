@@ -19,6 +19,12 @@ namespace Hollowfen.UI
         public static readonly Color GoldFaint  = new Color(0.792f, 0.659f, 0.341f, 0.45f);
         public static readonly Color GoldGlow   = new Color(0.965f, 0.812f, 0.475f, 1f); // focus highlight
 
+        // Accessible text accents for light paper. Gold/Moss are decorative colors and do not
+        // provide enough contrast against Parchment when used for small copy.
+        public static readonly Color PaperAccentInk = new Color(0.320f, 0.250f, 0.110f, 1f);
+        public static readonly Color PaperMutedInk  = new Color(0.350f, 0.340f, 0.290f, 1f);
+        public static readonly Color PaperSuccessInk = new Color(0.180f, 0.320f, 0.180f, 1f);
+
         // Menu surfaces (batch-64). These are deliberately neutral/forest-toned:
         // gold is reserved for hierarchy and interaction, not used as a box fill.
         public static readonly Color JournalBackdrop = new Color(0.020f, 0.031f, 0.020f, 1f);

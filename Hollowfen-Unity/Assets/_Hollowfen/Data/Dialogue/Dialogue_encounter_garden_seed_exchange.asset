@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00c9c9bb92b3b44fb84ca335c48467d8, type: 3}
+  m_Name: Dialogue_encounter_garden_seed_exchange
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Dialogue.DialogueData
+  _id: encounter.garden_seed_exchange
+  _lines:
+  - speaker: Marra
+    text: I need leaves that survive a stewpot, not another plant that looks meaningful
+      beside a wall.
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: a7a7510a8824940d693df873461596d9, type: 3}
+  - speaker: Almy
+    text: Meaning keeps poorly in broth. Take the sorrel seed.
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: dd6bb8225bb3b4452b7c58c8e54e630d, type: 3}
+  - speaker: Wren
+    text: And the sheltered row? It stays damp after the morning mist.
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: c541a665c816a452096af8d33a122140, type: 3}
+  - speaker: Almy
+    text: Good. Plant half there and let Marra compare the flavor.
+    isCloseup: 0
+    voiceClip: {fileID: 8300000, guid: 3f5d6027cde0248c6aa68299844533cb, type: 3}
+  - speaker: Marra
+    text: A garden trial with lunch at the end. At last, scholarship improves.
+    isCloseup: 1
+    voiceClip: {fileID: 8300000, guid: b869e53990f6d4de886847557aa01ccf, type: 3}
+  _mushroomHandoff:
+    beforeLineIndex: 0
+    recipientSpeaker: 
+    mushroom: {fileID: 0}
+    presentationHeight: 0
+  _unlockStoryCard: {fileID: 0}
+  _completeQuest: {fileID: 0}
+  _giveItemId: 
+  _grantCoinsCopper: 0
+  _spendsCoinsCopper: 0
+  _sellsForageBasket: 0
+  _basketCopperPerItem: 0
+  _basketBuyer: 0
+  _grantForage: {fileID: 0}
+  _grantForageCount: 1
+  _consumeForage: {fileID: 0}
+  _consumeForageCount: 1
+  _setFlagIds:
+  - encounter.garden_seed_seen
+  _villageHopeDelta: 0
+  _knowledgeDelta: 1
+  _relationshipNpcIds:
+  - almy
+  - marra
+  _relationshipDeltas: 0100000001000000
+  _memoryOutcomes:
+  - npcId: almy
+    memoryId: almy.traded_chapel_seed
+  - npcId: marra
+    memoryId: marra.traded_chapel_seed
+  _bondOutcomes:
+  - firstNpcId: almy
+    secondNpcId: marra
+    delta: 2
+  _favorOutcomes: []
+  _advanceMinutes: 25
+  _atomicSocialOutcomes: 1
+  _transitionMoment: {fileID: 0}
+  _nextDialog: {fileID: 0}
+  _choices: []

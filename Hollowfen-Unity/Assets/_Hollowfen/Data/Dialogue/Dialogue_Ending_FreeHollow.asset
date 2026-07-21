@@ -34,6 +34,11 @@ MonoBehaviour:
     text: I expect to. That does not make it wrong.
     isCloseup: 1
     voiceClip: {fileID: 8300000, guid: 8d1ef596081fc438aa06cf526ab2da73, type: 3}
+  _mushroomHandoff:
+    beforeLineIndex: 0
+    recipientSpeaker: 
+    mushroom: {fileID: 0}
+    presentationHeight: 0
   _unlockStoryCard: {fileID: 0}
   _completeQuest: {fileID: 0}
   _giveItemId: 
@@ -51,6 +56,10 @@ MonoBehaviour:
   _knowledgeDelta: 0
   _relationshipNpcIds: []
   _relationshipDeltas: 
-  _transitionMoment: {fileID: 0}
+  _memoryOutcomes: []
+  _bondOutcomes: []
+  _favorOutcomes: []
+  _advanceMinutes: 0
+  _transitionMoment: {fileID: 11400000, guid: f13ae77121c06486fa3bffb35b230529, type: 2}
   _nextDialog: {fileID: 0}
   _choices: []

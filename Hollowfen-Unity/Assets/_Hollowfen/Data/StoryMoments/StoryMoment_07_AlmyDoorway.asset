@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d0fced8610445dd87f9c05997c7c4b4, type: 3}
+  m_Name: StoryMoment_07_AlmyDoorway
+  m_EditorClassIdentifier: Assembly-CSharp::Hollowfen.Data.StoryMomentData
+  _id: story.almy_doorway.illustrated
+  _presentation: 0
+  _trigger: 0
+  _storyCard: {fileID: 11400000, guid: 6020acf222d4544ff805f44f48397cbc, type: 2}
+  _captionIds:
+  - story.almy_doorway.beat.0
+  - story.almy_doorway.beat.1
+  - story.almy_doorway.beat.2
+  _captionFallbacks:
+  - Sister Almy arrives unannounced at the mill.
+  - She tells Wren her grandmother knew the old foraging lore.
+  - Wren's personal hook becomes a generational one.
+  _voiceClips:
+  - {fileID: 8300000, guid: 182222ae50b674fe29423e8c172984f9, type: 3}
+  - {fileID: 8300000, guid: 910a8aa09734d421f8d6bfbbd846fed3, type: 3}
+  - {fileID: 8300000, guid: 735a15c5452254b789b5f9872b704715, type: 3}
+  _images:
+  - {fileID: 21300000, guid: 9a23bc8e44cd14c389e35c4f5acbdf44, type: 3}
+  - {fileID: 21300000, guid: 86135be869fdf4b888444fe78c69ab0b, type: 3}
+  - {fileID: 21300000, guid: d6609c2cb55d046c7a0438fa934c6155, type: 3}
+  _beatImages: 000000000100000002000000
+  _showStoryCardTitle: 0
+  _showCaptions: 1
+  _fadeIn: 1
+  _holdSeconds: 0
+  _pageTextId: 
+  _pageTextFallback: 
+  _pageTextImageIndex: -1
+  _pageTextStartBeat: 0
+  _pageTextParagraphRevealBeats: 
+  _pageTextRect:
+    serializedVersion: 2
+    x: 0.2
+    y: 0.2
+    width: 0.6
+    height: 0.6
+  _pageTextRotation: 0
+  _pageTextFontSize: 30
+  _pageTextColor: {r: 0.16, g: 0.1, b: 0.05, a: 0.86}
+  _focusContext: 0
+  _focusDistance: 0.4
+  _focusHeight: 0.05
+  _focusFov: 30
+  _focusPushSeconds: 1.2
+  _focusHoldSeconds: 1.6
+  _focusRestoreSeconds: 0.2

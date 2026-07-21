@@ -1,10 +1,10 @@
 # Map System
-Full-bleed full-screen map + mini-map corner widget + compass strip, all rendering the real 3D world via ortho cameras → RenderTextures → UI. Full map supports pan, two zoom presets, clamped framing, POI discovery/waypoints, region display, and a live labeled current-location marker with Wren's heading.
-Key scripts: `Assets/_Hollowfen/Scripts/Map/` — MapScreen, MapCamera, MapInputBridge, LocationData, LocationMarker, LocationMarkerOverlay, LocationRegistry, RegionCatalog, RegionTrigger, MiniMapCamera, MiniMapWidget, PlayerHeadingArrow; `UI/RegionArrivalToast`.
+Full-bleed full-screen map + top-right mini-map + top-center compass. The full map renders the 3D world through an ortho camera; the mini-map crops a baked overhead image around Wren and retains the old camera only as fallback. The full map supports pan, two zoom presets, clamped framing, POI discovery/waypoints, region display, and a live labeled current-location marker.
+Key scripts: `Assets/_Hollowfen/Scripts/Map/` — MapScreen, MapCamera, MapInputBridge, LocationData, LocationMarker, LocationMarkerOverlay, LocationRegistry, RegionCatalog, RegionTrigger, MiniMapCamera, MiniMapWidget, PlayerHeadingArrow; `UI/CompassStrip`, `UI/ClockHUD`, `UI/RegionArrivalToast`.
 Data: `Data/Locations/LocationData_*.asset` (14 POIs incl. `clear_cut` + `manor`; only FathersMill `_discoveredByDefault`); discovery key = `_id`, names/descriptions via localization keys (`loc.<id>.name/.desc`). Regions: `village`/`wend`/`old_wood`/`manor` — `_regionId` renders via MapScreen `LocalizeRegion` (add a `case` per new region or it shows the raw id).
 Entry points: `Player/OpenMap` (M / Select / touchpad) toggles, `UI/Cancel` closes (MapInputBridge); inside: arrows/D-pad cycle POIs, Enter/A toggles waypoint, Tab/RB zoom preset, F/R3 recenter.
 Biggest gotchas: `BuildIfNeeded` DESTROYS all children of the map canvas on first open; `MapCamera.Awake` creates a runtime 2048×1024 RT that orphans any inspector-assigned RT asset; the current-location marker must remain after `POIRoot` in sibling order so POI labels cannot cover it.
-Status: current-location marker, map reopen, POI focus, and regional routing verified in Play mode 2026-07-16.
+Status: current-location marker, map reopen, POI focus, regional routing, shadow-free mini-map, centred day-period pill, and rounded compass verified in Play mode through 2026-07-17.
 
 > Self-healing doc: if you change this system, update this doc (including the 7-line header) in the same batch, and note the change in the batch worksheet.
 
@@ -30,6 +30,13 @@ Built on first `Open()` (`BuildIfNeeded` → `BuildUI`), 1920×1080 reference. *
 - **Clamping**: clamps the visible FRAME, not the center — `half = ortho × aspect` per axis, center ∈ `[min+half, max−half]`, pins to world middle if the frame exceeds the world. `_worldBounds` auto-tightens in Awake to `Terrain.activeTerrain` position+size (default Rect 0,0,500,500 without terrain). Awake also caps all ortho values to `min(boundsW/(2·aspect), boundsH/2)` — the fix for the old "black void" bug.
 - **Fog**: `beginCameraRendering` saves fog+skybox state, disables fog, restores after (URP fog-at-altitude gotcha).
 
+## Mini-map + compass HUD
+
+- **Mini-map**: `_MiniMapCanvas/MiniMapPanel` is a 288×288 top-right panel with a 312px ink frame, 288px circular mask, 296px gold ring, cardinal labels, heading arrow, and location overlay. Its old 336px offset `Shadow` image is intentionally inactive; the frame supplies even separation without the large dark disc behind the map.
+- **Baked view**: `MiniMapWidget` assigns the baked overhead texture, crops its UV rect around the tagged player using terrain bounds, and asks `MiniMapCamera` to stop rendering. A scene without `_bakedMap` retains the live ortho-camera fallback.
+- **Clock**: `ClockHUD` creates the localized `Day N · Period` pill as a child of `MiniMapPanel`, anchored at bottom-center `(0, -40)`. Do not return it to a separately hard-coded canvas offset—the shared coordinate space is what keeps its horizontal center aligned across aspect ratios and scaler changes.
+- **Compass**: `_HUDCanvas/Compass` is a 560×42 rounded ink-glass pill with a matching gold hairline. `CompassStrip` slides the eight direction marks inside `MarksContainer`'s 120° `RectMask2D` window and places the active waypoint beneath it. The legacy `FadeL`/`FadeR` gradient images remain authored but inactive: their rectangular quads visually squared off the pill ends.
+
 ## Locations (data → pins → discovery)
 
 - **LocationData** SO: `_id` (persistence key) · `_displayNameId`/`_shortDescriptionId` (localization) · `_mapIcon` (⚠️ vestigial — pins are procedural, all 8 assets null) · `_discoveredByDefault` · `_regionId` (`village`/`old_wood`/`wend`).
@@ -39,7 +46,7 @@ Built on first `Open()` (`BuildIfNeeded` → `BuildUI`), 1920×1080 reference. *
 - **LocationRegistry** (static): markers + `_discovered` set + regions + `ActiveWaypoint`. Events: `LocationDiscovered(id)`, `RegionChanged(regionId)`, `WaypointChanged(marker)`. Persistence: `SaveSlotMeta.DiscoveredLocationIds` — lazy hydrate + immediate `AutoSaveDiscoveredLocations` on discovery; `HydrateFromSave` re-applies defaults. Waypoint NOT persisted; auto-clears when its marker unregisters. `ResetOnLoad` clears everything incl. events (domain-reload-off safe). Quest waypoints: `QuestManager.StartQuest` matches `QuestData.WaypointLocation` → `SetWaypoint`.
 - **RegionTrigger**: BoxCollider trigger push/pops on player enter/exit; highest-`Priority` active trigger wins. Disabling a trigger pops it, preventing story swaps from pinning stale state. Six volumes cover northern/southern village, Wend crossing/clear-cut, Old Wood, and manor.
 - **RegionCatalog**: four stable ids (`village`, `wend`, `old_wood`, `manor`) → localized display name/subtitle with English fallback. Map chrome, audio, and arrival presentation share it.
-- **RegionArrivalToast**: code-built order-14 overlay below map/dialogue. Fades/slides at the top center using unscaled time, captures no input, pauses nothing, and ignores null/unknown regions.
+- **RegionArrivalToast**: code-built order-14 overlay below map/dialogue. Fades/slides at the top center using unscaled time, captures no input, pauses nothing, and ignores null/unknown regions. Its shown top inset is 140 reference pixels, leaving a 28px design band below the compass pill **and its optional waypoint/distance label**, which together own the top 112px; keep `WorldFeedbackVerifier`'s ≥132px safe-band assertion if either HUD element is resized.
 
 ## POI placement workflow (now trivial)
 

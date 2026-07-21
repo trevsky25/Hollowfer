@@ -29,6 +29,10 @@ import sys
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 DIALOGUE_DIR = os.path.join(REPO, "Hollowfen-Unity/Assets/_Hollowfen/Data/Dialogue")
 OUT_ROOT = os.path.join(REPO, "Hollowfen-Unity/Assets/_Hollowfen/Audio/VO")
+STORY_SEQUENCE_MANIFEST = os.path.join(
+    REPO,
+    "Hollowfen-Unity/Assets/_Hollowfen/Data/StoryMoments/story_dialogue_sequences.json",
+)
 
 # Voice cast (Kokoro voice ids; prefix picks the pipeline lang: a=American, b=British).
 # Wren/Narrator entries are fallback scratch casting only. The active assets are
@@ -50,15 +54,15 @@ VOICES = {
     "Pell":            ("bm_george", 0.97),   # dry village chronicler
 }
 
-# The once-per-save homecoming intro (copy verbatim from StoryBeats.IntroCaptions —
-# batch-36 restored the bible's fuller 6-beat Scene-1 passage).
+# The once-per-save homecoming intro (copy verbatim from Localization.cs
+# act1.homecoming.intro.0..5; StoryBeats resolves those IDs at runtime).
 INTRO_CAPTIONS = [
-    "It had been three years since Wren Tobin walked the east road into Hollowfen.",
-    "At first, the valley looked as it always had from the ridge: the low roofs tucked into the hollow, the dark shoulder of the Old Wood behind them, the pale line of the Wend cutting through the fields.",
-    "Then the road dipped, and the old picture came apart.",
-    "The river was wrong.",
-    "Smoke rose from fewer chimneys than Wren remembered. Two cottages near the well had boards nailed over their windows.",
-    "The village did not greet her. No children ran the lane, no cart on the Slatemoor road. The only one who stood there was an old friend — Bram, the innkeeper of The Crooked Pintle.",
+    "Three years after leaving for Veyrwick, Wren Tobin came home because her father's letters had stopped.",
+    "From the ridge, Hollowfen almost fooled her: low roofs in the hollow, the dark shoulder of the Old Wood, the pale Wend threading the fields.",
+    "Then the road dipped, and the old picture broke apart.",
+    "The river was wrong. The millstream lay dry, while the lower fields shone with floodwater where wheat should have stood.",
+    "Too few chimneys smoked. Boards covered cottages by the well. Even the wind seemed to know which doors no longer opened.",
+    "No children ran to meet her. Only Old Bram waited beside the village well, older and quieter than the man she remembered.",
 ]
 
 # The hidden-journal reveal (Scene 4), Wren's inner narration voice reading her father's journal
@@ -68,25 +72,90 @@ INTRO_CAPTIONS = [
 # framed as Wren reading; Chatterbox owns the active renders. A distinct Tobin voice is a parked
 # casting call (QUESTIONS Q10).
 JOURNAL_CAPTIONS = [
-    "The first pages were recipes, in her mother's hand.",
-    "Then Tobin's writing began. Field Cap. Wood Ear. Pinecrest.",
-    "Each a careful sketch, and under one a line pressed so hard the pencil tore the paper: never eat what you cannot name twice.",
-    "If you're reading this, I never told you.",
-    "The forest was always our family's secret. Your grandmother knew. Your mother knew. I was waiting until you were old enough.",
-    "I am sorry I waited too long.",
-    "Da.",
+    "It was no mill ledger. The worn book was a field journal, wrapped in oilcloth to survive the damp.",
+    "The first finished plate was Field Cap: a honey-brown cap fading to buff, widely spaced pale gills, a tough wiry stem, and the fairy-ring pattern it traced through short grass.",
+    "Wood Ear came next: a soft brown fold on damp deadwood, rubbery rather than brittle, with no true stem and no gills at all. Dad had underlined: not every mushroom wears the shape you expect.",
+    "Pinecrest: a glossy chestnut cap beneath pines, yellow pores instead of blade-like gills, and a pale ringed stem. Turn it over, he'd written. Structure tells the truth.",
+    "Every entry traced cap, gills or pores, stem, habitat, and lookalikes. Under one warning, the pencil had nearly torn the page: Never eat what you cannot name twice.",
+    "At the back, the field notes gave way to a letter in Dad's hand: If you're reading this, I never told you. The forest was always our family's secret. I was waiting until you were old enough. I am sorry I waited too long.",
+    "Dad.",
 ]
+
+
+def unquote(s):
+    s = s.strip()
+    if len(s) >= 2 and s[0] == "'" and s[-1] == "'":
+        return s[1:-1].replace("''", "'")
+    if len(s) >= 2 and s[0] == '"' and s[-1] == '"':
+        # Unity emits YAML double-quoted scalars with JSON-compatible escapes
+        # (\n paragraph breaks, \u2014 punctuation, escaped quotes). Decode the
+        # complete scalar or the speech model will literally read formatting tokens.
+        return json.loads(s)
+    return s
+
+
+def parse_story_card_beats(asset_path):
+    """Read the canonical three-beat summary from a StoryCardData YAML asset."""
+    with open(asset_path, encoding="utf-8") as handle:
+        raw = handle.readlines()
+    beats = []
+    index = next((i for i, line in enumerate(raw) if line.startswith("  _beats:")), None)
+    if index is None:
+        return beats
+    index += 1
+    while index < len(raw):
+        line = raw[index]
+        if line.startswith("  _"):
+            break
+        match = re.match(r"^  - (.*)$", line.rstrip("\n"))
+        if match:
+            scalar = match.group(1)
+            while index + 1 < len(raw) and re.match(r"^    \S", raw[index + 1]):
+                index += 1
+                scalar += " " + raw[index].strip()
+            beats.append(unquote(scalar))
+        index += 1
+    return beats
+
+
+def load_story_moment_extras():
+    """Load the complete dialogue-cinematic narration set from the shared manifest."""
+    if not os.path.isfile(STORY_SEQUENCE_MANIFEST):
+        return {}
+    with open(STORY_SEQUENCE_MANIFEST, encoding="utf-8") as handle:
+        manifest = json.load(handle)
+    groups = {}
+    for sequence in manifest.get("sequences", []):
+        card_asset = sequence.get("cardAsset", "")
+        card_path = os.path.join(
+            REPO,
+            "Hollowfen-Unity/Assets/_Hollowfen/Data/StoryCards",
+            card_asset + ".asset",
+        )
+        beats = parse_story_card_beats(card_path)
+        if len(beats) != 3 or any(not beat for beat in beats):
+            raise RuntimeError(f"{card_asset} must provide exactly three voiced story beats")
+        with open(card_path, encoding="utf-8") as handle:
+            id_match = re.search(r"^  _id: (.+)$", handle.read(), re.MULTILINE)
+        if id_match is None:
+            raise RuntimeError(f"{card_asset} has no story-card id")
+        card_id = unquote(id_match.group(1))
+        groups[f"StoryMoments/{card_id}"] = [("Narrator", beat) for beat in beats]
+    return groups
 
 # Non-dialogue utterances (copy duplicated from Localization.cs — the parked staleness-manifest
 # follow-up in Docs/systems/audio.md covers keeping these honest).
 EXTRAS = {
     "IntroGuide": [
-        ("Narrator", "The square is just down the road, the old well standing at the heart of it. I'll find Old Bram there — he keeps The Crooked Pintle, and he holds my father's mill key."),
+        ("Narrator", "The old well still marks the heart of Hollowfen. Bram should be there, if the years have not pulled him from the Pintle. He was Dad's oldest friend. If anyone can tell me what happened after the letters stopped, it is him."),
     ],
     "MarraKitchen": [
         ("Narrator", "An hour later, the inn smelled like Wren's mother. Not exactly. Nothing was exact after enough years."),
+        ("Narrator", "Marra washed the basket in cold water, trimmed each stem, and taught Wren to listen for grit against the bowl."),
+        ("Narrator", "By dusk, the first basket had become supper. For one crowded hour, Hollowfen remembered what plenty sounded like."),
     ],
 }
+EXTRAS.update(load_story_moment_extras())
 
 DEFAULT_SET = [
     "Dialogue_Act1_Homecoming_Bram",
@@ -173,18 +242,6 @@ def parse_lines(asset_path):
     if not appended_cur:
         lines.append(cur)
     return [(l["speaker"], l["text"]) for l in lines]
-
-
-def unquote(s):
-    s = s.strip()
-    if len(s) >= 2 and s[0] == "'" and s[-1] == "'":
-        return s[1:-1].replace("''", "'")
-    if len(s) >= 2 and s[0] == '"' and s[-1] == '"':
-        # Unity emits YAML double-quoted scalars with JSON-compatible escapes
-        # (\n paragraph breaks, \u2014 punctuation, escaped quotes). Decode the
-        # complete scalar or the speech model will literally read formatting tokens.
-        return json.loads(s)
-    return s
 
 
 def main():

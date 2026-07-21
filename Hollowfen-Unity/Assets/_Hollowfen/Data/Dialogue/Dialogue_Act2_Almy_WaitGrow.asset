@@ -19,6 +19,11 @@ MonoBehaviour:
       your mill wall.
     isCloseup: 0
     voiceClip: {fileID: 8300000, guid: 368bf16332dd74d22ac808b67a2d6dee, type: 3}
+  _mushroomHandoff:
+    beforeLineIndex: 0
+    recipientSpeaker: 
+    mushroom: {fileID: 0}
+    presentationHeight: 0
   _unlockStoryCard: {fileID: 0}
   _completeQuest: {fileID: 0}
   _giveItemId: 
@@ -36,6 +41,10 @@ MonoBehaviour:
   _knowledgeDelta: 0
   _relationshipNpcIds: []
   _relationshipDeltas: 
+  _memoryOutcomes: []
+  _bondOutcomes: []
+  _favorOutcomes: []
+  _advanceMinutes: 0
   _transitionMoment: {fileID: 0}
   _nextDialog: {fileID: 0}
   _choices: []

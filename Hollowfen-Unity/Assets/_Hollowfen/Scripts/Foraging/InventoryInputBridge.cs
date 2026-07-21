@@ -39,11 +39,15 @@ namespace Hollowfen.Foraging
 
         private void OnToggle(InputAction.CallbackContext _)
         {
-            // Don't toggle the inventory while the inspect screen owns input — avoids stacking modal screens.
-            if (InspectScreen.Instance != null && InspectScreen.Instance.IsOpen) return;
             if (InventoryScreen.Instance == null) return;
-            if (InventoryScreen.Instance.IsOpen) InventoryScreen.Instance.Close();
-            else InventoryScreen.Instance.Open();
+            if (InventoryScreen.Instance.IsOpen)
+            {
+                InventoryScreen.Instance.Close();
+                return;
+            }
+            if (!UIManager.GameplayShortcutAllowed) return;
+            if (InspectScreen.Instance != null && InspectScreen.Instance.IsOpen) return;
+            InventoryScreen.Instance.Open();
         }
 
         private void OnOpenFieldGuide(InputAction.CallbackContext _)
@@ -51,7 +55,7 @@ namespace Hollowfen.Foraging
             // D-pad Up also navigates menus. Only treat it as a journal shortcut from
             // unobstructed gameplay so it cannot steal focus inside Pause/Settings/etc.
             var manager = UIManager.Instance;
-            if (manager == null || manager.HasOpenScreen) return;
+            if (manager == null || !UIManager.GameplayShortcutAllowed) return;
             if (Time.timeScale <= 0f || PlayerInteractor.Suspended) return;
             if (InspectScreen.Instance != null && InspectScreen.Instance.IsOpen) return;
             if (InventoryScreen.Instance != null && InventoryScreen.Instance.IsOpen) return;

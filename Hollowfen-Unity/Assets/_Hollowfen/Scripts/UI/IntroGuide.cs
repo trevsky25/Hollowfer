@@ -1,5 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
+using Hollowfen.Audio;
+using Hollowfen.Cinematics;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -21,7 +22,7 @@ namespace Hollowfen.UI
 
         [SerializeField, Tooltip("Narrator read of the journal passage (optional).")]
         private AudioClip _voiceClip;
-        [SerializeField, Tooltip("Mixer group for the voice read (SFX until the Voice group exists).")]
+        [SerializeField, Tooltip("Mixer reference used to resolve the Master route for independently adjustable voice-over.")]
         private UnityEngine.Audio.AudioMixerGroup _voiceOutput;
         [SerializeField] private float _fadeSeconds = 0.4f;
         [SerializeField, Tooltip("Grace period before dismiss input is accepted — the keypress that ended the narration must not also eat this card.")]
@@ -37,7 +38,11 @@ namespace Hollowfen.UI
         private Coroutine _running;
         private float _openedAt;
         private bool _closing;
-        private readonly List<Canvas> _hiddenCanvases = new List<Canvas>();
+        private NarrativePresentationSession.Lease _presentationLease;
+        private TMP_Text _moveKeys;
+        private TMP_Text _interactKeys;
+        private TMP_Text _dismissHint;
+        private TMP_Text _journalHint;
 
         public bool IsShowing => _canvas != null && _canvas.gameObject.activeSelf;
 
@@ -49,13 +54,8 @@ namespace Hollowfen.UI
 
         private void OnDestroy()
         {
-            RestoreGameplayHud();
-            // Scene unload while showing must not leak the static suspend flags.
-            if (IsShowing)
-            {
-                Foraging.PlayerInteractor.Suspended = false;
-                Foraging.PlayerInteractor.SetPlayerInputEnabled(true);
-            }
+            VoiceAudio.Unregister(_voiceSource);
+            ReleasePresentation();
             if (Instance == this) Instance = null;
         }
 
@@ -65,9 +65,12 @@ namespace Hollowfen.UI
         {
             if (Quests.GameScores.HasFlag(SeenFlag)) return;
             if (Quests.QuestManager.IsCompleted("arrive")) return;
-            if (IsShowing) return;
+            if (IsShowing || _running != null || _presentationLease != null) return;
             BuildIfNeeded();
-            if (_running != null) StopCoroutine(_running);
+            _presentationLease = NarrativePresentationSession.Acquire(
+                this,
+                NarrativePresentationSession.InteractiveNoPause
+                    .With(NarrativePresentationSession.Claim.HideGameplayHud));
             _running = StartCoroutine(Run());
         }
 
@@ -88,11 +91,8 @@ namespace Hollowfen.UI
             // A held breath after the narration fade before the page turns up.
             yield return new WaitForSecondsRealtime(0.35f);
 
-            Foraging.PlayerInteractor.Suspended = true;
-            Foraging.PlayerInteractor.SetPlayerInputEnabled(false);
-
             RefreshQuestBlock();
-            HideGameplayHud();
+            RefreshDeviceHints();
             _canvas.gameObject.SetActive(true);
             _group.alpha = 0f;
             _card.anchoredPosition = _cardRestingPosition + new Vector2(-42f, 0f);
@@ -107,8 +107,8 @@ namespace Hollowfen.UI
                     _voiceSource.playOnAwake = false;
                     _voiceSource.spatialBlend = 0f;
                     _voiceSource.priority = 0;   // speech: never virtualized (the vendored world carries ~50 ambient sources)
-                    _voiceSource.outputAudioMixerGroup = _voiceOutput;
                 }
+                VoiceAudio.Configure(_voiceSource, _voiceOutput);
                 _voiceSource.clip = _voiceClip;
                 _voiceSource.Play();
             }
@@ -146,6 +146,7 @@ namespace Hollowfen.UI
         private void Update()
         {
             if (!IsShowing) return;
+            RefreshDeviceHints();
             if (Time.unscaledTime - _openedAt < _inputGraceSeconds) return;
             // Backstop poll — the button's EventSystem Submit is primary; this catches
             // clicks-elsewhere/space when focus was stolen. Same device set as narration.
@@ -172,12 +173,10 @@ namespace Hollowfen.UI
             _canvas.gameObject.SetActive(false);
             _card.anchoredPosition = _cardRestingPosition;
             _card.localScale = Vector3.one;
-            RestoreGameplayHud();
             _closing = false;
 
             Quests.GameScores.SetFlag(SeenFlag);   // persists with the save's score store
-            Foraging.PlayerInteractor.Suspended = false;
-            Foraging.PlayerInteractor.SetPlayerInputEnabled(true);
+            ReleasePresentation();
         }
 
         // Live quest block — always current, never a hardcoded copy of the objective.
@@ -227,7 +226,7 @@ namespace Hollowfen.UI
             });
             UICanvasUtil.Stretch((RectTransform)scrim.transform);
 
-            // Quiet ink-glass surface: one silhouette, one accent rail, no frame stack.
+            // Quiet ink-glass surface: one rounded silhouette, one accent rail, no frame stack.
             _card = UICanvasUtil.NewRect("StoryObjectiveCard", canvasGo.transform);
             _card.anchorMin = new Vector2(0f, 0.5f);
             _card.anchorMax = new Vector2(0f, 0.5f);
@@ -235,23 +234,15 @@ namespace Hollowfen.UI
             _card.sizeDelta = new Vector2(CardW, CardH);
             _cardRestingPosition = new Vector2(96f, 0f);
             _card.anchoredPosition = _cardRestingPosition;
-            UICanvasUtil.AddShadow(_card, 26, 40, 0.58f, -12f);
+            // Do not add a generated sibling shadow or a full-rect depth wash here. Both reveal
+            // rectangular bounds around the rounded card against the live world. The left scrim,
+            // opaque ink surface, and gold rail already provide the intended depth and hierarchy.
             var cardFill = _card.gameObject.AddComponent<Image>();
             cardFill.sprite = UICanvasUtil.RoundedRect(26);
             cardFill.type = Image.Type.Sliced;
             cardFill.color = new Color(HollowfenPalette.SurfaceBase.r, HollowfenPalette.SurfaceBase.g,
                 HollowfenPalette.SurfaceBase.b, 0.965f);
             cardFill.raycastTarget = false;
-
-            var depth = UICanvasUtil.NewImage("SurfaceDepth", _card, Color.white, false);
-            var depthImg = depth.GetComponent<Image>();
-            depthImg.sprite = UICanvasUtil.MakeVerticalGradient(new[]
-            {
-                new UICanvasUtil.GradientStop(0f, new Color(0f, 0f, 0f, 0.20f)),
-                new UICanvasUtil.GradientStop(0.55f, new Color(0f, 0f, 0f, 0f)),
-                new UICanvasUtil.GradientStop(1f, new Color(1f, 1f, 1f, 0.025f)),
-            });
-            UICanvasUtil.Stretch((RectTransform)depth.transform);
 
             var rail = UICanvasUtil.NewImage("ChapterRail", _card, HollowfenPalette.FocusRail, false);
             var railImg = rail.GetComponent<Image>();
@@ -260,9 +251,9 @@ namespace Hollowfen.UI
             UICanvasUtil.SetRect((RectTransform)rail.transform, new Vector2(0f, 0f), new Vector2(0f, 1f),
                 new Vector2(0f, 0.5f), new Vector2(4f, -52f), new Vector2(0f, 0f));
 
-            var eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", _card, Localization.Get("guide.eyebrow"), 13f, HollowfenPalette.Gold);
+            var eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", _card, Localization.Get("guide.eyebrow"), 18f, HollowfenPalette.Gold);
             Place(eyebrow.rectTransform, MarginX, -42f, 480f, 20f);
-            var status = UICanvasUtil.NewEyebrow("Status", _card, Localization.Get("guide.status"), 13f,
+            var status = UICanvasUtil.NewEyebrow("Status", _card, Localization.Get("guide.status"), 18f,
                 new Color(HollowfenPalette.Cream.r, HollowfenPalette.Cream.g, HollowfenPalette.Cream.b, 0.52f),
                 TextAlignmentOptions.TopRight);
             Place(status.rectTransform, CardW - MarginX - 250f, -44f, 250f, 18f);
@@ -271,7 +262,7 @@ namespace Hollowfen.UI
                 HollowfenPalette.Cream, FontStyles.Normal, TextAlignmentOptions.TopLeft);
             Place(title.rectTransform, MarginX, -72f, InnerW, 60f);
 
-            var passage = UICanvasUtil.NewBody("Passage", _card, Localization.Get("guide.passage"), 19.5f,
+            var passage = UICanvasUtil.NewBody("Passage", _card, Localization.Get("guide.passage"), 20.5f,
                 new Color(HollowfenPalette.Parchment.r, HollowfenPalette.Parchment.g, HollowfenPalette.Parchment.b, 0.86f),
                 FontStyles.Italic, TextAlignmentOptions.TopLeft);
             passage.lineSpacing = 8f;
@@ -280,7 +271,7 @@ namespace Hollowfen.UI
             var divider = UICanvasUtil.NewImage("Divider", _card, HollowfenPalette.DividerLine, false);
             Place((RectTransform)divider.transform, MarginX, -252f, InnerW, 1f);
 
-            var taskLabel = UICanvasUtil.NewEyebrow("TaskLabel", _card, Localization.Get("guide.task_label"), 13f,
+            var taskLabel = UICanvasUtil.NewEyebrow("TaskLabel", _card, Localization.Get("guide.task_label"), 18f,
                 HollowfenPalette.Gold);
             Place(taskLabel.rectTransform, MarginX, -276f, 260f, 18f);
 
@@ -290,22 +281,21 @@ namespace Hollowfen.UI
             stepImg.sprite = UICanvasUtil.Circle();
             UICanvasUtil.SetRect((RectTransform)step.transform, new Vector2(0f, 1f), new Vector2(0f, 1f),
                 new Vector2(0f, 1f), new Vector2(48f, 48f), new Vector2(MarginX, -304f));
-            var stepNumber = UICanvasUtil.NewEyebrow("Number", step.transform, "01", 13f, HollowfenPalette.Gold,
+            var stepNumber = UICanvasUtil.NewEyebrow("Number", step.transform, "01", 18f, HollowfenPalette.Gold,
                 TextAlignmentOptions.Center);
             UICanvasUtil.Stretch(stepNumber.rectTransform);
 
             _questName = UICanvasUtil.NewHeading("QuestName", _card, "", 27f, HollowfenPalette.Cream,
                 FontStyles.Normal, TextAlignmentOptions.TopLeft);
             Place(_questName.rectTransform, MarginX + 66f, -300f, InnerW - 66f, 34f);
-            _questObjective = UICanvasUtil.NewBody("QuestObjective", _card, "", 17f,
+            _questObjective = UICanvasUtil.NewBody("QuestObjective", _card, "", 18f,
                 new Color(HollowfenPalette.Parchment.r, HollowfenPalette.Parchment.g, HollowfenPalette.Parchment.b, 0.76f),
                 FontStyles.Normal, TextAlignmentOptions.TopLeft);
             Place(_questObjective.rectTransform, MarginX + 66f, -337f, InnerW - 66f, 30f);
 
-            BuildControlCue(_card, MarginX, -382f, Localization.Get("guide.key.wasd") + "  /  " +
-                Localization.Get("guide.key.lstick"), Localization.Get("guide.ctl.move"));
-            BuildControlCue(_card, MarginX + 260f, -382f, Localization.Get("guide.key.e") + "  /  " +
-                Localization.Get("guide.key.y"), Localization.Get("guide.ctl.interact"));
+            _moveKeys = BuildControlCue(_card, MarginX, -382f, "", Localization.Get("guide.ctl.move"));
+            _interactKeys = BuildControlCue(_card, MarginX + 260f, -382f, "",
+                Localization.Get("guide.ctl.interact"));
 
             // A single, unmistakable action hands control back to the player.
             var btnRt = UICanvasUtil.NewRect("SetOutButton", _card);
@@ -340,18 +330,40 @@ namespace Hollowfen.UI
             var fh = btnRt.gameObject.AddComponent<FocusHighlight>();
             fh.Configure(glowImg, btnRt, new Color(1f, 1f, 1f, 0.28f), 1.025f, true, true);
 
-            var dismiss = UICanvasUtil.NewEyebrow("DismissHint", _card, Localization.Get("guide.dismiss_hint"), 14f,
+            _dismissHint = UICanvasUtil.NewEyebrow("DismissHint", _card, "", 18f,
                 new Color(HollowfenPalette.Cream.r, HollowfenPalette.Cream.g, HollowfenPalette.Cream.b, 0.52f));
-            PlaceBottom(dismiss.rectTransform, MarginX + 322f, 49f, 160f, 18f);
-            var journalHint = UICanvasUtil.NewBody("JournalHint", _card, Localization.Get("guide.footer"), 14.5f,
-                new Color(HollowfenPalette.Cream.r, HollowfenPalette.Cream.g, HollowfenPalette.Cream.b, 0.45f),
+            PlaceBottom(_dismissHint.rectTransform, MarginX + 322f, 49f, 160f, 18f);
+            _journalHint = UICanvasUtil.NewBody("JournalHint", _card, "", 18f,
+                new Color(HollowfenPalette.Cream.r, HollowfenPalette.Cream.g, HollowfenPalette.Cream.b, 0.55f),
                 FontStyles.Italic, TextAlignmentOptions.Right);
-            PlaceBottom(journalHint.rectTransform, CardW - MarginX - 280f, 48f, 280f, 22f);
+            PlaceBottom(_journalHint.rectTransform, CardW - MarginX - 280f, 48f, 280f, 22f);
+
+            RefreshDeviceHints();
 
             _canvas.gameObject.SetActive(false);
         }
 
-        private static void BuildControlCue(RectTransform parent, float x, float y, string keys, string label)
+        private void RefreshDeviceHints()
+        {
+            if (!_built) return;
+            bool gamepad = ControllerGlyphs.IsGamepadActive;
+            string move = Localization.Get(gamepad ? "guide.key.lstick" : "guide.key.wasd");
+            string interact = gamepad
+                ? ControllerGlyphs.For(ControllerGlyphs.Face.North)
+                : Localization.Get("guide.key.e");
+            string dismiss = gamepad
+                ? string.Format(Localization.Get("guide.dismiss_hint.gamepad"),
+                    ControllerGlyphs.For(ControllerGlyphs.Face.South))
+                : Localization.Get("guide.dismiss_hint.keyboard");
+            string journal = Localization.Get(gamepad ? "guide.footer.gamepad" : "guide.footer.keyboard");
+
+            if (_moveKeys != null && _moveKeys.text != move) _moveKeys.text = move;
+            if (_interactKeys != null && _interactKeys.text != interact) _interactKeys.text = interact;
+            if (_dismissHint != null && _dismissHint.text != dismiss) _dismissHint.text = dismiss;
+            if (_journalHint != null && _journalHint.text != journal) _journalHint.text = journal;
+        }
+
+        private static TMP_Text BuildControlCue(RectTransform parent, float x, float y, string keys, string label)
         {
             var cue = UICanvasUtil.NewRect("ControlCue", parent);
             Place(cue, x, y, 238f, 42f);
@@ -361,33 +373,21 @@ namespace Hollowfen.UI
             bg.color = HollowfenPalette.SurfaceQuiet;
             bg.raycastTarget = false;
 
-            var keyText = UICanvasUtil.NewBody("Keys", cue, keys, 13.5f, HollowfenPalette.Gold,
+            var keyText = UICanvasUtil.NewBody("Keys", cue, keys, 18f, HollowfenPalette.Gold,
                 FontStyles.Normal, TextAlignmentOptions.Left);
-            keyText.enableWordWrapping = false;
-            Place(keyText.rectTransform, 14f, -11f, 154f, 20f);
-            var action = UICanvasUtil.NewEyebrow("Action", cue, label, 13f,
+            keyText.textWrappingMode = TextWrappingModes.NoWrap;
+            Place(keyText.rectTransform, 14f, -9f, 112f, 24f);
+            var action = UICanvasUtil.NewEyebrow("Action", cue, label, 18f,
                 new Color(HollowfenPalette.Cream.r, HollowfenPalette.Cream.g, HollowfenPalette.Cream.b, 0.76f),
                 TextAlignmentOptions.Right);
-            Place(action.rectTransform, 168f, -12f, 56f, 18f);
+            Place(action.rectTransform, 128f, -9f, 96f, 24f);
+            return keyText;
         }
 
-        private void HideGameplayHud()
+        private void ReleasePresentation()
         {
-            RestoreGameplayHud();
-            foreach (var canvas in Resources.FindObjectsOfTypeAll<Canvas>())
-            {
-                if (canvas == null || canvas == _canvas || !canvas.enabled) continue;
-                if (!canvas.gameObject.scene.IsValid() || canvas.sortingOrder >= _canvas.sortingOrder) continue;
-                canvas.enabled = false;
-                _hiddenCanvases.Add(canvas);
-            }
-        }
-
-        private void RestoreGameplayHud()
-        {
-            foreach (var canvas in _hiddenCanvases)
-                if (canvas != null) canvas.enabled = true;
-            _hiddenCanvases.Clear();
+            _presentationLease?.Dispose();
+            _presentationLease = null;
         }
 
         private static void Place(RectTransform rt, float x, float y, float w, float h)

@@ -13,6 +13,14 @@ namespace Hollowfen.Foraging
     // value type to a small struct. For now the foraging slice only carries mushrooms.
     public static class InventoryRuntime
     {
+        public enum BatchRemovalFailure
+        {
+            None,
+            InvalidBatch,
+            InsufficientStock,
+            PersistenceUnavailable,
+        }
+
         public readonly struct BasketSale
         {
             public BasketSale(int soldCount, int refusedCount, int copper)
@@ -81,7 +89,7 @@ namespace Hollowfen.Foraging
             _counts[data.Id] = next;
             _byId[data.Id] = data;
             Persist();
-            OnChanged?.Invoke(data.Id, next);
+            NotifyChangedSafely(data.Id, next);
         }
 
         public static bool Remove(MushroomFieldGuideData data, int amount = 1)
@@ -93,39 +101,62 @@ namespace Hollowfen.Foraging
             if (next <= 0) _counts.Remove(data.Id);
             else _counts[data.Id] = next;
             Persist();
-            OnChanged?.Invoke(data.Id, next);
+            NotifyChangedSafely(data.Id, next);
             return true;
         }
 
-        // Atomic multi-species delivery: validate the whole order before changing anything,
-        // then persist once. This prevents half-consumed NPC requests and an autosave per row.
+        // Compatibility overload for callers that only need success/failure.
         public static bool TryRemoveBatch(MushroomFieldGuideData[] species, int[] amounts)
         {
-            if (species == null || amounts == null) return false;
-            int length = Mathf.Min(species.Length, amounts.Length);
-            if (length <= 0) return false;
+            return TryRemoveBatch(species, amounts, out _);
+        }
+
+        // Atomic multi-species delivery: validate and aggregate the entire order, stage the
+        // resulting basket, and require a durable higher-revision save before publishing it to
+        // live state. A refused/failed save therefore consumes nothing and emits no change event.
+        public static bool TryRemoveBatch(MushroomFieldGuideData[] species, int[] amounts,
+            out BatchRemovalFailure failure)
+        {
+            failure = BatchRemovalFailure.InvalidBatch;
+            if (species == null || amounts == null || species.Length == 0 || species.Length != amounts.Length)
+                return false;
             EnsureHydrated();
 
             var required = new Dictionary<string, int>(StringComparer.Ordinal);
-            for (int i = 0; i < length; i++)
+            var resolved = new Dictionary<string, MushroomFieldGuideData>(StringComparer.Ordinal);
+            for (int i = 0; i < species.Length; i++)
             {
-                if (species[i] == null) return false;
-                int amount = Mathf.Max(1, amounts[i]);
-                required.TryGetValue(species[i].Id, out int current);
-                required[species[i].Id] = current + amount;
-                _byId[species[i].Id] = species[i];
+                var entry = species[i];
+                int amount = amounts[i];
+                if (entry == null || string.IsNullOrWhiteSpace(entry.Id) || amount <= 0) return false;
+                required.TryGetValue(entry.Id, out int current);
+                long combined = (long)current + amount;
+                if (combined > int.MaxValue) return false;
+                required[entry.Id] = (int)combined;
+                resolved[entry.Id] = entry;
             }
+
+            failure = BatchRemovalFailure.InsufficientStock;
             foreach (var row in required)
                 if (!_counts.TryGetValue(row.Key, out int current) || current < row.Value) return false;
 
+            var staged = new Dictionary<string, int>(_counts, StringComparer.Ordinal);
             foreach (var row in required)
             {
-                int next = _counts[row.Key] - row.Value;
-                if (next <= 0) _counts.Remove(row.Key);
-                else _counts[row.Key] = next;
+                int next = staged[row.Key] - row.Value;
+                if (next <= 0) staged.Remove(row.Key);
+                else staged[row.Key] = next;
             }
-            Persist();
-            OnChanged?.Invoke(null, 0);
+
+            failure = BatchRemovalFailure.PersistenceUnavailable;
+            var snapshot = SnapshotFrom(staged);
+            if (!SaveManager.IsAtomicTransactionActive && !TryPersistBatchSnapshot(snapshot)) return false;
+
+            _counts.Clear();
+            foreach (var row in staged) _counts[row.Key] = row.Value;
+            foreach (var row in resolved) _byId[row.Key] = row.Value;
+            NotifyChangedSafely(null, 0);
+            failure = BatchRemovalFailure.None;
             return true;
         }
 
@@ -136,7 +167,7 @@ namespace Hollowfen.Foraging
             if (_counts.Count == 0) return;
             _counts.Clear();
             Persist();
-            OnChanged?.Invoke(null, 0);
+            NotifyChangedSafely(null, 0);
         }
 
         public static BasketSale SellTo(MushroomBuyer buyer)
@@ -157,7 +188,7 @@ namespace Hollowfen.Foraging
             {
                 foreach (var id in remove) _counts.Remove(id);
                 Persist();
-                OnChanged?.Invoke(null, 0);
+                NotifyChangedSafely(null, 0);
             }
             return quote;
         }
@@ -215,23 +246,95 @@ namespace Hollowfen.Foraging
             }
             _hydrated = true;
             // Broadcast a wildcard change so UIs rebuild after a save load.
-            OnChanged?.Invoke(null, 0);
+            NotifyChangedSafely(null, 0);
         }
 
         public static InventorySnapshot ToSnapshot()
         {
             EnsureHydrated();
-            var snap = new InventorySnapshot();
-            snap.Ids = new string[_counts.Count];
-            snap.Counts = new int[_counts.Count];
-            int i = 0;
-            foreach (var kv in _counts)
+            return SnapshotFrom(_counts);
+        }
+
+        private static InventorySnapshot SnapshotFrom(Dictionary<string, int> counts)
+        {
+            var ids = new List<string>(counts.Keys);
+            ids.Sort(StringComparer.Ordinal);
+            var snapshot = new InventorySnapshot
             {
-                snap.Ids[i] = kv.Key;
-                snap.Counts[i] = kv.Value;
-                i++;
+                Ids = ids.ToArray(),
+                Counts = new int[ids.Count],
+            };
+            for (int i = 0; i < ids.Count; i++) snapshot.Counts[i] = counts[ids[i]];
+            return snapshot;
+        }
+
+        private static bool TryPersistBatchSnapshot(InventorySnapshot snapshot)
+        {
+            try
+            {
+                var before = SaveManager.InspectSlot(SaveManager.ActiveSlot);
+                if (!before.CanLoad) return false;
+
+                Exception writeFailure = null;
+                try { SaveManager.AutoSaveInventory(snapshot); }
+                catch (Exception exception) { writeFailure = exception; }
+
+                // A replacement can fail after its temp was force-flushed. Inspecting again
+                // treats that higher-revision temp as a successful durable commit, so callers
+                // never receive failure after ingredients have become the recovery winner.
+                var after = SaveManager.InspectSlot(SaveManager.ActiveSlot);
+                bool committed = after.CanLoad && after.Revision > before.Revision &&
+                                 SnapshotMatches(after.Meta?.Inventory, snapshot);
+                if (!committed && writeFailure != null)
+                    Debug.LogWarning("[Inventory] Batch autosave failed: " + writeFailure.Message);
+                return committed;
             }
-            return snap;
+            catch (Exception exception)
+            {
+                Debug.LogWarning("[Inventory] Batch autosave verification failed: " + exception.Message);
+                return false;
+            }
+        }
+
+        private static bool SnapshotMatches(InventorySnapshot actual, InventorySnapshot expected)
+        {
+            if (!TrySnapshotDictionary(actual, out var actualCounts) ||
+                !TrySnapshotDictionary(expected, out var expectedCounts) ||
+                actualCounts.Count != expectedCounts.Count)
+                return false;
+            foreach (var row in expectedCounts)
+            {
+                if (!actualCounts.TryGetValue(row.Key, out int count) || count != row.Value) return false;
+            }
+            return true;
+        }
+
+        private static bool TrySnapshotDictionary(InventorySnapshot snapshot,
+            out Dictionary<string, int> counts)
+        {
+            counts = new Dictionary<string, int>(StringComparer.Ordinal);
+            if (snapshot == null) return true;
+            if (snapshot.Ids == null || snapshot.Counts == null || snapshot.Ids.Length != snapshot.Counts.Length)
+                return false;
+            for (int i = 0; i < snapshot.Ids.Length; i++)
+            {
+                string id = snapshot.Ids[i];
+                int count = snapshot.Counts[i];
+                if (string.IsNullOrWhiteSpace(id) || count < 0 || counts.ContainsKey(id)) return false;
+                counts[id] = count;
+            }
+            return true;
+        }
+
+        private static void NotifyChangedSafely(string id, int count)
+        {
+            var handlers = OnChanged;
+            if (handlers == null) return;
+            foreach (Action<string, int> handler in handlers.GetInvocationList())
+            {
+                var callback = handler;
+                SaveManager.PublishAfterAtomicCommit(() => callback(id, count));
+            }
         }
 
         private static void EnsureHydrated()

@@ -1,4 +1,5 @@
 using System.Collections;
+using Hollowfen.Cinematics;
 using Hollowfen.Data;
 using Hollowfen.Dialogue;
 using Hollowfen.Quests;
@@ -13,6 +14,7 @@ namespace Hollowfen.UI
 
         public bool IsPresenting { get; private set; }
         public EndingData CurrentEnding { get; private set; }
+        private NarrativePresentationSession.Lease _presentationLease;
 
         public static EndingDirector Ensure()
         {
@@ -31,6 +33,7 @@ namespace Hollowfen.UI
 
         private void OnDestroy()
         {
+            ReleasePresentation();
             if (Instance == this) Instance = null;
         }
 
@@ -44,9 +47,30 @@ namespace Hollowfen.UI
                 return;
             }
 
+            StartPresentation(ending);
+        }
+
+        /// <summary>Replays a previously committed finale after an interrupted session.</summary>
+        public void ResumeCommitted(EndingData ending)
+        {
+            if (IsPresenting || ending == null) return;
+            if (!EndingResolver.ReconcileCommittedEnding(ending))
+            {
+                Debug.LogWarning("[Ending] Refused to resume an ending that is not committed.");
+                return;
+            }
+
+            StartPresentation(ending);
+        }
+
+        private void StartPresentation(EndingData ending)
+        {
             CurrentEnding = ending;
             IsPresenting = true;
-            SetHudVisible(false);
+            _presentationLease = NarrativePresentationSession.AcquireIfGameplay(
+                this,
+                NarrativePresentationSession.Modal
+                    .With(NarrativePresentationSession.Claim.HideGameplayHud));
             StartCoroutine(BeginSequence());
         }
 
@@ -69,7 +93,7 @@ namespace Hollowfen.UI
             if (overlay != null && card != null && card.Image != null &&
                 CurrentEnding.EpilogueCaptions != null && CurrentEnding.EpilogueCaptions.Length > 0)
             {
-                overlay.ShowCinematic(CurrentEnding.EpilogueCaptions, null, card.Image, ShowCredits);
+                overlay.ShowCinematic(JournalText.EndingEpilogue(CurrentEnding), null, card.Image, ShowCredits);
                 return;
             }
             ShowCredits();
@@ -85,21 +109,13 @@ namespace Hollowfen.UI
         {
             IsPresenting = false;
             CurrentEnding = null;
-            SetHudVisible(true);
+            ReleasePresentation();
         }
 
-        private static void SetHudVisible(bool visible)
+        private void ReleasePresentation()
         {
-            foreach (var name in new[] { "_HUDCanvas", "_MiniMapCanvas" })
-            {
-                var go = GameObject.Find(name);
-                if (go == null) continue;
-                var group = go.GetComponent<CanvasGroup>();
-                if (group == null) group = go.AddComponent<CanvasGroup>();
-                group.alpha = visible ? 1f : 0f;
-                group.interactable = false;
-                group.blocksRaycasts = false;
-            }
+            _presentationLease?.Dispose();
+            _presentationLease = null;
         }
     }
 }

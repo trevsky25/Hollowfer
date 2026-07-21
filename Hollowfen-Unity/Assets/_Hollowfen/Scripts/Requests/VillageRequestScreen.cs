@@ -1,4 +1,6 @@
 using Hollowfen.Audio;
+using Hollowfen.Apothecary;
+using Hollowfen.Cinematics;
 using Hollowfen.Dialogue;
 using Hollowfen.Foraging;
 using Hollowfen.Input;
@@ -41,9 +43,7 @@ namespace Hollowfen.Requests
         private DialogueData _fallbackDialogue;
         private Transform _anchor;
         private string _npcName;
-        private float _previousTimeScale;
-        private CursorLockMode _previousCursorLock;
-        private bool _previousCursorVisible;
+        private NarrativePresentationSession.Lease _presentationLease;
         private bool _completed;
 
         public bool IsOpen => _canvas != null && _canvas.enabled;
@@ -68,6 +68,7 @@ namespace Hollowfen.Requests
             _input?.UI.Enable();
             if (_input != null) _input.UI.Cancel.performed += OnCancel;
             InventoryRuntime.OnChanged += HandleInventoryChanged;
+            ApothecaryRuntime.OnChanged += HandleApothecaryChanged;
         }
 
         private void OnDisable()
@@ -78,10 +79,12 @@ namespace Hollowfen.Requests
                 _input.UI.Disable();
             }
             InventoryRuntime.OnChanged -= HandleInventoryChanged;
+            ApothecaryRuntime.OnChanged -= HandleApothecaryChanged;
         }
 
         private void OnDestroy()
         {
+            ReleasePresentation();
             if (Instance == this) Instance = null;
             _input?.Dispose();
         }
@@ -98,14 +101,8 @@ namespace Hollowfen.Requests
             VillageRequests.Track(request);
             VillageRequestTrackerHUD.Ensure();
 
-            _previousTimeScale = Time.timeScale;
-            _previousCursorLock = Cursor.lockState;
-            _previousCursorVisible = Cursor.visible;
-            Time.timeScale = 0f;
-            PlayerInteractor.Suspended = true;
-            PlayerInteractor.SetPlayerInputEnabled(false);
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            _presentationLease = NarrativePresentationSession.Acquire(
+                this, NarrativePresentationSession.Modal);
 
             EnsureEventSystem();
             Populate();
@@ -126,25 +123,26 @@ namespace Hollowfen.Requests
             _request = null;
             _fallbackDialogue = null;
             _anchor = null;
-            Time.timeScale = _previousTimeScale;
-            PlayerInteractor.Suspended = false;
-            PlayerInteractor.SetPlayerInputEnabled(true);
-            Cursor.lockState = _previousCursorLock;
-            Cursor.visible = _previousCursorVisible;
+            ReleasePresentation();
             EventSystem.current?.SetSelectedGameObject(null);
+        }
+
+        private void ReleasePresentation()
+        {
+            _presentationLease?.Dispose();
+            _presentationLease = null;
         }
 
         private void Populate()
         {
             if (_request == null) return;
-            _eyebrow.text = Localization.Get(KindLabelId(_request.Kind)).ToUpperInvariant() +
-                             "  ·  " + _npcName.ToUpperInvariant();
+            _eyebrow.text = string.Format(Localization.Get("format.pair"),
+                Localization.Get(KindLabelId(_request.Kind)), _npcName).ToUpperInvariant();
             _title.text = Localization.Get(_request.TitleId);
             _description.text = Localization.Get(_request.DescriptionId);
-            _requesterLine.text = "“" + Localization.Get(_request.RequesterLineId) + "”";
-            _hero.sprite = _request.HeroImage != null
-                ? _request.HeroImage
-                : (_request.RequirementCount > 0 ? _request.RequiredSpecies[0]?.Photo : null);
+            _requesterLine.text = string.Format(Localization.Get("format.quote"),
+                Localization.Get(_request.RequesterLineId));
+            _hero.sprite = ResolveHero(_request);
             _hero.enabled = _hero.sprite != null;
             if (_hero.sprite != null)
             {
@@ -154,21 +152,41 @@ namespace Hollowfen.Requests
 
             for (int i = 0; i < _requirementNames.Length; i++)
             {
-                bool active = i < _request.RequirementCount && _request.RequiredSpecies[i] != null;
+                bool raw = i < _request.RequirementCount;
+                int preparationIndex = i - _request.RequirementCount;
+                bool prepared = preparationIndex >= 0 &&
+                    preparationIndex < _request.PreparationRequirementCount;
+                bool active = raw && _request.RequiredSpecies[i] != null || prepared &&
+                    _request.RequiredPreparations[preparationIndex] != null;
                 _requirementNames[i].transform.parent.gameObject.SetActive(active);
                 if (!active) continue;
-                var species = _request.RequiredSpecies[i];
-                int need = _request.RequiredCountAt(i);
-                int have = InventoryRuntime.GetCount(species);
+                int need;
+                int have;
+                string displayName;
+                if (raw)
+                {
+                    var species = _request.RequiredSpecies[i];
+                    need = _request.RequiredCountAt(i);
+                    have = InventoryRuntime.GetCount(species);
+                    displayName = JournalText.MushroomName(species);
+                }
+                else
+                {
+                    var recipe = _request.RequiredPreparations[preparationIndex];
+                    need = _request.RequiredPreparationCountAt(preparationIndex);
+                    have = ApothecaryRuntime.ProductCount(recipe.ResultId);
+                    displayName = Localization.Get(recipe.ResultNameId);
+                }
                 bool ready = have >= need;
-                _requirementNames[i].text = species.CommonName;
+                _requirementNames[i].text = displayName;
                 _requirementCounts[i].text = Mathf.Min(have, need) + " / " + need;
-                _requirementCounts[i].color = ready ? HollowfenPalette.Moss : new Color(0.48f, 0.28f, 0.18f, 1f);
+                _requirementCounts[i].color = ready ? HollowfenPalette.PaperSuccessInk : new Color(0.48f, 0.28f, 0.18f, 1f);
                 _requirementDots[i].color = ready ? HollowfenPalette.Moss : new Color(0.55f, 0.47f, 0.34f, 0.45f);
             }
 
-            _reward.text = _request.RewardCopper > 0
-                ? string.Format(Localization.Get("request.reward.copper"), CoinPurse.Format(_request.RewardCopper))
+            int rewardCopper = VillageRequests.RewardFor(_request);
+            _reward.text = rewardCopper > 0
+                ? string.Format(Localization.Get("request.reward.copper"), CoinPurse.Format(rewardCopper))
                 : Localization.Get("request.reward.story");
             _deliverButton.interactable = VillageRequests.CanDeliver(_request);
             _deliverLabel.text = _deliverButton.interactable
@@ -246,9 +264,27 @@ namespace Hollowfen.Requests
             if (IsOpen && !_completed) Populate();
         }
 
+        private void HandleApothecaryChanged()
+        {
+            if (IsOpen && !_completed) Populate();
+        }
+
         private void OnCancel(InputAction.CallbackContext context)
         {
             if (IsOpen) Close();
+        }
+
+        private void Update()
+        {
+            if (!IsOpen) return;
+            GameObject preferred = _completed
+                ? _leaveButton.gameObject
+                : _deliverButton.interactable
+                    ? _deliverButton.gameObject
+                    : _talkButton.gameObject.activeInHierarchy
+                        ? _talkButton.gameObject
+                        : _leaveButton.gameObject;
+            UIFocusRecovery.RestoreIfLost(transform, preferred);
         }
 
         private void Build()
@@ -291,7 +327,7 @@ namespace Hollowfen.Requests
             UICanvasUtil.SetRect(content, new Vector2(0f, 0f), new Vector2(1f, 1f),
                 new Vector2(0.5f, 0.5f), new Vector2(-620f, -80f), new Vector2(280f, 0f));
             _eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", content, "", 14f,
-                HollowfenPalette.Gold, TextAlignmentOptions.TopLeft);
+                HollowfenPalette.PaperAccentInk, TextAlignmentOptions.TopLeft);
             PlaceTop(_eyebrow.rectTransform, 0f, 0f, 700f, 26f);
             _title = UICanvasUtil.NewHeading("Title", content, "", 44f,
                 HollowfenPalette.InkDeep, FontStyles.Italic, TextAlignmentOptions.TopLeft);
@@ -302,13 +338,13 @@ namespace Hollowfen.Requests
             _description.textWrappingMode = TextWrappingModes.Normal;
             PlaceTop(_description.rectTransform, 0f, -116f, 700f, 90f);
             _requesterLine = UICanvasUtil.NewBody("RequesterLine", content, "", 18f,
-                new Color(HollowfenPalette.Gold.r, HollowfenPalette.Gold.g, HollowfenPalette.Gold.b, 0.95f),
+                HollowfenPalette.PaperAccentInk,
                 FontStyles.Italic, TextAlignmentOptions.TopLeft);
             _requesterLine.textWrappingMode = TextWrappingModes.Normal;
             PlaceTop(_requesterLine.rectTransform, 0f, -210f, 700f, 66f);
 
             var reqHeader = UICanvasUtil.NewEyebrow("RequirementsHeader", content,
-                Localization.Get("request.requirements"), 14.5f, HollowfenPalette.Moss, TextAlignmentOptions.TopLeft);
+                Localization.Get("request.requirements"), 14.5f, HollowfenPalette.PaperAccentInk, TextAlignmentOptions.TopLeft);
             PlaceTop(reqHeader.rectTransform, 0f, -292f, 700f, 22f);
             for (int i = 0; i < _requirementNames.Length; i++) BuildRequirementRow(content, i);
 
@@ -408,6 +444,18 @@ namespace Hollowfen.Requests
                 case VillageRequestKind.Gathering: return "request.kind.gathering";
                 default: return "request.kind.kitchen";
             }
+        }
+
+        private static Sprite ResolveHero(VillageRequestData request)
+        {
+            if (request == null) return null;
+            if (request.HeroImage != null) return request.HeroImage;
+            if (request.RequirementCount > 0 && request.RequiredSpecies[0] != null)
+                return request.RequiredSpecies[0].Photo;
+            if (request.PreparationRequirementCount <= 0 || request.RequiredPreparations[0] == null)
+                return null;
+            var species = request.RequiredPreparations[0].HeroSpecies;
+            return species != null ? species.Photo != null ? species.Photo : species.JournalPage : null;
         }
 
         private static void EnsureEventSystem()

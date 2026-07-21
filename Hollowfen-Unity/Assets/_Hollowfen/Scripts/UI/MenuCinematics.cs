@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Hollowfen.Settings;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -34,9 +35,6 @@ namespace Hollowfen.UI
         // The warm/gold tint now lives ONLY behind the left text column, cleanly fading out before the
         // hero — so Wren foraging shows the image's true colour (batch-54, Trevor's note).
         [SerializeField] private Color _leftWarmColor = new Color(0.32f, 0.22f, 0.09f, 1f); // warm amber
-        [SerializeField] private float _leftWarmStrength = 0.9f;   // alpha at the left edge
-        [SerializeField] private float _leftWarmWidth = 0.56f;     // fraction of screen width it spans
-
         [Header("Ken Burns")]
         [SerializeField] private float _kenBurnsScale = 1.06f;
         [SerializeField] private float _kenBurnsSeconds = 48f;
@@ -53,6 +51,9 @@ namespace Hollowfen.UI
         private readonly List<Mist> _mist = new List<Mist>();
         private float _t;
         private bool _built;
+        private GameObject _moteRoot;
+        private GameObject _mistRoot;
+        private bool _lastReducedMotion;
 
         private static Sprite _dotSprite;
         private static Sprite _vignetteSprite;
@@ -68,14 +69,21 @@ namespace Hollowfen.UI
 
         private void OnEnable()
         {
-            if (_built) { StopAllCoroutines(); if (_playReveal) StartCoroutine(RevealRoutine()); return; }
+            if (_built)
+            {
+                StopAllCoroutines();
+                ApplyMotionPreference();
+                if (_playReveal && !GameSettings.ReducedMotion) StartCoroutine(RevealRoutine());
+                return;
+            }
             _canvasRect = GetComponent<RectTransform>();
             if (_canvasRect == null) { var c = GetComponentInParent<Canvas>(); if (c != null) _canvasRect = c.GetComponent<RectTransform>(); }
             if (_canvasRect == null) return;
             EnsureSprites();
             Build();
             _built = true;
-            if (_playReveal) StartCoroutine(RevealRoutine());
+            ApplyMotionPreference();
+            if (_playReveal && !GameSettings.ReducedMotion) StartCoroutine(RevealRoutine());
         }
 
         private void Build()
@@ -89,6 +97,7 @@ namespace Hollowfen.UI
 
             // ---- Mist container (just above the hero, below the legibility gradients) ----
             var mistRoot = NewLayer("Cinematic_Mist", 1);
+            _mistRoot = mistRoot.gameObject;
             for (int i = 0; i < _mistCount; i++)
             {
                 var m = new Mist();
@@ -107,6 +116,7 @@ namespace Hollowfen.UI
 
             // ---- Mote container (above mist) ----
             var moteRoot = NewLayer("Cinematic_Motes", 2);
+            _moteRoot = moteRoot.gameObject;
             for (int i = 0; i < _moteCount; i++)
             {
                 var go = new GameObject("Mote_" + i, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(CanvasGroup));
@@ -149,6 +159,16 @@ namespace Hollowfen.UI
         private void Update()
         {
             if (!_built) return;
+            if (_lastReducedMotion != GameSettings.ReducedMotion) ApplyMotionPreference();
+            if (GameSettings.ReducedMotion)
+            {
+                if (_bg != null)
+                {
+                    _bg.localScale = _bgBaseScale;
+                    _bg.anchoredPosition = _bgBasePos;
+                }
+                return;
+            }
             _t += Time.unscaledDeltaTime;
             float dt = Time.unscaledDeltaTime;
 
@@ -185,6 +205,16 @@ namespace Hollowfen.UI
                 if (p.x > bound) p.x = -bound; else if (p.x < -bound) p.x = bound;
                 m.rt.anchoredPosition = p;
             }
+        }
+
+        private void ApplyMotionPreference()
+        {
+            _lastReducedMotion = GameSettings.ReducedMotion;
+            if (_moteRoot != null) _moteRoot.SetActive(!_lastReducedMotion);
+            if (_mistRoot != null) _mistRoot.SetActive(!_lastReducedMotion);
+            if (!_lastReducedMotion || _bg == null) return;
+            _bg.localScale = _bgBaseScale;
+            _bg.anchoredPosition = _bgBasePos;
         }
 
         // ---- Ink-bleed staggered reveal of the title block ----

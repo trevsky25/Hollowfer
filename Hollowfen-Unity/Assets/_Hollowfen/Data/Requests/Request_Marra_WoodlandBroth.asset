@@ -23,14 +23,17 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3dd19c08a2bb84669911b56064b49cfd, type: 2}
   - {fileID: 11400000, guid: 1af653a6e5104453ea0722f2672205ab, type: 2}
   _requiredCounts: 0100000001000000
+  _requiredPreparations: []
+  _requiredPreparationCounts: 
   _rewardCopper: 18
+  _wetWeatherBonusCopper: 0
   _firstCompletionRelationshipDelta: 1
   _firstCompletionKnowledgeDelta: 0
   _requiredFlagIds:
   - foraging_knife_unlocked
   _requiredCompletedQuestIds:
   - firstSale
-  _activeQuestId:
+  _activeQuestId: 
   _oneShot: 0
   _completionFlagIds: []
   _completeQuest: {fileID: 0}

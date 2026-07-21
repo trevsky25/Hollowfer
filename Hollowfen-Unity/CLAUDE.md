@@ -20,6 +20,7 @@ Every doc's first 7 lines are a summary — survey them all with:
 | Dialogue system (code/assets) | `Docs/systems/dialogue.md` + bible |
 | NPCs | `Docs/systems/npcs.md` |
 | Grow beds / cultivation | `Docs/systems/cultivation.md` |
+| Village restoration projects / worksite stages | `Docs/systems/restoration.md` |
 | Clock, day flags | `Docs/systems/time.md` |
 | Saves, persistence | `Docs/systems/save.md` |
 | Input actions, gamepad | `Docs/systems/input.md` |

@@ -18,16 +18,15 @@ namespace Hollowfen.EditorTools
             Require(EditorApplication.isPlaying, "run this verifier in Play Mode");
             var clock = TimeManager.Instance;
             var ambience = AmbienceManager.Instance;
-            var music = UnityEngine.Object.FindFirstObjectByType<MusicManager>();
-            var toast = UnityEngine.Object.FindFirstObjectByType<RegionArrivalToast>();
+            var music = UnityEngine.Object.FindAnyObjectByType<MusicManager>();
+            var toast = UnityEngine.Object.FindAnyObjectByType<RegionArrivalToast>();
             Require(clock != null, "TimeManager is missing");
             Require(ambience != null, "gameplay AmbienceManager is missing");
             Require(music != null, "MusicManager is missing");
             Require(toast != null, "RegionArrivalToast is missing");
             Require(RegionCatalog.Count == 4, "expected four canonical region presentations");
 
-            var triggers = UnityEngine.Object.FindObjectsByType<RegionTrigger>(FindObjectsInactive.Include,
-                FindObjectsSortMode.None);
+            var triggers = UnityEngine.Object.FindObjectsByType<RegionTrigger>(FindObjectsInactive.Include);
             Require(triggers.Count(t => t.RegionId == "village") >= 2,
                 "the starting/southern village lacks region coverage");
             Require(triggers.Count(t => t.RegionId == "wend") >= 2,
@@ -172,6 +171,8 @@ namespace Hollowfen.EditorTools
                     toast.DisplayedSubtitle == RegionCatalog.Subtitle("wend"),
                 "region title is not using shared localized catalog copy");
             Require(toast.IsShowing, "arrival presentation did not begin");
+            Require(toast.ShownTopInset >= 132f,
+                "arrival title intrudes into the compass/waypoint safe band");
         }
 
         private static void VerifyClip(AudioClip clip, string label)

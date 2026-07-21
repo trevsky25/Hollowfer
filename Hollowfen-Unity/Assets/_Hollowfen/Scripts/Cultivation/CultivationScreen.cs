@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Hollowfen.Cinematics;
 using Hollowfen.Data;
 using Hollowfen.Foraging;
 using Hollowfen.Input;
@@ -29,9 +30,7 @@ namespace Hollowfen.Cultivation
         private Button _closeButton;
         private InputActions _input;
         private GrowBed _bed;
-        private float _previousTimeScale;
-        private CursorLockMode _previousCursorLock;
-        private bool _previousCursorVisible;
+        private NarrativePresentationSession.Lease _presentationLease;
 
         public bool IsOpen => _canvas != null && _canvas.enabled;
 
@@ -95,6 +94,7 @@ namespace Hollowfen.Cultivation
 
         private void OnDestroy()
         {
+            ReleasePresentation();
             if (Instance == this) Instance = null;
             _input?.Dispose();
         }
@@ -106,14 +106,8 @@ namespace Hollowfen.Cultivation
             RefreshOptions();
             if (_optionButtons.Count == 0) { _bed = null; return; }
 
-            _previousTimeScale = Time.timeScale;
-            _previousCursorLock = Cursor.lockState;
-            _previousCursorVisible = Cursor.visible;
-            Time.timeScale = 0f;
-            PlayerInteractor.Suspended = true;
-            PlayerInteractor.SetPlayerInputEnabled(false);
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            _presentationLease = NarrativePresentationSession.Acquire(
+                this, NarrativePresentationSession.Modal);
 
             EnsureEventSystem();
             _canvas.enabled = true;
@@ -131,12 +125,14 @@ namespace Hollowfen.Cultivation
             _group.blocksRaycasts = false;
             _group.interactable = false;
             _bed = null;
-            Time.timeScale = _previousTimeScale;
-            PlayerInteractor.Suspended = false;
-            PlayerInteractor.SetPlayerInputEnabled(true);
-            Cursor.lockState = _previousCursorLock;
-            Cursor.visible = _previousCursorVisible;
+            ReleasePresentation();
             EventSystem.current?.SetSelectedGameObject(null);
+        }
+
+        private void ReleasePresentation()
+        {
+            _presentationLease?.Dispose();
+            _presentationLease = null;
         }
 
         private void Choose(MushroomFieldGuideData species)
@@ -149,6 +145,15 @@ namespace Hollowfen.Cultivation
         private void OnCancel(InputAction.CallbackContext context)
         {
             if (IsOpen) Close();
+        }
+
+        private void Update()
+        {
+            if (!IsOpen) return;
+            GameObject preferred = _optionButtons.Count > 0
+                ? _optionButtons[0].gameObject
+                : _closeButton != null ? _closeButton.gameObject : null;
+            UIFocusRecovery.RestoreIfLost(transform, preferred);
         }
 
         private void RefreshOptions()
@@ -168,7 +173,7 @@ namespace Hollowfen.Cultivation
             }
             candidates.Sort((a, b) => a.Tier != b.Tier
                 ? a.Tier.CompareTo(b.Tier)
-                : string.CompareOrdinal(a.CommonName, b.CommonName));
+                : string.CompareOrdinal(JournalText.MushroomName(a), JournalText.MushroomName(b)));
 
             int shown = Mathf.Min(6, candidates.Count);
             for (int i = 0; i < shown; i++)
@@ -195,7 +200,7 @@ namespace Hollowfen.Cultivation
             image.type = Image.Type.Sliced;
             image.color = new Color(0.18f, 0.15f, 0.10f, 0.08f);
 
-            var title = UICanvasUtil.NewHeading("Name", rt, species.CommonName, 23f,
+            var title = UICanvasUtil.NewHeading("Name", rt, JournalText.MushroomName(species), 23f,
                 HollowfenPalette.InkDeep, FontStyles.Italic, TextAlignmentOptions.Left);
             UICanvasUtil.SetRect(title.rectTransform, new Vector2(0f, 0f), new Vector2(0.46f, 1f),
                 new Vector2(0f, 0.5f), new Vector2(-32f, 0f), new Vector2(16f, 0f));
@@ -258,7 +263,7 @@ namespace Hollowfen.Cultivation
             UICanvasUtil.AddShadow(card, 22, 30, 0.5f, -10f);
 
             var eyebrow = UICanvasUtil.NewEyebrow("Eyebrow", card, Localization.Get("cultivation.eyebrow"),
-                14f, HollowfenPalette.Gold, TextAlignmentOptions.Center);
+                14f, HollowfenPalette.PaperAccentInk, TextAlignmentOptions.Center);
             UICanvasUtil.SetRect(eyebrow.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f),
                 new Vector2(0.5f, 1f), new Vector2(-100f, 24f), new Vector2(0f, -36f));
             var title = UICanvasUtil.NewHeading("Title", card, Localization.Get("cultivation.title"),

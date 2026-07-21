@@ -58,7 +58,7 @@ from generate_vo import (
 UNITY_VO_ROOT = Path(OUT_ROOT)
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_STAGE = PROJECT_ROOT / "output" / "voice-staging" / "wren-chatterbox-stage"
-EXPECTED_CLIP_COUNT = 122
+EXPECTED_CLIP_COUNT = 242
 EXPECTED_SAMPLE_RATE = 24_000
 GENERATOR_VERSION = 2
 STAGE_MANIFEST_NAME = "_stage_manifest.json"

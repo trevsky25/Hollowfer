@@ -2,6 +2,8 @@ using Hollowfen.Audio;
 using Hollowfen.Data;
 using Hollowfen.Foraging;
 using Hollowfen.Quests;
+using Hollowfen.Restoration;
+using Hollowfen.Weather;
 using UnityEngine;
 
 namespace Hollowfen.Cultivation
@@ -63,7 +65,8 @@ namespace Hollowfen.Cultivation
 
             _activeSpecies = species;
             _activePrefab = species.WorldPrefab != null ? species.WorldPrefab : _mushroomPrefab;
-            int yieldCount = species.CultivationYield > 0 ? species.CultivationYield : _yield;
+            int yieldCount = (species.CultivationYield > 0 ? species.CultivationYield : _yield) +
+                             RestorationBenefits.CultivationYieldBonus;
             InventoryRuntime.Remove(species, 1);
             GrowBeds.Plant(_bedId, species.Id, day, hour, yieldCount);
             SpawnNodes(yieldCount);
@@ -128,8 +131,10 @@ namespace Hollowfen.Cultivation
         {
             var tm = GameTime.TimeManager.Instance;
             if (tm == null) return 1f;
-            float elapsed = (tm.Day - rec.PlantedDay) * 24f + (tm.Hour - rec.PlantedHour);
-            float hours = _activeSpecies != null ? _activeSpecies.CultivationHours : _matureGameHours;
+            float elapsed = WeatherSystem.AdjustedGrowthHours(rec.PlantedDay, rec.PlantedHour,
+                tm.Day, tm.Hour);
+            float hours = (_activeSpecies != null ? _activeSpecies.CultivationHours : _matureGameHours) *
+                          RestorationBenefits.CultivationHoursMultiplier;
             return hours > 0f ? Mathf.Clamp01(elapsed / hours) : 1f;
         }
 

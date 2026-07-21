@@ -47,6 +47,27 @@ namespace Hollowfen.Data
         [SerializeField] private bool _fadeIn = true;
         [SerializeField, Min(0f), Tooltip("Optional fixed hold per caption. Zero uses VO/read-time pacing.")]
         private float _holdSeconds;
+        [SerializeField, Tooltip("Keep page-like illustrations nearly full-frame instead of applying the wider cinematic crop.")]
+        private bool _preserveFullFrameImages;
+
+        [Header("Live page text (optional)")]
+        [SerializeField, Tooltip("Localized text drawn directly on one painted image.")]
+        private string _pageTextId;
+        [SerializeField, TextArea(3, 10), Tooltip("English fallback for the live painted-page text.")]
+        private string _pageTextFallback;
+        [SerializeField, Tooltip("Image index that owns the live text. Negative disables it.")]
+        private int _pageTextImageIndex = -1;
+        [SerializeField, Min(0), Tooltip("First caption beat that reveals the live page text.")]
+        private int _pageTextStartBeat;
+        [SerializeField, Tooltip("Optional reveal beat for each blank-line-separated page-text paragraph. Empty reveals the full page at the start beat.")]
+        private int[] _pageTextParagraphRevealBeats;
+        [SerializeField, Tooltip("Normalized x/y/width/height within the painted image.")]
+        private Rect _pageTextRect = new Rect(0.2f, 0.2f, 0.6f, 0.6f);
+        [SerializeField, Range(-15f, 15f)] private float _pageTextRotation;
+        [SerializeField, Range(18f, 64f)] private float _pageTextFontSize = 30f;
+        [SerializeField] private Color _pageTextColor = new Color(0.16f, 0.1f, 0.05f, 0.86f);
+        [SerializeField, Tooltip("Render live page copy with the dedicated handwritten/cursive UI font role.")]
+        private bool _useCursivePageText;
 
         [Header("Context focus (optional)")]
         [SerializeField, Tooltip("Push into the runtime context transform before the painted reveal.")]
@@ -67,12 +88,35 @@ namespace Hollowfen.Data
         public AudioClip[] VoiceClips => _voiceClips;
         public Sprite[] Images => _images;
         public int[] BeatImages => _beatImages;
-        // Dialogue interstitials are clean story-card paintings by design. Illustrated narration
-        // and act breaks can opt into written copy; the timing caption still resolves for VO.
+        // Dialogue interstitials may remain clean story-card paintings when silent, but spoken
+        // content must never become audio-only: any authored VO forces its matching caption on.
         public bool ShowStoryCardTitle => _presentation != StoryMomentPresentation.DialogueInterstitial && _showStoryCardTitle;
-        public bool ShowCaptions => _presentation != StoryMomentPresentation.DialogueInterstitial && _showCaptions;
+        public bool ShowCaptions
+        {
+            get
+            {
+                if (_presentation != StoryMomentPresentation.DialogueInterstitial && _showCaptions) return true;
+                if (_voiceClips == null) return false;
+                foreach (var clip in _voiceClips)
+                    if (clip != null) return true;
+                return false;
+            }
+        }
         public bool FadeIn => _fadeIn;
         public float HoldSeconds => _holdSeconds;
+        public bool PreserveFullFrameImages => _preserveFullFrameImages;
+        public string PageTextId => _pageTextId;
+        public string PageTextFallback => _pageTextFallback;
+        public string PageText => Localization.Get(_pageTextId, _pageTextFallback);
+        public int PageTextImageIndex => _pageTextImageIndex;
+        public int PageTextStartBeat => _pageTextStartBeat;
+        public int[] PageTextParagraphRevealBeats => _pageTextParagraphRevealBeats;
+        public Rect PageTextRect => _pageTextRect;
+        public float PageTextRotation => _pageTextRotation;
+        public float PageTextFontSize => _pageTextFontSize;
+        public Color PageTextColor => _pageTextColor;
+        public bool UseCursivePageText => _useCursivePageText;
+        public bool HasPageText => _pageTextImageIndex >= 0 && !string.IsNullOrWhiteSpace(PageText);
         public bool FocusContext => _focusContext;
         public float FocusDistance => _focusDistance;
         public float FocusHeight => _focusHeight;
@@ -80,6 +124,26 @@ namespace Hollowfen.Data
         public float FocusPushSeconds => _focusPushSeconds;
         public float FocusHoldSeconds => _focusHoldSeconds;
         public float FocusRestoreSeconds => _focusRestoreSeconds;
+
+        public string PageTextForBeat(int beatIndex)
+        {
+            string fullText = PageText;
+            if (string.IsNullOrWhiteSpace(fullText) || _pageTextParagraphRevealBeats == null ||
+                _pageTextParagraphRevealBeats.Length == 0)
+                return fullText;
+
+            string[] paragraphs = fullText.Split(new[] { "\n\n" }, StringSplitOptions.RemoveEmptyEntries);
+            var visible = new List<string>();
+            for (int i = 0; i < paragraphs.Length; i++)
+            {
+                int revealBeat = i < _pageTextParagraphRevealBeats.Length
+                    ? _pageTextParagraphRevealBeats[i]
+                    : _pageTextStartBeat;
+                if (beatIndex >= revealBeat)
+                    visible.Add(paragraphs[i].Trim());
+            }
+            return string.Join("\n\n", visible);
+        }
 
         public string[] ResolveCaptions()
         {

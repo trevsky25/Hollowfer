@@ -343,7 +343,7 @@ namespace Hollowfen.EditorTools
                     if (node == null) node = root.AddComponent<MushroomNode>();
                     var serializedNode = new SerializedObject(node);
                     serializedNode.FindProperty("_data").objectReferenceValue = data;
-                    serializedNode.FindProperty("_respawnSeconds").floatValue = 0f;
+                    serializedNode.FindProperty("_respawnGameDaysOverride").intValue = 0;
                     serializedNode.ApplyModifiedPropertiesWithoutUndo();
                 }
                 else if (node != null)

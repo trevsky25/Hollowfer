@@ -38,7 +38,8 @@ MonoBehaviour:
     and Mario games all owe something to this mushroom. Effects are unpredictable,
     can include nausea, delirium, and ataxia. Not recommended for casual experimentation."
   _photo: {fileID: 21300000, guid: a9343f7cdfedc42f4899d2502f1e95aa, type: 3}
-  _photoCredit: Wikimedia Commons
+  _photoCredit: Generated with OpenAI gpt-image
+  _journalPage: {fileID: 21300000, guid: a896b1c4be60d4e81ad98ba485878bf8, type: 3}
   _worldPrefab: {fileID: 7117828910065969868, guid: ff51963d45a30415d96edcfc828bc0bf, type: 3}
   _journalPreviewPrefab: {fileID: 4915444337342313755, guid: 2fb17e0f1ef2a4c36aa1e742f4ca328c, type: 3}
   _journalExposure: 0.28
