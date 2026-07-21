@@ -4,7 +4,7 @@ Run: `tools/agent/lint_hollowfen.py` (always) · `tools/agent/run_integrity.py` 
 Checker code: `Assets/_Hollowfen/Scripts/Editor/DataIntegrity.cs` — an editor utility, NOT a Unity Test Framework assembly, because game code compiles into Assembly-CSharp (coupled to no-asmdef third-party sources) and test assemblies can't reference it.
 Philosophy: checks target failures that are SILENT at runtime (Localization.Get returns the raw id on a miss; PickDialog skips null entries; extra relationship ids are ignored). Loud failures don't need tests — the console already catches them.
 Waiver policy: lint waivers in `tools/agent/lint_waivers.txt`, each pointing at the TODOS item that owns the fix. A waiver is a debt marker, not a dismissal.
-Status: all three layers verified through 2026-07-21. Focused verifiers cover save-file integrity, durable inventory batches, endings, presentation ownership, repeatable gameplay, village requests, Living Restoration, the apothecary, day/night, dynamic weather, NPC schedules, relationship memory/personal arcs, regional feedback, audio/voice, and active production UI. Batch 120 adds a gated visual/performance baseline; Batch 121 exposes the synchronous checks through a safe native Pipeline allowlist. Destructive state verifiers use an isolated temporary save directory where supported.
+Status: all three layers verified through 2026-07-21. Focused verifiers cover save-file integrity, durable inventory batches, endings, presentation ownership, repeatable gameplay, village requests, Living Restoration, the apothecary, day/night, dynamic weather, NPC schedules, relationship memory/personal arcs, regional feedback, audio/voice, and active production UI. Batch 120 adds a gated visual/performance baseline; Batch 121 exposes the synchronous checks through a safe native Pipeline allowlist; Batch 122 proves the world audit can drive a bounded scene-collision cleanup while preserving functional wall collision. Destructive state verifiers use an isolated temporary save directory where supported.
 
 > Self-healing doc: adding a check? Document it here. Hitting a new failure class? Add a check AND a row here in the same batch.
 
@@ -77,7 +77,7 @@ They are an invocation layer over the checks in this manifest, not a replacement
 | `hollowfen_verifier_catalog` | The live adapter advertises the 24 hardcoded synchronous verifier names and their minimum Editor/isolation state. |
 | `hollowfen_run_verifier` | `dry_run=true` reports blockers without invoking a verifier; `confirm=true` runs only an allowlisted method and accepts only an explicit synchronous PASS report. |
 | `hollowfen_begin_save_isolation` / `hollowfen_end_save_isolation` | A confirmed Play Mode session is redirected to a command-owned `Library/HollowfenPipeline/isolated-saves/<id>` fixture, and cleanup proves ownership before clearing/deleting it. |
-| `hollowfen_world_audit` | The active loaded scene has a bounded structural report for missing scripts, collider transforms, object/render/material counts, and authored mesh instances. It does not prove runtime framerate. |
+| `hollowfen_world_audit` | The active loaded scene has a bounded structural report for missing scripts, object/render/material counts, authored mesh instances, total/enabled/disabled collider components, enabled negative/zero-scale hazards, and separately retained disabled negative-scale findings. It does not prove traversal by itself or runtime framerate. |
 
 Typical non-mutating use:
 

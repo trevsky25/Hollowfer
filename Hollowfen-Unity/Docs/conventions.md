@@ -121,6 +121,8 @@ End every implementation batch with:
 3. Expected: ...
 ```
 
-## Third-party console warnings (known-harmless, ignore)
+## Third-party scene diagnostics
 
-Loading the village scene prints warnings from Magic Pig / NatureManufacture content: `BoxCollider does not support negative scale` (~30×), `The tree prefab_X couldn't be instanced because bounds could not be determined`, `TerrainCollider: MeshCollider is not supported on terrain`, `The referenced script (Unknown) on this Behaviour is missing!`. Pre-existing in the packs; cosmetic; don't edit third-party prefabs to silence them.
+Imported Magic Pig / NatureManufacture content has historically emitted warnings such as negative-scale `BoxCollider`, indeterminate tree bounds, terrain/mesh-collider incompatibility, and missing vendor behaviours. Diagnose a current occurrence before classifying it; do not edit an imported source prefab merely to silence its console output.
+
+Batch 122 traced the gameplay scene's 36 negative-determinant findings to invisible, non-trigger `BrokenWood2/Cube` collider proxies nested under mirrored rampart art. Every proxy already had zero world bounds and therefore supplied no functional collision. Hollowfen disables those components with scene-instance `m_Enabled: 0` overrides while leaving the Magic Pig source prefabs untouched; all 11 affected rampart roots still retain functional nonzero-bounds collision. `hollowfen_world_audit` reports enabled hazards and disabled historical findings separately so this boundary remains reviewable.

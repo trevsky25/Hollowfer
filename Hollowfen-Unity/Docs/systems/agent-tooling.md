@@ -3,8 +3,8 @@ Native Unity CLI/Pipeline is Hollowfen's primary structured Editor-control lane;
 Key code: `Assets/_Hollowfen/PipelineEditor/HollowfenPipelineCommands.cs`, isolated in the Editor-only, non-auto-referenced `Hollowfen.Pipeline.Editor` assembly.
 Entry points: seven `hollowfen_*` commands for health, production preflight, verifier discovery/execution, owned save isolation, and scene auditing.
 Safety boundary: commands wrap the existing integrity, save, UI, and `ProductionBuildGate` policy; they never expose Player-runtime automation or a generic build shortcut.
-Biggest gotchas: Pipeline reconnects after Play/compile domain reloads; command arguments keep their advertised underscores; world-audit totals are authored hierarchy cost, not visible-frame performance.
-Status: Batch 121 verifies all seven commands through Unity CLI 1.0.0-beta.2 / Pipeline 0.3.1-exp.1 and independently passes Coplay 10.1.0 integrity and smoke.
+Biggest gotchas: Pipeline reconnects after Play/compile domain reloads; command arguments keep their advertised underscores; world-audit totals are authored hierarchy cost, not visible-frame performance; disabled colliders are reported separately from active physics findings.
+Status: Batch 122 uses the command layer for a production scene-health pass, clears all 36 enabled negative-determinant collider findings through project-owned scene overrides, and independently passes Coplay 10.1.0 integrity and smoke.
 
 > Self-healing doc: if this command surface or either Unity connection changes, update this doc and the test manifest in the same batch.
 
@@ -34,7 +34,7 @@ that have not earned a native command.
 | `hollowfen_run_verifier` | Validate one catalog name with `dry_run=true`, then require `confirm=true` to execute. Success requires an explicit synchronous PASS report; textual FAILs and missing reports reject the command. |
 | `hollowfen_begin_save_isolation` | While stopped/clean, create and arm an owned directory under `Library/HollowfenPipeline/isolated-saves/<id>`. It refuses to replace an override it does not own. |
 | `hollowfen_end_save_isolation` | While stopped/clean, clear and delete only the `SessionState`-tracked directory below the owned root. It refuses path escape or a mismatched active override. |
-| `hollowfen_world_audit` | Read the loaded active scene's object, renderer, collider, material, light, particle, mesh-triangle, missing-script, negative-scale, and zero-scale totals with capped finding paths. |
+| `hollowfen_world_audit` | Read the loaded active scene's object, renderer, material, light, particle, mesh-triangle, and missing-script totals; report collider components as enabled/disabled and separate enabled negative/zero-scale hazards from disabled negative-scale findings, with capped paths. |
 
 `PresentationSessionVerifier.Run()` is intentionally absent from the catalog: it completes on a
 later Editor frame and currently returns no synchronous report. Keep using its menu/Coplay workflow
@@ -89,7 +89,9 @@ control. Cleanup is confined to the adapter-owned root. A domain reload preserve
 - `hollowfen_world_audit` is a one-shot Editor structural scan. Its triangle total counts loaded
   authored mesh instances, including inactive objects when requested; it is not frustum-culling,
   GPU, release-player, or Steam Deck evidence. Use the matched route in `Docs/benchmarks.md` and a
-  release-player profile for performance decisions.
+  release-player profile for performance decisions. Collider-transform hazards count only enabled
+  physics components; disabled negative-scale components remain visible in a separate diagnostic
+  bucket so a repair is auditable without being misreported as live collision.
 - Console counts come from Pipeline's bounded observability buffer. Clear it immediately before a
   scoped run when exact deltas matter; Coplay's `read_console` is the independent fallback.
 - New authoring/mutation commands must be narrow, dry-runnable, explicitly confirmed, and rooted in

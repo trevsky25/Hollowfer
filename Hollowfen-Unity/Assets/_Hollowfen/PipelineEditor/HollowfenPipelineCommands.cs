@@ -384,16 +384,24 @@ namespace Hollowfen.Pipeline
                     gameObject.GetComponents<Renderer>())
                 .Where(renderer => renderer != null && (includeInactive || renderer.enabled))
                 .ToArray();
-            Collider[] colliders = objects.SelectMany(gameObject =>
+            Collider[] colliderComponents = objects.SelectMany(gameObject =>
                     gameObject.GetComponents<Collider>())
-                .Where(collider => collider != null && (includeInactive || collider.enabled))
+                .Where(collider => collider != null)
+                .ToArray();
+            Collider[] enabledColliders = colliderComponents
+                .Where(collider => collider.enabled)
                 .ToArray();
 
-            string[] negativeScaleColliders = colliders
+            string[] negativeScaleColliders = enabledColliders
                 .Where(collider => HasNegativeDeterminant(collider.transform.lossyScale))
                 .Select(collider => HierarchyPath(collider.transform))
                 .Distinct().OrderBy(path => path).ToArray();
-            string[] zeroScaleColliders = colliders
+            string[] disabledNegativeScaleColliders = colliderComponents
+                .Where(collider => !collider.enabled &&
+                    HasNegativeDeterminant(collider.transform.lossyScale))
+                .Select(collider => HierarchyPath(collider.transform))
+                .Distinct().OrderBy(path => path).ToArray();
+            string[] zeroScaleColliders = enabledColliders
                 .Where(collider => HasZeroScale(collider.transform.lossyScale))
                 .Select(collider => HierarchyPath(collider.transform))
                 .Distinct().OrderBy(path => path).ToArray();
@@ -418,28 +426,33 @@ namespace Hollowfen.Pipeline
                     gameObjects = objects.Length,
                     activeGameObjects = objects.Count(gameObject => gameObject.activeInHierarchy),
                     renderers = renderers.Length,
-                    colliders = colliders.Length,
+                    colliderComponents = colliderComponents.Length,
+                    enabledColliders = enabledColliders.Length,
+                    disabledColliders = colliderComponents.Length - enabledColliders.Length,
                     lights = objects.Sum(gameObject => gameObject.GetComponents<Light>().Length),
                     particleSystems = objects.Sum(gameObject => gameObject.GetComponents<ParticleSystem>().Length),
                     uniqueMaterials,
                     authoredMeshTriangles = triangles,
                     missingScripts = missingScripts.Length,
                     negativeScaleColliders = negativeScaleColliders.Length,
+                    disabledNegativeScaleColliders = disabledNegativeScaleColliders.Length,
                     zeroScaleColliders = zeroScaleColliders.Length,
                 },
                 findings = new
                 {
                     missingScripts = missingScripts.Take(limit).ToArray(),
                     negativeScaleColliders = negativeScaleColliders.Take(limit).ToArray(),
+                    disabledNegativeScaleColliders = disabledNegativeScaleColliders.Take(limit).ToArray(),
                     zeroScaleColliders = zeroScaleColliders.Take(limit).ToArray(),
                     truncated = new
                     {
                         missingScripts = missingScripts.Length > limit,
                         negativeScaleColliders = negativeScaleColliders.Length > limit,
+                        disabledNegativeScaleColliders = disabledNegativeScaleColliders.Length > limit,
                         zeroScaleColliders = zeroScaleColliders.Length > limit,
                     },
                 },
-                interpretation = "Loaded-scene hierarchy totals; not visible-frame or standalone-player performance.",
+                interpretation = "Loaded-scene hierarchy totals; disabled collider findings are tracked separately and are not active physics. Not visible-frame or standalone-player performance.",
             };
         }
 
